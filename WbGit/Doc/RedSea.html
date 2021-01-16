@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                               <h1><center>RedSea File System</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>The RedSea file system is a simple, 64-bit, file system which is similar to 
+<a name="l4"></a>FAT32, but with absolute block addresses instead of clus, fixed-sized 64-byte 
+<a name="l5"></a>directory entries and no FAT table, just an allocation bitmap.  A clus is just 
+<a name="l6"></a>one 512 byte sector.  Files are stored in contiguous blocks and cannot grow in 
+<a name="l7"></a>size.
+<a name="l8"></a>
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CDIR_FILENAME_LEN</span><span class=cB0>       38 </span><span class=cB2>//Must include terminator zero</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a>The following bit field shows valid 8-Bit ASCII filename characters.
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB9>U32</span><span class=cB0> </span><span class=cBB>char_bmp_filename</span><span class=cB0>[8]=
+<a name="l14"></a>{0x0000000, 0x03FF73FB, 0xEFFFFFFF, 0x2FFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 
+<a name="l15"></a>0xFFFFFFFF, 0xFFFFFFFF};
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>class</span><span class=cB0> </span><span class=cB9>CDirEntry</span><span class=cB0> </span><span class=cB2>//64-byte fixed-size</span><span class=cB0>
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>U16</span><span class=cB0> attr;     </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2618"><span class=cB4>RS_ATTR_DIR</span></a><span class=cB2>.  I would like to change these.</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB1>U8</span><span class=cB0> name[</span><span class=cB3>CDIR_FILENAME_LEN</span><span class=cB0>]; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l345"><span class=cB4>char_bmp_filename</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l249"><span class=cB4>FileNameChk</span></a><span class=cB0>
+<a name="l21"></a>  </span><span class=cB9>I64</span><span class=cB0> clus; (blk) </span><span class=cB2>//One sector per clus.</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> size;     </span><span class=cB2>//In bytes</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB9>CDate</span><span class=cB0> datetime; </span><span class=cB2>//See  </span><a href="http://tinkeros.github.io/WbGit/Doc/TimeDate.html#l1"><span class=cB4>DateTime</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l1"><span class=cB4>Implementation of DateTime</span></a><span class=cB0>
+<a name="l24"></a>};
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>class</span><span class=cB0> </span><span class=cB9>CRedSeaBoot</span><span class=cB0> </span><span class=cB2>//RedSea is type FAT32 in partition table to fool BIOS.</span><span class=cB0>
+<a name="l27"></a>{
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> jump_and_nop[3];
+<a name="l29"></a>  </span><span class=cB1>U8</span><span class=cB0> signature,reserved[4]; </span><span class=cB2>//MBR_PT_REDSEA=0x88. Distinguish from real FAT32.</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB9>I64</span><span class=cB0> drv_offset;       </span><span class=cB2>//For CD/DVD image copy.</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB9>I64</span><span class=cB0> sects;
+<a name="l32"></a>  </span><span class=cB9>I64</span><span class=cB0> root_clus; (root_blk)
+<a name="l33"></a>  </span><span class=cB9>I64</span><span class=cB0> bitmap_sects;
+<a name="l34"></a>  </span><span class=cB9>I64</span><span class=cB0> unique_id;
+<a name="l35"></a>  </span><span class=cB1>U8</span><span class=cB0> code[462];
+<a name="l36"></a>  </span><span class=cB9>U16</span><span class=cB0> signature2;       </span><span class=cB2>//0xAA55</span><span class=cB0>
+<a name="l37"></a>};
+<a name="l38"></a>
+<a name="l39"></a>See </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l1"><span class=cB4>::/Kernel/BlkDev/FileSysRedSea.HC</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/DskISORedSea.html#l1"><span class=cB4>::/Adam/Opt/Boot/DskISORedSea.HC</span></a><span class=cB0>.
+<a name="l40"></a>
+<a name="l41"></a>Files with names ending in .Z are compressed.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/Compress.html#l1"><span class=cB4>::/Kernel/Compress.HC</span></a><span class=cB0>.
+<a name="l42"></a>
+<a name="l43"></a>To replace ISO9660, make hard-drive partition image of a measured size and copy 
+<a name="l44"></a>onto a CD/DVD starting at about sector 20, with EL TORITO booting.  512-byte 
+<a name="l45"></a>sectors will be placed on top of 2048-byte CD/DCD sectors, so there will be four 
+<a name="l46"></a>blocks per CD/DVD sector.
+<a name="l47"></a>
+<a name="l48"></a>RedSea file system has no bad block table and no redundant allocation table.
+<a name="l49"></a>
+<a name="l50"></a>See </span><a href="http://tinkeros.github.io/WbGit/Doc/BlkChain.html#l1"><span class=cB4>Block Chain</span></a><span class=cB0> for RedSea allocation bitmap discussion.
+<a name="l51"></a>
+<a name="l52"></a>See </span><a href="http://tinkeros.github.io/WbGit/Doc/Reliability.html#l1"><span class=cB4>Reliability</span></a><span class=cB0> for RedSea reliability discussion.
+</span></div></pre></body>
+</html>

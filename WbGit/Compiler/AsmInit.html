@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>AsmPrsInsFlags</span><span class=cB0>(</span><span class=cB9>CCmpCtrl</span><span class=cB0> *cc,</span><span class=cB9>CInst</span><span class=cB0> *tmpins)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l4"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l5"></a>    </span><span class=cB1>switch</span><span class=cB0> (cc-&gt;token) {
+<a name="l6"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>TK_IDENT</span><span class=cB0>:
+<a name="l7"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l416">LstMatch</a></span><span class=cB0>(cc-&gt;cur_str,</span><span class=cB6>&quot;NO\0CB\0CW\0CD\0CP\0IB\0IW\0ID\0&quot;</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>&gt;=0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>          tmpins-&gt;opcode_modifier=i;
+<a name="l9"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l10"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l11"></a>          </span><span class=cB1>return</span><span class=cB0>;
+<a name="l12"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>TK_I64</span><span class=cB0>:
+<a name="l13"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;cur_i64==16)
+<a name="l14"></a>          tmpins-&gt;flags|=</span><span class=cB3>IEF_OP_SIZE16</span><span class=cB0>;
+<a name="l15"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;cur_i64==32)
+<a name="l16"></a>          tmpins-&gt;flags|=</span><span class=cB3>IEF_OP_SIZE32</span><span class=cB0>;
+<a name="l17"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l18"></a>          </span><span class=cB1>return</span><span class=cB0>;
+<a name="l19"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l20"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'+'</span><span class=cB0>:
+<a name="l21"></a>        tmpins-&gt;flags|=</span><span class=cB3>IEF_PLUS_OPCODE</span><span class=cB0>;
+<a name="l22"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'/'</span><span class=cB0>:
+<a name="l23"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB7>(</span><span class=cB0>cc</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB3>TK_I64</span><span class=cB0> &amp;&amp; cc-&gt;cur_i64&lt;8)
+<a name="l24"></a>          tmpins-&gt;slash_val=cc-&gt;cur_i64;
+<a name="l25"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==</span><span class=cB3>TK_IDENT</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309">StrCmp</a></span><span class=cB7>(</span><span class=cB0>cc-&gt;cur_str,</span><span class=cB6>&quot;R&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l27"></a>            tmpins-&gt;slash_val=</span><span class=cB3>SV_R_REG</span><span class=cB0>;
+<a name="l28"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309">StrCmp</a></span><span class=cB7>(</span><span class=cB0>cc-&gt;cur_str,</span><span class=cB6>&quot;I&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l29"></a>            tmpins-&gt;slash_val=</span><span class=cB3>SV_I_REG</span><span class=cB0>;
+<a name="l30"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l31"></a>            </span><span class=cB1>return</span><span class=cB0>;
+<a name="l32"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l33"></a>          </span><span class=cB1>return</span><span class=cB0>;
+<a name="l34"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l35"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'!'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_DONT_SWITCH_MODES</span><span class=cB0>;   </span><span class=cB1>break</span><span class=cB0>;
+<a name="l36"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'&amp;'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_DFT</span><span class=cB0>;                 </span><span class=cB1>break</span><span class=cB0>;
+<a name="l37"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'%'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_NOT_IN_64_BIT</span><span class=cB0>;       </span><span class=cB1>break</span><span class=cB0>;
+<a name="l38"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'='</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_48_REX</span><span class=cB0>;              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l39"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'`'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_REX_ONLY_R8_R15</span><span class=cB0>;     </span><span class=cB1>break</span><span class=cB0>;
+<a name="l40"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'^'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_REX_XOR_LIKE</span><span class=cB0>;                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l41"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'*'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_STI_LIKE</span><span class=cB0>;            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l42"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'$'</span><span class=cB0>: tmpins-&gt;flags|=</span><span class=cB3>IEF_ENDING_ZERO</span><span class=cB0>;         </span><span class=cB1>break</span><span class=cB0>;
+<a name="l43"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l44"></a>        </span><span class=cB1>return</span><span class=cB0>;
+<a name="l45"></a>    }
+<a name="l46"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>AsmHashLoad</span><span class=cB0>()
+<a name="l51"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l1"><span class=cB4>::/Compiler/OpCodes.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l52"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,size,size_max;
+<a name="l53"></a>  CInternalType *tmpit;
+<a name="l54"></a>  </span><span class=cB9>CCmpCtrl</span><span class=cB0> *cc;
+<a name="l55"></a>  </span><span class=cB9>CHashGeneric</span><span class=cB0> *tmph;
+<a name="l56"></a>  </span><span class=cB9>CHashReg</span><span class=cB0> *tmpr;
+<a name="l57"></a>  </span><span class=cB9>CHashOpcode</span><span class=cB0> *tmpo,*tmpo2,*tmpo_max;
+<a name="l58"></a>  </span><span class=cB9>CInst</span><span class=cB0> *tmpins;
+<a name="l59"></a>  </span><span class=cB9>CHashClass</span><span class=cB0> *tmpc;
+<a name="l60"></a>
+<a name="l61"></a>  </span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[0]=0x3FF0FFFFFE;
+<a name="l62"></a>  </span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[1]=0x1110111112;
+<a name="l63"></a>  </span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[2]=0x2220222224;
+<a name="l64"></a>  </span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[4]=0x0440444448;
+<a name="l65"></a>  </span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[8]=0x0880888880;
+<a name="l66"></a>
+<a name="l67"></a>  </span><span class=cBB>cmp</span><span class=cB0>.asm_hash=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l50">HashTableNew</a></span><span class=cB0>(1024);
+<a name="l68"></a>  size_max=</span><span class=cB1>offset</span><span class=cB0>(</span><span class=cB9>CHashOpcode</span><span class=cB0>.ins)+</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CInst</span><span class=cB0>)&lt;&lt;5;
+<a name="l69"></a>  tmpo_max=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(size_max);
+<a name="l70"></a>
+<a name="l71"></a>  cc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l28">CmpCtrlNew</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1">FileRead</a></span><span class=cB7>(</span><span class=cB6>&quot;OpCodes.DD&quot;</span><span class=cB7>)</span><span class=cB0>,,</span><span class=cB6>&quot;OpCodes.DD.Z&quot;</span><span class=cB0>);
+<a name="l72"></a>  cc-&gt;htc.hash_table_lst=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l73"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);
+<a name="l74"></a>  </span><span class=cB1>while</span><span class=cB0> (cc-&gt;token) </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>    </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB3>TK_IDENT</span><span class=cB0>)
+<a name="l76"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting identifier at &quot;</span><span class=cB0>);
+<a name="l77"></a>    i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l416">LstMatch</a></span><span class=cB0>(cc-&gt;cur_str,</span><span class=cB6>&quot;NONE\0R8\0R16\0R32\0R64\0SEG\0FSTK\0&quot;</span><span class=cB0>
+<a name="l78"></a>          </span><span class=cB6>&quot;MM\0XMM\0OPCODE\0KEYWORD\0ASM_KEYWORD\0&quot;</span><span class=cB0>);
+<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (i&lt;=0)
+<a name="l80"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Unknown Stmt&quot;</span><span class=cB0>);
+<a name="l81"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//skip keyword</span><span class=cB0>
+<a name="l82"></a>    </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB3>TK_IDENT</span><span class=cB0>)
+<a name="l83"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting identifier at &quot;</span><span class=cB0>);
+<a name="l84"></a>    </span><span class=cB1>switch</span><span class=cB0> (i) {
+<a name="l85"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REGT_R8</span><span class=cB0>...</span><span class=cB3>REGT_XMM</span><span class=cB0>:
+<a name="l86"></a>        tmpr=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395">CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CHashReg</span><span class=cB7>)</span><span class=cB0>);
+<a name="l87"></a>        tmpr-&gt;str=cc-&gt;cur_str;
+<a name="l88"></a>        cc-&gt;cur_str=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l89"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//skip keyword name</span><span class=cB0>
+<a name="l90"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB3>TK_I64</span><span class=cB0>)
+<a name="l91"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting int at &quot;</span><span class=cB0>);
+<a name="l92"></a>        tmpr-&gt;type=</span><span class=cB3>HTT_REG</span><span class=cB0>;
+<a name="l93"></a>        tmpr-&gt;reg_type=i;
+<a name="l94"></a>        tmpr-&gt;reg_num=cc-&gt;cur_i64;
+<a name="l95"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262">HashAdd</a></span><span class=cB0>(tmpr,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash);
+<a name="l96"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//Skip INT</span><span class=cB0>
+<a name="l97"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l98"></a>      </span><span class=cB1>case</span><span class=cB0>: </span><span class=cB2>//OPCODE</span><span class=cB0>
+<a name="l99"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB3>TK_IDENT</span><span class=cB0>)
+<a name="l100"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting opcode at &quot;</span><span class=cB0>);
+<a name="l101"></a>        </span><span class=cB5>MemSet</span><span class=cB0>(tmpo_max,0,size_max);
+<a name="l102"></a>        tmpo_max-&gt;type=</span><span class=cB3>HTT_OPCODE</span><span class=cB0>;
+<a name="l103"></a>        tmpo_max-&gt;inst_entry_cnt=0;
+<a name="l104"></a>        tmpo_max-&gt;str=cc-&gt;cur_str;
+<a name="l105"></a>        cc-&gt;cur_str=0;
+<a name="l106"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);        </span><span class=cB2>//Skip OPCODE</span><span class=cB0>
+<a name="l107"></a>        </span><span class=cB1>while</span><span class=cB0> (cc-&gt;token &amp;&amp; cc-&gt;token!=</span><span class=cB6>';'</span><span class=cB0> &amp;&amp; cc-&gt;token!=</span><span class=cB6>':'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>          tmpins=&amp;tmpo_max-&gt;ins[tmpo_max-&gt;inst_entry_cnt];
+<a name="l109"></a>          tmpins-&gt;ins_entry_num=tmpo_max-&gt;inst_entry_cnt++;
+<a name="l110"></a>          tmpins-&gt;slash_val=</span><span class=cB3>SV_NONE</span><span class=cB0>; </span><span class=cB2>//Not zero!!</span><span class=cB0>
+<a name="l111"></a>          </span><span class=cB1>while</span><span class=cB0> (cc-&gt;token==</span><span class=cB3>TK_I64</span><span class=cB0>) {
+<a name="l112"></a>            tmpins-&gt;opcode[tmpins-&gt;opcode_cnt++]=cc-&gt;cur_i64;
+<a name="l113"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);
+<a name="l114"></a>          }
+<a name="l115"></a>          </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==</span><span class=cB6>','</span><span class=cB0>)
+<a name="l116"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);
+<a name="l117"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB6>';'</span><span class=cB0>)
+<a name="l118"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting ',' at &quot;</span><span class=cB0>);
+<a name="l119"></a>
+<a name="l120"></a>          </span><span class=cBD>AsmPrsInsFlags</span><span class=cB0>(cc,tmpins);
+<a name="l121"></a>
+<a name="l122"></a>          tmpins-&gt;uasm_slash_val=tmpins-&gt;slash_val;
+<a name="l123"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpins-&gt;flags&amp;</span><span class=cB3>IEF_STI_LIKE</span><span class=cB0> &amp;&amp; tmpins-&gt;slash_val!=</span><span class=cB3>SV_I_REG</span><span class=cB0>)
+<a name="l124"></a>            tmpins-&gt;uasm_slash_val=</span><span class=cB3>SV_STI_LIKE</span><span class=cB0>;
+<a name="l125"></a>
+<a name="l126"></a>          tmpins-&gt;arg1=tmpins-&gt;arg2=tmpins-&gt;size1=tmpins-&gt;size2=0;
+<a name="l127"></a>          </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==</span><span class=cB3>TK_IDENT</span><span class=cB0>) {
+<a name="l128"></a>            j=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l85">DefineMatch</a></span><span class=cB0>(cc-&gt;cur_str,</span><span class=cB6>&quot;ST_ARG_TYPES&quot;</span><span class=cB0>);
+<a name="l129"></a>            tmpins-&gt;arg1=j;
+<a name="l130"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[1],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l131"></a>              tmpins-&gt;size1=8;
+<a name="l132"></a>            </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[2],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l133"></a>              tmpins-&gt;size1=16;
+<a name="l134"></a>            </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[4],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l135"></a>              tmpins-&gt;size1=32;
+<a name="l136"></a>            </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[8],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l137"></a>              tmpins-&gt;size1=64;
+<a name="l138"></a>
+<a name="l139"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB7>(</span><span class=cB0>cc</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB3>TK_IDENT</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l140"></a>              j=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l85">DefineMatch</a></span><span class=cB0>(cc-&gt;cur_str,</span><span class=cB6>&quot;ST_ARG_TYPES&quot;</span><span class=cB0>);
+<a name="l141"></a>              </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc);
+<a name="l142"></a>              tmpins-&gt;arg2=j;
+<a name="l143"></a>              </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[1],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l144"></a>                tmpins-&gt;size2=8;
+<a name="l145"></a>              </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[2],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l146"></a>                tmpins-&gt;size2=16;
+<a name="l147"></a>              </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[4],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l148"></a>                tmpins-&gt;size2=32;
+<a name="l149"></a>              </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>cmp</span><span class=cB0>.size_arg_mask[8],j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l150"></a>                tmpins-&gt;size2=64;
+<a name="l151"></a>            </span><span class=cB7>}</span><span class=cB0>
+<a name="l152"></a>          }
+<a name="l153"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l154"></a>        size=</span><span class=cB1>offset</span><span class=cB0>(</span><span class=cB9>CHashOpcode</span><span class=cB0>.ins)+</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CInst</span><span class=cB0>)*tmpo_max-&gt;inst_entry_cnt;
+<a name="l155"></a>        tmpo=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(size);
+<a name="l156"></a>        </span><span class=cB5>MemCpy</span><span class=cB0>(tmpo,tmpo_max,size);
+<a name="l157"></a>        tmpo-&gt;use_cnt=0;
+<a name="l158"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255">HashFind</a></span><span class=cB7>(</span><span class=cB0>tmpo-&gt;str,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash,</span><span class=cB3>HTT_OPCODE</span><span class=cB7>)</span><span class=cB0>)
+<a name="l159"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Duplicate OPCODE entry &quot;</span><span class=cB0>);
+<a name="l160"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262">HashAdd</a></span><span class=cB0>(tmpo,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash);
+<a name="l161"></a>        </span><span class=cB2>//Parse aliases.</span><span class=cB0>
+<a name="l162"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==</span><span class=cB6>':'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l163"></a>          </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB7>(</span><span class=cB0>cc</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB3>TK_IDENT</span><span class=cB0>) {
+<a name="l164"></a>            tmpo2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l407">MAllocIdent</a></span><span class=cB0>(tmpo);
+<a name="l165"></a>            tmpo2-&gt;str=cc-&gt;cur_str;
+<a name="l166"></a>            cc-&gt;cur_str=0;
+<a name="l167"></a>            tmpo2-&gt;oc_flags|=</span><span class=cB3>OCF_ALIAS</span><span class=cB0>;
+<a name="l168"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255">HashFind</a></span><span class=cB7>(</span><span class=cB0>tmpo2-&gt;str,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash,</span><span class=cB3>HTT_OPCODE</span><span class=cB7>)</span><span class=cB0>)
+<a name="l169"></a>              </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Duplicate OPCODE ALIAS entry &quot;</span><span class=cB0>);
+<a name="l170"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262">HashAdd</a></span><span class=cB0>(tmpo2,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash);
+<a name="l171"></a>          }
+<a name="l172"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l173"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l174"></a>      </span><span class=cB1>case</span><span class=cB0>: </span><span class=cB2>//KEYWORD</span><span class=cB0>
+<a name="l175"></a>      </span><span class=cB1>case</span><span class=cB0>: </span><span class=cB2>//ASM_KEYWORD</span><span class=cB0>
+<a name="l176"></a>        tmph=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395">CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CHashGeneric</span><span class=cB7>)</span><span class=cB0>);
+<a name="l177"></a>        tmph-&gt;str=cc-&gt;cur_str;
+<a name="l178"></a>        cc-&gt;cur_str=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l179"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//skip keyword name</span><span class=cB0>
+<a name="l180"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB3>TK_I64</span><span class=cB0>)
+<a name="l181"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Expecting int at &quot;</span><span class=cB0>);
+<a name="l182"></a>        tmph-&gt;user_data0=cc-&gt;cur_i64;
+<a name="l183"></a>        </span><span class=cB1>if</span><span class=cB0> (i==10)
+<a name="l184"></a>          tmph-&gt;type=</span><span class=cB3>HTT_KEYWORD</span><span class=cB0>;
+<a name="l185"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l186"></a>          tmph-&gt;type=</span><span class=cB3>HTT_ASM_KEYWORD</span><span class=cB0>;
+<a name="l187"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262">HashAdd</a></span><span class=cB0>(tmph,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash);
+<a name="l188"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//Skip INT</span><span class=cB0>
+<a name="l189"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l190"></a>    }
+<a name="l191"></a>    </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token!=</span><span class=cB6>';'</span><span class=cB0>)
+<a name="l192"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l92">LexExcept</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Missing ';' at&quot;</span><span class=cB0>);
+<a name="l193"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l441">Lex</a></span><span class=cB0>(cc); </span><span class=cB2>//Skip ';'</span><span class=cB0>
+<a name="l194"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpo_max);
+<a name="l196"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l58">CmpCtrlDel</a></span><span class=cB0>(cc);
+<a name="l197"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;INTERNAL_TYPES_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l198"></a>    tmpit=&amp;</span><span class=cBD>internal_types_table</span><span class=cB0>[i];
+<a name="l199"></a>    tmpc=</span><span class=cBD>PrsClassNew</span><span class=cB0>;
+<a name="l200"></a>    tmpc-&gt;type=</span><span class=cB3>HTT_INTERNAL_TYPE</span><span class=cB0>;
+<a name="l201"></a>    tmpc-&gt;raw_type=tmpit-&gt;type;
+<a name="l202"></a>    </span><span class=cB5>Bts</span><span class=cB0>(&amp;tmpc-&gt;flags,</span><span class=cB3>Cf_INTERNAL_TYPE</span><span class=cB0>);
+<a name="l203"></a>    tmpc-&gt;size=tmpit-&gt;size;
+<a name="l204"></a>    tmpc-&gt;str=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l461">AStrNew</a></span><span class=cB0>(tmpit-&gt;name);
+<a name="l205"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262">HashAdd</a></span><span class=cB0>(tmpc,</span><span class=cBB>cmp</span><span class=cB0>.asm_hash);
+<a name="l206"></a>    </span><span class=cBB>cmp</span><span class=cB0>.internal_types[tmpc-&gt;raw_type]=tmpc;
+<a name="l207"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l208"></a>  </span><span class=cBB>adam_task</span><span class=cB0>-&gt;hash_table-&gt;next=</span><span class=cBB>cmp</span><span class=cB0>.asm_hash;
+<a name="l209"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Misc/Host&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Host.html#l3">HostChgDsk</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *iso_filename)
+<a name="l4"></a>{</span><span class=cB2>//Help user change CD/DVD or ISO_file.</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l6"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l7"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    </span><span class=cB5>AutoComplete</span><span class=cB0>;
+<a name="l9"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l521">WinBorder</a></span><span class=cB0>;
+<a name="l10"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l507">WinMax</a></span><span class=cB0>;
+<a name="l11"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l12"></a>    </span><span class=cB6>&quot;$PURPLE$$TX+CX,\&quot;Set to %s\&quot;$$FG$\n\n\n\n&quot;</span><span class=cB0>,iso_filename;
+<a name="l13"></a>    </span><span class=cB1>switch</span><span class=cB0> (</span><span class=cBB>ins_reg</span><span class=cB0>.host_vm) {
+<a name="l14"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>VM_VMWARE</span><span class=cB0>:
+<a name="l15"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l31">IsDotC</a></span><span class=cB7>(</span><span class=cB0>iso_filename</span><span class=cB7>)</span><span class=cB0>)
+<a name="l16"></a></span><span class=cB6>&quot;</span><span class=cB0>
+<a name="l17"></a></span><span class=cB6>Click CDROM Icon in bottom-right border of VMware window.</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB6>Click \&quot;Settings\&quot;.</span><span class=cB0>
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB6>Set ISO image to \&quot;%s\&quot;.</span><span class=cB0>
+<a name="l22"></a></span><span class=cB6>When browsing, change the file mask from \&quot;*.iso\&quot; to \&quot;All Files\&quot;.</span><span class=cB0>
+<a name="l23"></a>
+<a name="l24"></a></span><span class=cB6>&quot;</span><span class=cB0>,iso_filename;
+<a name="l25"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l26"></a></span><span class=cB6>&quot;</span><span class=cB0>
+<a name="l27"></a></span><span class=cB6>Click CDROM Icon in bottom-right border of VMware window.</span><span class=cB0>
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB6>Click \&quot;Settings\&quot;.</span><span class=cB0>
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB6>Set ISO image to \&quot;%s\&quot;.</span><span class=cB0>
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB6>&quot;</span><span class=cB0>,iso_filename;
+<a name="l34"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l35"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>VM_QEMU</span><span class=cB0>:
+<a name="l36"></a></span><span class=cB6>&quot;</span><span class=cB0>
+<a name="l37"></a></span><span class=cB6>Change to QEMU monitor using &lt;CTRL-ALT-2&gt;</span><span class=cB0>
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB6>Get the CDROM designation.</span><span class=cB0>
+<a name="l40"></a>
+<a name="l41"></a>        </span><span class=cB6>&gt;info block</span><span class=cB0>
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB6>Use the designation.</span><span class=cB0>
+<a name="l44"></a>
+<a name="l45"></a>        </span><span class=cB6>&gt;eject ide1-cd0</span><span class=cB0>
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB6>Use the designation.</span><span class=cB0>
+<a name="l48"></a>
+<a name="l49"></a>        </span><span class=cB6>&gt;change ide1-cd0 %s</span><span class=cB0>
+<a name="l50"></a>
+<a name="l51"></a></span><span class=cB6>Change back to QEMU using &lt;CTRL-ALT-1&gt;</span><span class=cB0>
+<a name="l52"></a>
+<a name="l53"></a></span><span class=cB6>&quot;</span><span class=cB0>,iso_filename;
+<a name="l54"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l55"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l56"></a></span><span class=cB6>&quot;</span><span class=cB0>
+<a name="l57"></a></span><span class=cB6>Place the CDDVD %s in the drive.</span><span class=cB0>
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB6>&quot;</span><span class=cB0>,iso_filename;
+<a name="l60"></a>    }
+<a name="l61"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>!=</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0>) {
+<a name="l62"></a>      </span><span class=cB6>&quot;&gt;DskChg('T');\n\n&quot;</span><span class=cB0>;
+<a name="l63"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l237">DskChg</a></span><span class=cB0>(</span><span class=cB6>'T'</span><span class=cB0>);
+<a name="l64"></a>      res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l65"></a>    }
+<a name="l66"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l67"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45">PutExcept</a></span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>;
+<a name="l69"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l70"></a>}
+</span></div></pre></body>
+</html>

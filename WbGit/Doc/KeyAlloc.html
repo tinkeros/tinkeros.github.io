@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB8{color:#555555;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                <h1><center>Key Allocations</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>See </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/Char.html#l1"><span class=cB4>Char</span></a><span class=cB0> for definition of scan codes.
+<a name="l4"></a>
+<a name="l5"></a>See </span><span class=cB9><u>Key Map</u></span><span class=cB0> for a detailed list of key commands.
+<a name="l6"></a>
+<a name="l7"></a>When you are at the cmd line, editing documents, browsing documentation and 
+<a name="l8"></a>help, entering items in forms or in menu's, the </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1411"><span class=cB4>DolDoc</span></a><span class=cB0> editor handles keys.  It 
+<a name="l9"></a>allows you to define your own key hndlrs in a </span><a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l11"><span class=cB4>MyPutKey</span></a><span class=cB0>() function.  If you 
+<a name="l10"></a>choose, you can catch keys, overriding the default hndlrs.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutKey.html#l3"><span class=cB4>DocPutKey</span></a><span class=cB0>().  
+<a name="l11"></a>The following is an overview of key allocations.
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB2>&lt;ALT-keys&gt;</span><span class=cB0> and </span><span class=cB2>&lt;ALT-SHIFT-keys&gt;</span><span class=cB0>  Free for user configurations in your </span><a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l11"><span class=cB4>MyPutKey</span></a><span class=cB0>() 
+<a name="l14"></a>hndlr, except for </span><span class=cB2>ALT-BACKSPACE</span><span class=cB0> (undo).  There are a few examples pre-defined, 
+<a name="l15"></a>but you can change them if you wish.
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB2>&lt;CTRL-ALT-keys&gt;</span><span class=cB0> and </span><span class=cB2>&lt;CTRL-ALT-SHIFT-keys&gt;</span><span class=cB0>  Handled at a system level, NOT by the </span><span class=cB4>
+<a name="l18"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1411"><span class=cB4>CDoc</span></a><span class=cB0> editor.  I reserve the right to alloc these, but in the mean time, you can 
+<a name="l19"></a>define your own hndlrs with </span><a href="http://tinkeros.github.io/WbGit/Kernel/KeyDev.html#l185"><span class=cB4>CtrlAltCBSet</span></a><span class=cB0>().  They operate either in a interrupt 
+<a name="l20"></a>environment or in the window mgr when it queues kbd msgs.  You can do </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302"><span class=cB4>Raw</span></a><span class=cB0>() 
+<a name="l21"></a>output.  </span><span class=cB2>&lt;CTRL-ALT-letter&gt;</span><span class=cB0> hndlrs take a scan_code as an arg.
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB2>&lt;CTRL-function key&gt;</span><span class=cB0>  Auto-completes local words.
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB2>&lt;CTRL-digit key&gt;</span><span class=cB0>  Auto-completes dictionary words.
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB2>&lt;CTRL-SHIFT-function key&gt;</span><span class=cB0>  Jumps to src code.
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB2>&lt;CTRL-SHIFT-digit key&gt;</span><span class=cB0>  Jumps to dictionary definition.
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB2>&lt;function keys&gt;</span><span class=cB0> and </span><span class=cB2>&lt;SHIFT-function keys&gt;</span><span class=cB0>  I reserve the right to alloc these, 
+<a name="l32"></a>but there are some free now.
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB2>&lt;CTRL-key&gt;</span><span class=cB0> and </span><span class=cB2>&lt;CTRL-SHIFT-key&gt;</span><span class=cB0>  I reserve the right to alloc to these.  There 
+<a name="l35"></a>are not many free.</span><span class=cB8>
+<a name="l36"></a></span><span class=cB0>
+<a name="l37"></a>See </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/KeyDev.html#l1"><span class=cB4>Keyboard Devices</span></a><span class=cB0>.
+</span></div></pre></body>
+</html>

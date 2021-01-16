@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>asm</span><span class=cB0> {
+<a name="l2"></a>PUT_DEC_U64::
+<a name="l3"></a></span><span class=cB2>//RAX is number to print in decimal.</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//Preserves all regs.</span><span class=cB0>
+<a name="l5"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l6"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l7"></a>        </span><span class=cB1>SUB</span><span class=cB0>     </span><span class=cBC>RSP</span><span class=cB0>,24          </span><span class=cB2>//24 char buffer on stack</span><span class=cB0>
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1821"><span class=cB4>Save regs</span></a><span class=cB2> which C code is free to clobber.  We don't have to for C callers,</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>//but this function will be nice for ASM callers if it saves all regs.</span><span class=cB0>
+<a name="l11"></a>        </span><span class=cB3>PUSH_C_REGS</span><span class=cB0>
+<a name="l12"></a>
+<a name="l13"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RSI</span><span class=cB0>           </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1849"><span class=cB4>REGG_LOCAL_VARS</span></a><span class=cB2>&amp;</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1850"><span class=cB4>REGG_LOCAL_NON_PTR_VARS</span></a><span class=cB0>
+<a name="l14"></a>        </span><span class=cB1>LEA</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>,-1[</span><span class=cBC>RBP</span><span class=cB0>]     </span><span class=cB2>//Load addr of end of buffer.</span><span class=cB0>
+<a name="l15"></a>                                </span><span class=cB2>//We picked RSI because of PUT_STR</span><span class=cB0>
+<a name="l16"></a>                                </span><span class=cB2>//We'll move bwd</span><span class=cB0>
+<a name="l17"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB1>U8</span><span class=cB0> [</span><span class=cBC>RSI</span><span class=cB0>],0      </span><span class=cB2>//Terminator</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a>        </span><span class=cB1>TEST</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>         </span><span class=cB2>//Special case -- zero</span><span class=cB0>
+<a name="l20"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@05
+<a name="l21"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l22"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB1>U8</span><span class=cB0> [</span><span class=cBC>RSI</span><span class=cB0>],</span><span class=cB6>'0'</span><span class=cB0>
+<a name="l23"></a>        </span><span class=cB1>JMP</span><span class=cB0>     @@15
+<a name="l24"></a>
+<a name="l25"></a>@@05:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBX</span><span class=cB0>,10          </span><span class=cB2>//Divides by 10</span><span class=cB0>
+<a name="l26"></a>
+<a name="l27"></a>@@10:   </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cBC>RDX</span><span class=cB0>
+<a name="l28"></a>        </span><span class=cB1>DIV</span><span class=cB0>     </span><span class=cBC>RBX</span><span class=cB0>             </span><span class=cB2>//RAX=(RDX:RAX)/RBX with remainder in RDX</span><span class=cB0>
+<a name="l29"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cB6>'0'</span><span class=cB0>
+<a name="l30"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB1>U8</span><span class=cB0> [</span><span class=cBC>RSI</span><span class=cB0>],</span><span class=cBC>DL</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB1>TEST</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@10
+<a name="l34"></a>
+<a name="l35"></a>@@15:   </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>PUT_STR</span><span class=cB0>
+<a name="l36"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l37"></a>        </span><span class=cB3>POP_C_REGS</span><span class=cB0>
+<a name="l38"></a>        </span><span class=cB1>LEAVE</span><span class=cB0>
+<a name="l39"></a>        </span><span class=cB1>RET</span><span class=cB0>
+<a name="l40"></a>
+<a name="l41"></a>_DO_IT::        </span><span class=cB2>//The convention is C-callable routines have underscores.</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,122333221
+<a name="l43"></a>        </span><span class=cB1>CALL</span><span class=cB0>    PUT_DEC_U64
+<a name="l44"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>
+<a name="l45"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>PUT_CHARS</span><span class=cB0>
+<a name="l46"></a>        </span><span class=cB1>RET</span><span class=cB0>
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB5>Call</span><span class=cB0>(_DO_IT);
+</span></div></pre></body>
+</html>

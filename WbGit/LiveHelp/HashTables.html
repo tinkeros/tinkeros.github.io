@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                      <h1><center>Hash</center></h1></span><span class=cB0>
+<a name="l2"></a></span><span class=cBA>/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>
+<a name="l5"></a>
+<a name="l6"></a>
+<a name="l7"></a>
+<a name="l8"></a>
+<a name="l9"></a>
+<a name="l10"></a>
+<a name="l11"></a>
+<a name="l12"></a>
+<a name="l13"></a>
+<a name="l14"></a>
+<a name="l15"></a>
+<a name="l16"></a>
+<a name="l17"></a>
+<a name="l18"></a>
+<a name="l19"></a>
+<a name="l20"></a>
+<a name="l21"></a>
+<a name="l22"></a>
+<a name="l23"></a>
+<a name="l24"></a>
+<a name="l25"></a>
+<a name="l26"></a>
+<a name="l27"></a>
+<a name="l28"></a>
+<a name="l29"></a>There is a symbol (hash) table for each task.  When a sym is not found, the 
+<a name="l30"></a>parent task's sym table is checked.  All tasks chain back to the </span><span class=cB2>Adam</span><span class=cB0> task.
+<a name="l31"></a>
+<a name="l32"></a>TempleOS sym tables are implemented with an array of linked-lists.  A num is 
+<a name="l33"></a>generated from a string by </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l254"><span class=cB4>HashStr</span></a><span class=cB0>() to index into the array of linked-lists.  
+<a name="l34"></a>Multiple strings can generate the same num, so linked-lists are built.  Newer 
+<a name="l35"></a>entries overshadow older ones.
+<a name="l36"></a>
+<a name="l37"></a>There are various types of entries.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l730"><span class=cB4>Hash Entry Types</span></a><span class=cB0>.
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB5>Symbol Look-up</span><span class=cB0> (Used many places including the </span><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l499"><span class=cB4>JIT Compiler</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l19"><span class=cB4>Loader</span></a><span class=cB0>.)
+<a name="l40"></a>1) Symbol name is </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l4"><span class=cB4>hashed</span></a><span class=cB0> by adding and shifting the ASCII of all chars.
+<a name="l41"></a>2) </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l691"><span class=cB4>hash table</span></a><span class=cB0>-&gt;body[] array is indexed.
+<a name="l42"></a>3) Linked-lst is traversed until match of text and type of entry.
+<a name="l43"></a>4) If not found, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l691"><span class=cB4>hash table</span></a><span class=cB0>-&gt;next table is searched.
+<a name="l44"></a>
+<a name="l45"></a>Duplicate entries are allowed -- they overshadow old entries.
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB5>Address-to-Symbol Look-up</span><span class=cB0> (Slow because not important. We could use trees.)
+<a name="l48"></a>1) FunSeg Cache is </span><a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l114"><span class=cB4>scanned</span></a><span class=cB0>.
+<a name="l49"></a>2) Hash Tables are </span><a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l54"><span class=cB4>scanned</span></a><span class=cB0>.
+<a name="l50"></a>
+<a name="l51"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l683"><span class=cB4>CHash               </span></a><span class=cB0>Class </span><span class=cB2>class CHash</span><span class=cB4>
+<a name="l52"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l691"><span class=cB4>CHashTable          </span></a><span class=cB0>Class </span><span class=cB2>class CHashTable</span><span class=cB4>
+<a name="l53"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l262"><span class=cB4>HashAdd             </span></a><span class=cB0>Funct </span><span class=cB2>Add entry to hash table.</span><span class=cB4>
+<a name="l54"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelC.html#l412"><span class=cB4>HashAddAfter        </span></a><span class=cB0>Funct </span><span class=cB2>Add hash entry after entry.</span><span class=cB4>
+<a name="l55"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l260"><span class=cB4>HashBucketFind      </span></a><span class=cB0>Funct </span><span class=cB2>Find hash bucket.</span><span class=cB4>
+<a name="l56"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l328"><span class=cB4>HashDepthRep        </span></a><span class=cB0>Funct </span><span class=cB2>Hash table linked-list chain depth report.</span><span class=cB4>
+<a name="l57"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"><span class=cB4>HashFind            </span></a><span class=cB0>Funct </span><span class=cB2>Find string in hash table.</span><span class=cB4>
+<a name="l58"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l257"><span class=cB4>HashSingleTableFind </span></a><span class=cB0>Funct </span><span class=cB2>Find string in single hash table.</span><span class=cB4>
+<a name="l59"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l254"><span class=cB4>HashStr             </span></a><span class=cB0>Funct </span><span class=cB2>Hash a string.</span><span class=cB4>
+<a name="l60"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l50"><span class=cB4>HashTableNew        </span></a><span class=cB0>Funct </span><span class=cB2>New hash table, power-of-two in size.</span><span class=cB0>
+<a name="l61"></a>
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cB5>                                   <h1><center>Hash/Frame</center></h1></span><span class=cB0>
+<a name="l64"></a>If you require separate global vars for multiple instances of a routine, you can 
+<a name="l65"></a>use </span><span class=cB4>Frame</span><span class=cB0>s.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteMesh.html#l957"><span class=cB4>SpriteMeshEd</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbGit/Demo/Graphics/Pick3D.html#l1"><span class=cB4>::/Demo/Graphics/Pick3D.HC</span></a><span class=cB0> or </span><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l381"><span class=cB4>Noise</span></a><span class=cB0>().
+<a name="l66"></a>
+<a name="l67"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l215"><span class=cB4>FramePtr            </span></a><span class=cB0>Funct </span><span class=cB2>Find entry in task-&gt;hash_table, Return user_data.</span><span class=cB4>
+<a name="l68"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l225"><span class=cB4>FramePtrAdd         </span></a><span class=cB0>Funct </span><span class=cB2>Add named value to task-&gt;hash_table.</span><span class=cB4>
+<a name="l69"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l240"><span class=cB4>FramePtrDel         </span></a><span class=cB0>Funct </span><span class=cB2>Remove entry and delete.</span><span class=cB4>
+<a name="l70"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l230"><span class=cB4>FramePtrSet         </span></a><span class=cB0>Funct </span><span class=cB2>Find hash entry in task-&gt;hash_table. Change user_data0.</span><span class=cB0>
+<a name="l71"></a>
+<a name="l72"></a>
+<a name="l73"></a></span><span class=cB5>                                  <h1><center>Hash/System</center></h1></span><span class=cB4>
+<a name="l74"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l801"><span class=cB4>CHashAC             </span></a><span class=cB0>Class </span><span class=cB2>class CHashAC:CHash</span><span class=cB4>
+<a name="l75"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l881"><span class=cB4>CHashClass          </span></a><span class=cB0>Class </span><span class=cB2>class CHashClass:CHashSrcSym</span><span class=cB4>
+<a name="l76"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l872"><span class=cB4>CHashDefineStr      </span></a><span class=cB0>Class </span><span class=cB2>class CHashDefineStr:CHashSrcSym</span><span class=cB4>
+<a name="l77"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l807"><span class=cB4>CHashExport         </span></a><span class=cB0>Class </span><span class=cB2>class CHashExport:CHashSrcSym</span><span class=cB4>
+<a name="l78"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l904"><span class=cB4>CHashFun            </span></a><span class=cB0>Class </span><span class=cB2>class CHashFun:CHashClass</span><span class=cB4>
+<a name="l79"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l781"><span class=cB4>CHashGeneric        </span></a><span class=cB0>Class </span><span class=cB2>class CHashGeneric:CHash</span><span class=cB4>
+<a name="l80"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l921"><span class=cB4>CHashGlblVar        </span></a><span class=cB0>Class </span><span class=cB2>class CHashGlblVar:CHashSrcSym</span><span class=cB4>
+<a name="l81"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l812"><span class=cB4>CHashImport         </span></a><span class=cB0>Class </span><span class=cB2>class CHashImport:CHashSrcSym</span><span class=cB4>
+<a name="l82"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2005"><span class=cB4>CHashOpcode         </span></a><span class=cB0>Class </span><span class=cB2>class CHashOpcode:CHash</span><span class=cB4>
+<a name="l83"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l796"><span class=cB4>CHashReg            </span></a><span class=cB0>Class </span><span class=cB2>class CHashReg:CHash</span><span class=cB4>
+<a name="l84"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l772"><span class=cB4>CHashSrcSym         </span></a><span class=cB0>Class </span><span class=cB2>class CHashSrcSym:CHash</span><span class=cB4>
+<a name="l85"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l54"><span class=cB4>FunSegFind          </span></a><span class=cB0>Funct </span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/HashTables.html#l1"><span class=cB4>Hash</span></a><span class=cB2>.</span><span class=cB4>
+<a name="l86"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l206"><span class=cB4>HashDefineLstAdd    </span></a><span class=cB0>Funct </span><span class=cB2>Add define list to a hash table. See </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocInit.html#l23"><span class=cB4>::/Adam/DolDoc/DocInit.HC</span></a><span class=cB2>.</span><span class=cB4>
+<a name="l87"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l59"><span class=cB4>HashDel             </span></a><span class=cB0>Funct </span><span class=cB2>Free a std TempleOS system hash entry.</span><span class=cB4>
+<a name="l88"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/CHash.html#l1"><span class=cB4>HashEntrySize       </span></a><span class=cB0>Funct </span><span class=cB2>Logical size of a std system hash entry.</span><span class=cB4>
+<a name="l89"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/CHash.html#l33"><span class=cB4>HashEntrySize2      </span></a><span class=cB0>Funct </span><span class=cB2>Memory size of a std system hash entry.</span><span class=cB4>
+<a name="l90"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l140"><span class=cB4>HashGenericAdd      </span></a><span class=cB0>Funct </span><span class=cB2>Add any type to task hash_table, 3 user_data values.</span><span class=cB4>
+<a name="l91"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l185"><span class=cB4>HashLstAdd          </span></a><span class=cB0>Funct </span><span class=cB2>Add a list to a hash table.</span><span class=cB4>
+<a name="l92"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l170"><span class=cB4>HashPublic          </span></a><span class=cB0>Funct </span><span class=cB2>Mark a hash entry as public and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l154"><span class=cB4>HashSrcFileSet</span></a><span class=cB2>().</span><span class=cB4>
+<a name="l93"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l264"><span class=cB4>HashRemDel          </span></a><span class=cB0>Funct </span><span class=cB2>Remove hash entry and del. Instance must match.</span><span class=cB4>
+<a name="l94"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l90"><span class=cB4>HashTableDel        </span></a><span class=cB0>Funct </span><span class=cB2>Free std system hash table, calling </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l59"><span class=cB4>HashDel</span></a><span class=cB2>() on entries.</span><span class=cB4>
+<a name="l95"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l107"><span class=cB4>HashTablePurge      </span></a><span class=cB0>Funct </span><span class=cB2>Eliminate ExportSysSyms that have been usurped.</span><span class=cB4>
+<a name="l96"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/CHash.html#l72"><span class=cB4>HashTableSize2      </span></a><span class=cB0>Funct </span><span class=cB2>Memory size of std system hash table and all entries.</span><span class=cB4>
+<a name="l97"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l1"><span class=cB4>HashTypeNum         </span></a><span class=cB0>Funct </span><span class=cB2>Return bit num of hash type, limited to just types.</span><span class=cB4>
+<a name="l98"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l9"><span class=cB4>HashVal             </span></a><span class=cB0>Funct </span><span class=cB2>Returns most likely desired value.</span><span class=cB4>
+<a name="l99"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l372"><span class=cB4>MapFileLoad         </span></a><span class=cB0>Funct </span><span class=cB2>Load map file so we have src line info.</span><span class=cB4>
+<a name="l100"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l149"><span class=cB4>Who                 </span></a><span class=cB0>Funct </span><span class=cB2>Dump hash symbol table.</span><span class=cB4>
+<a name="l101"></a></span><a href="http://tinkeros.github.io/WbGit/Home/TOS/Who4_man2.html#l201"><span class=cB4>Who23               </span></a><span class=cB0>Funct </span><span class=cB2>Dump hash symbol table.</span><span class=cB4>
+<a name="l102"></a></span><a href="http://tinkeros.github.io/WbGit/Home/TOS/Who4_man.html#l175"><span class=cB4>Who3                </span></a><span class=cB0>Funct </span><span class=cB2>Dump hash symbol table.</span><span class=cB0>
+</span></div></pre></body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>class</span><span class=cB0> MyMass:</span><span class=cB9>CMass</span><span class=cB0>
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB1>F64</span><span class=cB0> radius;
+<a name="l4"></a>};
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>class</span><span class=cB0> MySpring:</span><span class=cB9>CSpring</span><span class=cB0>
+<a name="l7"></a>{
+<a name="l8"></a>};
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB9>CMathODE</span><span class=cB0> *ode=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>U0</span><span class=cB0> MyDerivative(</span><span class=cB9>CMathODE</span><span class=cB0> *ode,</span><span class=cB1>F64</span><span class=cB0>,</span><span class=cB9>COrder2D3</span><span class=cB0> *,</span><span class=cB9>COrder2D3</span><span class=cB0> *)
+<a name="l13"></a>{
+<a name="l14"></a>  MyMass *tmpm1,*tmpm2;
+<a name="l15"></a>
+<a name="l16"></a>  tmpm1=ode-&gt;next_mass;
+<a name="l17"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm1!=&amp;ode-&gt;next_mass) </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>    tmpm2=tmpm1-&gt;next;
+<a name="l19"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpm2!=&amp;ode-&gt;next_mass) {
+<a name="l20"></a>      tmpm2=tmpm2-&gt;next;
+<a name="l21"></a>    }
+<a name="l22"></a>    tmpm1=tmpm1-&gt;next;
+<a name="l23"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l24"></a>}
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l27"></a>{
+<a name="l28"></a>  ode=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l30">ODENew</a></span><span class=cB0>(0,1e-4,</span><span class=cB3>ODEF_HAS_MASSES</span><span class=cB0>);
+<a name="l29"></a>  ode-&gt;derive=&amp;MyDerivative;
+<a name="l30"></a>  ode-&gt;drag_v2=0.002;
+<a name="l31"></a>  ode-&gt;drag_v3=0.00001;
+<a name="l32"></a>  ode-&gt;acceleration_limit=5e3;
+<a name="l33"></a>
+<a name="l34"></a>  </span><span class=cB5>QueIns</span><span class=cB0>(ode,</span><span class=cB5>Fs</span><span class=cB0>-&gt;last_ode);
+<a name="l35"></a>}
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>U0</span><span class=cB0> CleanUp()
+<a name="l38"></a>{
+<a name="l39"></a>  </span><span class=cB5>QueRem</span><span class=cB0>(ode);
+<a name="l40"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l41">QueDel</a></span><span class=cB0>(&amp;ode-&gt;next_mass,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l41"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l41">QueDel</a></span><span class=cB0>(&amp;ode-&gt;next_spring,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l42"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l66">ODEDel</a></span><span class=cB0>(ode);
+<a name="l43"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                  <h1><center>Booting A PC</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>TempleOS only supports traditional </span><span class=cB2>BIOS</span><span class=cB0> booting, not the newer technique, </span><span class=cB2>UEFI</span><span class=cB0>.  
+<a name="l4"></a>This document describes </span><span class=cB2>BIOS</span><span class=cB0> booting.
+<a name="l5"></a>
+<a name="l6"></a>When you turn-on (power-up) a computer or you do a hardware reset, the computer 
+<a name="l7"></a>starts executing the </span><span class=cB2>BIOS</span><span class=cB0>.  Sometimes, you must change the </span><span class=cB2>BIOS</span><span class=cB0> boot order to 
+<a name="l8"></a>boot the device you want.
+<a name="l9"></a>
+<a name="l10"></a>The </span><span class=cB2>BIOS</span><span class=cB0> loads a boot sector from CD/DVD, hard disk or whatever.  The boot 
+<a name="l11"></a>sector runs in 16-bit real mode and often loads-in a second file that's bigger 
+<a name="l12"></a>if it can't be done by just one sector.  It's a safe bet that boot sectors are 
+<a name="l13"></a>hand-coded assembly language.  Most boot sectors use the </span><span class=cB2>BIOS</span><span class=cB0> to load-in the 
+<a name="l14"></a>next stage.
+<a name="l15"></a>
+<a name="l16"></a>Not only do boot sectors have a size limit, 512 bytes or 2048 bytes for CD/DVD, 
+<a name="l17"></a>the files they load have to fit within 640K because they run in 16-bit mode.  
+<a name="l18"></a>This means they usually can't just load the whole operating system and start it 
+<a name="l19"></a>running.  Some boot loaders, like Grub, have a capability of switching modes 
+<a name="l20"></a>before handing-off control to the operating system.  The operating system must 
+<a name="l21"></a>load the rest of itself.  With TempleOS, the </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>::/Kernel.BIN.C</span></a><span class=cB0> file is loaded by 
+<a name="l22"></a>the boot sector.  I try to put a minimum in the </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>Kernel Module</span></a><span class=cB0>, so that it will 
+<a name="l23"></a>always fit in 640K.  When Kernel.BIN runs, it switches to 32-bit mode, then, to 
+<a name="l24"></a>64-bit mode allowing access to more memory.  Then, it loads in the rest of 
+<a name="l25"></a>TempleOS by executing </span><a href="http://tinkeros.github.io/WbGit/StartOS.html#l1"><span class=cB4>::/StartOS.HC</span></a><span class=cB0>.
+<a name="l26"></a>
+<a name="l27"></a>All the boot related code for TempleOS is in the </span><span class=cB2>/Adam/Opt/Boot</span><span class=cB0> directory.
+<a name="l28"></a></span><span class=cB4>
+<a name="l29"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootDVD.html#l1"><span class=cB4>BootDVD.HC</span></a><span class=cB0>      CD/DVD boot sector.</span><span class=cB4>
+<a name="l30"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootDVDIns.html#l1"><span class=cB4>BootDVDIns.HC</span></a><span class=cB0>   Prep for CD/DVD install by creating </span><span class=cB2>/0000Boot/0000Kernel.BIN.C</span><span class=cB0>.
+<a name="l31"></a>If you are curious about CD/DVDs, see </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/DskISORedSea.html#l1"><span class=cB4>DskISORedSea.HC</span></a><span class=cB0>.  To make a custom 
+<a name="l32"></a>bootable CD/DVD, look here </span><a href="http://tinkeros.github.io/WbGit/Misc/DoDistro.html#l1"><span class=cB4>Bootable CD</span></a><span class=cB0>.
+<a name="l33"></a></span><span class=cB4>
+<a name="l34"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHD.html#l1"><span class=cB4>BootMHD.HC</span></a><span class=cB0>      Stage 1 Master HD boot loader.</span><span class=cB4>
+<a name="l35"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHD2.html#l1"><span class=cB4>BootMHD2.HC</span></a><span class=cB0>     Stage 2 Master HD boot loader.</span><span class=cB4>
+<a name="l36"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l1"><span class=cB4>BootMHDIns.HC</span></a><span class=cB0>   Installs Master HD boot loader.
+<a name="l37"></a></span><span class=cB2>BootMHD</span><span class=cB0> goes on block zero.  </span><span class=cB2>/0000Boot/BootMHD2.BIN.C</span><span class=cB0> is stored as a file in a 
+<a name="l38"></a>partition, risky and unusual, since most master boot loaders place stage 2 in a 
+<a name="l39"></a>gap that's not in any partition.  </span><span class=cB2>BootMHD2</span><span class=cB0> displays a menu and boots a 
+<a name="l40"></a>partition.
+<a name="l41"></a></span><span class=cB4>
+<a name="l42"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHD.html#l1"><span class=cB4>BootHD.HC</span></a><span class=cB0>       HD partition boot record.</span><span class=cB4>
+<a name="l43"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l1"><span class=cB4>BootHDIns.HC</span></a><span class=cB0>    Installs HD partition boot record.
+<a name="l44"></a></span><span class=cB2>BootHD</span><span class=cB0> is the boot record for a TempleOS partition.  Each partition has its own 
+<a name="l45"></a>partition boot record, the first block of the partition.
+<a name="l46"></a>
+<a name="l47"></a>My boot records don't access directories because that would make them too big 
+<a name="l48"></a>for one block and would make them depend on a file system layout.  Instead, they 
+<a name="l49"></a>get patched with the LBA, logical block addresses, to load files.  To update 
+<a name="l50"></a>with a new TempleOS kernel, you must create a </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>::/Kernel.BIN.C</span></a><span class=cB0> binary file and 
+<a name="l51"></a>patch the boot loader so it knows the LBA blocks to load.  Therefore, you 
+<a name="l52"></a>usually recompile the kernel and update the boot sector at the same time with  </span><span class=cB4>
+<a name="l53"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB0>().  </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l74"><span class=cB4>BootMHDIns</span></a><span class=cB0>() will install a master boot loader.
+<a name="l54"></a>
+<a name="l55"></a>With TempleOS, </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>::/Kernel.BIN.C</span></a><span class=cB0> loads </span><a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l1"><span class=cB4>::/Compiler/Compiler.BIN</span></a><span class=cB0> so it can work 
+<a name="l56"></a>with source code from then on.  It compiles start-up scripts beginning with </span><span class=cB4>
+<a name="l57"></a></span><a href="http://tinkeros.github.io/WbGit/StartOS.html#l1"><span class=cB4>::/StartOS.HC</span></a><span class=cB0> into the </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0>'s memory including the code in the </span><span class=cB2>/Adam</span><span class=cB0> and </span><span class=cB2>/H
+<a name="l58"></a>ome</span><span class=cB0> directories.
+<a name="l59"></a>
+<a name="l60"></a>It is possible to do a fast reboot without doing a hardware reset.  You might do 
+<a name="l61"></a>this when working on </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>::/Kernel.BIN.C</span></a><span class=cB0> or your start-up scripts when you want to 
+<a name="l62"></a>compile them effect.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootRAM.html#l33"><span class=cB4>BootRAM</span></a><span class=cB0>().
+<a name="l63"></a>
+<a name="l64"></a></span><span class=cBA>
+<a name="l65"></a>/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l66"></a>
+<a name="l67"></a>
+<a name="l68"></a>
+<a name="l69"></a>
+<a name="l70"></a>
+<a name="l71"></a>
+<a name="l72"></a>
+<a name="l73"></a>
+<a name="l74"></a>
+<a name="l75"></a>
+<a name="l76"></a>
+<a name="l77"></a>
+<a name="l78"></a>
+<a name="l79"></a>
+<a name="l80"></a>
+<a name="l81"></a>
+<a name="l82"></a>
+<a name="l83"></a>
+<a name="l84"></a>
+<a name="l85"></a>
+<a name="l86"></a>
+<a name="l87"></a>
+<a name="l88"></a>
+<a name="l89"></a>
+<a name="l90"></a>
+<a name="l91"></a>
+<a name="l92"></a>
+<a name="l93"></a>
+<a name="l94"></a>
+<a name="l95"></a>
+<a name="l96"></a>
+<a name="l97"></a>
+<a name="l98"></a>
+<a name="l99"></a>
+<a name="l100"></a>
+<a name="l101"></a>
+<a name="l102"></a>
+<a name="l103"></a>
+<a name="l104"></a>
+<a name="l105"></a>
+<a name="l106"></a>
+<a name="l107"></a>
+<a name="l108"></a>
+<a name="l109"></a>
+<a name="l110"></a>
+<a name="l111"></a>
+</span></div></pre></body>
+</html>

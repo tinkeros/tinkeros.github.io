@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                   <h1><center>Assembler</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>See </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l1"><span class=cB4>::/Compiler/OpCodes.DD</span></a><span class=cB0> for opcodes.  They're not standard.  Some invalid 
+<a name="l4"></a>insts are not flagged and some valid insts are not implemented. 16-bit asm 
+<a name="l5"></a>support is limited.
+<a name="l6"></a>
+<a name="l7"></a>Here are example inst formats:
+<a name="l8"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> </span><span class=cBC>FS</span><span class=cB0>:DISP[</span><span class=cBC>RSI</span><span class=cB0>+</span><span class=cBC>RDI</span><span class=cB0>*8]
+<a name="l9"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> [DISP]
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB2>$</span><span class=cB0> Current compiler output pos (inst ptr).  Even works in HolyC expressions.
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB2>$</span><span class=cB0> works in </span><span class=cB2>class</span><span class=cB0>es.
+<a name="l14"></a>  </span><span class=cB2>class MyFun
+<a name="l15"></a>  {
+<a name="l16"></a>    $=-16;
+<a name="l17"></a>    I64 local1;
+<a name="l18"></a>    I64 local2;
+<a name="l19"></a>    $=$+256;
+<a name="l20"></a>    I64 crazy;
+<a name="l21"></a>  };</span><span class=cB0>
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB4>LABEL</span><span class=cB2>::
+<a name="l24"></a></span><span class=cB0>  Defines an exported glbl label.
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB4>LABEL</span><span class=cB2>:
+<a name="l27"></a></span><span class=cB0>  Defines an non-exported glbl label.
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB2>@@</span><span class=cB4>LABEL</span><span class=cB2>:
+<a name="l30"></a></span><span class=cB0>  Defines a local label with scope valid between two global labels.
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB2>DU8</span><span class=cB0>, </span><span class=cB2>DU16</span><span class=cB0>, </span><span class=cB2>DU32</span><span class=cB0>, </span><span class=cB2>DU64</span><span class=cB0>
+<a name="l33"></a>  Define BYTE, WORD, DWORD or QWORD. Can be used with </span><span class=cB2>DUP()</span><span class=cB0> and ASCII strings.  
+<a name="l34"></a>For your convenience, the ASCII strings do not have terminating zeros.  Define 
+<a name="l35"></a>cmds must end with a semicolon.
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB2>USE16</span><span class=cB0>, </span><span class=cB2>USE32</span><span class=cB0>, </span><span class=cB2>USE64</span><span class=cB0>
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB2>IMPORT</span><span class=cB0> </span><span class=cB4>sym1name</span><span class=cB0>, </span><span class=cB4>sym2name</span><span class=cB0>;
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB2>LIST</span><span class=cB0>, </span><span class=cB2>NOLIST</span><span class=cB0>
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB2>ALIGN</span><span class=cB0> </span><span class=cB4>num</span><span class=cB0>, </span><span class=cB4>fill_byte</span><span class=cB0>
+<a name="l44"></a>  Align to </span><span class=cB4>num</span><span class=cB0> boundary and fill with </span><span class=cB4>fill_byte</span><span class=cB0>.
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB2>ORG</span><span class=cB0> </span><span class=cB4>num</span><span class=cB0>
+<a name="l47"></a>  Set code addr for JIT or set module </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l181"><span class=cB4>Load</span></a><span class=cB0>() addr -- has 16-byte </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l385"><span class=cB4>CBinFile</span></a><span class=cB0> header 
+<a name="l48"></a>and patch table trailing.
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB2>BINFILE</span><span class=cB4> &quot;FileName.BIN&quot;</span><span class=cB0>;
+<a name="l51"></a>
+<a name="l52"></a>See </span><a href="http://tinkeros.github.io/WbGit/Doc/GuideLines.html#l156"><span class=cB4>Assembly Language</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Demo/Asm/AsmAndC1.html#l1"><span class=cB4>::/Demo/Asm/AsmAndC1.HC</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Demo/Asm/AsmAndC2.html#l1"><span class=cB4>::/Demo/Asm/AsmAndC2.HC</span></a><span class=cB0> and </span><span class=cB4>
+<a name="l53"></a></span><a href="http://tinkeros.github.io/WbGit/Demo/Asm/AsmAndC3.html#l1"><span class=cB4>::/Demo/Asm/AsmAndC3.HC</span></a><span class=cB0>.
+</span></div></pre></body>
+</html>

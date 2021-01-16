@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//This example shows bttns.  Bttns return a menu val</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//unless you rig them to send macros.  Menu entries are</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//about the same as bttns, but don't have a border.</span><span class=cB0>
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB9>I64</span><span class=cB0> PopUpFreq()
+<a name="l6"></a>{</span><span class=cB2>//See also </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l197"><span class=cB4>PopUpRangeI64</span></a><span class=cB2>()</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l8"></a>  </span><span class=cB9>CDoc</span><span class=cB0> *doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l363">DocNew</a></span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l148">DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$TX+CX,\&quot;Set Freq\&quot;$\n&quot;</span><span class=cB0> </span><span class=cB2>//Centered text</span><span class=cB0>
+<a name="l10"></a>        </span><span class=cB6>&quot;$CM+LX,2,4$$BT,\&quot;100 Hz\&quot;,LE=100$&quot;</span><span class=cB0>
+<a name="l11"></a>        </span><span class=cB6>&quot;$CM+LX,18,0$$BT,\&quot;200 Hz\&quot;,LE=200$&quot;</span><span class=cB0>
+<a name="l12"></a>        </span><span class=cB6>&quot;$CM+LX,2,4$$BT,\&quot;400 Hz\&quot;,LE=400$&quot;</span><span class=cB0>
+<a name="l13"></a>        </span><span class=cB6>&quot;$CM+LX,18,0$$BT,\&quot;800 Hz\&quot;,LE=800$\n&quot;</span><span class=cB0>);
+<a name="l14"></a>  i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419">PopUpMenu</a></span><span class=cB0>(doc);
+<a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (i&lt;0) i=0; </span><span class=cB2>// &lt;SHIFT-ESC&gt;</span><span class=cB0>
+<a name="l16"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l311">DocDel</a></span><span class=cB0>(doc);
+<a name="l17"></a>  </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l18"></a>}
+<a name="l19"></a>
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> MU_NOTHING      0
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> MU_SET_FREQ     1
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> MU_SND_ON       2
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> MU_SND_OFF      3
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> MenuBttn()
+<a name="l26"></a>{
+<a name="l27"></a>  </span><span class=cB1>Bool</span><span class=cB0> done=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j=0,freq=100;
+<a name="l29"></a>  </span><span class=cB9>I64</span><span class=cB0> old_flags=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>-&gt;flags;
+<a name="l30"></a></span><span class=cB2>//This allows keyboard navigation to skip nonselible entries.</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>-&gt;flags|=</span><span class=cB3>DOCF_FORM</span><span class=cB0>;
+<a name="l32"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l34"></a></span><span class=cB2>//Use &lt;CTRL-l&gt; to generate cursor movement expressions and check &quot;Quote&quot;.</span><span class=cB0>
+<a name="l35"></a>    </span><span class=cB6>&quot;$CM+CX-RE,-4$Menu Demo\n\n&quot;</span><span class=cB0>;
+<a name="l36"></a>    </span><span class=cB6>&quot;$LM,8$&quot;</span><span class=cB0>; </span><span class=cB2>//Set left margin</span><span class=cB0>
+<a name="l37"></a></span><span class=cB2>//These are bttns that return a val from a menu selection.</span><span class=cB0>
+<a name="l38"></a>    </span><span class=cB1>if</span><span class=cB0> (!j)
+<a name="l39"></a>      </span><span class=cB6>&quot;\n$BT,\&quot;Snd On\&quot;,LE=MU_SND_ON$\n\n\n&quot;</span><span class=cB0>;
+<a name="l40"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l41"></a>      </span><span class=cB6>&quot;\n$BT,\&quot;Snd Off\&quot;,LE=MU_SND_OFF$\n\n\n&quot;</span><span class=cB0>;
+<a name="l42"></a>    </span><span class=cB6>&quot;\n$BT,\&quot;Set Freq\&quot;,LE=MU_SET_FREQ$\n\n\n&quot;</span><span class=cB0>
+<a name="l43"></a>          </span><span class=cB6>&quot;\n$BT,\&quot;Nothing\&quot;,LE=MU_NOTHING$\n\n\n&quot;</span><span class=cB0>
+<a name="l44"></a>          </span><span class=cB6>&quot;\n$BT,\&quot;Done\&quot;,LE=DOCM_CANCEL$\n\n\n&quot;</span><span class=cB0>;
+<a name="l45"></a>    i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l371">DocMenu</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>);
+<a name="l46"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l107">DocBottom</a></span><span class=cB0>;
+<a name="l47"></a>    </span><span class=cB1>switch</span><span class=cB0> (i) {
+<a name="l48"></a>      </span><span class=cB1>case</span><span class=cB0> MU_NOTHING:
+<a name="l49"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l50"></a>      </span><span class=cB1>case</span><span class=cB0> MU_SND_ON:
+<a name="l51"></a>        j=freq;
+<a name="l52"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l183">Freq2Ona</a></span><span class=cB7>(</span><span class=cB0>j</span><span class=cB7>)</span><span class=cB0>);
+<a name="l53"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l54"></a>      </span><span class=cB1>case</span><span class=cB0> MU_SND_OFF:
+<a name="l55"></a>        j=0;
+<a name="l56"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>;
+<a name="l57"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l58"></a>      </span><span class=cB1>case</span><span class=cB0> MU_SET_FREQ:
+<a name="l59"></a>        freq=PopUpFreq;
+<a name="l60"></a>        </span><span class=cB1>if</span><span class=cB0> (j) </span><span class=cB7>{</span><span class=cB0>
+<a name="l61"></a>          j=freq;
+<a name="l62"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l183">Freq2Ona</a></span><span class=cB7>(</span><span class=cB0>j</span><span class=cB7>)</span><span class=cB0>);
+<a name="l63"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l64"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l65"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l66"></a>        done=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l67"></a>    }
+<a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (!done);
+<a name="l69"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>-&gt;flags=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>-&gt;flags&amp;~</span><span class=cB3>DOCF_FORM</span><span class=cB0> |
+<a name="l70"></a>        old_flags &amp; </span><span class=cB3>DOCF_FORM</span><span class=cB0>;
+<a name="l71"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l72"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>;
+<a name="l73"></a>}
+<a name="l74"></a>
+<a name="l75"></a>MenuBttn;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Shows the </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l251"><span class=cB4>Carry</span></a><span class=cB2> function.  It holds the CPU carry flag.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB2>() Unassemble to make sure it is right.</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> BigCnt()
+<a name="l5"></a>{
+<a name="l6"></a>  </span><span class=cB9>U64</span><span class=cB0> lo=0,hi=0;
+<a name="l7"></a>  </span><span class=cB6>&quot;BigCnt\n&quot;</span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB1>while</span><span class=cB0> (hi&lt;0x10) </span><span class=cB7>{</span><span class=cB0>
+<a name="l9"></a>    lo+=1&lt;&lt;58;
+<a name="l10"></a>    hi+=</span><span class=cB5>Carry</span><span class=cB0>;
+<a name="l11"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>,hi,lo;
+<a name="l12"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l13"></a>}
+<a name="l14"></a>
+<a name="l15"></a>BigCnt;
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> BigShift()
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>U64</span><span class=cB0> lo=1,hi=0;
+<a name="l20"></a>  </span><span class=cB6>&quot;Big Shift\n&quot;</span><span class=cB0>;
+<a name="l21"></a>  </span><span class=cB1>while</span><span class=cB0> (lo||hi) </span><span class=cB7>{</span><span class=cB0>
+<a name="l22"></a>    hi&lt;&lt;=1;
+<a name="l23"></a>    lo&lt;&lt;=1;
+<a name="l24"></a>    hi+=</span><span class=cB5>Carry</span><span class=cB0>;
+<a name="l25"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>,hi,lo;
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a>BigShift;
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>U0</span><span class=cB0> Branch()
+<a name="l32"></a>{
+<a name="l33"></a>  </span><span class=cB9>U64</span><span class=cB0> i=0xFFCC3311,j;
+<a name="l34"></a>  </span><span class=cB6>'Branch\n'</span><span class=cB0>;
+<a name="l35"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;64;j++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    i&lt;&lt;=1;
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Carry</span><span class=cB0>)
+<a name="l38"></a>      </span><span class=cB6>'1'</span><span class=cB0>;
+<a name="l39"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l40"></a>      </span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l43"></a>}
+<a name="l44"></a>
+<a name="l45"></a>Branch;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> type_weights[OT_TYPES_NUM]={0,30,30,15,30,30,1,1,1};
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> mp_not_done_flags;
+<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> MPDrawHoreb(</span><span class=cB9>CDC</span><span class=cB0> *dc2)
+<a name="l5"></a>{
+<a name="l6"></a>  </span><span class=cB9>CTask</span><span class=cB0> *task=dc2-&gt;win_task;
+<a name="l7"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l168">DCAlias</a></span><span class=cB0>(dc2,task);
+<a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,dx,dy,dz,w=task-&gt;pix_width,h=task-&gt;pix_height+480-</span><span class=cB3>GR_HEIGHT</span><span class=cB0>,r[16],cx=w&gt;&gt;1;
+<a name="l9"></a>  </span><span class=cB1>F64</span><span class=cB0> s,m,a,x1,y1,x2,y2;
+<a name="l10"></a>  Obj *tmpo;
+<a name="l11"></a>
+<a name="l12"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l24">Mat4x4IdentEqu</a></span><span class=cB0>(r);
+<a name="l13"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l127">Mat4x4RotY</a></span><span class=cB0>(r,-theta);
+<a name="l14"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l113">Mat4x4RotX</a></span><span class=cB0>(r,77*</span><span class=cB3>pi</span><span class=cB0>/180);
+<a name="l15"></a>  </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB5>Gs</span><span class=cB0>-&gt;num;i&lt;O_OBJS_NUM+O_PEBBLES_NUM;i+=</span><span class=cBB>mp_cnt</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l16"></a>    tmpo=&amp;objs[i];
+<a name="l17"></a>    tmpo-&gt;x1=tmpo-&gt;x+vx; tmpo-&gt;y1=tmpo-&gt;y; tmpo-&gt;z1=tmpo-&gt;z+vz;
+<a name="l18"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6">Mat4x4MulXYZ</a></span><span class=cB0>(r,&amp;tmpo-&gt;x1,&amp;tmpo-&gt;y1,&amp;tmpo-&gt;z1);
+<a name="l19"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpo-&gt;type==OT_SHEEP ||
+<a name="l20"></a>          tmpo-&gt;type==OT_GOAT1 || tmpo-&gt;type==OT_GOAT2) {
+<a name="l21"></a>      dx=100*tmpo-&gt;dx; dy=100*tmpo-&gt;dy; dz=100*tmpo-&gt;dz;
+<a name="l22"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6">Mat4x4MulXYZ</a></span><span class=cB0>(r,&amp;dx,&amp;dy,&amp;dz);
+<a name="l23"></a>      </span><span class=cB1>if</span><span class=cB0> (dx&lt;0)
+<a name="l24"></a>        tmpo-&gt;sym=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l25"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l26"></a>        tmpo-&gt;sym=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l27"></a>    }
+<a name="l28"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpo-&gt;z1&gt;=0) {
+<a name="l29"></a>      s=100.0/(</span><span class=cB5>AbsI64</span><span class=cB7>(</span><span class=cB0>tmpo-&gt;z1</span><span class=cB7>)</span><span class=cB0>+50);
+<a name="l30"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpo-&gt;type) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l24">Mat4x4IdentEqu</a></span><span class=cB0>(dc-&gt;r);
+<a name="l32"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l155">Mat4x4Scale</a></span><span class=cB0>(dc-&gt;r,s*2);
+<a name="l33"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,dc-&gt;r);
+<a name="l34"></a>        dc-&gt;flags|=</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l35"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpo-&gt;sym) {
+<a name="l36"></a>          dc-&gt;flags|=</span><span class=cB3>DCF_SYMMETRY</span><span class=cB0>|</span><span class=cB3>DCF_JUST_MIRROR</span><span class=cB0>;
+<a name="l37"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l194">DCSymmetrySet</a></span><span class=cB0>(dc,s*tmpo-&gt;x1+cx,s*tmpo-&gt;y1+h,
+<a name="l38"></a>                s*tmpo-&gt;x1+cx,s*tmpo-&gt;y1+h+10);
+<a name="l39"></a>        }
+<a name="l40"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l245">Sprite3B</a></span><span class=cB0>(dc,s*tmpo-&gt;x1+cx,s*tmpo-&gt;y1+h,tmpo-&gt;z1,imgs[tmpo-&gt;type]);
+<a name="l41"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l42"></a>        dc-&gt;flags&amp;=~</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l43"></a>        dc-&gt;color=pebble_colors[tmpo-&gt;num&amp;3];
+<a name="l44"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l441">GrPlot3</a></span><span class=cB0>(dc,s*tmpo-&gt;x1+cx,s*tmpo-&gt;y1+h,tmpo-&gt;z1);
+<a name="l45"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a>      dc-&gt;flags&amp;=~(</span><span class=cB3>DCF_SYMMETRY</span><span class=cB0>|</span><span class=cB3>DCF_JUST_MIRROR</span><span class=cB0>);
+<a name="l47"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpo==&amp;objs[O_BURNING_BUSH]) </span><span class=cB7>{</span><span class=cB2>//draw burning bush</span><span class=cB0>
+<a name="l48"></a>        dc-&gt;x=s*tmpo-&gt;x1+cx;
+<a name="l49"></a>        dc-&gt;y=s*tmpo-&gt;y1+h;
+<a name="l50"></a>        dc-&gt;z=tmpo-&gt;z1;
+<a name="l51"></a>        dc-&gt;thick=1;
+<a name="l52"></a>        dc-&gt;color=</span><span class=cBB>winmgr</span><span class=cB0>.updates&amp;15;
+<a name="l53"></a>        </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;45;j++) {
+<a name="l54"></a>          m=</span><span class=cB5>Sqr</span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>); a=2*</span><span class=cB3>pi</span><span class=cB0>*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>;
+<a name="l55"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l11">P2R</a></span><span class=cB0>(&amp;x1,&amp;y1,m,a);
+<a name="l56"></a>          m=</span><span class=cB5>Sqr</span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>); a=2*</span><span class=cB3>pi</span><span class=cB0>*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>;
+<a name="l57"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l11">P2R</a></span><span class=cB0>(&amp;x2,&amp;y2,m,a);
+<a name="l58"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,20*x1,20*y1-25,0,20*x2,20*y2-25,0);
+<a name="l59"></a>        }
+<a name="l60"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>SqrI64</span><span class=cB7>(</span><span class=cB0>s*tmpo-&gt;x1</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB5>SqrI64</span><span class=cB7>(</span><span class=cB0>s*tmpo-&gt;y1</span><span class=cB7>)</span><span class=cB0>&lt;300*300)
+<a name="l61"></a>          horeb_done=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l62"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>    }
+<a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l65"></a>  dc-&gt;depth_buf=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l66"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l67"></a>  </span><span class=cB5>LBtr</span><span class=cB0>(&amp;mp_not_done_flags,</span><span class=cB5>Gs</span><span class=cB0>-&gt;num);
+<a name="l68"></a>}
+<a name="l69"></a>
+<a name="l70"></a></span><span class=cB1>U0</span><span class=cB0> DrawHoreb(</span><span class=cB9>CTask</span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l71"></a>{
+<a name="l72"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,y,z,w=task-&gt;pix_width,h=task-&gt;pix_height,r[16],cx=w&gt;&gt;1,cy=h&gt;&gt;1;
+<a name="l73"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l74"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l24">Mat4x4IdentEqu</a></span><span class=cB0>(r);
+<a name="l75"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l127">Mat4x4RotY</a></span><span class=cB0>(r,-theta);
+<a name="l76"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l113">Mat4x4RotX</a></span><span class=cB0>(r,77*</span><span class=cB3>pi</span><span class=cB0>/180);
+<a name="l77"></a></span><span class=cB2>//Sun</span><span class=cB0>
+<a name="l78"></a>  x=vx; y=0; z=1000000+vz;
+<a name="l79"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6">Mat4x4MulXYZ</a></span><span class=cB0>(r,&amp;x,&amp;y,&amp;z);
+<a name="l80"></a>  s=100.0/(</span><span class=cB5>AbsI64</span><span class=cB7>(</span><span class=cB0>z</span><span class=cB7>)</span><span class=cB0>+50);
+<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (y&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l82"></a>    dc-&gt;color=</span><span class=cB3>BROWN</span><span class=cB0>;
+<a name="l83"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l583">GrCircle</a></span><span class=cB0>(dc,s*x+cx,15,15);
+<a name="l84"></a>    dc-&gt;color=</span><span class=cB3>YELLOW</span><span class=cB0>;
+<a name="l85"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l239">GrFloodFill</a></span><span class=cB0>(dc,s*x+cx,15);
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l236">DCDepthBufAlloc</a></span><span class=cB0>(dc);
+<a name="l88"></a>  mp_not_done_flags=1&lt;&lt;</span><span class=cBB>mp_cnt</span><span class=cB0>-1;
+<a name="l89"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;</span><span class=cBB>mp_cnt</span><span class=cB0>;i++)
+<a name="l90"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221">JobQue</a></span><span class=cB0>(&amp;MPDrawHoreb,dc,i);
+<a name="l91"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
+<a name="l92"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l93"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130">Blink</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>    dc-&gt;color=</span><span class=cB3>LTRED</span><span class=cB0>;
+<a name="l95"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989">GrPrint</a></span><span class=cB0>(dc,cx-21*</span><span class=cB3>FONT_WIDTH</span><span class=cB0>/2,cy-</span><span class=cB3>FONT_HEIGHT</span><span class=cB0>/2,</span><span class=cB6>&quot;Find the Burning Bush.&quot;</span><span class=cB0>);
+<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>}
+</span></div></pre></body>
+</html>

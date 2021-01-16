@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Conway's Game of Life</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>CDC</span><span class=cB0> *dc[2]; </span><span class=cB2>//dbl buf</span><span class=cB0>
+<a name="l4"></a></span><span class=cB9>I64</span><span class=cB0> cur_dc,;
+<a name="l5"></a></span><span class=cB1>Bool</span><span class=cB0> restart;
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5>DrawIt</span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc2)
+<a name="l8"></a>{
+<a name="l9"></a>  dc[cur_dc]-&gt;flags|=</span><span class=cB3>DCF_NO_TRANSPARENTS</span><span class=cB0>;
+<a name="l10"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l71">GrBlot</a></span><span class=cB0>(dc2,0,0,dc[cur_dc]);
+<a name="l11"></a>}
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB1>U0</span><span class=cB0> AnimateTask(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l14"></a>{
+<a name="l15"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,x1,y1,cnt,next_dc;
+<a name="l16"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>    next_dc=cur_dc^1;
+<a name="l18"></a>start_over:
+<a name="l19"></a>    restart=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l20"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l128">DCClear</a></span><span class=cB0>(dc[next_dc]);
+<a name="l21"></a>    </span><span class=cB1>for</span><span class=cB0> (y=1;y&lt;</span><span class=cB5>Fs</span><span class=cB0>-&gt;parent_task-&gt;pix_height-1;y++) {
+<a name="l22"></a>      </span><span class=cB1>for</span><span class=cB0> (x=1;x&lt;</span><span class=cB5>Fs</span><span class=cB0>-&gt;parent_task-&gt;pix_width-1;x++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l23"></a>        cnt=0;
+<a name="l24"></a>        </span><span class=cB1>for</span><span class=cB0> (y1=y-1;y1&lt;=y+1;y1++)
+<a name="l25"></a>          </span><span class=cB1>for</span><span class=cB0> (x1=x-1;x1&lt;=x+1;x1++)
+<a name="l26"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l111">GrPeek</a></span><span class=cB7>(</span><span class=cB0>dc[cur_dc],x1,y1</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB3>GREEN</span><span class=cB0>)
+<a name="l27"></a>              cnt++;
+<a name="l28"></a>        </span><span class=cB1>if</span><span class=cB0> (restart) </span><span class=cB1>goto</span><span class=cB0> start_over;
+<a name="l29"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l111">GrPeek</a></span><span class=cB7>(</span><span class=cB0>dc[cur_dc],x,y</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB3>GREEN</span><span class=cB0>) {
+<a name="l30"></a>          </span><span class=cB1>if</span><span class=cB0> (cnt==3) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>            dc[next_dc]-&gt;color=</span><span class=cB3>GREEN</span><span class=cB0>;
+<a name="l32"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l51">GrPlot</a></span><span class=cB0>(dc[next_dc],x,y);
+<a name="l33"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>        } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l35"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>  if (cnt==3) {//Use this for the classic rules</span><span class=cB0>
+<a name="l36"></a>          </span><span class=cB1>if</span><span class=cB0> (cnt==2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>            dc[next_dc]-&gt;color=</span><span class=cB3>GREEN</span><span class=cB0>;
+<a name="l38"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l51">GrPlot</a></span><span class=cB0>(dc[next_dc],x,y);
+<a name="l39"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l40"></a>        }
+<a name="l41"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l43"></a>    }
+<a name="l44"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(50);
+<a name="l45"></a>    cur_dc=next_dc;
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> Life()
+<a name="l50"></a>{
+<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> msg_code,cnt,x1,y1,x2,y2,arg1,arg2;
+<a name="l52"></a>
+<a name="l53"></a>  dc[0]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l186">DCNew</a></span><span class=cB0>(</span><span class=cB3>GR_WIDTH</span><span class=cB0>,</span><span class=cB3>GR_HEIGHT</span><span class=cB0>);
+<a name="l54"></a>  dc[1]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l186">DCNew</a></span><span class=cB0>(</span><span class=cB3>GR_WIDTH</span><span class=cB0>,</span><span class=cB3>GR_HEIGHT</span><span class=cB0>);
+<a name="l55"></a>  cur_dc=0;
+<a name="l56"></a>  restart=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l57"></a>
+<a name="l58"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l59"></a>  </span><span class=cB5>AutoComplete</span><span class=cB0>;
+<a name="l60"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l521">WinBorder</a></span><span class=cB0>;
+<a name="l61"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l507">WinMax</a></span><span class=cB0>;
+<a name="l62"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l63"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>;
+<a name="l64"></a>
+<a name="l65"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;animate_task=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246">Spawn</a></span><span class=cB0>(&amp;AnimateTask,</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB6>&quot;Animate&quot;</span><span class=cB0>,,</span><span class=cB5>Fs</span><span class=cB0>);
+<a name="l66"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;</span><span class=cB5>DrawIt</span><span class=cB0>;
+<a name="l67"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;win_inhibit=</span><span class=cB3>WIG_TASK_DFT</span><span class=cB0>-</span><span class=cB3>WIF_SELF_FOCUS</span><span class=cB0>-</span><span class=cB3>WIF_SELF_BORDER</span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>    msg_code=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l95">GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,1&lt;&lt;</span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0>+1&lt;&lt;</span><span class=cB3>MSG_MS_L_DOWN</span><span class=cB0>);
+<a name="l70"></a>    </span><span class=cB1>switch</span><span class=cB0> (msg_code) {
+<a name="l71"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>MSG_MS_L_DOWN</span><span class=cB0>:
+<a name="l72"></a>        x1=arg1; y1=arg2;
+<a name="l73"></a>        x2=arg1; y2=arg2;
+<a name="l74"></a>        cnt=0;
+<a name="l75"></a>        </span><span class=cB1>while</span><span class=cB0> (msg_code!=</span><span class=cB3>MSG_MS_L_UP</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>          restart=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l77"></a>          dc[cur_dc]-&gt;color=</span><span class=cB3>GREEN</span><span class=cB0>;
+<a name="l78"></a>          dc[cur_dc]-&gt;thick=0.04*</span><span class=cBB>ms</span><span class=cB0>.speed;
+<a name="l79"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc[cur_dc],x1,y1,0,x2,y2,0);
+<a name="l80"></a>          restart=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l81"></a>          msg_code=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l95">GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,1&lt;&lt;</span><span class=cB3>MSG_MS_L_UP</span><span class=cB0>+1&lt;&lt;</span><span class=cB3>MSG_MS_MOVE</span><span class=cB0>);
+<a name="l82"></a>          x1=x2; y1=y2;
+<a name="l83"></a>          x2=arg1; y2=arg2;
+<a name="l84"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l85"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc[cur_dc],x1,y1,0,x2,y2,0);
+<a name="l86"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l87"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0>:
+<a name="l88"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l89"></a>    }
+<a name="l90"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (msg_code!=</span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0> || !arg1);
+<a name="l91"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l95">GetMsg</a></span><span class=cB0>(,,1&lt;&lt;</span><span class=cB3>MSG_KEY_UP</span><span class=cB0>);
+<a name="l92"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>;
+<a name="l93"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>;
+<a name="l94"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc[0]);
+<a name="l95"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc[1]);
+<a name="l96"></a>}
+<a name="l97"></a>
+<a name="l98"></a>Life;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;File/Cmd Line (Typically);Cmd Line (Typically)&quot;</span><span class=cB0>
+<a name="l2"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l113">DBlk</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> blk,</span><span class=cB1>Bool</span><span class=cB0> write=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l3"></a>{</span><span class=cB2>//Dump disk block. Optionally, write.</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//If you set write to TRUE, the block will</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB2>//be written when you press &lt;ESC&gt;.</span><span class=cB0>
+<a name="l6"></a>  </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Dsk/DskRaw.html#l1"><span class=cB4>::/Demo/Dsk/DskRaw.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(</span><span class=cB3>BLK_SIZE</span><span class=cB0>);
+<a name="l8"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l31">BlkRead</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv,buf,blk,1);
+<a name="l9"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l325">DocD</a></span><span class=cB0>(buf,</span><span class=cB3>BLK_SIZE</span><span class=cB0>);
+<a name="l10"></a>  </span><span class=cB1>if</span><span class=cB0> (write)
+<a name="l11"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l12"></a>    </span><span class=cB6>&quot;Edit and press &lt;ESC&gt; to write or &lt;SHIFT-ESC&gt;\n&quot;</span><span class=cB0>;
+<a name="l13"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3">View</a></span><span class=cB0>)
+<a name="l14"></a>    {
+<a name="l15"></a>      </span><span class=cB6>&quot;Write\n&quot;</span><span class=cB0>;
+<a name="l16"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l71">BlkWrite</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv,buf,blk,1);
+<a name="l17"></a>    }
+<a name="l18"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB1>return</span><span class=cB0> buf;
+<a name="l20"></a>}
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l114">DClus</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB1>Bool</span><span class=cB0> write=</span><span class=cB3>FALSE</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> num=0)
+<a name="l23"></a>{</span><span class=cB2>//Dump disk clus. Optionally, write.</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>//If you set write to TRUE, the clus will</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB2>//be written when you press &lt;ESC&gt;.</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Dsk/DskRaw.html#l1"><span class=cB4>::/Demo/Dsk/DskRaw.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB2>//Do </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l108"><span class=cB4>Dir</span></a><span class=cB2>(&quot;*&quot;,TRUE); to get clus numbers of files.</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv-&gt;spc&lt;&lt;</span><span class=cB3>BLK_SIZE_BITS</span><span class=cB0>);
+<a name="l29"></a>  c=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1">ClusNumNext</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv,c,num);
+<a name="l30"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96">ClusRead</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv,buf,c,1);
+<a name="l31"></a>  </span><span class=cB6>&quot;Clus:%X\n&quot;</span><span class=cB0>
+<a name="l32"></a>  ,c;
+<a name="l33"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l325">DocD</a></span><span class=cB0>(buf,</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv-&gt;spc&lt;&lt;</span><span class=cB3>BLK_SIZE_BITS</span><span class=cB0>);
+<a name="l34"></a>  </span><span class=cB1>if</span><span class=cB0> (write)
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    </span><span class=cB6>&quot;Edit and press &lt;ESC&gt; to write or &lt;SHIFT-ESC&gt;\n&quot;</span><span class=cB0>;
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3">View</a></span><span class=cB0>)
+<a name="l38"></a>    {
+<a name="l39"></a>      </span><span class=cB6>&quot;Write\n&quot;</span><span class=cB0>;
+<a name="l40"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142">ClusWrite</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;cur_dv,buf,c,1);
+<a name="l41"></a>    }
+<a name="l42"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB1>return</span><span class=cB0> buf;
+<a name="l44"></a>}
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l115">Dump</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>Bool</span><span class=cB0> write=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l47"></a>{</span><span class=cB2>//Dump file. Optionally, write.</span><span class=cB0>
+<a name="l48"></a></span><span class=cB2>//If you set write to TRUE, the file will</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB2>//be written when you press &lt;ESC&gt;.</span><span class=cB0>
+<a name="l50"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (buf=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1">FileRead</a></span><span class=cB7>(</span><span class=cB0>filename,&amp;size</span><span class=cB7>)</span><span class=cB0>)
+<a name="l53"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l54"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l325">DocD</a></span><span class=cB0>(buf,size);
+<a name="l55"></a>    </span><span class=cB1>if</span><span class=cB0> (write)
+<a name="l56"></a>    {
+<a name="l57"></a>      </span><span class=cB6>&quot;Edit and press &lt;ESC&gt; to write or &lt;SHIFT-ESC&gt;\n&quot;</span><span class=cB0>;
+<a name="l58"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3">View</a></span><span class=cB0>)
+<a name="l59"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l60"></a>        </span><span class=cB6>&quot;Write\n&quot;</span><span class=cB0>;
+<a name="l61"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95">FileWrite</a></span><span class=cB0>(filename,buf,size);
+<a name="l62"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>    }
+<a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB1>return</span><span class=cB0> buf;
+<a name="l66"></a>}
+<a name="l67"></a>
+</span></div></pre></body>
+</html>

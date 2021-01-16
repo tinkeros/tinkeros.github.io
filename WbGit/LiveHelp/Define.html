@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                     <h1><center>Define</center></h1></span><span class=cB0>
+<a name="l2"></a>TempleOS has a string indirection feature implemented with the same hash symbol 
+<a name="l3"></a>table entry as </span><span class=cB2>#define</span><span class=cB0> macros, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l732"><span class=cB4>HTT_DEFINE_STR</span></a><span class=cB0>.  Support for string lists is also 
+<a name="l4"></a>provided, but it's not very efficient, though, you can make a hash table with a 
+<a name="l5"></a>list using </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l206"><span class=cB4>HashDefineLstAdd</span></a><span class=cB0>().  See </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocInit.html#l23"><span class=cB4>::/Adam/DolDoc/DocInit.HC</span></a><span class=cB0>.
+<a name="l6"></a>
+<a name="l7"></a>If you have an </span><span class=cB2>@</span><span class=cB0> as the first char of a define list entry, it is an alias for 
+<a name="l8"></a>the prev entry num.
+<a name="l9"></a>
+<a name="l10"></a>Each task can load its own Define strings.  Remember, when a </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/HashTables.html#l1"><span class=cB4>Hash</span></a><span class=cB0> table is 
+<a name="l11"></a>searched for a string, if it is not found, the parent task's table is searched.
+<a name="l12"></a>
+<a name="l13"></a>The </span><a href="http://tinkeros.github.io/WbGit/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0> framework supports text that changes based on entries in the task's 
+<a name="l14"></a>symbol table.  Set a text entry with a </span><span class=cB2>D=</span><span class=cB0> arg, as in </span><span class=cB2>$TX,&quot;&quot;,D=&quot;DD_MYSTRING&quot;$</span><span class=cB0>.  
+<a name="l15"></a>See </span><a href="http://tinkeros.github.io/WbGit/Demo/DolDoc/DefineStr.html#l1"><span class=cB4>::/Demo/DolDoc/DefineStr.HC</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/ADefine.html#l1"><span class=cB4>::/Adam/ADefine.HC</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Doc/MemOverview.html#l1"><span class=cB4>::/Doc/MemOverview.DD</span></a><span class=cB0>.
+<a name="l16"></a>
+<a name="l17"></a>See </span><a href="http://tinkeros.github.io/WbGit/Demo/Define.html#l1"><span class=cB4>::/Demo/Define.HC</span></a><span class=cB0>.
+<a name="l18"></a>
+<a name="l19"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"><span class=cB4>Define              </span></a><span class=cB0>Funct </span><span class=cB2>Look for DEFINE named in hash table, return ptr string.</span><span class=cB4>
+<a name="l20"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l74"><span class=cB4>DefineCnt           </span></a><span class=cB0>Funct </span><span class=cB2>Return cnt of entries in define list.</span><span class=cB4>
+<a name="l21"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l1"><span class=cB4>DefineLoad          </span></a><span class=cB0>Funct </span><span class=cB2>Create DEFINE hash entry with string.</span><span class=cB4>
+<a name="l22"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"><span class=cB4>DefineLstLoad       </span></a><span class=cB0>Funct </span><span class=cB2>Create DEFINE list. Not efficient, but handy.</span><span class=cB4>
+<a name="l23"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l85"><span class=cB4>DefineMatch         </span></a><span class=cB0>Funct </span><span class=cB2>Find match for string in define list.</span><span class=cB4>
+<a name="l24"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l90"><span class=cB4>DefinePrint         </span></a><span class=cB0>Funct </span><span class=cB2>Create DEFINE entry with </span><a href="http://tinkeros.github.io/WbGit/Doc/Print.html#l1"><span class=cB4>Print</span></a><span class=cB2>()ed string.</span><span class=cB4>
+<a name="l25"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"><span class=cB4>DefineSub           </span></a><span class=cB0>Funct </span><span class=cB2>Return DEFINE list entry indexed by number.</span><span class=cB4>
+<a name="l26"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l206"><span class=cB4>HashDefineLstAdd    </span></a><span class=cB0>Funct </span><span class=cB2>Add define list to a hash table. See </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocInit.html#l23"><span class=cB4>::/Adam/DolDoc/DocInit.HC</span></a><span class=cB2>.</span><span class=cB0>
+</span></div></pre></body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1">BlkPoolAdd</a></span><span class=cB0>(</span><span class=cB9>CBlkPool</span><span class=cB0> *bp,</span><span class=cB9>CMemBlk</span><span class=cB0> *m,</span><span class=cB9>I64</span><span class=cB0> pags)
+<a name="l2"></a>{</span><span class=cB2>//Add mem to BlkPool.</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>sys_mem_init_flag</span><span class=cB0>)
+<a name="l4"></a>    </span><span class=cB5>MemSet</span><span class=cB0>(m,</span><span class=cBB>sys_mem_init_val</span><span class=cB0>,pags*</span><span class=cB3>MEM_PAG_SIZE</span><span class=cB0>);
+<a name="l5"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l6"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB5>LBts</span><span class=cB7>(</span><span class=cB0>&amp;bp-&gt;locked_flags,</span><span class=cB3>BPlf_LOCKED</span><span class=cB7>)</span><span class=cB0>)
+<a name="l8"></a>    </span><span class=cB1>PAUSE</span><span class=cB0>
+<a name="l9"></a>  m-&gt;next=bp-&gt;mem_free_lst;
+<a name="l10"></a>  m-&gt;pags=pags;
+<a name="l11"></a>  m-&gt;mb_signature=</span><span class=cB3>MBS_UNUSED_SIGNATURE_VAL</span><span class=cB0>;
+<a name="l12"></a>  bp-&gt;alloced_u8s+=pags&lt;&lt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>;
+<a name="l13"></a>  bp-&gt;mem_free_lst=m;
+<a name="l14"></a>  </span><span class=cB5>LBtr</span><span class=cB0>(&amp;bp-&gt;locked_flags,</span><span class=cB3>BPlf_LOCKED</span><span class=cB0>);
+<a name="l15"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l16"></a>}
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l18">BlkPoolInit</a></span><span class=cB0>(</span><span class=cB9>CBlkPool</span><span class=cB0> *bp,</span><span class=cB9>I64</span><span class=cB0> pags)
+<a name="l19"></a>{</span><span class=cB2>//Make mem chunk into a BlkPool.</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> num;
+<a name="l21"></a>  </span><span class=cB9>CMemBlk</span><span class=cB0> *m;
+<a name="l22"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(bp,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CBlkPool</span><span class=cB7>)</span><span class=cB0>);
+<a name="l23"></a>  m=(bp</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CBlkPool</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB3>MEM_PAG_SIZE</span><span class=cB0>-1)&amp;~(</span><span class=cB3>MEM_PAG_SIZE</span><span class=cB0>-1);
+<a name="l24"></a>  num=(bp</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+pags&lt;&lt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>-m</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>)&gt;&gt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>;
+<a name="l25"></a>  bp-&gt;alloced_u8s=(pags-num)&lt;&lt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>; </span><span class=cB2>//Compensate before num added.</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1">BlkPoolAdd</a></span><span class=cB0>(bp,m,num);
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>BlkPoolsInit</span><span class=cB0>()
+<a name="l30"></a>{
+<a name="l31"></a>  </span><span class=cB9>I64</span><span class=cB0> i,total,lo,hi,code_heap_limit;
+<a name="l32"></a>  </span><span class=cB9>CMemE820</span><span class=cB0> *m20=</span><span class=cBD>MEM_E820</span><span class=cB0>;
+<a name="l33"></a>  </span><span class=cB1>Bool</span><span class=cB0> first=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l34"></a>
+<a name="l35"></a>  total=</span><span class=cBD>BIOSTotalMem</span><span class=cB0>;
+<a name="l36"></a>
+<a name="l37"></a>  </span><span class=cB1>if</span><span class=cB0> (total&lt;=0x80000000)
+<a name="l38"></a>    code_heap_limit=total;
+<a name="l39"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (total&lt;=0x100000000)
+<a name="l40"></a>    code_heap_limit=total/4;
+<a name="l41"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l42"></a>    code_heap_limit=0x80000000;
+<a name="l43"></a>
+<a name="l44"></a>  i=code_heap_limit-</span><span class=cB3>SYS_16MEG_AREA_LIMIT</span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l195"><span class=cB4>RLf_16MEG_SYS_CODE_BP</span></a><span class=cB0>
+<a name="l45"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1">BlkPoolAdd</a></span><span class=cB0>(</span><span class=cBB>sys_code_bp</span><span class=cB0>,</span><span class=cB3>SYS_16MEG_AREA_LIMIT</span><span class=cB0>,i&gt;&gt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>);
+<a name="l46"></a>  </span><span class=cBB>mem_heap_limit</span><span class=cB0>=i+</span><span class=cB3>SYS_16MEG_AREA_LIMIT</span><span class=cB0>-1;
+<a name="l47"></a>
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (code_heap_limit&lt;total) </span><span class=cB7>{</span><span class=cB0>
+<a name="l49"></a>    </span><span class=cB1>while</span><span class=cB0> (m20-&gt;type) {
+<a name="l50"></a>      </span><span class=cB1>if</span><span class=cB0> (m20-&gt;type==1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>        lo=m20-&gt;base;
+<a name="l52"></a>        hi=m20-&gt;base+m20-&gt;len;
+<a name="l53"></a>        </span><span class=cB1>if</span><span class=cB0> (lo&lt;code_heap_limit) {
+<a name="l54"></a>          </span><span class=cB1>if</span><span class=cB0> (hi&gt;code_heap_limit)
+<a name="l55"></a>            lo=code_heap_limit;
+<a name="l56"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l57"></a>            hi=lo; </span><span class=cB2>//cancel</span><span class=cB0>
+<a name="l58"></a>        }
+<a name="l59"></a>        </span><span class=cB1>if</span><span class=cB0> (code_heap_limit&lt;=lo&lt;hi) {
+<a name="l60"></a>          </span><span class=cB1>if</span><span class=cB0> (first) </span><span class=cB7>{</span><span class=cB0>
+<a name="l61"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l18">BlkPoolInit</a></span><span class=cB0>(lo,</span><span class=cB7>(</span><span class=cB0>hi-lo</span><span class=cB7>)</span><span class=cB0>&gt;&gt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>);
+<a name="l62"></a>            </span><span class=cBB>sys_data_bp</span><span class=cB0>=lo;
+<a name="l63"></a>            </span><span class=cB5>Fs</span><span class=cB0>-&gt;data_heap=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/HeapCtrl.html#l1">HeapCtrlInit</a></span><span class=cB0>(,</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cBB>sys_data_bp</span><span class=cB0>);
+<a name="l64"></a>            first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l65"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l66"></a>            </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1">BlkPoolAdd</a></span><span class=cB0>(</span><span class=cBB>sys_data_bp</span><span class=cB0>,lo,</span><span class=cB7>(</span><span class=cB0>hi-lo</span><span class=cB7>)</span><span class=cB0>&gt;&gt;</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>);
+<a name="l67"></a>        }
+<a name="l68"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>      m20++;
+<a name="l70"></a>    }
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB5>LBts</span><span class=cB0>(&amp;</span><span class=cBB>sys_run_level</span><span class=cB0>,</span><span class=cB3>RLf_FULL_HEAPS</span><span class=cB0>);
+<a name="l73"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                 <h1><center>Print Fmt Strs</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>&lt;fmt_arg&gt; := </span><span class=cB2>%</span><span class=cB0>[</span><span class=cB2>-</span><span class=cB0>][</span><span class=cB2>0</span><span class=cB0>][&lt;width&gt;][</span><span class=cB2>.</span><span class=cB0>&lt;decimals&gt;][&lt;flags&gt;][</span><span class=cB2>h</span><span class=cB0>&lt;aux_fmt_num&gt;]&lt;fmt_code&gt;
+<a name="l4"></a>
+<a name="l5"></a>See </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l251"><span class=cB4>StrPrintJoin</span></a><span class=cB0>().
+<a name="l6"></a>
+<a name="l7"></a>&lt;flags&gt;:
+<a name="l8"></a>
+<a name="l9"></a>  </span><span class=cB2>'t'</span><span class=cB0> truncate to &lt;width&gt;.
+<a name="l10"></a>  </span><span class=cB2>','</span><span class=cB0> add commas every three digits or four nibbles.
+<a name="l11"></a>  </span><span class=cB2>'$'</span><span class=cB0> makes </span><span class=cB2>%Q</span><span class=cB0> convert </span><span class=cB2>'$'</span><span class=cB0> to </span><span class=cB2>&quot;\x24&quot;</span><span class=cB0>.
+<a name="l12"></a>  </span><span class=cB2>'/'</span><span class=cB0> makes </span><span class=cB2>%Q</span><span class=cB0> and </span><span class=cB2>%q</span><span class=cB0> convert </span><span class=cB2>'%'</span><span class=cB0> to </span><span class=cB2>&quot;%%&quot;</span><span class=cB0>.
+<a name="l13"></a>
+<a name="l14"></a>&lt;aux_fmt_num&gt;:
+<a name="l15"></a>
+<a name="l16"></a>  For </span><span class=cB2>&quot;%n&quot;</span><span class=cB0>, </span><span class=cB2>&quot;%d&quot;</span><span class=cB0> or </span><span class=cB2>&quot;%u&quot;</span><span class=cB0>, the &lt;aux_fmt_num&gt; causes thousands mode.  </span><span class=cB2>&quot;%h?n&quot;</span><span class=cB0> will 
+<a name="l17"></a>  pick a var exponent multiples of three unit, while </span><span class=cB2>&quot;%h-3n&quot;</span><span class=cB0> will display milli 
+<a name="l18"></a>  units or </span><span class=cB2>&quot;%h6n&quot;</span><span class=cB0> will display mega units.  The </span><span class=cB2>'k'</span><span class=cB0> flag is always on for </span><span class=cB2>&quot;%n&quot;</span><span class=cB0>.  
+<a name="l19"></a>  See </span><a href="http://tinkeros.github.io/WbGit/Demo/Print.html#l1"><span class=cB4>::/Demo/Print.HC</span></a><span class=cB0>.
+<a name="l20"></a>  
+<a name="l21"></a>For </span><span class=cB2>&quot;%c&quot;</span><span class=cB0> or </span><span class=cB2>&quot;%C&quot;</span><span class=cB0>, the &lt;aux_fmt_num&gt; repeats the char that many times.
+<a name="l22"></a>
+<a name="l23"></a>&lt;fmt_code&gt;:
+<a name="l24"></a>
+<a name="l25"></a>  </span><span class=cB2>&quot;%n&quot;</span><span class=cB0> floating point in engineering notation, exponents being multiples of 
+<a name="l26"></a>  three.  If it has a &lt;aux_fmt&gt; code, it will display scientific units letters.
+<a name="l27"></a>  
+<a name="l28"></a>  </span><span class=cB2>&quot;%S&quot;</span><span class=cB0> </span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"><span class=cB4>Define</span></a><span class=cB0>() entry.
+<a name="l29"></a>  
+<a name="l30"></a>  </span><span class=cB2>&quot;%C&quot;</span><span class=cB0> </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"><span class=cB4>ToUpper</span></a><span class=cB0>() character.
+<a name="l31"></a>  
+<a name="l32"></a>  </span><span class=cB2>&quot;%h25c&quot;,'\n';</span><span class=cB0> 25 new-lines.
+<a name="l33"></a>  
+<a name="l34"></a>  </span><span class=cB2>&quot;%h*c&quot;,25,'\n';</span><span class=cB0> 25 new-lines.
+<a name="l35"></a>  
+<a name="l36"></a>  </span><span class=cB2>&quot;%F&quot;</span><span class=cB0> text file by filename.
+<a name="l37"></a>  
+<a name="l38"></a>  </span><span class=cB2>&quot;%$F&quot;</span><span class=cB0> </span><a href="http://tinkeros.github.io/WbGit/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0> file in memory.
+<a name="l39"></a>  
+<a name="l40"></a>  </span><span class=cB2>&quot;%p&quot;</span><span class=cB0> ptr. 
+<a name="l41"></a>  
+<a name="l42"></a>  </span><span class=cB2>&quot;%,p&quot;</span><span class=cB0> ptr with no offset. 
+<a name="l43"></a>  
+<a name="l44"></a>  </span><span class=cB2>&quot;%P&quot;</span><span class=cB0> link to ptr.
+<a name="l45"></a>  
+<a name="l46"></a>  </span><span class=cB2>&quot;%,P&quot;</span><span class=cB0> link to ptr with no offset.
+<a name="l47"></a>  
+<a name="l48"></a>  </span><span class=cB2>&quot;%D&quot;</span><span class=cB0> date.  Pass a </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l187"><span class=cB4>CDate</span></a><span class=cB0>.
+<a name="l49"></a>  
+<a name="l50"></a>  </span><span class=cB2>&quot;%T&quot;</span><span class=cB0> time.  Pass a </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l187"><span class=cB4>CDate</span></a><span class=cB0>.
+<a name="l51"></a>  
+<a name="l52"></a>  </span><span class=cB2>&quot;%z&quot;</span><span class=cB0> sub_entry of an enumerated list of text entries.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l397"><span class=cB4>LstSub</span></a><span class=cB0>().  Pass 
+<a name="l53"></a>  sub_entry_num first, list second.
+<a name="l54"></a>  
+<a name="l55"></a>  </span><span class=cB2>&quot;%Z&quot;</span><span class=cB0> </span><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"><span class=cB4>DefineLstLoad</span></a><span class=cB0>() subentry.  Pass sub_entry_num first, define_name second.
+<a name="l56"></a>  
+<a name="l57"></a>  </span><span class=cB2>&quot;%Q&quot;</span><span class=cB0> convert &quot;\&quot; to &quot;\\&quot; and quote to backslash quote. (For use in creating 
+<a name="l58"></a>  strs in strs.)
+<a name="l59"></a>  
+<a name="l60"></a>  </span><span class=cB2>&quot;%q&quot;</span><span class=cB0> rev a </span><span class=cB2>&quot;%Q&quot;</span><span class=cB0>.
+<a name="l61"></a>
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cB5>                                  <h1><center>Print Family</center></h1></span><span class=cB0>
+<a name="l64"></a></span><span class=cB4>
+<a name="l65"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l954"><span class=cB4>MStrPrint</span></a><span class=cB0>(U8 *fmt,...) is like </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l932"><span class=cB4>StrPrint</span></a><span class=cB0>(U8 *dst,U8 *fmt,...) but it returns a </span><span class=cB4>
+<a name="l66"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>ated str.  It is vary handy because you don't have to worry about 
+<a name="l67"></a>overflow.
+<a name="l68"></a></span><span class=cB4>
+<a name="l69"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l937"><span class=cB4>CatPrint</span></a><span class=cB0>(U8 *_dst,U8 *fmt,...) concatenates a formated string.
+<a name="l70"></a></span><span class=cB4>
+<a name="l71"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l482"><span class=cB4>In</span></a><span class=cB0>(U8 *fmt,...) sends text to the current task's input buffer.</span><span class=cB4>
+<a name="l72"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l464"><span class=cB4>InStr</span></a><span class=cB0>(U8 *fmt,...) sends text of an </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l260"><span class=cB4>InFile</span></a><span class=cB0> to the keyboard stream of the current 
+<a name="l73"></a>TASK but can also do mouse cmds.
+<a name="l74"></a></span><span class=cB4>
+<a name="l75"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l445"><span class=cB4>XTalk</span></a><span class=cB0>(CTask *task,U8 *fmt,...) and text to another task's input buffer.</span><span class=cB4>
+<a name="l76"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l489"><span class=cB4>XTalkStr</span></a><span class=cB0>(CTask *task,U8 *fmt,...) sends text of an </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l260"><span class=cB4>InFile</span></a><span class=cB0> to the keyboard stream 
+<a name="l77"></a>of another TASK but can also do mouse cmds.
+<a name="l78"></a></span><span class=cB4>
+<a name="l79"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l148"><span class=cB4>DocPrint</span></a><span class=cB0>(CDoc *doc,U8 *fmt,...) sends text to a document.  You can buffer to a 
+<a name="l80"></a>Doc and save it, providing the functionality of </span><span class=cB2>fprintf</span><span class=cB0>.  See </span><span class=cB4>
+<a name="l81"></a></span><a href="http://tinkeros.github.io/WbGit/Demo/Dsk/FPrintF.html#l1"><span class=cB4>::/Demo/Dsk/FPrintF.HC</span></a><span class=cB0>.
+<a name="l82"></a></span><span class=cB4>
+<a name="l83"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l406"><span class=cB4>Adam</span></a><span class=cB0>(U8 *fmt,...) sends text to the </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> to be compiled and run.</span><span class=cB4>
+<a name="l84"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l423"><span class=cB4>AdamLog</span></a><span class=cB0>(U8 *fmt,...) and </span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l433"><span class=cB4>AdamErr</span></a><span class=cB0>(U8 *fmt,...) send text to the </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> to be 
+<a name="l85"></a>displayed.
+<a name="l86"></a></span><span class=cB4>
+<a name="l87"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"><span class=cB4>StreamPrint</span></a><span class=cB0>(U8 *fmt,...) sends text to the stream of code being compiled and 
+<a name="l88"></a>must reside in a </span><span class=cB2>#exe{}</span><span class=cB0> blk.
+<a name="l89"></a></span><span class=cB4>
+<a name="l90"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989"><span class=cB4>GrPrint</span></a><span class=cB0>(CDC *dc,I64 x,I64 y,U8 *fmt,...) and </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l998"><span class=cB4>GrVPrint</span></a><span class=cB0>() plots text in graphics 
+<a name="l91"></a>mode.
+<a name="l92"></a></span><span class=cB4>
+<a name="l93"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/GrTextBase.html#l321"><span class=cB4>TextPrint</span></a><span class=cB0>(CTask *task,I64 x,I64 y,I64 attr,U8 *fmt,...) plots to </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/TextBase.html#l1"><span class=cB4>gr.text_base</span></a><span class=cB0>.
+<a name="l94"></a></span><span class=cB4>
+<a name="l95"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l605"><span class=cB4>ExePrint</span></a><span class=cB0>(U8 *fmt,...) compiles and execute a string.  Note: It returns the res 
+<a name="l96"></a>of the last executed expression.
+<a name="l97"></a></span><span class=cB4>
+<a name="l98"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/ARegistry.html#l144"><span class=cB4>Once</span></a><span class=cB0>(U8 *fmt,...) Writes User code to </span><a href="http://tinkeros.github.io/WbGit/Home/Registry.html#l1"><span class=cB4>Registry</span></a><span class=cB0> to be executed next boot.
+<a name="l99"></a></span><span class=cB4>
+<a name="l100"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/ARegistry.html#l135"><span class=cB4>AOnce</span></a><span class=cB0>(U8 *fmt,...) Writes Adam code to </span><a href="http://tinkeros.github.io/WbGit/Home/Registry.html#l1"><span class=cB4>Registry</span></a><span class=cB0> to be executed next boot.
+<a name="l101"></a></span><span class=cB4>
+<a name="l102"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/InFile.html#l26"><span class=cB4>InPrint</span></a><span class=cB0>(I64 mS,U8 *fmt,...) </span><a href="http://tinkeros.github.io/WbGit/Kernel/KeyDev.html#l20"><span class=cB4>PutChars</span></a><span class=cB0>()s one at a time with a delay.
+<a name="l103"></a></span><span class=cB4>
+<a name="l104"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l217"><span class=cB4>RawPrint</span></a><span class=cB0>(I64 mS,U8 *fmt,...) sends direct to scrn memory, bypassing window 
+<a name="l105"></a>manager.
+<a name="l106"></a></span><span class=cB4>
+<a name="l107"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l445"><span class=cB4>User</span></a><span class=cB0>(U8 *fmt,...) Spawns a user and execute a string on start-up.
+<a name="l108"></a></span><span class=cB4>
+<a name="l109"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l397"><span class=cB4>PopUpPrint</span></a><span class=cB0>(U8 *fmt,...) compiles and execute a string in a pop-up win.  Note: It 
+<a name="l110"></a>returns the res of the last executed expression.</span><span class=cB4>
+<a name="l111"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l11"><span class=cB4>PopUpViewPrint</span></a><span class=cB0>(U8 *fmt,...) creates a pop-up window and views text.
+<a name="l112"></a>
+<a name="l113"></a><blink>Note:</blink> Use </span><span class=cB2>Print(&quot;%s&quot;,src)</span><span class=cB0> if you need an unmodified string.
+</span></div></pre></body>
+</html>

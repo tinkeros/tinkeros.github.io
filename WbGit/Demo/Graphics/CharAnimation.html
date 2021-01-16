@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U8</span><span class=cB0> *old_font=</span><span class=cBB>text</span><span class=cB0>.font;
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>// See </span><a href="http://tinkeros.github.io/WbGit/Kernel/FontStd.html#l1"><span class=cB4>::/Kernel/FontStd.HC</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Demo/ScrnCodes.html#l1"><span class=cB4>::/Demo/ScrnCodes.HC</span></a><span class=cB2>,</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Demo/ExtChars.html#l1"><span class=cB4>::/Demo/ExtChars.HC</span></a><span class=cB2>, and </span><a href="http://tinkeros.github.io/WbGit/Demo/Graphics/FontEd.html#l1"><span class=cB4>::/Demo/Graphics/FontEd.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB9>U64</span><span class=cB0> waves[4]={
+<a name="l7"></a>0x0011AA440011AA44,0x0022558800225588,
+<a name="l8"></a>0x0044AA110044AA11,0x0088552200885522};
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> AnimateEndCB()
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cBB>text</span><span class=cB0>.font=old_font;
+<a name="l13"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l1">Exit</a></span><span class=cB0>;
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> AnimateTask(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l19"></a>  </span><span class=cB9>U64</span><span class=cB0> *font=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(256*8);
+<a name="l20"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;task_end_cb=&amp;AnimateEndCB;
+<a name="l21"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(font,</span><span class=cBB>text</span><span class=cB0>.font,256*8);
+<a name="l22"></a>  </span><span class=cBB>text</span><span class=cB0>.font=font;
+<a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    font[</span><span class=cB3>CH_SPACE</span><span class=cB0>]=waves[i++&amp;0x3];
+<a name="l25"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(100);
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246">Spawn</a></span><span class=cB0>(&amp;AnimateTask,</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB6>&quot;Animate&quot;</span><span class=cB0>,,</span><span class=cB5>Fs</span><span class=cB0>);
+<a name="l30"></a></span><span class=cB5>TaskRep</span><span class=cB0>;
+</span></div></pre></body>
+</html>

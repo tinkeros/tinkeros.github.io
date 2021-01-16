@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Uses </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/FixedPoint.html#l1"><span class=cB4>fixed-point</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> CO_PERSON       1
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> CO_TENT 2
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>class</span><span class=cB0> Obj
+<a name="l7"></a>{
+<a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,z;
+<a name="l9"></a>  </span><span class=cB9>I64</span><span class=cB0> dx,dy,dz;
+<a name="l10"></a>  </span><span class=cB9>I64</span><span class=cB0> type;
+<a name="l11"></a>};
+<a name="l12"></a>
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> PEOPLE_NUM      1024
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> TENT_RATIO      40
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> TENTS_NUM       (PEOPLE_NUM/TENT_RATIO+1)
+<a name="l16"></a>
+<a name="l17"></a>
+<a name="l18"></a>
+<a name="l19"></a>
+<a name="l20"></a>
+<a name="l21"></a>
+<a name="l22"></a>        </span><span class=cBA>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l23"></a>
+<a name="l24"></a>
+<a name="l25"></a>
+<a name="l26"></a>
+<a name="l27"></a>
+<a name="l28"></a>        </span><span class=cBA>&lt;2&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>
+<a name="l31"></a>
+<a name="l32"></a>
+<a name="l33"></a>
+<a name="l34"></a>        </span><span class=cBA>&lt;3&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l35"></a>
+<a name="l36"></a>
+<a name="l37"></a>
+<a name="l38"></a>
+<a name="l39"></a>
+<a name="l40"></a>        </span><span class=cBA>&lt;4&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l41"></a>
+<a name="l42"></a>
+<a name="l43"></a>
+<a name="l44"></a>
+<a name="l45"></a>
+<a name="l46"></a>        </span><span class=cBA>&lt;5&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l47"></a>
+<a name="l48"></a>
+<a name="l49"></a>
+<a name="l50"></a>
+<a name="l51"></a>
+<a name="l52"></a>        </span><span class=cBA>&lt;6&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB1>U8</span><span class=cB0>      *right_imgs[4]={</span><span class=cBA>&lt;2&gt;</span><span class=cB0>,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,</span><span class=cBA>&lt;3&gt;</span><span class=cB0>,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>},
+<a name="l55"></a>        *left_imgs[4]={</span><span class=cBA>&lt;5&gt;</span><span class=cB0>,</span><span class=cBA>&lt;4&gt;</span><span class=cB0>,</span><span class=cBA>&lt;6&gt;</span><span class=cB0>,</span><span class=cBA>&lt;4&gt;</span><span class=cB0>};
+<a name="l56"></a>
+<a name="l57"></a>
+<a name="l58"></a>
+<a name="l59"></a>
+<a name="l60"></a>
+<a name="l61"></a>
+<a name="l62"></a>
+<a name="l63"></a>
+<a name="l64"></a>
+<a name="l65"></a>
+<a name="l66"></a>
+<a name="l67"></a>
+<a name="l68"></a>
+<a name="l69"></a>
+<a name="l70"></a>        </span><span class=cBA>&lt;7&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l71"></a>
+<a name="l72"></a></span><span class=cB1>U8</span><span class=cB0> *tent_img=</span><span class=cBA>&lt;7&gt;</span><span class=cB0>;
+<a name="l73"></a>
+<a name="l74"></a>
+<a name="l75"></a>        </span><span class=cBA>&lt;8&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l76"></a>
+<a name="l77"></a>
+<a name="l78"></a>
+<a name="l79"></a>
+<a name="l80"></a>
+<a name="l81"></a>
+<a name="l82"></a>
+<a name="l83"></a>
+<a name="l84"></a>
+<a name="l85"></a>
+<a name="l86"></a>
+<a name="l87"></a>
+<a name="l88"></a>
+<a name="l89"></a>
+<a name="l90"></a>
+<a name="l91"></a></span><span class=cBA>
+<a name="l92"></a>&lt;9&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0> </span><span class=cB2>//Pointer to sprite in </span><a href="http://tinkeros.github.io/WbGit/Mountain.html#l1"><span class=cB4>Mountain.HC</span></a><span class=cB2> file</span><span class=cB0>
+<a name="l93"></a>
+<a name="l94"></a></span><span class=cB9>I64</span><span class=cB0> num_objs;
+<a name="l95"></a>Obj objs[PEOPLE_NUM+TENTS_NUM];
+<a name="l96"></a>Obj camp_view_pt;
+<a name="l97"></a>
+<a name="l98"></a>#</span><span class=cB1>define</span><span class=cB0> CAMP_WIDTH      600
+<a name="l99"></a>#</span><span class=cB1>define</span><span class=cB0> CAMP_SCALE      300
+<a name="l100"></a>#</span><span class=cB1>define</span><span class=cB0> CAMP_Z_CLIP     10
+<a name="l101"></a>
+<a name="l102"></a></span><span class=cB1>U0</span><span class=cB0> CTransform(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>I64</span><span class=cB0> *_x,</span><span class=cB9>I64</span><span class=cB0> *_y,</span><span class=cB9>I64</span><span class=cB0> *_z)
+<a name="l103"></a>{
+<a name="l104"></a>  </span><span class=cB9>I64</span><span class=cB0> x=*_x-camp_view_pt.x,y=*_y-camp_view_pt.y,z=*_z-camp_view_pt.z;
+<a name="l105"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6">Mat4x4MulXYZ</a></span><span class=cB0>(dc-&gt;r,&amp;x,&amp;y,&amp;z);
+<a name="l106"></a>  </span><span class=cB1>if</span><span class=cB0> (z&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l107"></a>    x=x*-CAMP_SCALE/z;
+<a name="l108"></a>    y=y*-CAMP_SCALE/z;
+<a name="l109"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l110"></a>  *_x=dc-&gt;x+x;
+<a name="l111"></a>  *_y=dc-&gt;y-y;
+<a name="l112"></a>  *_z=dc-&gt;z-z;
+<a name="l113"></a>}
+<a name="l114"></a>
+<a name="l115"></a></span><span class=cB9>I64</span><span class=cB0> mp_not_done_flags;
+<a name="l116"></a></span><span class=cB9>I64</span><span class=cB0> cx,cy,*r1; </span><span class=cB2>//could put these in a record and pass in</span><span class=cB0>
+<a name="l117"></a></span><span class=cB1>F64</span><span class=cB0> frame;
+<a name="l118"></a></span><span class=cB9>I32</span><span class=cB0> *depth_buf;
+<a name="l119"></a></span><span class=cB1>U0</span><span class=cB0> MPDrawMeeting(</span><span class=cB9>CTask</span><span class=cB0> *task)
+<a name="l120"></a>{
+<a name="l121"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l168">DCAlias</a></span><span class=cB0>(</span><span class=cBB>gr</span><span class=cB0>.dc2,task);
+<a name="l122"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l123"></a>  </span><span class=cB1>U8</span><span class=cB0> *img,*img1,*img2;
+<a name="l124"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,y,z,*r2,*old_r=dc-&gt;r,
+<a name="l125"></a>        lo= </span><span class=cB5>Gs</span><span class=cB0>-&gt;num   *num_objs/</span><span class=cBB>mp_cnt</span><span class=cB0>,
+<a name="l126"></a>        hi=(</span><span class=cB5>Gs</span><span class=cB0>-&gt;num+1)*num_objs/</span><span class=cBB>mp_cnt</span><span class=cB0>;
+<a name="l127"></a>  dc-&gt;flags|=</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l128"></a>  dc-&gt;depth_buf=depth_buf;
+<a name="l129"></a>  dc-&gt;x=cx;
+<a name="l130"></a>  dc-&gt;y=cy;
+<a name="l131"></a>  dc-&gt;z=0;
+<a name="l132"></a>  dc-&gt;transform=&amp;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l15">DCTransform</a></span><span class=cB0>;
+<a name="l133"></a>  </span><span class=cB1>for</span><span class=cB0> (i=lo;i&lt;hi;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l134"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,r1);
+<a name="l135"></a>    dc-&gt;x=cx;
+<a name="l136"></a>    dc-&gt;y=cy;
+<a name="l137"></a>    dc-&gt;z=0;
+<a name="l138"></a>    x=objs[i].x.i32[1];
+<a name="l139"></a>    y=objs[i].y.i32[1];
+<a name="l140"></a>    z=objs[i].z.i32[1];
+<a name="l141"></a>    CTransform(dc,&amp;x,&amp;y,&amp;z);
+<a name="l142"></a>    </span><span class=cB1>if</span><span class=cB0> (z&gt;CAMP_Z_CLIP) {
+<a name="l143"></a>      s=0.5*</span><span class=cB5>ToF64</span><span class=cB0>(CAMP_SCALE)/z;
+<a name="l144"></a>      </span><span class=cB1>if</span><span class=cB0> (objs[i].type==CO_PERSON) </span><span class=cB7>{</span><span class=cB0>
+<a name="l145"></a>        </span><span class=cB1>if</span><span class=cB0> (objs[i].dx&gt;=0) {
+<a name="l146"></a>          img1=right_imgs[(i+</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>frame</span><span class=cB7>)</span><span class=cB0>)&amp;3];
+<a name="l147"></a>          img2=right_imgs[(i+</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>frame</span><span class=cB7>)</span><span class=cB0>+1)&amp;3];
+<a name="l148"></a>        } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l149"></a>          img1=left_imgs[(i+</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>frame</span><span class=cB7>)</span><span class=cB0>)&amp;3];
+<a name="l150"></a>          img2=left_imgs[(i+</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>frame</span><span class=cB7>)</span><span class=cB0>+1)&amp;3];
+<a name="l151"></a>        }
+<a name="l152"></a>        img=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(frame%1.0,img1,img2);
+<a name="l153"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l154"></a>        img=tent_img;
+<a name="l155"></a>
+<a name="l156"></a>      r2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l108">Mat4x4New</a></span><span class=cB0>(old_r);
+<a name="l157"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l155">Mat4x4Scale</a></span><span class=cB0>(r2,s);
+<a name="l158"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,r2);
+<a name="l159"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l245">Sprite3B</a></span><span class=cB0>(dc,x,y,z,img);
+<a name="l160"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(r2);
+<a name="l161"></a>      </span><span class=cB1>if</span><span class=cB0> (objs[i].type==CO_PERSON)
+<a name="l162"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(img);
+<a name="l163"></a>    }
+<a name="l164"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l165"></a>  dc-&gt;r=old_r;
+<a name="l166"></a>  dc-&gt;depth_buf=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l167"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l168"></a>  </span><span class=cB5>LBtr</span><span class=cB0>(&amp;mp_not_done_flags,</span><span class=cB5>Gs</span><span class=cB0>-&gt;num);
+<a name="l169"></a>}
+<a name="l170"></a>
+<a name="l171"></a></span><span class=cB1>U0</span><span class=cB0> DrawMeeting(</span><span class=cB9>CTask</span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l172"></a>{
+<a name="l173"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> calf=</span><span class=cB3>FALSE</span><span class=cB0>,determined=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l174"></a>
+<a name="l175"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,y,z,*r2,*old_r;
+<a name="l176"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l177"></a>
+<a name="l178"></a>  frame=4.0*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l9">Saw</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>,0.5);
+<a name="l179"></a>  cx=task-&gt;pix_width/2;
+<a name="l180"></a>  cy=task-&gt;pix_height/2;
+<a name="l181"></a>
+<a name="l182"></a>  camp_view_pt.x=0;
+<a name="l183"></a>  camp_view_pt.y=200-100*</span><span class=cB5>Sin</span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>);
+<a name="l184"></a>  camp_view_pt.z=225+100*</span><span class=cB5>Cos</span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>);
+<a name="l185"></a>
+<a name="l186"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l236">DCDepthBufAlloc</a></span><span class=cB0>(dc);
+<a name="l187"></a>  depth_buf=dc-&gt;depth_buf;
+<a name="l188"></a>  r1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l34">Mat4x4IdentNew</a></span><span class=cB0>(task);
+<a name="l189"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l113">Mat4x4RotX</a></span><span class=cB0>(r1,23.0*</span><span class=cB3>pi</span><span class=cB0>/180.0);
+<a name="l190"></a>  old_r=dc-&gt;r;
+<a name="l191"></a>
+<a name="l192"></a>  dc-&gt;transform=&amp;CTransform;
+<a name="l193"></a>  dc-&gt;x=cx;
+<a name="l194"></a>  dc-&gt;y=cy;
+<a name="l195"></a>  dc-&gt;z=0;
+<a name="l196"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,r1);
+<a name="l197"></a>
+<a name="l198"></a>  x=0;y=0;z=-16*CAMP_WIDTH;
+<a name="l199"></a>  dc-&gt;transform(dc,&amp;x,&amp;y,&amp;z);
+<a name="l200"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,0,y,0,</span><span class=cBA>&lt;9&gt;</span><span class=cB0>);
+<a name="l201"></a>  dc-&gt;flags|=</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l202"></a>
+<a name="l203"></a>  dc-&gt;color=</span><span class=cB3>LTGRAY</span><span class=cB0>;
+<a name="l204"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,-CAMP_WIDTH/2,0,0,CAMP_WIDTH/2,0,0,6);
+<a name="l205"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,-CAMP_WIDTH/2,0,-CAMP_WIDTH,CAMP_WIDTH/2,0,-CAMP_WIDTH,6);
+<a name="l206"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,-CAMP_WIDTH/2,0,0,-CAMP_WIDTH/2,0,-CAMP_WIDTH,6);
+<a name="l207"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,CAMP_WIDTH/2,0,0,CAMP_WIDTH/2,0,-CAMP_WIDTH,6);
+<a name="l208"></a>
+<a name="l209"></a>  dc-&gt;transform=&amp;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l15">DCTransform</a></span><span class=cB0>;
+<a name="l210"></a>
+<a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>%10&lt;5) </span><span class=cB7>{</span><span class=cB0>
+<a name="l212"></a>    calf=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l213"></a>    determined=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l214"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l215"></a>    </span><span class=cB1>if</span><span class=cB0> (!determined) {
+<a name="l216"></a>      determined=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l217"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l87">RandU16</a></span><span class=cB0>&lt;</span><span class=cB3>U16_MAX</span><span class=cB0>/2)
+<a name="l218"></a>        calf=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l219"></a>    }
+<a name="l220"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l221"></a>
+<a name="l222"></a>  </span><span class=cB1>if</span><span class=cB0> (calf) </span><span class=cB7>{</span><span class=cB0>
+<a name="l223"></a>    x=0;
+<a name="l224"></a>    y=0;
+<a name="l225"></a>    z=-CAMP_WIDTH/2;
+<a name="l226"></a>    CTransform(dc,&amp;x,&amp;y,&amp;z);
+<a name="l227"></a>    s=0.5*</span><span class=cB5>ToF64</span><span class=cB0>(CAMP_SCALE)/z;
+<a name="l228"></a>    r2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l108">Mat4x4New</a></span><span class=cB0>(old_r,task);
+<a name="l229"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l155">Mat4x4Scale</a></span><span class=cB0>(r2,s);
+<a name="l230"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,r2);
+<a name="l231"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l245">Sprite3B</a></span><span class=cB0>(dc,x,y,z,</span><span class=cBA>&lt;8&gt;</span><span class=cB0>);
+<a name="l232"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(r2);
+<a name="l233"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l234"></a>
+<a name="l235"></a>  mp_not_done_flags=1&lt;&lt;</span><span class=cBB>mp_cnt</span><span class=cB0>-1;
+<a name="l236"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;</span><span class=cBB>mp_cnt</span><span class=cB0>;i++)
+<a name="l237"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221">JobQue</a></span><span class=cB0>(&amp;MPDrawMeeting,task,i);
+<a name="l238"></a>
+<a name="l239"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,old_r);
+<a name="l240"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
+<a name="l241"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l242"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(r1);
+<a name="l243"></a>
+<a name="l244"></a>  </span><span class=cB1>if</span><span class=cB0> (calf &amp;&amp; </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130">Blink</a></span><span class=cB7>(</span><span class=cB0>4.0</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l245"></a>    dc-&gt;color=</span><span class=cB3>LTRED</span><span class=cB0>;
+<a name="l246"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989">GrPrint</a></span><span class=cB0>(dc,cx-</span><span class=cB7>(</span><span class=cB0>15*</span><span class=cB3>FONT_WIDTH</span><span class=cB7>)</span><span class=cB0>/2,cy-3*</span><span class=cB3>FONT_HEIGHT</span><span class=cB0>,</span><span class=cB6>&quot;!!Golden Calf!!&quot;</span><span class=cB0>);
+<a name="l247"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l248"></a>}
+<a name="l249"></a>
+<a name="l250"></a>#</span><span class=cB1>define</span><span class=cB0> SPEED_MAX       2&lt;&lt;32
+<a name="l251"></a>
+<a name="l252"></a></span><span class=cB1>U0</span><span class=cB0> AnimateTask(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l253"></a>{
+<a name="l254"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,z,dx,dz;
+<a name="l255"></a>  </span><span class=cB1>F64</span><span class=cB0> d;
+<a name="l256"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l257"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3">Refresh</a></span><span class=cB0>;
+<a name="l258"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num_objs;i++)
+<a name="l259"></a>      </span><span class=cB1>if</span><span class=cB0> (objs[i].type==CO_PERSON) {
+<a name="l260"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>%10&lt;5) </span><span class=cB7>{</span><span class=cB0>
+<a name="l261"></a>          objs[i].dx+=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l97">RandI32</a></span><span class=cB0>;
+<a name="l262"></a>          objs[i].dz+=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l97">RandI32</a></span><span class=cB0>;
+<a name="l263"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB2>//Form circle</span><span class=cB0>
+<a name="l264"></a>          x=CAMP_WIDTH/4*</span><span class=cB5>Cos</span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>1.0+1.0/TENT_RATIO</span><span class=cB7>)</span><span class=cB0>*i*</span><span class=cB3>pi</span><span class=cB0>*2/num_objs);
+<a name="l265"></a>          z=CAMP_WIDTH/4*</span><span class=cB5>Sin</span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>1.0+1.0/TENT_RATIO</span><span class=cB7>)</span><span class=cB0>*i*</span><span class=cB3>pi</span><span class=cB0>*2/num_objs)-CAMP_WIDTH/2;
+<a name="l266"></a>          dx=x-objs[i].x.i32[1];
+<a name="l267"></a>          dz=z-objs[i].z.i32[1];
+<a name="l268"></a>          d=</span><span class=cB5>Sqrt</span><span class=cB0>(</span><span class=cB5>SqrI64</span><span class=cB7>(</span><span class=cB0>dx</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB5>SqrI64</span><span class=cB7>(</span><span class=cB0>dz</span><span class=cB7>)</span><span class=cB0>);
+<a name="l269"></a>          objs[i].dx=SPEED_MAX*(dx/d);
+<a name="l270"></a>          objs[i].dz=SPEED_MAX*(dz/d);
+<a name="l271"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l272"></a>        objs[i].dx=</span><span class=cB5>ClampI64</span><span class=cB0>(objs[i].dx,-SPEED_MAX,SPEED_MAX);
+<a name="l273"></a>        objs[i].dy=</span><span class=cB5>ClampI64</span><span class=cB0>(objs[i].dy,-SPEED_MAX,SPEED_MAX);
+<a name="l274"></a>        objs[i].dz=</span><span class=cB5>ClampI64</span><span class=cB0>(objs[i].dz,-SPEED_MAX,SPEED_MAX);
+<a name="l275"></a>        objs[i].x+=objs[i].dx;
+<a name="l276"></a>        objs[i].y+=objs[i].dy;
+<a name="l277"></a>        objs[i].z+=objs[i].dz;
+<a name="l278"></a>        </span><span class=cB1>if</span><span class=cB0> (objs[i].x.i32[1]&lt;-CAMP_WIDTH&gt;&gt;1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l279"></a>          objs[i].x=-CAMP_WIDTH&gt;&gt;1&lt;&lt;32;
+<a name="l280"></a>          objs[i].dx=-objs[i].dx;
+<a name="l281"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l282"></a>        </span><span class=cB1>if</span><span class=cB0> (objs[i].x.i32[1]&gt;CAMP_WIDTH&gt;&gt;1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l283"></a>          objs[i].x=CAMP_WIDTH&gt;&gt;1&lt;&lt;32;
+<a name="l284"></a>          objs[i].dx=-objs[i].dx;
+<a name="l285"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l286"></a>        </span><span class=cB1>if</span><span class=cB0> (objs[i].z.i32[1]&lt;-CAMP_WIDTH) </span><span class=cB7>{</span><span class=cB0>
+<a name="l287"></a>          objs[i].z=-CAMP_WIDTH&lt;&lt;32;
+<a name="l288"></a>          objs[i].dz=-objs[i].dz;
+<a name="l289"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l290"></a>        </span><span class=cB1>if</span><span class=cB0> (objs[i].z.i32[1]&gt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l291"></a>          objs[i].z=0;
+<a name="l292"></a>          objs[i].dz=-objs[i].dz;
+<a name="l293"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l294"></a>      }
+<a name="l295"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(20);
+<a name="l296"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l297"></a>}
+<a name="l298"></a>
+<a name="l299"></a></span><span class=cB1>U0</span><span class=cB0> Camp(</span><span class=cB9>I64</span><span class=cB0> num_people=100)
+<a name="l300"></a>{
+<a name="l301"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j=0,num_tents;
+<a name="l302"></a>
+<a name="l303"></a>  </span><span class=cB1>if</span><span class=cB0> (num_people&gt;PEOPLE_NUM)
+<a name="l304"></a>    num_people=PEOPLE_NUM;
+<a name="l305"></a>
+<a name="l306"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(objs,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>objs</span><span class=cB7>)</span><span class=cB0>);
+<a name="l307"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num_people;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l308"></a>    objs[j].x=(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l107">RandU32</a></span><span class=cB0>%CAMP_WIDTH-CAMP_WIDTH&gt;&gt;1)&lt;&lt;32;
+<a name="l309"></a>    objs[j].y=0;
+<a name="l310"></a>    objs[j].z=-(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l107">RandU32</a></span><span class=cB0>%CAMP_WIDTH)&lt;&lt;32;
+<a name="l311"></a>    objs[j].type=CO_PERSON;
+<a name="l312"></a>    j++;
+<a name="l313"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l314"></a>  num_tents=(num_people+TENT_RATIO-1)/TENT_RATIO;
+<a name="l315"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num_tents;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l316"></a>    objs[j].x=(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l107">RandU32</a></span><span class=cB0>%CAMP_WIDTH-CAMP_WIDTH&gt;&gt;1)&lt;&lt;32;
+<a name="l317"></a>    objs[j].y=0;
+<a name="l318"></a>    objs[j].z=-(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l107">RandU32</a></span><span class=cB0>%CAMP_WIDTH)&lt;&lt;32;
+<a name="l319"></a>    objs[j].type=CO_TENT;
+<a name="l320"></a>    j++;
+<a name="l321"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l322"></a>  num_objs=j;
+<a name="l323"></a>
+<a name="l324"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>); </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l325"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;text_attr=</span><span class=cB3>YELLOW</span><span class=cB0>&lt;&lt;4+</span><span class=cB3>WHITE</span><span class=cB0>; </span><span class=cB2>//bk/fg</span><span class=cB0>
+<a name="l326"></a>  </span><span class=cB5>AutoComplete</span><span class=cB0>;
+<a name="l327"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l136">DocCursor</a></span><span class=cB0>;
+<a name="l328"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l329"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l330"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;animate_task=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246">Spawn</a></span><span class=cB0>(&amp;AnimateTask,</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB6>&quot;Animate&quot;</span><span class=cB0>,,</span><span class=cB5>Fs</span><span class=cB0>);
+<a name="l331"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;DrawMeeting;
+<a name="l332"></a>
+<a name="l333"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l182">GetChar</a></span><span class=cB0>;
+<a name="l334"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l335"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45">PutExcept</a></span><span class=cB0>;
+<a name="l336"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>);
+<a name="l337"></a>}
+<a name="l338"></a>
+<a name="l339"></a>#</span><span class=cB1>if</span><span class=cB0> </span><span class=cB3>__CMD_LINE__</span><span class=cB0>
+<a name="l340"></a></span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l521">WinBorder</a></span><span class=cB0>;
+<a name="l341"></a></span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l507">WinMax</a></span><span class=cB0>;
+<a name="l342"></a>Camp;
+<a name="l343"></a>#</span><span class=cB1>endif</span><span class=cB0>
+</span></div></pre></body>
+</html>

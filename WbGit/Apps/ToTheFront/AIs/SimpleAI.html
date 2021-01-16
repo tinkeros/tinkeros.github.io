@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>Unit *UnitNearestFind(</span><span class=cB9>I64</span><span class=cB0> row,</span><span class=cB9>I64</span><span class=cB0> col,</span><span class=cB9>I64</span><span class=cB0> player,</span><span class=cB1>Bool</span><span class=cB0> in_LOS,</span><span class=cB1>F64</span><span class=cB0> range=-1)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l4"></a>  </span><span class=cB1>F64</span><span class=cB0> dd,best_dd=</span><span class=cB3>F64_MAX</span><span class=cB0>,x1,y1,x2,y2;
+<a name="l5"></a>  Unit *best=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l6"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"><span class=cB4>Sqrt</span></a><span class=cB2>() is slow, so work with squared distances.</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (range&lt;0)
+<a name="l8"></a>    range=</span><span class=cB3>F64_MAX</span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l10"></a>    range*=range;
+<a name="l11"></a>  RowCol2XY(&amp;x1,&amp;y1,row,col);
+<a name="l12"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;UNITS_NUM;i++)
+<a name="l13"></a>    </span><span class=cB1>if</span><span class=cB0> (units[player][i].life&gt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l14"></a>      </span><span class=cB1>if</span><span class=cB0> (!in_LOS || LOS</span><span class=cB7>(</span><span class=cB0>row,col,units[player][i].row,units[player][i].col</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l15"></a>        RowCol2XY(&amp;x2,&amp;y2,units[player][i].row,units[player][i].col);
+<a name="l16"></a>        dd=</span><span class=cB5>Sqr</span><span class=cB0>(x2-x1)+</span><span class=cB5>Sqr</span><span class=cB0>(y2-y1);
+<a name="l17"></a>        </span><span class=cB1>if</span><span class=cB0> (dd&lt;=range &amp;&amp; dd&lt;best_dd) </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>          best=&amp;units[player][i];
+<a name="l19"></a>          best_dd=dd;
+<a name="l20"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l21"></a>      }
+<a name="l22"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB1>return</span><span class=cB0> best;
+<a name="l24"></a>}
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>U0</span><span class=cB0> PlayerIndirect()
+<a name="l27"></a>{
+<a name="l28"></a>  Unit *target,*tmpu;
+<a name="l29"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l30"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;UNITS_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>    UserChk;
+<a name="l32"></a>    tmpu=&amp;units[cur_player][i];
+<a name="l33"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpu-&gt;life&gt;0 &amp;&amp; tmpu-&gt;indirect_fire &amp;&amp;
+<a name="l34"></a>          </span><span class=cB7>(</span><span class=cB0>target=UnitNearestFind(tmpu-&gt;row,tmpu-&gt;col,enemy_player,</span><span class=cB3>TRUE</span><span class=cB0>,
+<a name="l35"></a>          tmpu-&gt;range*2*HEX_RADIUS)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l36"></a>      IndirectAdd(tmpu,target-&gt;row,target-&gt;col);
+<a name="l37"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l38"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'PhaseOvr'</span><span class=cB0>,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l39"></a>}
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB1>U0</span><span class=cB0> PlayerMove()
+<a name="l42"></a>{
+<a name="l43"></a>  Unit *target,*tmpu;
+<a name="l44"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l45"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y;
+<a name="l46"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;UNITS_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>    UserChk;
+<a name="l48"></a>    tmpu=&amp;units[cur_player][i];
+<a name="l49"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpu-&gt;life&gt;0) {
+<a name="l50"></a></span><span class=cB2>//Cheats because it violates Line-of-Sight</span><span class=cB0>
+<a name="l51"></a>      </span><span class=cB1>if</span><span class=cB0> (target=UnitNearestFind</span><span class=cB7>(</span><span class=cB0>tmpu-&gt;row,tmpu-&gt;col,enemy_player,</span><span class=cB3>FALSE</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l52"></a>        RowCol2XY(&amp;x,&amp;y,target-&gt;row,target-&gt;col);
+<a name="l53"></a>        </span><span class=cB1>if</span><span class=cB0> (!UnitMove</span><span class=cB7>(</span><span class=cB0>tmpu,x,y</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l54"></a>          RowCol2XY(&amp;x,&amp;y,tmpu-&gt;row,tmpu-&gt;col);
+<a name="l55"></a>          UnitMove(tmpu,x+</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l77">RandI16</a></span><span class=cB0>,y+</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l77">RandI16</a></span><span class=cB0>);
+<a name="l56"></a>        }
+<a name="l57"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l58"></a>    }
+<a name="l59"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'PhaseOvr'</span><span class=cB0>,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l61"></a>}
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cB1>U0</span><span class=cB0> PlayerDirect()
+<a name="l64"></a>{
+<a name="l65"></a>  Unit *target,*tmpu;
+<a name="l66"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l67"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;UNITS_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l68"></a>    UserChk;
+<a name="l69"></a>    tmpu=&amp;units[cur_player][i];
+<a name="l70"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpu-&gt;life&gt;0 &amp;&amp; !tmpu-&gt;indirect_fire &amp;&amp;
+<a name="l71"></a>          </span><span class=cB7>(</span><span class=cB0>target=UnitNearestFind(tmpu-&gt;row,tmpu-&gt;col,enemy_player,</span><span class=cB3>TRUE</span><span class=cB0>,
+<a name="l72"></a>          tmpu-&gt;range*2*HEX_RADIUS)</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l73"></a>      UnitDirectFire(tmpu,target);
+<a name="l74"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(250*animation_delay);
+<a name="l75"></a>    }
+<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'PhaseOvr'</span><span class=cB0>,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l78"></a>}
+<a name="l79"></a>
+</span></div></pre></body>
+</html>

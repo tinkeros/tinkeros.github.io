@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB8{color:#555555;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                              <h1><center>Installing TinkerOS</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>Burn a CD with software that supports ISO files.  Then, boot it.  It's a live 
+<a name="l4"></a>CD, so you can look around with or without installing.
+<a name="l5"></a>
+<a name="l6"></a>Dual booting with another operating system is the best way to use TinkerOS.  I 
+<a name="l7"></a>only use it in a virtual machine because it won't boot natively on my machine, 
+<a name="l8"></a>though.  For native dual booting, you need a partition for TinkerOS.  Windows 
+<a name="l9"></a>often comes with a restore disk that does not allow repartitioning.  I recommend 
+<a name="l10"></a>connecting a spare additional hard drive and using the </span><span class=cB2>BIOS</span><span class=cB0> to select which 
+<a name="l11"></a>drive to boot.
+<a name="l12"></a>
+<a name="l13"></a>The </span><a href="http://tinkeros.github.io/WbGit/Misc/OSInstall.html#l1"><span class=cB4>::/Misc/OSInstall.HC</span></a><span class=cB0> script will automate much of this.  It runs if you boot 
+<a name="l14"></a>the CD/DVD-ROM.
+<a name="l15"></a>
+<a name="l16"></a>See </span><a href="http://tinkeros.github.io/WbGit/Doc/Boot.html#l1"><span class=cB4>Boot.DD</span></a><span class=cB0> for an overview of booting.  See </span><a href="http://tinkeros.github.io/WbGit/Doc/Requirements.html#l1"><span class=cB4>Requirements</span></a><span class=cB0> for supported 
+<a name="l17"></a>hardware.
+<a name="l18"></a>
+<a name="l19"></a>Two TinkerOS partitions are highly recommended, so you can boot to a back-up and 
+<a name="l20"></a>fix the primary when you work on it.  Odds are, you only need a couple gigabytes 
+<a name="l21"></a>for your TinkerOS partitions.
+<a name="l22"></a>
+<a name="l23"></a>1)
+<a name="l24"></a></span><span class=cB4>  </span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l164"><span class=cB4>Mount</span></a><span class=cB0>() use if the drive is partitioned.
+<a name="l25"></a>    This command mounts a drive making it accessible.  For simplicity, sel </span><span class=cB2>'C'</span><span class=cB0> 
+<a name="l26"></a>    as the first drive letter for your hard drive.  The first partition will be </span><span class=cB2>
+<a name="l27"></a>    'C'</span><span class=cB0>, second, </span><span class=cB2>'D'</span><span class=cB0>, etc.  TinkerOS needs 3 numbers to utilize a hard drive -- 
+<a name="l28"></a>    base0, base1, and unit.  When you enter a hexadecimal number, do it like in </span><span class=cB2>
+<a name="l29"></a>    C</span><span class=cB0> with a </span><span class=cB2>0x</span><span class=cB0> prefix.  If the probe was successful, you can just enter the 
+<a name="l30"></a>    number in the probe box instead of base0.
+<a name="l31"></a>  </span><span class=cB4>
+<a name="l32"></a>  </span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l13"><span class=cB4>DskPrt</span></a><span class=cB0>(</span><span class=cB2>'C'</span><span class=cB0>) use if drive is not partitioned
+<a name="l33"></a>  
+<a name="l34"></a>    This will perform a special </span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l164"><span class=cB4>Mount</span></a><span class=cB0>() automatically.
+<a name="l35"></a>    
+<a name="l36"></a>    <blink>WARNING:</blink>  This command erases everything on a hard drive.  It repartitions a 
+<a name="l37"></a>    whole drive and formats the partitions.  This command should be skipped if 
+<a name="l38"></a>    you already have your hard drive partitioned.
+<a name="l39"></a>    
+<a name="l40"></a>    
+<a name="l41"></a>    <blink>WARNING:</blink>  This command doesn't play well with other operating systems.  
+<a name="l42"></a>    You'll need to do a </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l57"><span class=cB4>BootMHDZero</span></a><span class=cB0>() to restore your drive to a state where 
+<a name="l43"></a>    other operating systems can partition it.
+<a name="l44"></a>  
+<a name="l45"></a>2) </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFmt.html#l64"><span class=cB4>Fmt</span></a><span class=cB0>(</span><span class=cB2>'D'</span><span class=cB0>,</span><span class=cB2>TRUE,FALSE,FSt_FAT32</span><span class=cB0>)
+<a name="l46"></a>  This command formats a drive with </span><span class=cB2>FAT32</span><span class=cB0> or the </span><a href="http://tinkeros.github.io/WbGit/Doc/RedSea.html#l1"><span class=cB4>RedSea</span></a><span class=cB0> file system type.  Use 
+<a name="l47"></a>  the drive letter of the partition in place of </span><span class=cB2>'D'</span><span class=cB0>.
+<a name="l48"></a>  
+<a name="l49"></a>  <blink>WARNING:</blink>  If you are upgrading, be sure not to lose the file, </span><span class=cB2>/0000Boot/OldMBR
+<a name="l50"></a>  .BIN.C</span><span class=cB0>.
+<a name="l51"></a>  
+<a name="l52"></a>3) </span><a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskA.html#l63"><span class=cB4>CopyTree</span></a><span class=cB0>(</span><span class=cB2>&quot;T:/&quot;</span><span class=cB0>,</span><span class=cB2>&quot;D:/&quot;</span><span class=cB0>)
+<a name="l53"></a>  This command is used to copy files onto a hard drive partition from the 
+<a name="l54"></a>  CD/DVD.  Use the drive letter of the partition in place of </span><span class=cB2>'D'</span><span class=cB0>.
+<a name="l55"></a>  
+<a name="l56"></a>4) </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB0>(</span><span class=cB2>'D'</span><span class=cB0>)
+<a name="l57"></a>  This command recompiles the source code on a drive and writes to the <u>drive's</u> 
+<a name="l58"></a>  boot record.  You'll need to reenter the </span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l164"><span class=cB4>Mount</span></a><span class=cB0> information so it can be stored 
+<a name="l59"></a>  in the kernel.
+<a name="l60"></a>  
+<a name="l61"></a>5) Use Linux's Grub or TinkerOS' </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l74"><span class=cB4>BootMHDIns</span></a><span class=cB0>(</span><span class=cB2>'D'</span><span class=cB0>)
+<a name="l62"></a>  
+<a name="l63"></a>  The </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l74"><span class=cB4>BootMHDIns</span></a><span class=cB0>() command places a boot loader on a drive.  It saves the old 
+<a name="l64"></a>  master boot record to </span><span class=cB2>/0000Boot/OldMBR.BIN.C</span><span class=cB0> and replaces it.  When you boot, 
+<a name="l65"></a>  you will have the option of booting the old master boot record.  This command 
+<a name="l66"></a>  can be skipped if you already have a boot loader.  Be sure not to lose the 
+<a name="l67"></a>  copy of the old boot record, like if you reformat the drive.
+<a name="l68"></a>  
+<a name="l69"></a>  Delete </span><span class=cB2>/0000Boot/OldMBR.BIN.C</span><span class=cB0> if you want to get a fresh copy of a mbr, like 
+<a name="l70"></a>  if installing from your own custom CD containing it's own </span><span class=cB2>/0000Boot/OldMBR.BIN
+<a name="l71"></a>  .C</span><span class=cB0> onto a system with a non-TinkerOS boot loader.
+<a name="l72"></a>  
+<a name="l73"></a>  If you have anti-virus software, it might object to having a different master 
+<a name="l74"></a>  boot record.
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB8>
+<a name="l77"></a>* &quot;Windows&quot; is a trademark owned by MicroSoft Corp.
+<a name="l78"></a>* &quot;Linux&quot; is a trademark owned by Linus Torvalds.
+<a name="l79"></a></span></div></pre></body>
+</html>

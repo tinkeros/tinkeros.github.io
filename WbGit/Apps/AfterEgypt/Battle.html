@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cE0{color:#000000;background-color:#ffff55;}
+.cEA{color:#55ff55;background-color:#ffff55;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cE0>
+<a name="l2"></a>
+<a name="l3"></a>
+<a name="l4"></a>
+<a name="l5"></a>
+<a name="l6"></a>
+<a name="l7"></a>
+<a name="l8"></a>
+<a name="l9"></a>
+<a name="l10"></a>
+<a name="l11"></a>        </span><span class=cEA>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cE0>
+<a name="l12"></a>
+<a name="l13"></a>
+<a name="l14"></a>
+<a name="l15"></a>
+<a name="l16"></a>
+<a name="l17"></a>
+<a name="l18"></a>
+<a name="l19"></a>
+<a name="l20"></a>
+<a name="l21"></a>
+<a name="l22"></a>        </span><span class=cEA>&lt;2&gt;/* Graphics Not Rendered in HTML */</span><span class=cE0>
+<a name="l23"></a>
+<a name="l24"></a>
+<a name="l25"></a>
+<a name="l26"></a>
+<a name="l27"></a>
+<a name="l28"></a>
+<a name="l29"></a>
+<a name="l30"></a>
+<a name="l31"></a>
+<a name="l32"></a>
+<a name="l33"></a>        </span><span class=cEA>&lt;3&gt;/* Graphics Not Rendered in HTML */</span><span class=cE0>
+<a name="l34"></a>
+<a name="l35"></a>
+<a name="l36"></a>
+<a name="l37"></a>
+<a name="l38"></a>
+<a name="l39"></a>
+<a name="l40"></a>
+<a name="l41"></a>        </span><span class=cEA>&lt;4&gt;/* Graphics Not Rendered in HTML */</span><span class=cE0>
+<a name="l42"></a></span><span class=cB0>
+<a name="l43"></a></span><span class=cB1>F64</span><span class=cB0> t0,xx,t_last;
+<a name="l44"></a></span><span class=cB1>Bool</span><span class=cB0> held_up;
+<a name="l45"></a>
+<a name="l46"></a>#</span><span class=cB1>define</span><span class=cB0> HACK_PERIOD     0.25
+<a name="l47"></a>#</span><span class=cB1>define</span><span class=cB0> SPACING                 45
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>U0</span><span class=cB0> DrawBattle(</span><span class=cB9>CTask</span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l50"></a>{
+<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> cx=task-&gt;pix_width&gt;&gt;1,
+<a name="l52"></a>        cy=task-&gt;pix_height&gt;&gt;1;
+<a name="l53"></a>  </span><span class=cB1>U8</span><span class=cB0> *tmps;
+<a name="l54"></a>  </span><span class=cB1>F64</span><span class=cB0> tt;
+<a name="l55"></a>  </span><span class=cB1>if</span><span class=cB0> (held_up)
+<a name="l56"></a>    tt=0;
+<a name="l57"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>    tt=(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0)/2;
+<a name="l59"></a>    tt*=tt;
+<a name="l60"></a>    tt*=tt;
+<a name="l61"></a>    </span><span class=cB1>if</span><span class=cB0> (tt&gt;1.0) tt=1.0;
+<a name="l62"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>  tmps=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(tt,</span><span class=cBA>&lt;3&gt;</span><span class=cB0>,</span><span class=cBA>&lt;4&gt;</span><span class=cB0>);
+<a name="l64"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,cx,cy+SPACING,0,tmps);
+<a name="l65"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmps);
+<a name="l66"></a>
+<a name="l67"></a>  </span><span class=cB1>if</span><span class=cB0> (t_last) </span><span class=cB7>{</span><span class=cB0>
+<a name="l68"></a>    </span><span class=cB1>if</span><span class=cB0> (tt&lt;0.5)
+<a name="l69"></a>      xx-=50.0*(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t_last);
+<a name="l70"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l71"></a>      xx+=50.0*(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t_last);
+<a name="l72"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l73"></a>
+<a name="l74"></a>  tt=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l9">Saw</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>+0.0*HACK_PERIOD,HACK_PERIOD);
+<a name="l75"></a>  tt*=2; </span><span class=cB1>if</span><span class=cB0> (tt&gt;1.0) tt=2.0-tt;
+<a name="l76"></a>  tmps=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(tt,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,</span><span class=cBA>&lt;2&gt;</span><span class=cB0>);
+<a name="l77"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,xx+cx+SPACING,cy-SPACING,0,tmps);
+<a name="l78"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmps);
+<a name="l79"></a>
+<a name="l80"></a>  tt=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l9">Saw</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>+0.333*HACK_PERIOD,HACK_PERIOD);
+<a name="l81"></a>  tt*=2; </span><span class=cB1>if</span><span class=cB0> (tt&gt;1.0) tt=2.0-tt;
+<a name="l82"></a>  tmps=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(tt,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,</span><span class=cBA>&lt;2&gt;</span><span class=cB0>);
+<a name="l83"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,xx+cx+2*SPACING,cy-SPACING,0,tmps);
+<a name="l84"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmps);
+<a name="l85"></a>
+<a name="l86"></a>  tt=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l9">Saw</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>+0.666*HACK_PERIOD,HACK_PERIOD);
+<a name="l87"></a>  tt*=2; </span><span class=cB1>if</span><span class=cB0> (tt&gt;1.0) tt=2.0-tt;
+<a name="l88"></a>  tmps=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(tt,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,</span><span class=cBA>&lt;2&gt;</span><span class=cB0>);
+<a name="l89"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,xx+cx+SPACING,cy-2*SPACING,0,tmps);
+<a name="l90"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmps);
+<a name="l91"></a>
+<a name="l92"></a>  t_last=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l93"></a>}
+<a name="l94"></a>
+<a name="l95"></a></span><span class=cB1>U0</span><span class=cB0> Battle()
+<a name="l96"></a>{
+<a name="l97"></a>  </span><span class=cB9>I64</span><span class=cB0> msg_code,ch,sc;
+<a name="l98"></a>
+<a name="l99"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>); </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l100"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l101"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;text_attr=</span><span class=cB3>YELLOW</span><span class=cB0>&lt;&lt;4+</span><span class=cB3>BLUE</span><span class=cB0>;
+<a name="l102"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l103"></a>    </span><span class=cB6>&quot;$BG,YELLOW$&quot;</span><span class=cB0>;
+<a name="l104"></a>
+<a name="l105"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/God/GodBible.html#l240">BibleVerse</a></span><span class=cB0>(,</span><span class=cB6>&quot;Exodus,17:11&quot;</span><span class=cB0>,8);
+<a name="l106"></a>    </span><span class=cB6>&quot;\n$BK,1$Hold &lt;SPACE&gt;$BK,0$\n&quot;</span><span class=cB0>;
+<a name="l107"></a>
+<a name="l108"></a>    held_up=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l109"></a>    t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l110"></a>    t_last=0;
+<a name="l111"></a>    xx=0;
+<a name="l112"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;DrawBattle;
+<a name="l113"></a>    </span><span class=cB1>do</span><span class=cB0> {
+<a name="l114"></a>      msg_code=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l95">GetMsg</a></span><span class=cB0>(&amp;ch,&amp;sc,1&lt;&lt;</span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0>|1&lt;&lt;</span><span class=cB3>MSG_KEY_UP</span><span class=cB0>);
+<a name="l115"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB3>CH_SPACE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l116"></a>        </span><span class=cB1>if</span><span class=cB0> (msg_code==</span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0>)
+<a name="l117"></a>          held_up=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l118"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (msg_code==</span><span class=cB3>MSG_KEY_UP</span><span class=cB0>) {
+<a name="l119"></a>          held_up=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l120"></a>          t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l121"></a>        }
+<a name="l122"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l123"></a>    } </span><span class=cB1>while</span><span class=cB0> (msg_code!=</span><span class=cB3>MSG_KEY_DOWN</span><span class=cB0> || ch!=</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0> &amp;&amp; ch!=</span><span class=cB3>CH_ESC</span><span class=cB0>);
+<a name="l124"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l95">GetMsg</a></span><span class=cB0>(,,1&lt;&lt;</span><span class=cB3>MSG_KEY_UP</span><span class=cB0>);
+<a name="l125"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l126"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45">PutExcept</a></span><span class=cB0>;
+<a name="l127"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l128"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>);
+<a name="l129"></a>}
+<a name="l130"></a>
+</span></div></pre></body>
+</html>

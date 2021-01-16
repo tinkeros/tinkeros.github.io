@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CAsm.html#l1">Option</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> num,</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l2"></a>{</span><span class=cB2>//Set compiler </span><a href="http://tinkeros.github.io/WbGit/Doc/Options.html#l1"><span class=cB4>Option</span></a><span class=cB2> to val.</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5>BEqu</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;last_cc-&gt;opts,num,val);
+<a name="l4"></a>}
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CAsm.html#l6">GetOption</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> num)
+<a name="l7"></a>{</span><span class=cB2>//Get state of compiler </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1590"><span class=cB4>option</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l8"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5>Bt</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;last_cc-&gt;opts,num);
+<a name="l9"></a>}
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>asm</span><span class=cB0>
+<a name="l12"></a>{
+<a name="l13"></a>  </span><span class=cBD>_LAST_FUN</span><span class=cB0>::   </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l332"><span class=cB4>_CALL_IND</span></a><span class=cB0>
+<a name="l14"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l15"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l16"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RDI</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a>  </span><span class=cB1>XOR</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>FS</span><span class=cB0>:</span><span class=cB9>CTask</span><span class=cB0>.last_fun[</span><span class=cBC>RAX</span><span class=cB0>]
+<a name="l21"></a>  </span><span class=cB1>TEST</span><span class=cB0>  </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB1>JZ</span><span class=cB0>    @@10
+<a name="l23"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> </span><span class=cB9>CHashFun</span><span class=cB0>.exe_addr[</span><span class=cBC>RAX</span><span class=cB0>]
+<a name="l24"></a>
+<a name="l25"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> </span><span class=cB3>SF_ARG1</span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]    </span><span class=cB2>//argc</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RSI</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> </span><span class=cB3>SF_ARG2</span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]    </span><span class=cB2>//argv</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB1>SHL</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,3
+<a name="l28"></a>  </span><span class=cB1>SUB</span><span class=cB0>   </span><span class=cBC>RSP</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l29"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RDI</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB1>REP_MOVSB</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB1>TEST</span><span class=cB0>  </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cBC>RDX</span><span class=cB0>
+<a name="l32"></a>  </span><span class=cB1>JZ</span><span class=cB0>    @@05
+<a name="l33"></a>
+<a name="l34"></a>  </span><span class=cB1>CALL</span><span class=cB0>  </span><span class=cBC>RDX</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RDI</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l37"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l38"></a>  </span><span class=cB1>RET1</span><span class=cB0>  16
+<a name="l39"></a>
+<a name="l40"></a>@@05:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> </span><span class=cB3>SF_ARG1</span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]    </span><span class=cB2>//argc</span><span class=cB0>
+<a name="l41"></a>  </span><span class=cB1>SHL</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,3
+<a name="l42"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RSP</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB1>XOR</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l44"></a>@@10:   </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RDI</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l47"></a>  </span><span class=cB1>RET1</span><span class=cB0>  16
+<a name="l48"></a>}
+<a name="l49"></a></span><span class=cB1>_extern</span><span class=cB0> </span><span class=cBD>_LAST_FUN</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CAsm.html#l49">LastFun</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> argc,</span><span class=cB9>I64</span><span class=cB0> *argv); </span><span class=cB2>//Execute last fun with args.</span><span class=cB0>
+<a name="l50"></a>
+</span></div></pre></body>
+</html>

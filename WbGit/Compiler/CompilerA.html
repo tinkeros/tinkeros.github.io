@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Compiler/Internal&quot;</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//Intermediate compiler codes</span><span class=cB0>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IS_0_ARG</span><span class=cB0>        0
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IS_1_ARG</span><span class=cB0>        1
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IS_2_ARG</span><span class=cB0>        2
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IS_V_ARG</span><span class=cB0>        3 </span><span class=cB2>//Variable Arg Cnt</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IST_NULL</span><span class=cB0>        0
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IST_DEREF</span><span class=cB0>       1
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IST_ASSIGN</span><span class=cB0>      2
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IST_CMP</span><span class=cB0>         3
+<a name="l12"></a>        
+<a name="l13"></a></span><span class=cB1>class</span><span class=cB0> </span><span class=cB9>CIntermediateStruct</span><span class=cB0>
+<a name="l14"></a>{
+<a name="l15"></a>  </span><span class=cB1>U8</span><span class=cB0> arg_cnt,res_cnt,type;
+<a name="l16"></a>  </span><span class=cB1>Bool</span><span class=cB0> fpop,not_const,pad[3];
+<a name="l17"></a>  </span><span class=cB1>U8</span><span class=cB0> *name;
+<a name="l18"></a>};
+<a name="l19"></a>
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_END</span><span class=cB0>                  0x00
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_NOP1</span><span class=cB0>                 0x01
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_END_EXP</span><span class=cB0>              0x02
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_NOP2</span><span class=cB0>                 0x03
+<a name="l24"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LABEL</span><span class=cB0>                0x04
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_START</span><span class=cB0>           0x05
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_END</span><span class=cB0>             0x06
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_END2</span><span class=cB0>            0x07
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RETURN_VAL</span><span class=cB0>           0x08
+<a name="l29"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RETURN_VAL2</span><span class=cB0>          0x09
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_IMM_I64</span><span class=cB0>              0x0A
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_IMM_F64</span><span class=cB0>              0x0B
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_STR_CONST</span><span class=cB0>            0x0C
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ABS_ADDR</span><span class=cB0>             0x0D
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADDR_IMPORT</span><span class=cB0>          0x0E
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_HEAP_GLBL</span><span class=cB0>            0x0F
+<a name="l36"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SIZEOF</span><span class=cB0>               0x10
+<a name="l37"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TYPE</span><span class=cB0>                 0x11
+<a name="l38"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GET_LABEL</span><span class=cB0>            0x12
+<a name="l39"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RBP</span><span class=cB0>                  0x13
+<a name="l40"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_REG</span><span class=cB0>                  0x14
+<a name="l41"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_FS</span><span class=cB0>                   0x15
+<a name="l42"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOV_FS</span><span class=cB0>               0x16
+<a name="l43"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GS</span><span class=cB0>                   0x17
+<a name="l44"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOV_GS</span><span class=cB0>               0x18
+<a name="l45"></a>
+<a name="l46"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LEA</span><span class=cB0>                  0x19
+<a name="l47"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOV</span><span class=cB0>                  0x1A
+<a name="l48"></a>
+<a name="l49"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TO_I64</span><span class=cB0>               0x1B
+<a name="l50"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TO_F64</span><span class=cB0>               0x1C
+<a name="l51"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TO_BOOL</span><span class=cB0>              0x1D
+<a name="l52"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TOUPPER</span><span class=cB0>              0x1E
+<a name="l53"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_HOLYC_TYPECAST</span><span class=cB0>       0x1F
+<a name="l54"></a>
+<a name="l55"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADDR</span><span class=cB0>                 0x20
+<a name="l56"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_COM</span><span class=cB0>                  0x21
+<a name="l57"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_NOT</span><span class=cB0>                  0x22
+<a name="l58"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_UNARY_MINUS</span><span class=cB0>          0x23
+<a name="l59"></a>
+<a name="l60"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_DEREF</span><span class=cB0>                0x24
+<a name="l61"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_DEREF_PP</span><span class=cB0>             0x25
+<a name="l62"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_DEREF_MM</span><span class=cB0>             0x26
+<a name="l63"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC__PP</span><span class=cB0>                  0x27
+<a name="l64"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC__MM</span><span class=cB0>                  0x28
+<a name="l65"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_PP_</span><span class=cB0>                  0x29
+<a name="l66"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MM_</span><span class=cB0>                  0x2A
+<a name="l67"></a>
+<a name="l68"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHL</span><span class=cB0>                  0x2B
+<a name="l69"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHR</span><span class=cB0>                  0x2C
+<a name="l70"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHL_CONST</span><span class=cB0>            0x2D
+<a name="l71"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHR_CONST</span><span class=cB0>            0x2E
+<a name="l72"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_POWER</span><span class=cB0>                0x2F
+<a name="l73"></a>
+<a name="l74"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MUL</span><span class=cB0>                  0x30
+<a name="l75"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_DIV</span><span class=cB0>                  0x31
+<a name="l76"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOD</span><span class=cB0>                  0x32
+<a name="l77"></a>
+<a name="l78"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_AND</span><span class=cB0>                  0x33
+<a name="l79"></a>
+<a name="l80"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OR</span><span class=cB0>                   0x34
+<a name="l81"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_XOR</span><span class=cB0>                  0x35
+<a name="l82"></a>
+<a name="l83"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADD</span><span class=cB0>                  0x36
+<a name="l84"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SUB</span><span class=cB0>                  0x37
+<a name="l85"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADD_CONST</span><span class=cB0>            0x38
+<a name="l86"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SUB_CONST</span><span class=cB0>            0x39
+<a name="l87"></a>
+<a name="l88"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_EQU_EQU</span><span class=cB0>              0x3A
+<a name="l89"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_NOT_EQU</span><span class=cB0>              0x3B
+<a name="l90"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LESS</span><span class=cB0>                 0x3C
+<a name="l91"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GREATER_EQU</span><span class=cB0>          0x3D
+<a name="l92"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GREATER</span><span class=cB0>              0x3E
+<a name="l93"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LESS_EQU</span><span class=cB0>             0x3F
+<a name="l94"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_PUSH_CMP</span><span class=cB0>             0x40
+<a name="l95"></a>
+<a name="l96"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_AND_AND</span><span class=cB0>              0x41
+<a name="l97"></a>
+<a name="l98"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OR_OR</span><span class=cB0>                0x42
+<a name="l99"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_XOR_XOR</span><span class=cB0>              0x43
+<a name="l100"></a>
+<a name="l101"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ASSIGN</span><span class=cB0>               0x44
+<a name="l102"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ASSIGN_PP</span><span class=cB0>            0x45
+<a name="l103"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ASSIGN_MM</span><span class=cB0>            0x46
+<a name="l104"></a>
+<a name="l105"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHL_EQU</span><span class=cB0>              0x47
+<a name="l106"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SHR_EQU</span><span class=cB0>              0x48
+<a name="l107"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MUL_EQU</span><span class=cB0>              0x49
+<a name="l108"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_DIV_EQU</span><span class=cB0>              0x4A
+<a name="l109"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOD_EQU</span><span class=cB0>              0x4B
+<a name="l110"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_AND_EQU</span><span class=cB0>              0x4C
+<a name="l111"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OR_EQU</span><span class=cB0>               0x4D
+<a name="l112"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_XOR_EQU</span><span class=cB0>              0x4E
+<a name="l113"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADD_EQU</span><span class=cB0>              0x4F
+<a name="l114"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SUB_EQU</span><span class=cB0>              0x50
+<a name="l115"></a>
+<a name="l116"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_JMP</span><span class=cB0>                  0x51
+<a name="l117"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SUB_CALL</span><span class=cB0>             0x52
+<a name="l118"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SWITCH</span><span class=cB0>               0x53
+<a name="l119"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_NOBOUND_SWITCH</span><span class=cB0>               0x54
+<a name="l120"></a>
+<a name="l121"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADD_RSP</span><span class=cB0>              0x55
+<a name="l122"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ADD_RSP1</span><span class=cB0>             0x56
+<a name="l123"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ENTER</span><span class=cB0>                0x57
+<a name="l124"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_PUSH_REGS</span><span class=cB0>            0x58
+<a name="l125"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_POP_REGS</span><span class=cB0>             0x59
+<a name="l126"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LEAVE</span><span class=cB0>                0x5A
+<a name="l127"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RET</span><span class=cB0>                  0x5B
+<a name="l128"></a>
+<a name="l129"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL</span><span class=cB0>                 0x5C
+<a name="l130"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_INDIRECT</span><span class=cB0>        0x5D
+<a name="l131"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_INDIRECT2</span><span class=cB0>       0x5E
+<a name="l132"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_IMPORT</span><span class=cB0>          0x5F
+<a name="l133"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CALL_EXTERN</span><span class=cB0>          0x60
+<a name="l134"></a>
+<a name="l135"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ASM</span><span class=cB0>                  0x61
+<a name="l136"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_PUSH</span><span class=cB0>                 0x62
+<a name="l137"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_POP</span><span class=cB0>                  0x63
+<a name="l138"></a>
+<a name="l139"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CLFLUSH</span><span class=cB0>              0x64
+<a name="l140"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_INVLPG</span><span class=cB0>               0x65
+<a name="l141"></a>
+<a name="l142"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_IN_U8</span><span class=cB0>                0x66
+<a name="l143"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_IN_U16</span><span class=cB0>               0x67
+<a name="l144"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_IN_U32</span><span class=cB0>               0x68
+<a name="l145"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OUT_U8</span><span class=cB0>               0x69
+<a name="l146"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OUT_U16</span><span class=cB0>              0x6A
+<a name="l147"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_OUT_U32</span><span class=cB0>              0x6B
+<a name="l148"></a>
+<a name="l149"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GET_RFLAGS</span><span class=cB0>           0x6C
+<a name="l150"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_CARRY</span><span class=cB0>                0x6D
+<a name="l151"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SET_RFLAGS</span><span class=cB0>           0x6E
+<a name="l152"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GET_RAX</span><span class=cB0>              0x6F
+<a name="l153"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SET_RAX</span><span class=cB0>              0x70
+<a name="l154"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GET_RBP</span><span class=cB0>              0x71
+<a name="l155"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SET_RBP</span><span class=cB0>              0x72
+<a name="l156"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_GET_RSP</span><span class=cB0>              0x73
+<a name="l157"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SET_RSP</span><span class=cB0>              0x74
+<a name="l158"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RIP</span><span class=cB0>                  0x75
+<a name="l159"></a>
+<a name="l160"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_RDTSC</span><span class=cB0>                0x76
+<a name="l161"></a>
+<a name="l162"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BT</span><span class=cB0>                   0x77
+<a name="l163"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BTS</span><span class=cB0>                  0x78
+<a name="l164"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BTR</span><span class=cB0>                  0x79
+<a name="l165"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BTC</span><span class=cB0>                  0x7A
+<a name="l166"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LBTS</span><span class=cB0>                 0x7B
+<a name="l167"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LBTR</span><span class=cB0>                 0x7C
+<a name="l168"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_LBTC</span><span class=cB0>                 0x7D
+<a name="l169"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BSF</span><span class=cB0>                  0x7E
+<a name="l170"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BSR</span><span class=cB0>                  0x7F
+<a name="l171"></a>
+<a name="l172"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_QUE_INIT</span><span class=cB0>             0x80
+<a name="l173"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_QUE_INS</span><span class=cB0>              0x81
+<a name="l174"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_QUE_INS_REV</span><span class=cB0>          0x82
+<a name="l175"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_QUE_REM</span><span class=cB0>              0x83
+<a name="l176"></a>
+<a name="l177"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_STRLEN</span><span class=cB0>               0x84
+<a name="l178"></a>
+<a name="l179"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_ZERO</span><span class=cB0>              0x85
+<a name="l180"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_ZERO</span><span class=cB0>          0x86
+<a name="l181"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_CARRY</span><span class=cB0>             0x87
+<a name="l182"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_CARRY</span><span class=cB0>         0x88
+<a name="l183"></a>
+<a name="l184"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_EQU_EQU</span><span class=cB0>           0x89
+<a name="l185"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_EQU</span><span class=cB0>           0x8A
+<a name="l186"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_LESS</span><span class=cB0>              0x8B
+<a name="l187"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_GREATER_EQU</span><span class=cB0>       0x8C
+<a name="l188"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_GREATER</span><span class=cB0>           0x8D
+<a name="l189"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_LESS_EQU</span><span class=cB0>          0x8E
+<a name="l190"></a>
+<a name="l191"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_EQU_EQU2</span><span class=cB0>          0x8F
+<a name="l192"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_EQU2</span><span class=cB0>          0x90
+<a name="l193"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_LESS2</span><span class=cB0>             0x91
+<a name="l194"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_GREATER_EQU2</span><span class=cB0>      0x92
+<a name="l195"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_GREATER2</span><span class=cB0>          0x93
+<a name="l196"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_LESS_EQU2</span><span class=cB0>         0x94
+<a name="l197"></a>
+<a name="l198"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_AND_ZERO</span><span class=cB0>          0x95
+<a name="l199"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_AND_NOT_ZERO</span><span class=cB0>      0x96
+<a name="l200"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_MM_ZERO</span><span class=cB0>           0x97
+<a name="l201"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_MM_NOT_ZERO</span><span class=cB0>       0x98
+<a name="l202"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_AND_AND_ZERO</span><span class=cB0>      0x99
+<a name="l203"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_AND_AND_NOT_ZERO</span><span class=cB0>  0x9A
+<a name="l204"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_OR_OR_ZERO</span><span class=cB0>        0x9B
+<a name="l205"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_OR_OR_NOT_ZERO</span><span class=cB0>    0x9C
+<a name="l206"></a>
+<a name="l207"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_BT</span><span class=cB0>                0x9D
+<a name="l208"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_BTS</span><span class=cB0>               0x9E
+<a name="l209"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_BTR</span><span class=cB0>               0x9F
+<a name="l210"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_BTC</span><span class=cB0>               0xA0
+<a name="l211"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_BT</span><span class=cB0>            0xA1
+<a name="l212"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_BTS</span><span class=cB0>           0xA2
+<a name="l213"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_BTR</span><span class=cB0>           0xA3
+<a name="l214"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_BR_NOT_BTC</span><span class=cB0>           0xA4
+<a name="l215"></a>
+<a name="l216"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SWAP_U8</span><span class=cB0>              0xA5
+<a name="l217"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SWAP_U16</span><span class=cB0>             0xA6
+<a name="l218"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SWAP_U32</span><span class=cB0>             0xA7
+<a name="l219"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SWAP_I64</span><span class=cB0>             0xA8
+<a name="l220"></a>
+<a name="l221"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ABS_I64</span><span class=cB0>              0xA9
+<a name="l222"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SIGN_I64</span><span class=cB0>             0xAA
+<a name="l223"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MIN_I64</span><span class=cB0>              0xAB
+<a name="l224"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MIN_U64</span><span class=cB0>              0xAC
+<a name="l225"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MAX_I64</span><span class=cB0>              0xAD
+<a name="l226"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MAX_U64</span><span class=cB0>              0xAE
+<a name="l227"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_MOD_U64</span><span class=cB0>              0xAF
+<a name="l228"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SQR_I64</span><span class=cB0>              0xB0
+<a name="l229"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SQR_U64</span><span class=cB0>              0xB1
+<a name="l230"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SQR</span><span class=cB0>                  0xB2
+<a name="l231"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ABS</span><span class=cB0>                  0xB3
+<a name="l232"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SQRT</span><span class=cB0>                 0xB4
+<a name="l233"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_SIN</span><span class=cB0>                  0xB5
+<a name="l234"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_COS</span><span class=cB0>                  0xB6
+<a name="l235"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_TAN</span><span class=cB0>                  0xB7
+<a name="l236"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ATAN</span><span class=cB0>                 0xB8
+<a name="l237"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>IC_ICS_NUM</span><span class=cB0>              0xB9
+<a name="l238"></a>
+<a name="l239"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_INCLUDE</span><span class=cB0>      0
+<a name="l240"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_DEFINE</span><span class=cB0>       1
+<a name="l241"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_UNION</span><span class=cB0>        2
+<a name="l242"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_CATCH</span><span class=cB0>        3
+<a name="l243"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_CLASS</span><span class=cB0>        4
+<a name="l244"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_TRY</span><span class=cB0>          5
+<a name="l245"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IF</span><span class=cB0>           6
+<a name="l246"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_ELSE</span><span class=cB0>         7
+<a name="l247"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_FOR</span><span class=cB0>          8
+<a name="l248"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_WHILE</span><span class=cB0>        9
+<a name="l249"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_EXTERN</span><span class=cB0>       10
+<a name="l250"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW__EXTERN</span><span class=cB0>      11
+<a name="l251"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_RETURN</span><span class=cB0>       12
+<a name="l252"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_SIZEOF</span><span class=cB0>       13
+<a name="l253"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW__INTERN</span><span class=cB0>      14
+<a name="l254"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_DO</span><span class=cB0>           15
+<a name="l255"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_ASM</span><span class=cB0>          16
+<a name="l256"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_GOTO</span><span class=cB0>         17
+<a name="l257"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_EXE</span><span class=cB0>          18
+<a name="l258"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_BREAK</span><span class=cB0>        19
+<a name="l259"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_SWITCH</span><span class=cB0>       20
+<a name="l260"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_START</span><span class=cB0>        21
+<a name="l261"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_END</span><span class=cB0>          22
+<a name="l262"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_CASE</span><span class=cB0>         23
+<a name="l263"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_DFT</span><span class=cB0>          24
+<a name="l264"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_PUBLIC</span><span class=cB0>       25
+<a name="l265"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_OFFSET</span><span class=cB0>       26
+<a name="l266"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IMPORT</span><span class=cB0>       27
+<a name="l267"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW__IMPORT</span><span class=cB0>      28
+<a name="l268"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IFDEF</span><span class=cB0>        29
+<a name="l269"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IFNDEF</span><span class=cB0>       30
+<a name="l270"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IFAOT</span><span class=cB0>        31
+<a name="l271"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_IFJIT</span><span class=cB0>        32
+<a name="l272"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_ENDIF</span><span class=cB0>        33
+<a name="l273"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_ASSERT</span><span class=cB0>       34
+<a name="l274"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_REG</span><span class=cB0>          35
+<a name="l275"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_NOREG</span><span class=cB0>        36
+<a name="l276"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_LASTCLASS</span><span class=cB0>    37
+<a name="l277"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_NO_WARN</span><span class=cB0>      38
+<a name="l278"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_HELP_INDEX</span><span class=cB0>   39
+<a name="l279"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_HELP_FILE</span><span class=cB0>    40
+<a name="l280"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_STATIC</span><span class=cB0>       41
+<a name="l281"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_LOCK</span><span class=cB0>         42
+<a name="l282"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_DEFINED</span><span class=cB0>      43
+<a name="l283"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_INTERRUPT</span><span class=cB0>    44
+<a name="l284"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_HASERRCODE</span><span class=cB0>   45
+<a name="l285"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_ARGPOP</span><span class=cB0>       46
+<a name="l286"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_NOARGPOP</span><span class=cB0>     47
+<a name="l287"></a>
+<a name="l288"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_ALIGN</span><span class=cB0>       64
+<a name="l289"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_ORG</span><span class=cB0>         65
+<a name="l290"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_I0</span><span class=cB0>          66
+<a name="l291"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_I8</span><span class=cB0>          67
+<a name="l292"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_I16</span><span class=cB0>         68
+<a name="l293"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_I32</span><span class=cB0>         69
+<a name="l294"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_I64</span><span class=cB0>         70
+<a name="l295"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_U0</span><span class=cB0>          71
+<a name="l296"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_U8</span><span class=cB0>          72
+<a name="l297"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_U16</span><span class=cB0>         73
+<a name="l298"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_U32</span><span class=cB0>         74
+<a name="l299"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_U64</span><span class=cB0>         75
+<a name="l300"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_F64</span><span class=cB0>         76
+<a name="l301"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_DU8</span><span class=cB0>         77
+<a name="l302"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_DU16</span><span class=cB0>        78
+<a name="l303"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_DU32</span><span class=cB0>        79
+<a name="l304"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_DU64</span><span class=cB0>        80
+<a name="l305"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_DUP</span><span class=cB0>         81
+<a name="l306"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_USE16</span><span class=cB0>       82
+<a name="l307"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_USE32</span><span class=cB0>       83
+<a name="l308"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_USE64</span><span class=cB0>       84
+<a name="l309"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_IMPORT</span><span class=cB0>      85
+<a name="l310"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_LIST</span><span class=cB0>        86
+<a name="l311"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_NOLIST</span><span class=cB0>      87
+<a name="l312"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>AKW_BINFILE</span><span class=cB0>     88
+<a name="l313"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>KW_KWS_NUM</span><span class=cB0>      89
+<a name="l314"></a>
+<a name="l315"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_INC</span><span class=cB0>        0x00
+<a name="l316"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_DEC</span><span class=cB0>        0x01
+<a name="l317"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_MOD</span><span class=cB0>        0x02
+<a name="l318"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_LESS</span><span class=cB0>       0x03
+<a name="l319"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_GREATER</span><span class=cB0>    0x04
+<a name="l320"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_LESS_EQU</span><span class=cB0>   0x05
+<a name="l321"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_GREATER_EQU</span><span class=cB0> 0x06
+<a name="l322"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_STRLEN</span><span class=cB0>     0x07
+<a name="l323"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_RDTSC</span><span class=cB0>      0x08
+<a name="l324"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_SIGN_I64</span><span class=cB0>   0x09
+<a name="l325"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_FSTP</span><span class=cB0>       0x0A
+<a name="l326"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_FLD</span><span class=cB0>        0x0B
+<a name="l327"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_SQR</span><span class=cB0>        0x0C
+<a name="l328"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_ABS</span><span class=cB0>        0x0D
+<a name="l329"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_SQRT</span><span class=cB0>       0x0E
+<a name="l330"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_SIN</span><span class=cB0>        0x0F
+<a name="l331"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_COS</span><span class=cB0>        0x10
+<a name="l332"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_TAN</span><span class=cB0>        0x11
+<a name="l333"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMP_TEMPLATE_ATAN</span><span class=cB0>       0x12
+<a name="l334"></a>
+<a name="l335"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>ASSOCF_LEFT</span><span class=cB0>     1
+<a name="l336"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>ASSOCF_RIGHT</span><span class=cB0>    2
+<a name="l337"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>ASSOC_MASK</span><span class=cB0>      3
+<a name="l338"></a>
+<a name="l339"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_NULL</span><span class=cB0>               0x00
+<a name="l340"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_TERM</span><span class=cB0>               0x04
+<a name="l341"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_UNARY_POST</span><span class=cB0>         0x08
+<a name="l342"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_UNARY_PRE</span><span class=cB0>          0x0C
+<a name="l343"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_EXP</span><span class=cB0>                0x10
+<a name="l344"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_MUL</span><span class=cB0>                0x14
+<a name="l345"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_AND</span><span class=cB0>                0x18
+<a name="l346"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_XOR</span><span class=cB0>                0x1C
+<a name="l347"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_OR</span><span class=cB0>                 0x20
+<a name="l348"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_ADD</span><span class=cB0>                0x24
+<a name="l349"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_CMP</span><span class=cB0>                0x28
+<a name="l350"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_CMP2</span><span class=cB0>               0x2C
+<a name="l351"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_AND_AND</span><span class=cB0>            0x30
+<a name="l352"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_XOR_XOR</span><span class=cB0>            0x34
+<a name="l353"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_OR_OR</span><span class=cB0>              0x38
+<a name="l354"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_ASSIGN</span><span class=cB0>             0x3C
+<a name="l355"></a>
+<a name="l356"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PREC_MAX</span><span class=cB0>                0x40
+<a name="l357"></a>
+<a name="l358"></a></span><span class=cB2>//Function/static/public flags</span><span class=cB0>
+<a name="l359"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_PUBLIC</span><span class=cB0>              0x01
+<a name="l360"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_ASM</span><span class=cB0>                 0x02
+<a name="l361"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_STATIC</span><span class=cB0>              0x04
+<a name="l362"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF__</span><span class=cB0>                   0x08
+<a name="l363"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_INTERRUPT</span><span class=cB0>           (1&lt;&lt;</span><span class=cB3>Ff_INTERRUPT</span><span class=cB0>)
+<a name="l364"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_HASERRCODE</span><span class=cB0>          (1&lt;&lt;</span><span class=cB3>Ff_HASERRCODE</span><span class=cB0>)
+<a name="l365"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_ARGPOP</span><span class=cB0>              (1&lt;&lt;</span><span class=cB3>Ff_ARGPOP</span><span class=cB0>)
+<a name="l366"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSF_NOARGPOP</span><span class=cB0>            (1&lt;&lt;</span><span class=cB3>Ff_NOARGPOP</span><span class=cB0>)
+<a name="l367"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSG_FUN_FLAGS1</span><span class=cB0> (</span><span class=cB3>FSF_INTERRUPT</span><span class=cB0>|</span><span class=cB3>FSF_HASERRCODE</span><span class=cB0>|</span><span class=cB3>FSF_ARGPOP</span><span class=cB0>|</span><span class=cB3>FSF_NOARGPOP</span><span class=cB0>)
+<a name="l368"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>FSG_FUN_FLAGS2</span><span class=cB0> (</span><span class=cB3>FSG_FUN_FLAGS1</span><span class=cB0>|</span><span class=cB3>FSF_PUBLIC</span><span class=cB0>)
+<a name="l369"></a>
+<a name="l370"></a></span><span class=cB2>//Byte 0</span><span class=cB0>
+<a name="l371"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0_NULL</span><span class=cB0>               0x000000
+<a name="l372"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0__EXTERN</span><span class=cB0>            0x000001
+<a name="l373"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0__INTERN</span><span class=cB0>            0x000002
+<a name="l374"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0__IMPORT</span><span class=cB0>            0x000003
+<a name="l375"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0_EXTERN</span><span class=cB0>             0x000004
+<a name="l376"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0_IMPORT</span><span class=cB0>             0x000005
+<a name="l377"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS0_TYPECAST</span><span class=cB0>           0x000006
+<a name="l378"></a>
+<a name="l379"></a></span><span class=cB2>//Byte 1</span><span class=cB0>
+<a name="l380"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B_NULL</span><span class=cB0>              0
+<a name="l381"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_NULL</span><span class=cB0>               0x000000
+<a name="l382"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B_LOCAL_VAR</span><span class=cB0>         1
+<a name="l383"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_LOCAL_VAR</span><span class=cB0>          0x000100
+<a name="l384"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B_FUN_ARG</span><span class=cB0>           2
+<a name="l385"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_FUN_ARG</span><span class=cB0>            0x000200
+<a name="l386"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B_CLASS</span><span class=cB0>             3
+<a name="l387"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_CLASS</span><span class=cB0>              0x000300
+<a name="l388"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B_STATIC_LOCAL_VAR</span><span class=cB0>  4
+<a name="l389"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_STATIC_LOCAL_VAR</span><span class=cB0>   0x000400
+<a name="l390"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1B__EXTERN_IMPORT</span><span class=cB0>    5
+<a name="l391"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRS1_NOT_REALLY__EXTERN</span><span class=cB0> 0x000500
+<a name="l392"></a>
+<a name="l393"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>PRSF_UNION</span><span class=cB0>              0x010000
+<a name="l394"></a>
+<a name="l395"></a></span><span class=cB1>class</span><span class=cB0> </span><span class=cB9>COptReg</span><span class=cB0>
+<a name="l396"></a>{
+<a name="l397"></a>  </span><span class=cB9>I64</span><span class=cB0>   </span><span class=cB1>offset</span><span class=cB0>;
+<a name="l398"></a>  </span><span class=cB9>CMemberLst</span><span class=cB0> *m;
+<a name="l399"></a>};
+<a name="l400"></a>
+<a name="l401"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMPF_ASM_BLK</span><span class=cB0>            1
+<a name="l402"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMPF_ONE_ASM_INS</span><span class=cB0>        2
+<a name="l403"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMPF_LEX_FIRST</span><span class=cB0>          4
+<a name="l404"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>CMPF_PRS_SEMICOLON</span><span class=cB0>      8
+<a name="l405"></a>
+<a name="l406"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>

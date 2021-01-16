@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//This loads a lst of zero terminated</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//strings into the sym table and</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//gives a name to it.  Strings like</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//this are known as Define entries.</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l7"><span class=cB4>ST_RAINBOW_10</span></a><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>U0</span><span class=cB0> PrintDigit(</span><span class=cB1>U8</span><span class=cB0> ch)
+<a name="l9"></a>{
+<a name="l10"></a></span><span class=cB2>//The %Z code displays a Define subentry</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'9'</span><span class=cB0>)
+<a name="l12"></a>    </span><span class=cB6>&quot;$FG,%Z$%d$FG$&quot;</span><span class=cB0>,ch-</span><span class=cB6>'0'</span><span class=cB0>,</span><span class=cB6>&quot;ST_RAINBOW_10&quot;</span><span class=cB0>,ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l13"></a>}
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>U0</span><span class=cB0> PrintPattern(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l16"></a>{
+<a name="l17"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l18"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*st++)
+<a name="l19"></a>    PrintDigit(ch);
+<a name="l20"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> Digits()
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB9>I64</span><span class=cB0> num,ch,i;
+<a name="l26"></a>  </span><span class=cB1>U8</span><span class=cB0> answer[1024];
+<a name="l27"></a>
+<a name="l28"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l29"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;text_attr=</span><span class=cB3>DKGRAY</span><span class=cB0>&lt;&lt;4+</span><span class=cB3>WHITE</span><span class=cB0>;
+<a name="l30"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l31"></a></span><span class=cB2>//Set default background and foreground</span><span class=cB0>
+<a name="l32"></a>  </span><span class=cB6>&quot;$WW,1$$BG,DKGRAY$$FD,WHITE$&quot;</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB6>&quot;\nThis is a memory game.  &quot;</span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB6>&quot;Try to remember the digits and enter them.  &quot;</span><span class=cB0>
+<a name="l35"></a>        </span><span class=cB6>&quot;They are colored based on electrical &quot;</span><span class=cB0>
+<a name="l36"></a>        </span><span class=cB6>&quot;engineering color codes.\n&quot;</span><span class=cB0>;
+<a name="l37"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++)
+<a name="l38"></a>    </span><span class=cB6>&quot;$FG,%Z$%d: %Z\n&quot;</span><span class=cB0>,i,</span><span class=cB6>&quot;ST_RAINBOW_10&quot;</span><span class=cB0>,i,i,</span><span class=cB6>&quot;ST_RAINBOW_10&quot;</span><span class=cB0>;
+<a name="l39"></a>  </span><span class=cB6>&quot;$FG$\n&quot;</span><span class=cB0>; </span><span class=cB2>//set to default background</span><span class=cB0>
+<a name="l40"></a>  ch=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l41"></a>  </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB3>CH_ESC</span><span class=cB0>||ch==</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> dg_done;
+<a name="l42"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l43"></a>restart:
+<a name="l44"></a>    num=0;
+<a name="l45"></a></span><span class=cB2>//Set to zeros so we have terminators</span><span class=cB0>
+<a name="l46"></a>    </span><span class=cB5>MemSet</span><span class=cB0>(answer,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>answer</span><span class=cB7>)</span><span class=cB0>);
+<a name="l47"></a>    </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l48"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l49"></a>      </span><span class=cB6>&quot;$WW,1$$BG,DKGRAY$$FD,WHITE$\n&quot;</span><span class=cB0>;
+<a name="l50"></a>      </span><span class=cB6>&quot;Pattern\nLength:%d\n\n&quot;</span><span class=cB0>,num+1;
+<a name="l51"></a>      answer[num++]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l107">RandU32</a></span><span class=cB0>%10+</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l52"></a>      PrintPattern(answer);
+<a name="l53"></a>      ch=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l54"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB3>CH_ESC</span><span class=cB0>||ch==</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> dg_done;
+<a name="l55"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l56"></a>      </span><span class=cB6>&quot;$WW,1$$BG,DKGRAY$$FD,WHITE$\n&quot;</span><span class=cB0>;
+<a name="l57"></a>      </span><span class=cB6>&quot;Guess\nLength:%d\n\n&quot;</span><span class=cB0>,num;
+<a name="l58"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l59"></a>        ch=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l182">GetChar</a></span><span class=cB0>(,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l60"></a>        </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB3>CH_ESC</span><span class=cB0>||ch==</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> dg_done;
+<a name="l61"></a>        PrintDigit(ch);
+<a name="l62"></a>        </span><span class=cB1>if</span><span class=cB0> (ch!=answer[i]) {
+<a name="l63"></a>          </span><span class=cB6>&quot;\nScore:%d\n&quot;</span><span class=cB0>,num;
+<a name="l64"></a>          PrintPattern(answer);
+<a name="l65"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l249">Beep</a></span><span class=cB0>; </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l249">Beep</a></span><span class=cB0>;
+<a name="l66"></a>          ch=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l67"></a>          </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB3>CH_ESC</span><span class=cB0>||ch==</span><span class=cB3>CH_SHIFT_ESC</span><span class=cB0>)
+<a name="l68"></a>            </span><span class=cB1>goto</span><span class=cB0> dg_done;
+<a name="l69"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l70"></a>            </span><span class=cB1>goto</span><span class=cB0> restart;
+<a name="l71"></a>        }
+<a name="l72"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l73"></a>    }
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>dg_done:
+<a name="l76"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l77"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>;
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a>Digits;
+</span></div></pre></body>
+</html>

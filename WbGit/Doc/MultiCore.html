@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>TempleOS does master-slave multicore instead of SMP.  </span><span class=cB2>Core0</span><span class=cB0> is the master.  The 
+<a name="l2"></a>master core's applications explicitly assign computational jobs to other cores 
+<a name="l3"></a>and the TempleOS scheduler does not move tasks between cores.
+<a name="l4"></a>
+<a name="l5"></a>There are multicore safe locks for file access and heap allocations, however, so 
+<a name="l6"></a>TempleOS is symmetrical in some sense.  See </span><a href="http://tinkeros.github.io/WbGit/Demo/MultiCore/LoadTest.html#l1"><span class=cB4>::/Demo/MultiCore/LoadTest.HC</span></a><span class=cB0>.
+<a name="l7"></a>
+<a name="l8"></a>Only tasks on </span><span class=cB2>Core0</span><span class=cB0> can have windows, but other cores can help render them.
+<a name="l9"></a>
+<a name="l10"></a>Each core has an executive </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l181"><span class=cB4>Seth Task</span></a><span class=cB0> which is the father of all tasks on that 
+<a name="l11"></a>core.  </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l171"><span class=cB4>Adam</span></a><span class=cB0> is the </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l181"><span class=cB4>Seth Task</span></a><span class=cB0> on </span><span class=cB2>Core0</span><span class=cB0>.
+<a name="l12"></a>
+<a name="l13"></a>You give a job to a </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l181"><span class=cB4>Seth Task</span></a><span class=cB0> with </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221"><span class=cB4>JobQue</span></a><span class=cB0>() and get the result with </span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l199"><span class=cB4>JobResGet</span></a><span class=cB0>(). 
+<a name="l14"></a> You spawn a task on any core with </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"><span class=cB4>Spawn</span></a><span class=cB0>().
+<a name="l15"></a>
+<a name="l16"></a>Note: You must use the </span><span class=cB2>LOCK</span><span class=cB0> asm prefix when changing shared structures in a 
+<a name="l17"></a>multicore environment.  The </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"><span class=cB4>LBts</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"><span class=cB4>LBtr</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l22"><span class=cB4>LBtc</span></a><span class=cB0>() insts have </span><span class=cB2>LOCK</span><span class=cB0> prefixes.  
+<a name="l18"></a>The compiler has a </span><span class=cB2>lock{}</span><span class=cB0> feature but it doesn't work well.  See </span><span class=cB4>
+<a name="l19"></a></span><a href="http://tinkeros.github.io/WbGit/Demo/MultiCore/Lock.html#l1"><span class=cB4>::/Demo/MultiCore/Lock.HC</span></a><span class=cB0>.
+<a name="l20"></a>
+<a name="l21"></a>See </span><a href="http://tinkeros.github.io/WbGit/Demo/Graphics/Transform.html#l1"><span class=cB4>::/Demo/Graphics/Transform.HC</span></a><span class=cB0>.
+<a name="l22"></a>See </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l1"><span class=cB4>::/Kernel/MultiProc.HC</span></a><span class=cB0>.
+</span></div></pre></body>
+</html>

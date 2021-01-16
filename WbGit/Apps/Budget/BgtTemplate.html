@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> BgtTemplatePurge(CBgtTemplate *tmpt)
+<a name="l2"></a>{
+<a name="l3"></a>  CBgtEntry     *tmpb,*tmpb1;
+<a name="l4"></a>  tmpb=b_head.next;
+<a name="l5"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb!=&amp;b_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l6"></a>    tmpb1=tmpb-&gt;next;
+<a name="l7"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;template==tmpt) {
+<a name="l8"></a>      </span><span class=cB5>QueRem</span><span class=cB0>(tmpb);
+<a name="l9"></a>      BgtEntryDel2(tmpb);
+<a name="l10"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpb);
+<a name="l11"></a>    }
+<a name="l12"></a>    tmpb=tmpb1;
+<a name="l13"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> BgtTemplateDel(CBgtTemplate *tmpt)
+<a name="l17"></a>{
+<a name="l18"></a>  BgtTemplatePurge(tmpt);
+<a name="l19"></a>  BgtEntryDel2(&amp;tmpt-&gt;b);
+<a name="l20"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpt);
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> BgtTemplateExpand(CBgtTemplate *tmpt,</span><span class=cB1>Bool</span><span class=cB0> periodic_copy=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB9>CDate</span><span class=cB0>         d,</span><span class=cB1>start</span><span class=cB0>,</span><span class=cB1>end</span><span class=cB0>;
+<a name="l26"></a>  </span><span class=cB9>CDateStruct</span><span class=cB0>   ds;
+<a name="l27"></a>  CBgtEntry     *tmpb;
+<a name="l28"></a>  </span><span class=cB1>Bool</span><span class=cB0>          first=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l29"></a>
+<a name="l30"></a>  </span><span class=cB1>start</span><span class=cB0>=MyStr2Date(tmpt-&gt;start_date);
+<a name="l31"></a>  </span><span class=cB1>end</span><span class=cB0>  =MyStr2Date(tmpt-&gt;end_date);
+<a name="l32"></a>  tmpt-&gt;b.template=tmpt;
+<a name="l33"></a>  </span><span class=cB1>switch</span><span class=cB0> (tmpt-&gt;type) </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>    </span><span class=cB1>case</span><span class=cB0> BT_INTERVAL:
+<a name="l35"></a>      d=</span><span class=cB1>start</span><span class=cB0>;
+<a name="l36"></a>      </span><span class=cB1>while</span><span class=cB0> (d&lt;=</span><span class=cB1>end</span><span class=cB0>) {
+<a name="l37"></a>        </span><span class=cB1>if</span><span class=cB0> (!first || !periodic_copy) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>          tmpb=BgtEntryCopy(&amp;tmpt-&gt;b,periodic_copy);
+<a name="l39"></a>          tmpb-&gt;date=d;
+<a name="l40"></a>          </span><span class=cB1>if</span><span class=cB0> (periodic_copy)
+<a name="l41"></a>            tmpb-&gt;template=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l42"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l43"></a>            tmpb-&gt;type=BE_TEMPLATE_COPY;
+<a name="l44"></a>          BgtIns(tmpb);
+<a name="l45"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a>        d+=tmpt-&gt;period*0x100000000;
+<a name="l47"></a>        first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l48"></a>      }
+<a name="l49"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l50"></a>    </span><span class=cB1>case</span><span class=cB0> BT_MONTHLY:
+<a name="l51"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39">Date2Struct</a></span><span class=cB0>(&amp;ds,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l52"></a>      </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l53"></a>        d=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l14">Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l54"></a>        </span><span class=cB1>if</span><span class=cB0> (d&lt;=</span><span class=cB1>end</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l55"></a>          </span><span class=cB1>if</span><span class=cB0> (!first || !periodic_copy) {
+<a name="l56"></a>            tmpb=BgtEntryCopy(&amp;tmpt-&gt;b,periodic_copy);
+<a name="l57"></a>            tmpb-&gt;date=d;
+<a name="l58"></a>            </span><span class=cB1>if</span><span class=cB0> (periodic_copy)
+<a name="l59"></a>              tmpb-&gt;template=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l60"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l61"></a>              tmpb-&gt;type=BE_TEMPLATE_COPY;
+<a name="l62"></a>            BgtIns(tmpb);
+<a name="l63"></a>          }
+<a name="l64"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l65"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l66"></a>        </span><span class=cB1>if</span><span class=cB0> (++ds.mon&gt;12) </span><span class=cB7>{</span><span class=cB0>
+<a name="l67"></a>          ds.mon=1;
+<a name="l68"></a>          ds.year++;
+<a name="l69"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l70"></a>        first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l71"></a>      }
+<a name="l72"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l73"></a>    </span><span class=cB1>case</span><span class=cB0> BT_BIMONTHLY:
+<a name="l74"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39">Date2Struct</a></span><span class=cB0>(&amp;ds,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l75"></a>      </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l76"></a>        d=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l14">Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l77"></a>        </span><span class=cB1>if</span><span class=cB0> (d&lt;=</span><span class=cB1>end</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l78"></a>          </span><span class=cB1>if</span><span class=cB0> (!first || !periodic_copy) {
+<a name="l79"></a>            tmpb=BgtEntryCopy(&amp;tmpt-&gt;b,periodic_copy);
+<a name="l80"></a>            tmpb-&gt;date=d;
+<a name="l81"></a>            </span><span class=cB1>if</span><span class=cB0> (periodic_copy)
+<a name="l82"></a>              tmpb-&gt;template=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l83"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l84"></a>              tmpb-&gt;type=BE_TEMPLATE_COPY;
+<a name="l85"></a>            BgtIns(tmpb);
+<a name="l86"></a>          }
+<a name="l87"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l88"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l89"></a>        ds.mon+=2;
+<a name="l90"></a>        </span><span class=cB1>if</span><span class=cB0> (ds.mon&gt;12) </span><span class=cB7>{</span><span class=cB0>
+<a name="l91"></a>          ds.mon-=12;
+<a name="l92"></a>          ds.year++;
+<a name="l93"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l94"></a>        first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l95"></a>      }
+<a name="l96"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l97"></a>    </span><span class=cB1>case</span><span class=cB0> BT_SEMIANNUAL:
+<a name="l98"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39">Date2Struct</a></span><span class=cB0>(&amp;ds,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l99"></a>      </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l100"></a>        d=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l14">Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l101"></a>        </span><span class=cB1>if</span><span class=cB0> (d&lt;=</span><span class=cB1>end</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l102"></a>          </span><span class=cB1>if</span><span class=cB0> (!first || !periodic_copy) {
+<a name="l103"></a>            tmpb=BgtEntryCopy(&amp;tmpt-&gt;b,periodic_copy);
+<a name="l104"></a>            tmpb-&gt;date=d;
+<a name="l105"></a>            </span><span class=cB1>if</span><span class=cB0> (periodic_copy)
+<a name="l106"></a>              tmpb-&gt;template=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l107"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l108"></a>              tmpb-&gt;type=BE_TEMPLATE_COPY;
+<a name="l109"></a>            BgtIns(tmpb);
+<a name="l110"></a>          }
+<a name="l111"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l112"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l113"></a>        ds.mon+=6;
+<a name="l114"></a>        </span><span class=cB1>if</span><span class=cB0> (ds.mon&gt;12) </span><span class=cB7>{</span><span class=cB0>
+<a name="l115"></a>          ds.mon-=12;
+<a name="l116"></a>          ds.year++;
+<a name="l117"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l118"></a>        first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l119"></a>      }
+<a name="l120"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l121"></a>    </span><span class=cB1>case</span><span class=cB0> BT_ANNUAL:
+<a name="l122"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39">Date2Struct</a></span><span class=cB0>(&amp;ds,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l123"></a>      </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l124"></a>        d=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l14">Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l125"></a>        </span><span class=cB1>if</span><span class=cB0> (d&lt;=</span><span class=cB1>end</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l126"></a>          </span><span class=cB1>if</span><span class=cB0> (!first || !periodic_copy) {
+<a name="l127"></a>            tmpb=BgtEntryCopy(&amp;tmpt-&gt;b,periodic_copy);
+<a name="l128"></a>            tmpb-&gt;date=d;
+<a name="l129"></a>            </span><span class=cB1>if</span><span class=cB0> (periodic_copy)
+<a name="l130"></a>              tmpb-&gt;template=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l131"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l132"></a>              tmpb-&gt;type=BE_TEMPLATE_COPY;
+<a name="l133"></a>            BgtIns(tmpb);
+<a name="l134"></a>          }
+<a name="l135"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l136"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l137"></a>        ds.year++;
+<a name="l138"></a>        first=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l139"></a>      }
+<a name="l140"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l141"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l142"></a>}
+<a name="l143"></a>
+<a name="l144"></a></span><span class=cB1>U0</span><span class=cB0> CBgtTemplatesExpand()
+<a name="l145"></a>{
+<a name="l146"></a>  CBgtTemplate  *tmpt=t_head.next;
+<a name="l147"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpt!=&amp;t_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l148"></a>    BgtTemplateExpand(tmpt);
+<a name="l149"></a>    tmpt=tmpt-&gt;next;
+<a name="l150"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l151"></a>}
+<a name="l152"></a>
+<a name="l153"></a>CBgtTemplate *BgtTemplatePmt(CBgtTemplate *dft_t=</span><span class=cB3>NULL</span><span class=cB0>,CBgtEntry *dft_b=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l154"></a>{
+<a name="l155"></a>  CBgtTemplate  t,*tmpt;
+<a name="l156"></a>  CBgtEntry     *tmpb;
+<a name="l157"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(&amp;t,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtTemplate</span><span class=cB7>)</span><span class=cB0>);
+<a name="l158"></a>  </span><span class=cB1>if</span><span class=cB0> (dft_t) </span><span class=cB7>{</span><span class=cB0>
+<a name="l159"></a>    </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;t.</span><span class=cB1>start</span><span class=cB0>,&amp;dft_t-&gt;</span><span class=cB1>start</span><span class=cB0>,BT_SIZE);
+<a name="l160"></a>    dft_b=&amp;dft_t-&gt;b;
+<a name="l161"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l162"></a>    t.type=BT_INTERVAL;
+<a name="l163"></a>    </span><span class=cB1>if</span><span class=cB0> (dft_b)
+<a name="l164"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l932">StrPrint</a></span><span class=cB0>(&amp;t.start_date,</span><span class=cB6>&quot;%D&quot;</span><span class=cB0>,dft_b-&gt;date);
+<a name="l165"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l166"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321">StrCpy</a></span><span class=cB0>(&amp;t.start_date,</span><span class=cB6>&quot;[&quot;</span><span class=cB0>);
+<a name="l167"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321">StrCpy</a></span><span class=cB0>(&amp;t.end_date,</span><span class=cB6>&quot;]&quot;</span><span class=cB0>);
+<a name="l168"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l169"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l170"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l428">PopUpForm</a></span><span class=cB7>(</span><span class=cB0>&amp;t</span><span class=cB7>)</span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>(t.type==BT_INTERVAL &amp;&amp; t.period&gt;0) ||
+<a name="l171"></a>          t.type&gt;BT_INTERVAL</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l172"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpb=BgtEntryPmt</span><span class=cB7>(</span><span class=cB0>dft_b</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l173"></a>        tmpt=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395">CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtTemplate</span><span class=cB7>)</span><span class=cB0>);
+<a name="l174"></a>        </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;tmpt-&gt;</span><span class=cB1>start</span><span class=cB0>,&amp;t.</span><span class=cB1>start</span><span class=cB0>,BT_SIZE);
+<a name="l175"></a>        </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;tmpt-&gt;b,tmpb,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtEntry</span><span class=cB7>)</span><span class=cB0>);
+<a name="l176"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpb);
+<a name="l177"></a>        </span><span class=cB1>return</span><span class=cB0> tmpt;
+<a name="l178"></a>      }
+<a name="l179"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l180"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l181"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l182"></a>}
+</span></div></pre></body>
+</html>

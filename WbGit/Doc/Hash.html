@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cBA>/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>
+<a name="l4"></a>
+<a name="l5"></a>
+<a name="l6"></a>
+<a name="l7"></a>
+<a name="l8"></a>
+<a name="l9"></a>
+<a name="l10"></a>
+<a name="l11"></a>
+<a name="l12"></a>
+<a name="l13"></a>
+<a name="l14"></a>
+<a name="l15"></a>
+<a name="l16"></a>
+<a name="l17"></a>
+<a name="l18"></a>
+<a name="l19"></a>
+<a name="l20"></a>
+<a name="l21"></a>
+<a name="l22"></a>
+<a name="l23"></a>
+<a name="l24"></a>
+<a name="l25"></a>
+<a name="l26"></a>
+<a name="l27"></a>
+<a name="l28"></a>There is a symbol (hash) table for each task.  When a sym is not found, the 
+<a name="l29"></a>parent task's sym table is checked.  All tasks chain back to the </span><span class=cB2>Adam</span><span class=cB0> task.
+<a name="l30"></a>
+<a name="l31"></a>TempleOS sym tables are implemented with an array of linked-lists.  A num is 
+<a name="l32"></a>generated from a string by </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l254"><span class=cB4>HashStr</span></a><span class=cB0>() to index into the array of linked-lists.  
+<a name="l33"></a>Multiple strings can generate the same num, so linked-lists are built.  Newer 
+<a name="l34"></a>entries overshadow older ones.
+<a name="l35"></a>
+<a name="l36"></a>There are various types of entries.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l730"><span class=cB4>Hash Entry Types</span></a><span class=cB0>.
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB5>Symbol Look-up</span><span class=cB0> (Used many places including the </span><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l499"><span class=cB4>JIT Compiler</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l19"><span class=cB4>Loader</span></a><span class=cB0>.)
+<a name="l39"></a>1) Symbol name is </span><a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l4"><span class=cB4>hashed</span></a><span class=cB0> by adding and shifting the ASCII of all chars.
+<a name="l40"></a>2) </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l691"><span class=cB4>hash table</span></a><span class=cB0>-&gt;body[] array is indexed.
+<a name="l41"></a>3) Linked-lst is traversed until match of text and type of entry.
+<a name="l42"></a>4) If not found, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l691"><span class=cB4>hash table</span></a><span class=cB0>-&gt;next table is searched.
+<a name="l43"></a>
+<a name="l44"></a>Duplicate entries are allowed -- they overshadow old entries.
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB5>Address-to-Symbol Look-up</span><span class=cB0> (Slow because not important. We could use trees.)
+<a name="l47"></a>1) FunSeg Cache is </span><a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l114"><span class=cB4>scanned</span></a><span class=cB0>.
+<a name="l48"></a>2) Hash Tables are </span><a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l54"><span class=cB4>scanned</span></a><span class=cB0>.
+</span></div></pre></body>
+</html>

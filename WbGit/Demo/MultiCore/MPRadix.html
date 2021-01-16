@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>On an 8-core machine, this takes the top 3-bits</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>of random numbers and distributes them to the 8 cores</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>for sorting.  Then, it merge sorts them.</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l6"></a>
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> NUM     1000000
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> my_mp_cnt=1&lt;&lt;</span><span class=cB5>Bsr</span><span class=cB0>(</span><span class=cBB>mp_cnt</span><span class=cB0>);</span><span class=cB2>//Power of 2</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB9>I32</span><span class=cB0> *arg1,*arg2;
+<a name="l12"></a></span><span class=cB9>I32</span><span class=cB0> *b[my_mp_cnt],bn[my_mp_cnt];
+<a name="l13"></a></span><span class=cB9>I64</span><span class=cB0> mp_not_done_flags;
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB9>I64</span><span class=cB0> Compare(</span><span class=cB9>I32</span><span class=cB0> *e1,</span><span class=cB9>I32</span><span class=cB0> *e2)
+<a name="l16"></a>{
+<a name="l17"></a>  </span><span class=cB1>return</span><span class=cB0> *e1-*e2;
+<a name="l18"></a>}
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB1>U0</span><span class=cB0> QSortU32(</span><span class=cB9>I32</span><span class=cB0> *base,</span><span class=cB9>I64</span><span class=cB0> num)
+<a name="l21"></a>{</span><span class=cB2>//By customizing, we dramatically improve it!</span><span class=cB0>
+<a name="l22"></a></span><span class=cB2>//Cut and paste from </span><a href="http://tinkeros.github.io/WbGit/Kernel/QSort.html#l1"><span class=cB4>QSortI64</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l24"></a>  </span><span class=cB9>I32</span><span class=cB0> *less,*greater,pivot;
+<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (num&gt;1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>    </span><span class=cB1>do</span><span class=cB0> {
+<a name="l27"></a>      less=base;
+<a name="l28"></a>      greater=base+num;
+<a name="l29"></a>      pivot=base[num/2];
+<a name="l30"></a>      </span><span class=cB1>while</span><span class=cB0> (less&lt;greater) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB1>if</span><span class=cB0> (*less&lt;=pivot)
+<a name="l32"></a>          less++;
+<a name="l33"></a>        </span><span class=cB1>else</span><span class=cB0> {
+<a name="l34"></a>          greater--;
+<a name="l35"></a>          </span><span class=cB5>SwapU32</span><span class=cB0>(less,greater);
+<a name="l36"></a>        }
+<a name="l37"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l38"></a>      i=less-base;
+<a name="l39"></a>      </span><span class=cB1>if</span><span class=cB0> (i==num) </span><span class=cB7>{</span><span class=cB2>//All less or equ to pivot</span><span class=cB0>
+<a name="l40"></a>
+<a name="l41"></a>        </span><span class=cB2>//Point greater to first less</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>do</span><span class=cB0> greater--;
+<a name="l43"></a>        </span><span class=cB1>while</span><span class=cB0> (--i &amp;&amp; *greater==pivot);
+<a name="l44"></a>
+<a name="l45"></a>        </span><span class=cB1>if</span><span class=cB0> (i) {
+<a name="l46"></a>          less=base+num/2; </span><span class=cB2>//Pivot was not moved, point to it</span><span class=cB0>
+<a name="l47"></a>          </span><span class=cB1>if</span><span class=cB0> (less&lt;greater)
+<a name="l48"></a>            </span><span class=cB5>SwapU32</span><span class=cB0>(less,greater);
+<a name="l49"></a>          num=i;
+<a name="l50"></a>        } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>//All equ</span><span class=cB0>
+<a name="l51"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l52"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i&lt;num/2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>        QSortU32(base,i);
+<a name="l54"></a>        num-=i;
+<a name="l55"></a>        base=greater;
+<a name="l56"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l57"></a>        QSortU32(greater,num-i);
+<a name="l58"></a>        num=i;
+<a name="l59"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>    } </span><span class=cB1>while</span><span class=cB0> (num&gt;1);
+<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l62"></a>}
+<a name="l63"></a>
+<a name="l64"></a></span><span class=cB1>U0</span><span class=cB0> MPSort(</span><span class=cB9>I64</span><span class=cB0> dummy=0)
+<a name="l65"></a>{
+<a name="l66"></a>  </span><span class=cB1>no_warn</span><span class=cB0> dummy;
+<a name="l67"></a>  QSortU32(b[</span><span class=cB5>Gs</span><span class=cB0>-&gt;num],bn[</span><span class=cB5>Gs</span><span class=cB0>-&gt;num]);
+<a name="l68"></a>  </span><span class=cB5>LBtr</span><span class=cB0>(&amp;mp_not_done_flags,</span><span class=cB5>Gs</span><span class=cB0>-&gt;num);
+<a name="l69"></a>}
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB1>U0</span><span class=cB0> MPRadixSortDemo(</span><span class=cB9>I64</span><span class=cB0> dummy=0)
+<a name="l72"></a>{
+<a name="l73"></a>  </span><span class=cB1>no_warn</span><span class=cB0> dummy;
+<a name="l74"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k1,k2;
+<a name="l75"></a>  </span><span class=cB1>F64</span><span class=cB0> t0;
+<a name="l76"></a>  arg1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(NUM*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>);
+<a name="l77"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;NUM;i++)
+<a name="l78"></a>    arg1[i]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l97">RandI32</a></span><span class=cB0>;
+<a name="l79"></a>
+<a name="l80"></a>  arg2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(NUM*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>);
+<a name="l81"></a>
+<a name="l82"></a>  </span><span class=cB6>&quot;$GREEN$QSort$FG$\n&quot;</span><span class=cB0>;
+<a name="l83"></a>  t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l84"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(arg2,arg1,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>*NUM);
+<a name="l85"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/QSort.html#l85">QSort</a></span><span class=cB0>(arg2,NUM,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>,&amp;Compare);
+<a name="l86"></a>  </span><span class=cB6>&quot;Time:%9.6f\n&quot;</span><span class=cB0>,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0;
+<a name="l87"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(arg2+NUM/4);
+<a name="l88"></a>
+<a name="l89"></a>  </span><span class=cB6>&quot;$GREEN$QSortU32$FG$\n&quot;</span><span class=cB0>;
+<a name="l90"></a>  t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l91"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(arg2,arg1,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>*NUM);
+<a name="l92"></a>  QSortU32(arg2,NUM);
+<a name="l93"></a>  </span><span class=cB6>&quot;Time:%9.6f\n&quot;</span><span class=cB0>,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0;
+<a name="l94"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(arg2+NUM/4);
+<a name="l95"></a>
+<a name="l96"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;my_mp_cnt;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l97"></a></span><span class=cB2>//We must do full size, just in case.</span><span class=cB0>
+<a name="l98"></a>    </span><span class=cB2>//There will be uneven split between cores</span><span class=cB0>
+<a name="l99"></a>    </span><span class=cB2>//depending on the distribution of rand numbers.</span><span class=cB0>
+<a name="l100"></a>    b[i]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(NUM*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>);
+<a name="l101"></a>    bn[i]=0;
+<a name="l102"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l103"></a>
+<a name="l104"></a>  </span><span class=cB1>if</span><span class=cB0> (my_mp_cnt&lt;2) </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'MultCore'</span><span class=cB0>);
+<a name="l105"></a>
+<a name="l106"></a>  </span><span class=cB6>&quot;$GREEN$MP Radix QSortU32$FG$\n&quot;</span><span class=cB0>;
+<a name="l107"></a>  t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l108"></a>  k1=32-</span><span class=cB5>Bsr</span><span class=cB0>(my_mp_cnt);
+<a name="l109"></a>  k2=my_mp_cnt/2;
+<a name="l110"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l111"></a>    j=arg1[i]&gt;&gt;k1+k2; </span><span class=cB2>//This is a preliminary radix sort.</span><span class=cB0>
+<a name="l112"></a>    b[j][bn[j]++]=arg1[i];
+<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l114"></a>  mp_not_done_flags=1&lt;&lt;my_mp_cnt-1;
+<a name="l115"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;my_mp_cnt;i++)
+<a name="l116"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246">Spawn</a></span><span class=cB0>(&amp;MPSort,</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB3>NULL</span><span class=cB0>,i);
+<a name="l117"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
+<a name="l118"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l119"></a>  j=0;
+<a name="l120"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;my_mp_cnt;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l121"></a>    </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;arg2[j],b[i],bn[i]*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I32</span><span class=cB7>)</span><span class=cB0>);
+<a name="l122"></a>    j+=bn[i];
+<a name="l123"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l124"></a>  </span><span class=cB6>&quot;Time:%9.6f\n&quot;</span><span class=cB0>,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0;
+<a name="l125"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(arg2+NUM/4);
+<a name="l126"></a>
+<a name="l127"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(arg1);
+<a name="l128"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(arg2);
+<a name="l129"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;my_mp_cnt;i++)
+<a name="l130"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(b[i]);
+<a name="l131"></a>}
+<a name="l132"></a>
+<a name="l133"></a>MPRadixSortDemo;
+<a name="l134"></a>
+<a name="l135"></a></span><span class=cB2>/*</span><span class=cB0> Results on 8 Cores 3.397GHz Core i7:
+<a name="l136"></a></span><span class=cB2>QSort</span><span class=cB0>
+<a name="l137"></a>Time: 0.759998
+<a name="l138"></a></span><span class=cB2>QSortU32</span><span class=cB0>
+<a name="l139"></a>Time: 0.093684
+<a name="l140"></a></span><span class=cB2>MP Radix QSortU32</span><span class=cB0>
+<a name="l141"></a>Time: 0.045450
+<a name="l142"></a></span><span class=cB2>*/</span><span class=cB0>
+</span></div></pre></body>
+</html>

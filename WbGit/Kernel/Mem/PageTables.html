@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>asm</span><span class=cB0> {
+<a name="l2"></a></span><span class=cB2>// </span><a href="http://tinkeros.github.io/WbGit/Doc/MemOverview.html#l1"><span class=cB4>::/Doc/MemOverview.DD</span></a><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>USE32</span><span class=cB0>
+<a name="l5"></a></span><span class=cBD>SYS_INIT_PAGE_TABLES</span><span class=cB0>::
+<a name="l6"></a></span><span class=cB2>//Check 1Gig page capability and set page size.</span><span class=cB0>
+<a name="l7"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x80000001
+<a name="l8"></a>        </span><span class=cB1>CPUID</span><span class=cB0>
+<a name="l9"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,1&lt;&lt;21
+<a name="l10"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>BT</span><span class=cB0>      </span><span class=cB2>EDX,26</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>JNC</span><span class=cB0>     </span><span class=cB2>@@05</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>MOV</span><span class=cB0>     </span><span class=cB2>EAX,1&lt;&lt;30</span><span class=cB0>
+<a name="l13"></a>@@05:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PAGE_SIZE</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB2>//Set mapped space limit</span><span class=cB0>
+<a name="l16"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,[</span><span class=cBD>MEM_PHYSICAL_SPACE</span><span class=cB0>]
+<a name="l17"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,[</span><span class=cBD>MEM_PHYSICAL_SPACE</span><span class=cB0>+4]
+<a name="l18"></a>        </span><span class=cB1>BT</span><span class=cB0>      </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PAGE_SIZE</span><span class=cB0>],30 </span><span class=cB2>//Round-up to 1Gig boundary?</span><span class=cB0>
+<a name="l19"></a>        </span><span class=cB1>JNC</span><span class=cB0>     @@10
+<a name="l20"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x3FFFFFFF
+<a name="l21"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l22"></a>        </span><span class=cB1>AND</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,~0x3FFFFFFF
+<a name="l23"></a>@@10:   </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>     </span><span class=cB2>//Need 4Gig extra for uncached alias up at top of space.</span><span class=cB0>
+<a name="l24"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_MAPPED_SPACE</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l25"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_MAPPED_SPACE</span><span class=cB0>+4],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB2>//How many 2Meg pages?</span><span class=cB0>
+<a name="l28"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CL</span><span class=cB0>,21
+<a name="l29"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FFFFF
+<a name="l30"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l31"></a>        </span><span class=cB1>SHRD</span><span class=cB0>    </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>CL</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_2MEG_NUM</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_2MEG_NUM</span><span class=cB0>+4],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB2>//How many 1Gig pages?</span><span class=cB0>
+<a name="l37"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CL</span><span class=cB0>,9
+<a name="l38"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FF
+<a name="l39"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l40"></a>        </span><span class=cB1>SHRD</span><span class=cB0>    </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l41"></a>        </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>CL</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>+4],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB2>//How many 512Gig pages?</span><span class=cB0>
+<a name="l46"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CL</span><span class=cB0>,9
+<a name="l47"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FF
+<a name="l48"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l49"></a>        </span><span class=cB1>SHRD</span><span class=cB0>    </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l50"></a>        </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>CL</span><span class=cB0>
+<a name="l51"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_512GIG_NUM</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l52"></a>        </span><span class=cB1>MOV</span><span class=cB0>     [</span><span class=cBD>MEM_512GIG_NUM</span><span class=cB0>+4],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB2>//Set </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3534"><span class=cB4>CSysFixedArea</span></a><span class=cB2> to zero</span><span class=cB0>
+<a name="l55"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cB3>SYS_FIXED_AREA</span><span class=cB0>
+<a name="l56"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l57"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CSysFixedArea</span><span class=cB0>)/4
+<a name="l58"></a>        </span><span class=cB1>REP_STOSD</span><span class=cB0>
+<a name="l59"></a>
+<a name="l60"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PML2</span><span class=cB0>],</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l61"></a></span><span class=cB2>//Check for 1Gig page capability.</span><span class=cB0>
+<a name="l62"></a>        </span><span class=cB1>BT</span><span class=cB0>      </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PAGE_SIZE</span><span class=cB0>],30
+<a name="l63"></a>        </span><span class=cB1>JC</span><span class=cB0>      @@15
+<a name="l64"></a></span><span class=cB2>//Find PML2 Size</span><span class=cB0>
+<a name="l65"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_2MEG_NUM</span><span class=cB0>]
+<a name="l66"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FF
+<a name="l67"></a>        </span><span class=cB1>AND</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,~0x1FF
+<a name="l68"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,3
+<a name="l69"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB2>//Find PML3 Size</span><span class=cB0>
+<a name="l72"></a>@@15:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PML3</span><span class=cB0>],</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l73"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>]
+<a name="l74"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FF
+<a name="l75"></a>        </span><span class=cB1>AND</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,~0x1FF
+<a name="l76"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,3
+<a name="l77"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB2>//Find PML4 Size</span><span class=cB0>
+<a name="l80"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PML4</span><span class=cB0>],</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l81"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_512GIG_NUM</span><span class=cB0>]
+<a name="l82"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1FF
+<a name="l83"></a>        </span><span class=cB1>AND</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,~0x1FF
+<a name="l84"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,3
+<a name="l85"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l86"></a>
+<a name="l87"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_HEAP_BASE</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB2>//Set page tables to zero</span><span class=cB0>
+<a name="l90"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PML2</span><span class=cB0>]
+<a name="l91"></a>        </span><span class=cB1>SUB</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l92"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l93"></a>        </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,2
+<a name="l94"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l95"></a>        </span><span class=cB1>REP_STOSD</span><span class=cB0>
+<a name="l96"></a>
+<a name="l97"></a></span><span class=cB2>//Check for 1Gig page capability.</span><span class=cB0>
+<a name="l98"></a>        </span><span class=cB1>BT</span><span class=cB0>      </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_PAGE_SIZE</span><span class=cB0>],30
+<a name="l99"></a>        </span><span class=cB1>JC</span><span class=cB0>      @@30
+<a name="l100"></a>
+<a name="l101"></a></span><span class=cB2>//PML2: Use 2Meg Pages</span><span class=cB0>
+<a name="l102"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x87 </span><span class=cB2>//bit 7 is page size (2Meg)</span><span class=cB0>
+<a name="l103"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l104"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,[</span><span class=cBD>MEM_PML2</span><span class=cB0>]
+<a name="l105"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,[</span><span class=cBD>MEM_2MEG_NUM</span><span class=cB0>]
+<a name="l106"></a>@@20:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l107"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l108"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l109"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l110"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x200000
+<a name="l111"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l112"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@20
+<a name="l113"></a></span><span class=cB2>//PML3: Use 2Meg Pages</span><span class=cB0>
+<a name="l114"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,[</span><span class=cBD>MEM_PML2</span><span class=cB0>]
+<a name="l115"></a>        </span><span class=cB1>OR</span><span class=cB0>      </span><span class=cBC>EAX</span><span class=cB0>,7
+<a name="l116"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l117"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,[</span><span class=cBD>MEM_PML3</span><span class=cB0>]
+<a name="l118"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,[</span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>]
+<a name="l119"></a>@@25:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l120"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l121"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l122"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l123"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1000
+<a name="l124"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l125"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@25
+<a name="l126"></a>        </span><span class=cB1>JMP</span><span class=cB0>     @@40
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB2>//PML3: Use 1Gig Pages</span><span class=cB0>
+<a name="l129"></a>@@30:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x87 </span><span class=cB2>//bit 7 is page size (1Gig)</span><span class=cB0>
+<a name="l130"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l131"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,[</span><span class=cBD>MEM_PML3</span><span class=cB0>]
+<a name="l132"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,[</span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>]
+<a name="l133"></a>@@35:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l134"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l135"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l136"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l137"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x40000000
+<a name="l138"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l139"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@35
+<a name="l140"></a>
+<a name="l141"></a></span><span class=cB2>//PML4</span><span class=cB0>
+<a name="l142"></a>@@40:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,[</span><span class=cBD>MEM_PML3</span><span class=cB0>]
+<a name="l143"></a>        </span><span class=cB1>OR</span><span class=cB0>      </span><span class=cBC>EAX</span><span class=cB0>,7
+<a name="l144"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l145"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,[</span><span class=cBD>MEM_PML4</span><span class=cB0>]
+<a name="l146"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,[</span><span class=cBD>MEM_512GIG_NUM</span><span class=cB0>]
+<a name="l147"></a>@@45:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l148"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l149"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EDX</span><span class=cB0>
+<a name="l150"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,4
+<a name="l151"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x1000
+<a name="l152"></a>        </span><span class=cB1>ADC</span><span class=cB0>     </span><span class=cBC>EDX</span><span class=cB0>,0
+<a name="l153"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@45
+<a name="l154"></a>        </span><span class=cB1>RET</span><span class=cB0>
+<a name="l155"></a>
+<a name="l156"></a></span><span class=cBD>SYS_INIT_16MEG_SYS_CODE_BP</span><span class=cB0>::
+<a name="l157"></a></span><span class=cB2>// Init sys_code_bp to BIOS E801 lowest 16Meg val.</span><span class=cB0>
+<a name="l158"></a></span><span class=cB2>// </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l29"><span class=cB4>BlkPoolsInit</span></a><span class=cB2>() adds the rest.</span><span class=cB0>
+<a name="l159"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_CODE_BP</span><span class=cB0>],</span><span class=cB3>SYS_FIXED_AREA</span><span class=cB0>+</span><span class=cB9>CSysFixedArea</span><span class=cB0>.</span><span class=cBB>sys_code_bp</span><span class=cB0>
+<a name="l160"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_CODE_BP</span><span class=cB0>+4],0
+<a name="l161"></a>
+<a name="l162"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_DATA_BP</span><span class=cB0>],0
+<a name="l163"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_DATA_BP</span><span class=cB0>+4],0
+<a name="l164"></a>
+<a name="l165"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l166"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cB9>U16</span><span class=cB0> [</span><span class=cBD>MEM_E801</span><span class=cB0>] </span><span class=cB2>//1 Kb blks between 1M and 16M</span><span class=cB0>
+<a name="l167"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,10
+<a name="l168"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,0x100000
+<a name="l169"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_HEAP_BASE</span><span class=cB0>]
+<a name="l170"></a>        </span><span class=cB1>SUB</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l171"></a>
+<a name="l172"></a></span><span class=cB2>//EDI=BASE EAX=SIZE</span><span class=cB0>
+<a name="l173"></a>        </span><span class=cB1>TEST</span><span class=cB0>    </span><span class=cB1>U8</span><span class=cB0> [</span><span class=cBD>SYS_MEM_INIT_FLAG</span><span class=cB0>],1
+<a name="l174"></a>        </span><span class=cB1>JZ</span><span class=cB0>      @@05
+<a name="l175"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>EAX</span><span class=cB0>
+<a name="l176"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>EDI</span><span class=cB0>
+<a name="l177"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l178"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AL</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> [</span><span class=cBD>SYS_MEM_INIT_VAL</span><span class=cB0>]
+<a name="l179"></a>        </span><span class=cB1>REP_STOSB</span><span class=cB0>
+<a name="l180"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>
+<a name="l181"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>
+<a name="l182"></a>
+<a name="l183"></a>@@05:   </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>
+<a name="l184"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ESI</span><span class=cB0>,</span><span class=cB3>SYS_FIXED_AREA</span><span class=cB0>+</span><span class=cB9>CSysFixedArea</span><span class=cB0>.</span><span class=cBB>sys_code_bp</span><span class=cB0>
+<a name="l185"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EBX</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CBlkPool</span><span class=cB0>.mem_free_lst[</span><span class=cBC>ESI</span><span class=cB0>]
+<a name="l186"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CMemBlk</span><span class=cB0>.next[</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EBX</span><span class=cB0>
+<a name="l187"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CMemBlk</span><span class=cB0>.next+4[</span><span class=cBC>EDI</span><span class=cB0>],0
+<a name="l188"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CBlkPool</span><span class=cB0>.mem_free_lst[</span><span class=cBC>ESI</span><span class=cB0>],</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l189"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CBlkPool</span><span class=cB0>.mem_free_lst+4[</span><span class=cBC>ESI</span><span class=cB0>],0
+<a name="l190"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CMemBlk</span><span class=cB0>.mb_signature[</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cB3>MBS_UNUSED_SIGNATURE_VAL</span><span class=cB0>
+<a name="l191"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CMemBlk</span><span class=cB0>.pags[</span><span class=cBC>EDI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l192"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB3>MEM_PAG_BITS</span><span class=cB0>
+<a name="l193"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CBlkPool</span><span class=cB0>.alloced_u8s[</span><span class=cBC>ESI</span><span class=cB0>],</span><span class=cBC>EAX</span><span class=cB0>
+<a name="l194"></a>
+<a name="l195"></a>        </span><span class=cB1>BTS</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_RUN_LEVEL</span><span class=cB0>],</span><span class=cB3>RLf_16MEG_SYS_CODE_BP</span><span class=cB0>
+<a name="l196"></a>        </span><span class=cB1>RET</span><span class=cB0>
+<a name="l197"></a>}
+<a name="l198"></a>
+<a name="l199"></a></span><span class=cB9>I64</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l199">MemPageTable</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *a)
+<a name="l200"></a>{</span><span class=cB2>//Point to page table entry for addr.</span><span class=cB0>
+<a name="l201"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>mem_page_size</span><span class=cB0>,30</span><span class=cB7>)</span><span class=cB0>)
+<a name="l202"></a>    </span><span class=cB1>return</span><span class=cB0> *</span><span class=cBD>MEM_PML3</span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *)+a&gt;&gt;30*8;
+<a name="l203"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l204"></a>    </span><span class=cB1>return</span><span class=cB0> *</span><span class=cBD>MEM_PML2</span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *)+a&gt;&gt;21*8;
+<a name="l205"></a>}
+</span></div></pre></body>
+</html>

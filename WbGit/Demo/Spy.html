@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Pass the task structure you</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//wish to spy upon.</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> SpyStkRep(</span><span class=cB9>CTask</span><span class=cB0> *task)
+<a name="l5"></a>{
+<a name="l6"></a>  </span><span class=cB9>CDoc</span><span class=cB0> *doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l35">DocDblBufStart</a></span><span class=cB0>;
+<a name="l7"></a>  </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l110">ScanChar</a></span><span class=cB0> &amp;&amp; </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25">TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l104">StkRep</a></span><span class=cB0>(task);
+<a name="l9"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l10"></a>    </span><span class=cB6>&quot;$BK,1$PRESS A KEY$BK,0$\n&quot;</span><span class=cB0>;
+<a name="l11"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l82">DocDblBufSwap</a></span><span class=cB0>;
+<a name="l12"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3">Refresh</a></span><span class=cB0>;
+<a name="l13"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>==doc) </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l82">DocDblBufSwap</a></span><span class=cB0>;
+<a name="l15"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l65">DocDblBufEnd</a></span><span class=cB0>;
+<a name="l16"></a>}
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> SpyCallerRep(</span><span class=cB9>CTask</span><span class=cB0> *task)
+<a name="l19"></a>{
+<a name="l20"></a>  </span><span class=cB9>CDoc</span><span class=cB0> *doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l35">DocDblBufStart</a></span><span class=cB0>;
+<a name="l21"></a>  </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l110">ScanChar</a></span><span class=cB0> &amp;&amp; </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25">TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l22"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l152">CallerRep</a></span><span class=cB0>(task-&gt;rbp,task);
+<a name="l23"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l24"></a>    </span><span class=cB6>&quot;$BK,1$PRESS A KEY$BK,0$\n&quot;</span><span class=cB0>;
+<a name="l25"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l82">DocDblBufSwap</a></span><span class=cB0>;
+<a name="l26"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3">Refresh</a></span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>==doc) </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l82">DocDblBufSwap</a></span><span class=cB0>;
+<a name="l29"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l65">DocDblBufEnd</a></span><span class=cB0>;
+<a name="l30"></a>}
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB1>U0</span><span class=cB0> Spy()
+<a name="l33"></a>{
+<a name="l34"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l35"></a>  </span><span class=cB9>CTask</span><span class=cB0> *task;
+<a name="l36"></a>
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    task=</span><span class=cB5>Fs</span><span class=cB0>-&gt;next_task;
+<a name="l39"></a>    </span><span class=cB1>while</span><span class=cB0> (task!=</span><span class=cB5>Fs</span><span class=cB0>) {
+<a name="l40"></a>      </span><span class=cB6>&quot;$MA+X,T=\&quot;Task:%08X:%16ts\&quot;,LM=\&quot;0x%08X\n\&quot;$\n&quot;</span><span class=cB0>,
+<a name="l41"></a>            task,task-&gt;task_name,task;
+<a name="l42"></a>      task=task-&gt;next_task;
+<a name="l43"></a>    }
+<a name="l44"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l45"></a>    task=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGet.html#l172">GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;Task Addr: &quot;</span><span class=cB0>,0);
+<a name="l46"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25">TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l47"></a>      </span><span class=cB6>&quot;\n\n\t$BT,\&quot;StkRep\&quot;,LM=\&quot;1\n\&quot;$\n\n\n&quot;</span><span class=cB0>
+<a name="l48"></a>            </span><span class=cB6>&quot;\n\n\t$BT,\&quot;CallerRep\&quot;,LM=\&quot;2\n\&quot;$\n\n\n&quot;</span><span class=cB0>;
+<a name="l49"></a>      i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGet.html#l172">GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;&quot;</span><span class=cB0>,0);
+<a name="l50"></a>      </span><span class=cB1>if</span><span class=cB0> (i==1)
+<a name="l51"></a>        SpyStkRep(task);
+<a name="l52"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i==2)
+<a name="l53"></a>        SpyCallerRep(task);
+<a name="l54"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l55"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l56"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l57"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l59"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l60"></a>}
+<a name="l61"></a>
+<a name="l62"></a>Spy;
+</span></div></pre></body>
+</html>

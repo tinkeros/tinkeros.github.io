@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>
+<a name="l2"></a>        </span><span class=cBA>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>
+<a name="l5"></a>
+<a name="l6"></a>        </span><span class=cBA>&lt;2&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a>
+<a name="l9"></a>
+<a name="l10"></a>        </span><span class=cBA>&lt;3&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a>
+<a name="l13"></a>
+<a name="l14"></a>
+<a name="l15"></a>
+<a name="l16"></a>
+<a name="l17"></a>
+<a name="l18"></a>
+<a name="l19"></a>
+<a name="l20"></a>
+<a name="l21"></a>
+<a name="l22"></a>
+<a name="l23"></a>
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cBA>
+<a name="l26"></a>&lt;4&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0> </span><span class=cB2>//Pointer to sprite in </span><a href="http://tinkeros.github.io/WbGit/Mountain.html#l1"><span class=cB4>Mountain.HC</span></a><span class=cB2> file</span><span class=cB0>
+<a name="l27"></a>
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> QUAIL_NUM       128
+<a name="l29"></a>#</span><span class=cB1>define</span><span class=cB0> SKY_HEIGHT      (0.6*</span><span class=cB3>GR_HEIGHT</span><span class=cB0>)
+<a name="l30"></a></span><span class=cB1>class</span><span class=cB0> QuailStruct
+<a name="l31"></a>{
+<a name="l32"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y,dx,dy,phase;
+<a name="l33"></a>  </span><span class=cB1>Bool</span><span class=cB0> dead,pad[7];
+<a name="l34"></a>} q[QUAIL_NUM];
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>F64</span><span class=cB0> t0,t_last;
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB1>U0</span><span class=cB0> DrawQuail(</span><span class=cB9>CTask</span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l39"></a>{
+<a name="l40"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l41"></a>  </span><span class=cB1>U8</span><span class=cB0> *tmps;
+<a name="l42"></a>  </span><span class=cB1>F64</span><span class=cB0> tt,t1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0;
+<a name="l43"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,0,SKY_HEIGHT,0,</span><span class=cBA>&lt;4&gt;</span><span class=cB0>);
+<a name="l44"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;QUAIL_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    tt=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ASnd.html#l53">Tri</a></span><span class=cB0>(t1+q[i].phase,1.0);
+<a name="l46"></a>    </span><span class=cB1>if</span><span class=cB0> (q[i].dead) {
+<a name="l47"></a>      q[i].x+=(t1-t_last)*q[i].dx;
+<a name="l48"></a>      q[i].y+=50*(t1-t_last);
+<a name="l49"></a>      </span><span class=cB1>if</span><span class=cB0> (q[i].y&gt;SKY_HEIGHT) </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>        q[i].y=SKY_HEIGHT;
+<a name="l51"></a>        q[i].dx=0;
+<a name="l52"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l53"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,q[i].x,q[i].y,0,</span><span class=cBA>&lt;3&gt;</span><span class=cB0>);
+<a name="l54"></a>    } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l55"></a>      q[i].x+=(t1-t_last)*q[i].dx;
+<a name="l56"></a>      q[i].y+=(t1-t_last)*q[i].dy;
+<a name="l57"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;q[i].y&lt;SKY_HEIGHT-20</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>        q[i].dy=-q[i].dy;
+<a name="l59"></a>        q[i].y+=(t1-t_last)*q[i].dy;
+<a name="l60"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l61"></a>      tmps=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l328">SpriteInterpolate</a></span><span class=cB0>(tt,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,</span><span class=cBA>&lt;2&gt;</span><span class=cB0>);
+<a name="l62"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,q[i].x,q[i].y,0,tmps);
+<a name="l63"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmps);
+<a name="l64"></a>      </span><span class=cB1>if</span><span class=cB0> (q[i].x&gt;0 &amp;&amp; t1-t_last&gt;10*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>)
+<a name="l65"></a>        q[i].dead=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l66"></a>    }
+<a name="l67"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l68"></a>  t_last=t1;
+<a name="l69"></a>}
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB1>U0</span><span class=cB0> Quail()
+<a name="l72"></a>{
+<a name="l73"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l74"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;QUAIL_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>    q[i].x=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l77">RandI16</a></span><span class=cB0>%</span><span class=cB3>GR_WIDTH</span><span class=cB0>;
+<a name="l76"></a>    q[i].y=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l87">RandU16</a></span><span class=cB0>%SKY_HEIGHT;
+<a name="l77"></a>    q[i].dx=50*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>+10;
+<a name="l78"></a>    q[i].dy=20*(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>-0.5);
+<a name="l79"></a>    q[i].phase=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>;
+<a name="l80"></a>    q[i].dead=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>); </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l83"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;text_attr=</span><span class=cB3>YELLOW</span><span class=cB0>&lt;&lt;4+</span><span class=cB3>BLUE</span><span class=cB0>;
+<a name="l84"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l507">WinMax</a></span><span class=cB0>;
+<a name="l85"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l86"></a>  </span><span class=cB6>&quot;$BG,YELLOW$&quot;</span><span class=cB0>;
+<a name="l87"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/God/GodBible.html#l240">BibleVerse</a></span><span class=cB0>(,</span><span class=cB6>&quot;Numbers,11:11&quot;</span><span class=cB0>,88);
+<a name="l88"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l73">DocTop</a></span><span class=cB0>;
+<a name="l89"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l147">PopUpOk</a></span><span class=cB0>(</span><span class=cB6>&quot;Scroll down to finish reading.\n&quot;</span><span class=cB0>
+<a name="l90"></a>        </span><span class=cB6>&quot;$GREEN$&lt;SHIFT-ESC&gt;$FG$ when done.&quot;</span><span class=cB0>);
+<a name="l91"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3">View</a></span><span class=cB0>;
+<a name="l92"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l93"></a>  </span><span class=cB6>&quot;$BG,LTCYAN$%h*c&quot;</span><span class=cB0>,</span><span class=cB5>ToI64</span><span class=cB0>(SKY_HEIGHT/</span><span class=cB3>FONT_HEIGHT</span><span class=cB0>),</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l94"></a>  </span><span class=cB6>&quot;$BG,YELLOW$%h5c&quot;</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l95"></a>
+<a name="l96"></a>  t0=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>;
+<a name="l97"></a>  t_last=0;
+<a name="l98"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;DrawQuail;
+<a name="l99"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l100"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l101"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>);
+<a name="l102"></a>}
+</span></div></pre></body>
+</html>

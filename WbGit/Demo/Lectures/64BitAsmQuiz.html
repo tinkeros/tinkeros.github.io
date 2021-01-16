@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                              <h1><center>64-Bit Assembly Quiz</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>1) In 64-bit mode, how many bytes are always pushed?
+<a name="l4"></a>
+<a name="l5"></a>        PUSH    12
+<a name="l6"></a>        PUSH    EAX
+<a name="l7"></a>
+<a name="l8"></a>2) What happens to the upper 32-bits?
+<a name="l9"></a>
+<a name="l10"></a>        XOR     EAX,EAX
+<a name="l11"></a>        MOV     EAX,0x12345678
+<a name="l12"></a>        MOV     EAX,0x80000000
+<a name="l13"></a>
+<a name="l14"></a>3) How do you set FS or GS values?
+<a name="l15"></a>
+<a name="l16"></a>4) If FS points to current task record, what's wrong with this instruction?
+<a name="l17"></a>
+<a name="l18"></a>        MOV     RAX,U64 FS:[TSS_SOME_MEMBER]
+<a name="l19"></a>
+<a name="l20"></a>5) Which instruction takes more bytes?
+<a name="l21"></a>
+<a name="l22"></a>        MOV     RAX,U64 [R8]
+<a name="l23"></a>        MOV     RAX,U64 [R13]
+<a name="l24"></a>
+<a name="l25"></a>6) Are these the same number of bytes?
+<a name="l26"></a>
+<a name="l27"></a>        MOV     RAX,1234
+<a name="l28"></a>        MOV     R8,1234
+<a name="l29"></a>        MOV     EAX,1234
+<a name="l30"></a>
+<a name="l31"></a>7) True or False
+<a name="l32"></a>
+<a name="l33"></a>  a) You can access the lowest byte of RAX.
+<a name="l34"></a>
+<a name="l35"></a>  b) You can access the lowest byte of ESI.
+<a name="l36"></a>
+<a name="l37"></a>  c) You can access the second-to-lowest byte of RAX.
+<a name="l38"></a>
+<a name="l39"></a>  d) You can access the second-to-lowest byte of ESI.
+<a name="l40"></a>
+<a name="l41"></a>8) How do you call a subroutine at 0x10,0000,0000 from code at 0x00,0010,0000?
+<a name="l42"></a>
+<a name="l43"></a>9) How much faster is a REL32 call instruction compared to a software interrupt 
+<a name="l44"></a>or SYSCALL?
+<a name="l45"></a>
+<a name="l46"></a>10) How long does an IN or OUT instruction take on a 1GHz machine and on a 3GHz 
+<a name="l47"></a>machine?
+<a name="l48"></a>
+<a name="l49"></a>11) How do you push all 16 regs?
+<a name="l50"></a>
+<a name="l51"></a>12) Should you put the regs in a TSS?
+<a name="l52"></a>
+<a name="l53"></a>13) You can have 4K or 4Meg pages in 32-bit mode.  You can have 4K or what size 
+<a name="l54"></a>pages in 64-bit mode?
+<a name="l55"></a>
+<a name="l56"></a>14) On a fresh CPU with an empty TLB, how many memory accesses (page tables) 
+<a name="l57"></a>does it take to access one virtual address?
+<a name="l58"></a>
+<a name="l59"></a>----
+<a name="l60"></a>
+<a name="l61"></a>TempleOS identity-maps everything, all the time, so the usual convention of 
+<a name="l62"></a>upper memory being for kernel does not apply.  It uses physical addresses, 
+<a name="l63"></a>basically.  It puts all code in the lowest 2-Gig memory range so that it can use 
+<a name="l64"></a>the CALL REL32 instruction, the fastest.  It never changes privilege levels or 
+<a name="l65"></a>messes with page tables, once it is up-and-running.
+<a name="l66"></a>
+<a name="l67"></a>----
+<a name="l68"></a>
+<a name="l69"></a>ANSWERS:
+<a name="l70"></a>
+<a name="l71"></a>1) All stack pushes and pops are 64-bits.
+<a name="l72"></a>
+<a name="l73"></a>2) The upper 32-bits are set to zero.
+<a name="l74"></a>
+<a name="l75"></a>3) To set FS or GS, you use WRMSR to write a model specific reg.  See </span><span class=cB4>
+<a name="l76"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l586"><span class=cB4>IA32_FS_BASE</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l445"><span class=cB4>SET_FS_BASE</span></a><span class=cB0>.
+<a name="l77"></a>
+<a name="l78"></a>4) Displacement addressing is now RIP relative, so RIP would be added to 
+<a name="l79"></a>TSS_SOME_MEMBER.  (Useless)
+<a name="l80"></a>
+<a name="l81"></a>5) The R13 instruction takes one more byte because it is like </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1834"><span class=cB4>REG_RBP</span></a><span class=cB0> in the 
+<a name="l82"></a>ModR.
+<a name="l83"></a>
+<a name="l84"></a>6) The R8 instruction needs a REX byte prefix to specify upper-8 reg.
+<a name="l85"></a>
+<a name="l86"></a>7) You can access the lowest byte of any reg.  You can access AH but not the 
+<a name="l87"></a>second-to-lowest byte of ESI.
+<a name="l88"></a>
+<a name="l89"></a>8) To call a subroutine farther than 2Gig away, you put the address into RAX, 
+<a name="l90"></a>then CALL RAX.
+<a name="l91"></a>
+<a name="l92"></a>9) CALL REL32 is significantly faster.  See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/InterruptDemo.html#l1"><span class=cB4>::/Demo/Lectures/InterruptDemo.HC</span></a><span class=cB0>.
+<a name="l93"></a>
+<a name="l94"></a>10) IN or OUT instructions happen at a fixed speed based on the original ISA bus 
+<a name="l95"></a>clock.
+<a name="l96"></a>
+<a name="l97"></a>11) PUSHAD is not available for 64-bit mode, so you do it by hand.
+<a name="l98"></a>
+<a name="l99"></a>12) The TSS is no longer used to hold the task state because there are 16 regs 
+<a name="l100"></a>and they are 64-bits, not 32-bits.  I guess Intel decided doing it by hand was 
+<a name="l101"></a>better than TSSes.
+<a name="l102"></a>
+<a name="l103"></a>13) 64-bit mode has 4K or 2Meg page size.
+<a name="l104"></a>
+<a name="l105"></a>14) For one access, there are 3-4 levels of page tables plus the location 
+<a name="l106"></a>itself.
+</span></div></pre></body>
+</html>

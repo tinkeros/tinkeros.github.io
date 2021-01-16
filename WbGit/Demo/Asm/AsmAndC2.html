@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*Asm labels can only be defined once</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>in a task.  &lt;F5&gt; will spawn a new task</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>each time, so you don't get redefine</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>error, like when repeatedly #including</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>it from the cmd line.</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB2>//This is to demo glbl var access.</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>//Glbs defined elsewhere can accessed too, like cnts.jiffies.</span><span class=cB0>
+<a name="l10"></a></span><span class=cB9>I64</span><span class=cB0> glbl_ona=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l183">Freq2Ona</a></span><span class=cB0>(400),glbl_ona_step=10,glbl_ona_base=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l183">Freq2Ona</a></span><span class=cB0>(100);
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>asm</span><span class=cB0> {
+<a name="l13"></a></span><span class=cB2>//Opcodes are slightly different to make writing my x86_64 assembler easier.</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l1"><span class=cB4>::/Compiler/OpCodes.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a>JIFFIES_MSG:    </span><span class=cB1>DU8</span><span class=cB0> </span><span class=cB6>&quot;Jiffies:&quot;</span><span class=cB0>,0;
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l1"><span class=cB4>::/Kernel/StrA.HC</span></a><span class=cB2> and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l1"><span class=cB4>::/Kernel/KUtils.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l19"></a>
+<a name="l20"></a>_BEEPS2::
+<a name="l21"></a></span><span class=cB2>//You can clobber RAX,RBX,RCX,RDX,R8,R9.  The compiler expects that.</span><span class=cB0>
+<a name="l22"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1846"><span class=cB4>REGG_CLOBBERED</span></a><span class=cB2> and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1848"><span class=cB4>REGG_STK_TMP</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l23"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l24"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l25"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> </span><span class=cB3>SF_ARG1</span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>] </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l623"><span class=cB4>SF_ARG1</span></a><span class=cB0>
+<a name="l26"></a>
+<a name="l27"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U64</span><span class=cB0> [&amp;</span><span class=cBB>cnts</span><span class=cB0>.jiffies]
+<a name="l28"></a>
+<a name="l29"></a>@@05:   </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l30"></a></span><span class=cB2>//U0 </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l249"><span class=cB4>Beep</span></a><span class=cB2>(I8 ona=62,Bool busy=FALSE)</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB3>FALSE</span><span class=cB0>   </span><span class=cB2>//Do not busy (spin) wait</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U64</span><span class=cB0> [&amp;glbl_ona] </span><span class=cB2>//evaluated at run time</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB1>CALL</span><span class=cB0>    &amp;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l249">Beep</a></span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l35"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@05
+<a name="l36"></a>
+<a name="l37"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RSI</span><span class=cB0>     </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1849"><span class=cB4>REGG_LOCAL_VARS</span></a><span class=cB2> &amp; </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1850"><span class=cB4>REGG_LOCAL_NON_PTR_VARS</span></a><span class=cB0>
+<a name="l38"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>,JIFFIES_MSG
+<a name="l39"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>PUT_STR</span><span class=cB0>
+<a name="l40"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RSI</span><span class=cB0>
+<a name="l41"></a>
+<a name="l42"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>SUB</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> [&amp;</span><span class=cBB>cnts</span><span class=cB0>.jiffies]
+<a name="l44"></a>        </span><span class=cB1>NEG</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l45"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>PUT_HEX_U64</span><span class=cB0>
+<a name="l46"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>
+<a name="l47"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>PUT_CHARS</span><span class=cB0>
+<a name="l48"></a>
+<a name="l49"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l50"></a>        </span><span class=cB1>RET1</span><span class=cB0>    8
+<a name="l51"></a>}
+<a name="l52"></a>
+<a name="l53"></a></span><span class=cB2>//My convention is to put an underscore</span><span class=cB0>
+<a name="l54"></a></span><span class=cB2>//on C callable asm routines.</span><span class=cB0>
+<a name="l55"></a></span><span class=cB1>_extern</span><span class=cB0> _BEEPS2 </span><span class=cB1>U0</span><span class=cB0> Beeps2(</span><span class=cB9>I64</span><span class=cB0> cnt);
+<a name="l56"></a>
+<a name="l57"></a></span><span class=cB1>U0</span><span class=cB0> AsmAndC2()
+<a name="l58"></a>{
+<a name="l59"></a>  </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>reg</span><span class=cB0> </span><span class=cBC>R15</span><span class=cB0> i;
+<a name="l60"></a>
+<a name="l61"></a>  i=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGet.html#l172">GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;$PURPLE$\n\nNum of beeps 1-5 (%d):$FG$&quot;</span><span class=cB0>,3,1,5);
+<a name="l62"></a>  Beeps2(i);
+<a name="l63"></a>
+<a name="l64"></a>  </span><span class=cB1>asm</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>    </span><span class=cB1>LIST</span><span class=cB0>
+<a name="l66"></a></span><span class=cB2>//You can clobber RAX,RBX,RCX,RDX, but preserve the rest.</span><span class=cB0>
+<a name="l67"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cBC>R15</span><span class=cB0> </span><span class=cB2>//You can clobber RAX,RBX,RCX,RDX. Preserve the rest.</span><span class=cB0>
+<a name="l68"></a>    @@05:       </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l69"></a>
+<a name="l70"></a></span><span class=cB2>//U0 </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"><span class=cB4>Snd</span></a><span class=cB2>(I8 ona);</span><span class=cB0>
+<a name="l71"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0> </span><span class=cB2>//ona=loop*10+100.0Hz</span><span class=cB0>
+<a name="l72"></a>    </span><span class=cB1>IMUL2</span><span class=cB0>       </span><span class=cBC>RAX</span><span class=cB0>,glbl_ona_step </span><span class=cB2>//Intentionally evaluated at compile time</span><span class=cB0>
+<a name="l73"></a>    </span><span class=cB1>ADD</span><span class=cB0> </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> [&amp;glbl_ona_base]  </span><span class=cB2>//Intentionally evaluated at run time</span><span class=cB0>
+<a name="l74"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l75"></a>    </span><span class=cB1>CALL</span><span class=cB0>        &amp;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>    </span><span class=cB2>//We can skip IMPORT with &amp; if JIT compiling.</span><span class=cB0>
+<a name="l76"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cBB>cnts</span><span class=cB0>.time_stamp_freq&gt;&gt;3 </span><span class=cB2>//JIT Const.  Simple delay loop.</span><span class=cB0>
+<a name="l77"></a>@@10:   </span><span class=cB1>LOOP</span><span class=cB0>    @@10
+<a name="l78"></a>
+<a name="l79"></a>    </span><span class=cB1>POP</span><span class=cB0> </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l80"></a>    </span><span class=cB1>LOOP</span><span class=cB0>        @@05
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191">Snd</a></span><span class=cB0>;
+<a name="l83"></a>}
+<a name="l84"></a>
+<a name="l85"></a>AsmAndC2;
+</span></div></pre></body>
+</html>

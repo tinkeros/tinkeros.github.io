@@ -1,0 +1,696 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l1">ChkPtr</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr)
+<a name="l2"></a>{</span><span class=cB2>//Check if addr is valid ptr.</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>mem_heap_base</span><span class=cB0>&lt;=ptr&lt;=</span><span class=cBB>mem_mapped_space</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l4"></a>    </span><span class=cB1>if</span><span class=cB0> (*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l199">MemPageTable</a></span><span class=cB7>(</span><span class=cB0>ptr</span><span class=cB7>)</span><span class=cB0>&amp;1)
+<a name="l5"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l6"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l7"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ptr&lt;</span><span class=cBB>mem_boot_base</span><span class=cB0>)
+<a name="l9"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l10"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ptr&lt;</span><span class=cB3>VGAM_GRAPHICS</span><span class=cB0>)
+<a name="l11"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l12"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l13"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l16">ChkCodePtr</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr)
+<a name="l17"></a>{</span><span class=cB2>//Check if addr is valid code addr.</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>mem_heap_base</span><span class=cB0>&lt;=ptr&lt;=</span><span class=cBB>mem_heap_limit</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>    </span><span class=cB1>if</span><span class=cB0> (*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l199">MemPageTable</a></span><span class=cB7>(</span><span class=cB0>ptr</span><span class=cB7>)</span><span class=cB0>&amp;1)
+<a name="l20"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l21"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l22"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l23"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ptr&lt;</span><span class=cBB>mem_boot_base</span><span class=cB0>)
+<a name="l24"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l25"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ptr&lt;</span><span class=cB3>VGAM_GRAPHICS</span><span class=cB0>)
+<a name="l26"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l28"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l29"></a>}
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l31">ChkOnStk</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l32"></a>{</span><span class=cB2>//Check if addr is valid stk addr.</span><span class=cB0>
+<a name="l33"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (task) </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (&amp;task-&gt;stk-&gt;stk_base&lt;=ptr&lt;=
+<a name="l38"></a>          </span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;stk-&gt;stk_base</span><span class=cB7>)(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+task-&gt;stk-&gt;stk_size)
+<a name="l39"></a>      res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>mem_heap_base</span><span class=cB0>&lt;=ptr&lt;=</span><span class=cBB>mem_heap_limit</span><span class=cB0>)
+<a name="l41"></a>    res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l42"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l44"></a>}
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB9>I64</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l46">UnusedStk</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l47"></a>{</span><span class=cB2>//Count of usused bytes in task's stk.</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB9>I64</span><span class=cB0> res;
+<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l50"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l51"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0>)
+<a name="l53"></a>    res=</span><span class=cB5>GetRSP</span><span class=cB0>()(</span><span class=cB1>U8</span><span class=cB0> *)-(&amp;task-&gt;stk-&gt;stk_base)(</span><span class=cB1>U8</span><span class=cB0> *);
+<a name="l54"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l55"></a>    res=task-&gt;rsp(</span><span class=cB1>U8</span><span class=cB0> *)-(&amp;task-&gt;stk-&gt;stk_base)(</span><span class=cB1>U8</span><span class=cB0> *);
+<a name="l56"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l57"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l58"></a>}
+<a name="l59"></a>
+<a name="l60"></a></span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l60">Caller</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> num=1)
+<a name="l61"></a>{</span><span class=cB2>//Returns the addr of the fun which called this one,</span><span class=cB0>
+<a name="l62"></a></span><span class=cB2>//or the caller of the caller, etc.</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB1>U8</span><span class=cB0> **rbp=</span><span class=cB5>GetRBP</span><span class=cB0>,**ptr;
+<a name="l64"></a>  </span><span class=cB1>while</span><span class=cB0> (num--) </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
+<a name="l66"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l67"></a>    rbp=*rbp;
+<a name="l68"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l31">ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,</span><span class=cB5>Fs</span><span class=cB7>)</span><span class=cB0>)
+<a name="l69"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l70"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l71"></a>  ptr=rbp+1;
+<a name="l72"></a>  </span><span class=cB1>return</span><span class=cB0> *ptr;
+<a name="l73"></a>}
+<a name="l74"></a>
+<a name="l75"></a></span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l75">TaskCaller</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> num=0,</span><span class=cB1>Bool</span><span class=cB0> saved_context=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l76"></a>{</span><span class=cB2>//Fetches addr of Nth caller on task's stk.</span><span class=cB0>
+<a name="l77"></a>  </span><span class=cB1>U8</span><span class=cB0> **ptr,**rbp,**rsp;
+<a name="l78"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l79"></a>  </span><span class=cB1>if</span><span class=cB0> (!saved_context &amp;&amp; task==</span><span class=cB5>Fs</span><span class=cB0>)
+<a name="l80"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l60">Caller</a></span><span class=cB0>(num+1);
+<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25">TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l82"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l83"></a>  rbp=task-&gt;rbp;
+<a name="l84"></a>  rsp=task-&gt;rsp;
+<a name="l85"></a>  </span><span class=cB1>if</span><span class=cB0> (num) </span><span class=cB7>{</span><span class=cB0>
+<a name="l86"></a>    </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l31">ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l87"></a>      ptr=rbp+1;
+<a name="l88"></a>      </span><span class=cB1>if</span><span class=cB0> (! --num)
+<a name="l89"></a>        </span><span class=cB1>return</span><span class=cB0> *ptr;
+<a name="l90"></a>      </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
+<a name="l91"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l92"></a>      rbp=*rbp;
+<a name="l93"></a>    }
+<a name="l94"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l95"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l96"></a>    </span><span class=cB1>if</span><span class=cB0> (task-&gt;rip==</span><span class=cBD>_RET</span><span class=cB0>)
+<a name="l97"></a>      </span><span class=cB1>return</span><span class=cB0> *rsp;
+<a name="l98"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l99"></a>      </span><span class=cB1>return</span><span class=cB0> task-&gt;rip;
+<a name="l100"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l101"></a>}
+<a name="l102"></a>#</span><span class=cB1>define</span><span class=cB0> STK_REP_LEN     32
+<a name="l103"></a>
+<a name="l104"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l104">StkRep</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l105"></a>{</span><span class=cB2>//Reports whats on the stk.</span><span class=cB0>
+<a name="l106"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,addr,
+<a name="l107"></a>        **rbp,**rsp,*my_rsp[STK_REP_LEN];
+<a name="l108"></a>  </span><span class=cB9>CHashTable</span><span class=cB0> *old_hash=</span><span class=cB5>Fs</span><span class=cB0>-&gt;hash_table;
+<a name="l109"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25">TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l111"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l112"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l113"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l114"></a>  </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l115"></a>    rbp=</span><span class=cB5>GetRBP</span><span class=cB0>;
+<a name="l116"></a>    rsp=rbp+3;
+<a name="l117"></a>    rbp=*rbp;
+<a name="l118"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l119"></a>    rsp=task-&gt;rsp;
+<a name="l120"></a>    rbp=task-&gt;rbp;
+<a name="l121"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l122"></a>  </span><span class=cB1>if</span><span class=cB0> (task-&gt;rip==</span><span class=cBD>_RET</span><span class=cB0>)
+<a name="l123"></a>    addr=*rsp;
+<a name="l124"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l125"></a>    addr=task-&gt;rip;
+<a name="l126"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(my_rsp,rsp,STK_REP_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l127"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l128"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;hash_table=task-&gt;hash_table;
+<a name="l129"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;STK_REP_LEN;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l130"></a>    </span><span class=cB6>&quot;%08X [RSP+%04X]: %016X &quot;</span><span class=cB0>,rsp+i,
+<a name="l131"></a>          i*</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *),my_rsp[i];
+<a name="l132"></a>    </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB3>TRUE</span><span class=cB0>) {
+<a name="l133"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;stk-&gt;stk_base&lt;=rbp&lt;
+<a name="l134"></a>            (&amp;task-&gt;stk-&gt;stk_base)(</span><span class=cB1>U8</span><span class=cB0> *)+task-&gt;stk-&gt;stk_size</span><span class=cB7>)</span><span class=cB0>)
+<a name="l135"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l136"></a>      j=rbp-rsp;
+<a name="l137"></a>      </span><span class=cB1>if</span><span class=cB0> (j&gt;=i)
+<a name="l138"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l139"></a>      addr=my_rsp[j+1];
+<a name="l140"></a>      </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=my_rsp[j])
+<a name="l141"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l142"></a>      rbp=my_rsp[j];
+<a name="l143"></a>    }
+<a name="l144"></a>    </span><span class=cB1>if</span><span class=cB0> (my_rsp[i]==addr)
+<a name="l145"></a>      </span><span class=cB6>&quot;$RED$&quot;</span><span class=cB0>;
+<a name="l146"></a>    </span><span class=cB6>&quot;%P$FG$\n&quot;</span><span class=cB0>,my_rsp[i];
+<a name="l147"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l148"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l149"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;hash_table=old_hash;
+<a name="l150"></a>}
+<a name="l151"></a>
+<a name="l152"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l152">CallerRep</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> **rbp=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l153"></a>{</span><span class=cB2>//Prints a report of calling routines.</span><span class=cB0>
+<a name="l154"></a>  </span><span class=cB9>I64</span><span class=cB0> **ptr;
+<a name="l155"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (!rbp) </span><span class=cB7>{</span><span class=cB0>
+<a name="l157"></a>    </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0>)
+<a name="l158"></a>      rbp=</span><span class=cB5>GetRBP</span><span class=cB0>;
+<a name="l159"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l160"></a>      rbp=task-&gt;rbp;
+<a name="l161"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l162"></a>  </span><span class=cB6>&quot;CallerRep:\n&quot;</span><span class=cB0>;
+<a name="l163"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l31">ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l164"></a>    ptr=rbp+1;
+<a name="l165"></a>    </span><span class=cB6>&quot;%08X:%08tX:%P\n&quot;</span><span class=cB0>,ptr,*ptr,*ptr;
+<a name="l166"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
+<a name="l167"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l168"></a>    rbp=*rbp;
+<a name="l169"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l170"></a>}
+<a name="l171"></a>
+<a name="l172"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>I64</span><span class=cB0> cnt=0x80,</span><span class=cB1>Bool</span><span class=cB0> show_offset=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l173"></a>{</span><span class=cB2>//Dump mem, showing offsets.</span><span class=cB0>
+<a name="l174"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l325"><span class=cB4>DocD</span></a><span class=cB2>() for a live dump.</span><span class=cB0>
+<a name="l175"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,ch;
+<a name="l176"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr=addr;
+<a name="l177"></a>  </span><span class=cB1>while</span><span class=cB0> (cnt) </span><span class=cB7>{</span><span class=cB0>
+<a name="l178"></a>    </span><span class=cB1>if</span><span class=cB0> (show_offset)
+<a name="l179"></a>      </span><span class=cB6>&quot;%08X &quot;</span><span class=cB0>,ptr-addr;
+<a name="l180"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l181"></a>      </span><span class=cB6>&quot;%010X &quot;</span><span class=cB0>,ptr;
+<a name="l182"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;16)
+<a name="l183"></a>      j=16;
+<a name="l184"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l185"></a>      j=cnt;
+<a name="l186"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;j;i++)
+<a name="l187"></a>      </span><span class=cB6>&quot;%02X &quot;</span><span class=cB0>,ptr[i];
+<a name="l188"></a>    </span><span class=cB1>for</span><span class=cB0> (;i&lt;16;i++)
+<a name="l189"></a>      </span><span class=cB6>&quot;   &quot;</span><span class=cB0>;
+<a name="l190"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;j;i++) {
+<a name="l191"></a>      ch=ptr[i];
+<a name="l192"></a>      </span><span class=cB1>if</span><span class=cB0> (ch&lt;</span><span class=cB3>CH_SHIFT_SPACE</span><span class=cB0> || ch==</span><span class=cB3>CH_BACKSPACE</span><span class=cB0>)
+<a name="l193"></a>        ch=</span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l194"></a>      </span><span class=cB6>''</span><span class=cB0> ch;
+<a name="l195"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'$'</span><span class=cB0>)
+<a name="l196"></a>        </span><span class=cB6>''</span><span class=cB0> ch;
+<a name="l197"></a>    }
+<a name="l198"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l199"></a>    cnt-=j;
+<a name="l200"></a>    ptr+=j;
+<a name="l201"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l202"></a>}
+<a name="l203"></a>
+<a name="l204"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l204">Dm</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>I64</span><span class=cB0> cnt=0x80)
+<a name="l205"></a>{</span><span class=cB2>//Show mem addr, not offsets.</span><span class=cB0>
+<a name="l206"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(addr,cnt,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l207"></a>}
+<a name="l208"></a>
+<a name="l209"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l209">Da</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> **addr,</span><span class=cB9>I64</span><span class=cB0> cnt=0x10)
+<a name="l210"></a>{</span><span class=cB2>//Dump mem, showing symbolic addresses.</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB1>while</span><span class=cB0> (cnt--&gt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l212"></a>    </span><span class=cB6>&quot;%08X:%08X,%P\n&quot;</span><span class=cB0>,addr,*addr,*addr;
+<a name="l213"></a>    addr++;
+<a name="l214"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l215"></a>}
+<a name="l216"></a>
+<a name="l217"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l217">RawPrint</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mS=100,</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l218"></a>{</span><span class=cB2>//Print using </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302"><span class=cB4>Raw</span></a><span class=cB2> scrn output for a length of time.</span><span class=cB0>
+<a name="l219"></a></span><span class=cB2>//Your heap must be good.</span><span class=cB0>
+<a name="l220"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l251">StrPrintJoin</a></span><span class=cB0>(</span><span class=cB3>NULL</span><span class=cB0>,fmt,argc,argv);
+<a name="l221"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_raw,old_input_filter;
+<a name="l222"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l223"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l224"></a>  old_raw=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l225"></a>  old_input_filter=</span><span class=cB5>LBtr</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>);
+<a name="l226"></a>  </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,buf;
+<a name="l227"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137">Busy</a></span><span class=cB0>(mS&lt;&lt;10);
+<a name="l228"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l229"></a>  </span><span class=cB5>LBEqu</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>,old_input_filter);
+<a name="l230"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(old_raw);
+<a name="l231"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(buf);
+<a name="l232"></a>}
+<a name="l233"></a>
+<a name="l234"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l234">RawD</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mS=100,</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>I64</span><span class=cB0> cnt=0x80)
+<a name="l235"></a>{</span><span class=cB2>//Dumps a block of mem using </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302"><span class=cB4>Raw</span></a><span class=cB0>
+<a name="l236"></a></span><span class=cB2>//scrn output for a fixed length</span><span class=cB0>
+<a name="l237"></a>  </span><span class=cB2>//of time.</span><span class=cB0>
+<a name="l238"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_raw,old_input_filter;
+<a name="l239"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l240"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l241"></a>  old_raw=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l242"></a>  old_input_filter=</span><span class=cB5>LBtr</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>);
+<a name="l243"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(addr,cnt);
+<a name="l244"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137">Busy</a></span><span class=cB0>(mS&lt;&lt;10);
+<a name="l245"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l246"></a>  </span><span class=cB5>LBEqu</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>,old_input_filter);
+<a name="l247"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(old_raw);
+<a name="l248"></a>}
+<a name="l249"></a>
+<a name="l250"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l250">RawDm</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mS=100,</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>I64</span><span class=cB0> cnt=0x80)
+<a name="l251"></a>{</span><span class=cB2>//Dumps a block of mem using </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302"><span class=cB4>Raw</span></a><span class=cB0>
+<a name="l252"></a></span><span class=cB2>//scrn output for a fixed length</span><span class=cB0>
+<a name="l253"></a>  </span><span class=cB2>//of time.</span><span class=cB0>
+<a name="l254"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_raw,old_input_filter;
+<a name="l255"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l256"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l257"></a>  old_raw=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l258"></a>  old_input_filter=</span><span class=cB5>LBtr</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>);
+<a name="l259"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l204">Dm</a></span><span class=cB0>(addr,cnt);
+<a name="l260"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137">Busy</a></span><span class=cB0>(mS&lt;&lt;10);
+<a name="l261"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l262"></a>  </span><span class=cB5>LBEqu</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_INPUT_FILTER_TASK</span><span class=cB0>,old_input_filter);
+<a name="l263"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(old_raw);
+<a name="l264"></a>}
+<a name="l265"></a>
+<a name="l266"></a></span><span class=cB9>I64</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l266">TaskRegAddr</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task,</span><span class=cB9>I64</span><span class=cB0> reg_num)
+<a name="l267"></a>{
+<a name="l268"></a>  </span><span class=cB1>switch</span><span class=cB0> (reg_num) </span><span class=cB7>{</span><span class=cB0>
+<a name="l269"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RAX</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rax;
+<a name="l270"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RCX</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rcx;
+<a name="l271"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RDX</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rdx;
+<a name="l272"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RBX</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rbx;
+<a name="l273"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RSP</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rsp;
+<a name="l274"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RBP</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rbp;
+<a name="l275"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RSI</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rsi;
+<a name="l276"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>REG_RDI</span><span class=cB0>: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;rdi;
+<a name="l277"></a>    </span><span class=cB1>case</span><span class=cB0> 8 : </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r8;
+<a name="l278"></a>    </span><span class=cB1>case</span><span class=cB0> 9 : </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r9;
+<a name="l279"></a>    </span><span class=cB1>case</span><span class=cB0> 10: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r10;
+<a name="l280"></a>    </span><span class=cB1>case</span><span class=cB0> 11: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r11;
+<a name="l281"></a>    </span><span class=cB1>case</span><span class=cB0> 12: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r12;
+<a name="l282"></a>    </span><span class=cB1>case</span><span class=cB0> 13: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r13;
+<a name="l283"></a>    </span><span class=cB1>case</span><span class=cB0> 14: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r14;
+<a name="l284"></a>    </span><span class=cB1>case</span><span class=cB0> 15: </span><span class=cB1>return</span><span class=cB0> &amp;task-&gt;r15;
+<a name="l285"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l286"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l287"></a>}
+<a name="l288"></a>
+<a name="l289"></a>#</span><span class=cB1>define</span><span class=cB0> RAWDR_COL       40
+<a name="l290"></a>
+<a name="l291"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l291">RawDr</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l292"></a>{
+<a name="l293"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,old_col=</span><span class=cBB>text</span><span class=cB0>.raw_col;
+<a name="l294"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_raw=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l295"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[200];
+<a name="l296"></a>
+<a name="l297"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l298"></a>
+<a name="l299"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;16;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l300"></a>    </span><span class=cBB>text</span><span class=cB0>.raw_col=i*</span><span class=cBB>text</span><span class=cB0>.cols+RAWDR_COL;
+<a name="l301"></a>    </span><span class=cB6>&quot;.%3Z:%016X\n&quot;</span><span class=cB0>,i,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>,*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l266">TaskRegAddr</a></span><span class=cB0>(task,i);
+<a name="l302"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l303"></a>
+<a name="l304"></a>  </span><span class=cBB>text</span><span class=cB0>.raw_col=i++*</span><span class=cBB>text</span><span class=cB0>.cols+RAWDR_COL;
+<a name="l305"></a>  </span><span class=cB6>&quot;.RIP:%016X\n&quot;</span><span class=cB0>,task-&gt;rip;
+<a name="l306"></a>
+<a name="l307"></a>  </span><span class=cBB>text</span><span class=cB0>.raw_col=i++*</span><span class=cBB>text</span><span class=cB0>.cols+RAWDR_COL;
+<a name="l308"></a>  </span><span class=cB6>&quot;.%-*tp\n&quot;</span><span class=cB0>,</span><span class=cBB>text</span><span class=cB0>.cols-(RAWDR_COL+1)-1,</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip;
+<a name="l309"></a>
+<a name="l310"></a>  </span><span class=cBB>text</span><span class=cB0>.raw_col=i++*</span><span class=cBB>text</span><span class=cB0>.cols+RAWDR_COL;
+<a name="l311"></a>  </span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l312"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cBB>sys_run_level</span><span class=cB0>,</span><span class=cB3>RLf_COMPILER</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l313"></a>    j=</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip;
+<a name="l314"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l245">Ui</a></span><span class=cB0>(buf,&amp;j,,,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l315"></a>    </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,buf;
+<a name="l316"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l317"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l318"></a>
+<a name="l319"></a>  </span><span class=cBB>text</span><span class=cB0>.raw_col=i*</span><span class=cBB>text</span><span class=cB0>.cols+RAWDR_COL;
+<a name="l320"></a>  </span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l321"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;</span><span class=cBB>text</span><span class=cB0>.cols-RAWDR_COL-1;j++)
+<a name="l322"></a>    </span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l323"></a>
+<a name="l324"></a>  </span><span class=cBB>text</span><span class=cB0>.raw_col=old_col;
+<a name="l325"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(old_raw);
+<a name="l326"></a>}
+<a name="l327"></a>
+<a name="l328"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l328">Dr</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l329"></a>{</span><span class=cB2>//Dump regs</span><span class=cB0>
+<a name="l330"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l331"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l332"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;16;i++)
+<a name="l333"></a>    </span><span class=cB6>&quot;%3Z:%016X\n&quot;</span><span class=cB0>,i,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>,*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l266">TaskRegAddr</a></span><span class=cB0>(task,i);
+<a name="l334"></a>  </span><span class=cB6>&quot;RIP:%016X\n&quot;</span><span class=cB0>,task-&gt;rip;
+<a name="l335"></a>}
+<a name="l336"></a>
+<a name="l337"></a></span><span class=cB1>U8</span><span class=cB0> *</span><span class=cBD>SysGetStr2</span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l338"></a>{
+<a name="l339"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[512];
+<a name="l340"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l209">GetS</a></span><span class=cB0>(buf,512,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l341"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446">StrNew</a></span><span class=cB0>(buf);
+<a name="l342"></a>}
+<a name="l343"></a>
+<a name="l344"></a></span><span class=cB9>CBpt</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l344">BptFind</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *needle_addr,</span><span class=cB9>CTask</span><span class=cB0> *haystack_task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> rem=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l345"></a>{
+<a name="l346"></a>  </span><span class=cB9>CBpt</span><span class=cB0> *res=</span><span class=cB3>NULL</span><span class=cB0>,*tmpb,*tmpb1,*tmpb2;
+<a name="l347"></a>  </span><span class=cB1>if</span><span class=cB0> (!haystack_task) haystack_task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l348"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l349"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l350"></a>  tmpb1=&amp;haystack_task-&gt;bpt_lst;
+<a name="l351"></a>  tmpb=haystack_task-&gt;bpt_lst;
+<a name="l352"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb) </span><span class=cB7>{</span><span class=cB0>
+<a name="l353"></a>    tmpb2=tmpb-&gt;next;
+<a name="l354"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;addr==needle_addr) {
+<a name="l355"></a>      res=tmpb;
+<a name="l356"></a>      </span><span class=cB1>if</span><span class=cB0> (rem)
+<a name="l357"></a>        tmpb1-&gt;next=tmpb2;
+<a name="l358"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l359"></a>        tmpb1=&amp;tmpb-&gt;next;
+<a name="l360"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l361"></a>      tmpb1=&amp;tmpb-&gt;next;
+<a name="l362"></a>    tmpb=tmpb2;
+<a name="l363"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l364"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l365"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l366"></a>}
+<a name="l367"></a>
+<a name="l368"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l368">BptS</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> live=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l369"></a>{</span><span class=cB2>//Set breakpoint.</span><span class=cB0>
+<a name="l370"></a>  </span><span class=cB9>CBpt</span><span class=cB0> *tmpb;
+<a name="l371"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l372"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l373"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l374"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l375"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpb=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l344">BptFind</a></span><span class=cB0>(addr,task,</span><span class=cB3>FALSE</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l376"></a>    tmpb=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395">CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CBpt</span><span class=cB7>)</span><span class=cB0>,task);
+<a name="l377"></a>    tmpb-&gt;addr=addr;
+<a name="l378"></a>    tmpb-&gt;val=*addr;
+<a name="l379"></a>    res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l380"></a>    tmpb-&gt;next=task-&gt;bpt_lst;
+<a name="l381"></a>    task-&gt;bpt_lst=tmpb;
+<a name="l382"></a>    </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0> &amp;&amp; live)
+<a name="l383"></a>      *addr=</span><span class=cB3>OC_BPT</span><span class=cB0>;
+<a name="l384"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l385"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l386"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l387"></a>}
+<a name="l388"></a>
+<a name="l389"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l389">BptR</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> live=</span><span class=cB3>TRUE</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> rem=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l390"></a>{</span><span class=cB2>//Rem breakpoint.</span><span class=cB0>
+<a name="l391"></a>  </span><span class=cB9>CBpt</span><span class=cB0> *tmpb;
+<a name="l392"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l393"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l394"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l395"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l396"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpb=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l344">BptFind</a></span><span class=cB7>(</span><span class=cB0>addr,task,rem</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l397"></a>    </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0> &amp;&amp; live)
+<a name="l398"></a>      *tmpb-&gt;addr=tmpb-&gt;val;
+<a name="l399"></a>    res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l400"></a>    </span><span class=cB1>if</span><span class=cB0> (rem)
+<a name="l401"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpb);
+<a name="l402"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l403"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l404"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l405"></a>}
+<a name="l406"></a>
+<a name="l407"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l407">B</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> live=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l408"></a>{</span><span class=cB2>//Toggle breakpoint.</span><span class=cB0>
+<a name="l409"></a></span><span class=cB2>//Return: TRUE if removed.</span><span class=cB0>
+<a name="l410"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l411"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l412"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l413"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l344">BptFind</a></span><span class=cB7>(</span><span class=cB0>addr,task,</span><span class=cB3>FALSE</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l414"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l389">BptR</a></span><span class=cB0>(addr,task,live,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l415"></a>    res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l416"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l417"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l368">BptS</a></span><span class=cB0>(addr,task,live);
+<a name="l418"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l419"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l420"></a>}
+<a name="l421"></a>
+<a name="l422"></a></span><span class=cB9>I64</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l422">B2</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> live=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l423"></a>{</span><span class=cB2>//Rem all breakpoints.</span><span class=cB0>
+<a name="l424"></a></span><span class=cB2>//Return: cnt of removed.</span><span class=cB0>
+<a name="l425"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
+<a name="l426"></a>  </span><span class=cB9>CBpt</span><span class=cB0> *tmpb,*tmpb1;
+<a name="l427"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l428"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l429"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l430"></a>  tmpb=task-&gt;bpt_lst;
+<a name="l431"></a>  task-&gt;bpt_lst=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l432"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb) </span><span class=cB7>{</span><span class=cB0>
+<a name="l433"></a>    tmpb1=tmpb-&gt;next;
+<a name="l434"></a>    </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0> &amp;&amp; live)
+<a name="l435"></a>      *tmpb-&gt;addr=tmpb-&gt;val;
+<a name="l436"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpb);
+<a name="l437"></a>    tmpb=tmpb1;
+<a name="l438"></a>    res++;
+<a name="l439"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l440"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l441"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l442"></a>}
+<a name="l443"></a>
+<a name="l444"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l444">G</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ip=</span><span class=cB3>INVALID_PTR</span><span class=cB0>,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l445"></a>{</span><span class=cB2>//Go</span><span class=cB0>
+<a name="l446"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l447"></a>  </span><span class=cB1>if</span><span class=cB0> (ip!=</span><span class=cB3>INVALID_PTR</span><span class=cB0>) task-&gt;rip=ip;
+<a name="l448"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l344">BptFind</a></span><span class=cB7>(</span><span class=cB0>task-&gt;rip,task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l449"></a>    </span><span class=cB6>&quot;\nDo one of the following, first:\n&quot;</span><span class=cB0>
+<a name="l450"></a>          </span><span class=cB6>&quot;&gt;S;\t\t\t//Single step\n&quot;</span><span class=cB0>
+<a name="l451"></a>          </span><span class=cB6>&quot;&gt;B2;\t\t\t//Clear all break points\n&quot;</span><span class=cB0>
+<a name="l452"></a>          </span><span class=cB6>&quot;&gt;G2;\t\t\t//Clear all break points and Go\n\n&quot;</span><span class=cB0>
+<a name="l453"></a>          </span><span class=cB6>&quot;After resuming, &lt;CTRL-ALT-n&gt; next focus task\n&quot;</span><span class=cB0>
+<a name="l454"></a>          </span><span class=cB6>&quot;After resuming, &lt;CTRL-ALT-v&gt; flushes scrn VGA cache\n&quot;</span><span class=cB0>;
+<a name="l455"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l456"></a>    </span><span class=cB5>LBtr</span><span class=cB0>(&amp;task-&gt;task_flags,</span><span class=cB3>TASKf_DISABLE_BPTS</span><span class=cB0>);
+<a name="l457"></a>    </span><span class=cB5>LBtr</span><span class=cB0>(&amp;task-&gt;rflags,</span><span class=cB3>RFLAGf_TRAP</span><span class=cB0>);</span><span class=cB2>//No single step</span><span class=cB0>
+<a name="l458"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l88">Suspend</a></span><span class=cB0>(task,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l459"></a>    </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0>) {
+<a name="l460"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l329">IsDbgMode</a></span><span class=cB0> &amp;&amp; task-&gt;next_cc!=&amp;task-&gt;next_cc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l461"></a>        </span><span class=cB6>&quot;Exit Dbg\n&quot;</span><span class=cB0>;
+<a name="l462"></a>        </span><span class=cB5>Btr</span><span class=cB0>(&amp;task-&gt;last_cc-&gt;flags,</span><span class=cB3>CCf_PMT</span><span class=cB0>);
+<a name="l463"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l464"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l465"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l1">Exit</a></span><span class=cB0>;
+<a name="l466"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l467"></a>}
+<a name="l468"></a>
+<a name="l469"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l469">G2</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ip=</span><span class=cB3>INVALID_PTR</span><span class=cB0>,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l470"></a>{</span><span class=cB2>//Rem all breakpoints and Go.</span><span class=cB0>
+<a name="l471"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l472"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l422">B2</a></span><span class=cB0>(task);
+<a name="l473"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>ext</span><span class=cB0>[</span><span class=cB3>EXT_WIN_FOCUS</span><span class=cB0>])
+<a name="l474"></a>    </span><span class=cB5>CallExtNum</span><span class=cB0>(</span><span class=cB3>EXT_WIN_FOCUS</span><span class=cB0>,</span><span class=cBB>dbg</span><span class=cB0>.focus_task);
+<a name="l475"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l112">VGAFlush</a></span><span class=cB0>;
+<a name="l476"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l444">G</a></span><span class=cB0>(ip,task);
+<a name="l477"></a>}
+<a name="l478"></a>
+<a name="l479"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l479">S</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ip=</span><span class=cB3>INVALID_PTR</span><span class=cB0>,</span><span class=cB9>CTask</span><span class=cB0> *task=</span><span class=cB3>NULL</span><span class=cB0>) </span><span class=cB2>//Single-step.</span><span class=cB0>
+<a name="l480"></a>{</span><span class=cB2>//Single step.</span><span class=cB0>
+<a name="l481"></a>  </span><span class=cB1>if</span><span class=cB0> (!task) task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l482"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l483"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l484"></a>  </span><span class=cB1>if</span><span class=cB0> (ip!=</span><span class=cB3>INVALID_PTR</span><span class=cB0>) task-&gt;rip=ip;
+<a name="l485"></a>  </span><span class=cB5>LBts</span><span class=cB0>(&amp;task-&gt;task_flags,</span><span class=cB3>TASKf_DISABLE_BPTS</span><span class=cB0>);
+<a name="l486"></a>  </span><span class=cB5>LBts</span><span class=cB0>(&amp;task-&gt;rflags,</span><span class=cB3>RFLAGf_TRAP</span><span class=cB0>);
+<a name="l487"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l88">Suspend</a></span><span class=cB0>(task,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l488"></a>  </span><span class=cB1>if</span><span class=cB0> (task==</span><span class=cB5>Fs</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l489"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l329">IsDbgMode</a></span><span class=cB0>) {
+<a name="l490"></a>      </span><span class=cB1>if</span><span class=cB0> (task-&gt;next_cc!=&amp;task-&gt;next_cc)
+<a name="l491"></a>        </span><span class=cB5>Btr</span><span class=cB0>(&amp;task-&gt;last_cc-&gt;flags,</span><span class=cB3>CCf_PMT</span><span class=cB0>);
+<a name="l492"></a>    }
+<a name="l493"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l494"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l1">Exit</a></span><span class=cB0>;
+<a name="l495"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l496"></a>}
+<a name="l497"></a>
+<a name="l498"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>DbgHelp</span><span class=cB0>()
+<a name="l499"></a>{
+<a name="l500"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>
+<a name="l501"></a>        </span><span class=cB6>&quot;The cmd line is basically the same as normal.</span><span class=cB0>  </span><span class=cB6>Here are some common\n&quot;</span><span class=cB0>
+<a name="l502"></a>        </span><span class=cB6>&quot;debugging commands.\n\n&quot;</span><span class=cB0>
+<a name="l503"></a>        </span><span class=cB6>&quot;&gt;EdLite(\&quot;FileName\&quot;);\t\t//Edit file.\n&quot;</span><span class=cB0>
+<a name="l504"></a>        </span><span class=cB6>&quot;&gt;D(0x100000);\t\t\t//Dump page tables.\n&quot;</span><span class=cB0>
+<a name="l505"></a>        </span><span class=cB6>&quot;&gt;Dm(0x100000);\t\t\t//Dump page tables.\n&quot;</span><span class=cB0>
+<a name="l506"></a>        </span><span class=cB6>&quot;&gt;Dm(Fs,sizeof(CTask));\t\t//Dump current task record.\n&quot;</span><span class=cB0>
+<a name="l507"></a>        </span><span class=cB6>&quot;&gt;ClassRep(Fs,\&quot;CTask\&quot;,1);\t//Dump current task record.\n&quot;</span><span class=cB0>
+<a name="l508"></a>        </span><span class=cB6>&quot;&gt;ClassRep(Fs,,1);\t\t//(It knows lastclass.)\n&quot;</span><span class=cB0>
+<a name="l509"></a>        </span><span class=cB6>&quot;&gt;CallerRep;\t\t\t//Stack trace report.\n&quot;</span><span class=cB0>
+<a name="l510"></a>        </span><span class=cB6>&quot;&gt;Da(_RSP);\t\t\t//Dump stk.\n&quot;</span><span class=cB0>
+<a name="l511"></a>        </span><span class=cB6>&quot;&gt;Dr;\t\t\t\t//Dump Regs.\n&quot;</span><span class=cB0>
+<a name="l512"></a>        </span><span class=cB6>&quot;&gt;1+2*3+&amp;Print;\t\t\t//Show calculation res.\n&quot;</span><span class=cB0>
+<a name="l513"></a>        </span><span class=cB6>&quot;&gt;*(0x70000)(I64 *)=0x123456789;\t//Assign value to 0x70000-0x70007.\n&quot;</span><span class=cB0>
+<a name="l514"></a>        </span><span class=cB6>&quot;&gt;_RAX=0x1234;\t\t\t//Set RAX to 0x1234.\n&quot;</span><span class=cB0>
+<a name="l515"></a>        </span><span class=cB6>&quot;&gt;_RIP=&amp;Break;\t\t//Set RIP.\n&quot;</span><span class=cB0>
+<a name="l516"></a>        </span><span class=cB6>&quot;&gt;I64 i;\t\t\t\t//Declare variable.\n&quot;</span><span class=cB0>
+<a name="l517"></a>        </span><span class=cB6>&quot;&gt;i=_RCX+_RDX;\t\t\t//Assign to variable.\n&quot;</span><span class=cB0>
+<a name="l518"></a>        </span><span class=cB6>&quot;&gt;U(&amp;Print+0x8);\t\t\t//Unassemble Print.\n&quot;</span><span class=cB0>
+<a name="l519"></a>        </span><span class=cB6>&quot;&gt;Uf(\&quot;Print\&quot;);\t\t\t//Unassembler function \&quot;Print\&quot;.\n&quot;</span><span class=cB0>
+<a name="l520"></a>        </span><span class=cB6>&quot;&gt;Man(\&quot;Print\&quot;);\t\t\t//Edit Src for \&quot;Print\&quot;.\n&quot;</span><span class=cB0>
+<a name="l521"></a>        </span><span class=cB6>&quot;&gt;E(_RIP);\t\t\t//Edit Src Code.\n&quot;</span><span class=cB0>
+<a name="l522"></a>        </span><span class=cB6>&quot;&gt;Fix;\t\t\t\t//Edit Last Err Src Code.\n&quot;</span><span class=cB0>
+<a name="l523"></a>        </span><span class=cB6>&quot;&gt;B(&amp;Main+0x20);\t\t\t//Toggle break point.\n&quot;</span><span class=cB0>
+<a name="l524"></a>        </span><span class=cB6>&quot;&gt;B2;\t\t\t\t//Clear all break points.\n&quot;</span><span class=cB0>
+<a name="l525"></a>        </span><span class=cB6>&quot;&gt;S;\t\t\t\t//Single step.\n&quot;</span><span class=cB0>
+<a name="l526"></a>        </span><span class=cB6>&quot;&gt;G;\t\t\t\t//Resume execution.\n&quot;</span><span class=cB0>
+<a name="l527"></a>        </span><span class=cB6>&quot;&gt;G2;\t\t\t\t//B2;VGAFlush;WinFocus;G;\n&quot;</span><span class=cB0>
+<a name="l528"></a>        </span><span class=cB6>&quot;&gt;Exit;\t\t\t\t//Exit (kill) task.\n\n&quot;</span><span class=cB0>
+<a name="l529"></a>        </span><span class=cB6>&quot;After resuming, &lt;CTRL-ALT-n&gt; next focus task.\n&quot;</span><span class=cB0>
+<a name="l530"></a>        </span><span class=cB6>&quot;After resuming, &lt;CTRL-ALT-v&gt; flushes scrn VGA cache.\n\n&quot;</span><span class=cB0>;
+<a name="l531"></a>}
+<a name="l532"></a>
+<a name="l533"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>Dbg2</span><span class=cB0>()
+<a name="l534"></a>{
+<a name="l535"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_win_inhibit,old_waiting_msg,old_single;
+<a name="l536"></a>  </span><span class=cB9>I64</span><span class=cB0> i,old_getstr2;
+<a name="l537"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[200];
+<a name="l538"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>dbg</span><span class=cB0>.panic) </span><span class=cB7>{</span><span class=cB0>
+<a name="l539"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l309">IsRaw</a></span><span class=cB0>) {
+<a name="l540"></a>      i=</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip;
+<a name="l541"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l245">Ui</a></span><span class=cB0>(buf,&amp;i);
+<a name="l542"></a>      </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,buf;
+<a name="l543"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l544"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l653">U</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip,1);
+<a name="l545"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l546"></a>    </span><span class=cBB>dbg</span><span class=cB0>.panic=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l547"></a>  old_waiting_msg=</span><span class=cB5>LBtr</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_AWAITING_MSG</span><span class=cB0>);
+<a name="l548"></a>  old_win_inhibit=</span><span class=cB5>Fs</span><span class=cB0>-&gt;win_inhibit;
+<a name="l549"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;win_inhibit=</span><span class=cB3>WIG_USER_TASK_DFT</span><span class=cB0>;
+<a name="l550"></a>  </span><span class=cBB>sys_focus_task</span><span class=cB0>=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l551"></a>  </span><span class=cBB>kbd</span><span class=cB0>.scan_code=0;
+<a name="l552"></a>  old_getstr2=</span><span class=cBB>fp_getstr2</span><span class=cB0>;
+<a name="l553"></a>  </span><span class=cBB>fp_getstr2</span><span class=cB0>=&amp;</span><span class=cBD>SysGetStr2</span><span class=cB0>;
+<a name="l554"></a>  old_single=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314">SingleUser</a></span><span class=cB0>(</span><span class=cB3>OFF</span><span class=cB0>);
+<a name="l555"></a>  </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cBB>ms_hard</span><span class=cB0>.install_attempts)
+<a name="l556"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l557"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314">SingleUser</a></span><span class=cB0>(old_single);
+<a name="l558"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l400">UserTaskCont</a></span><span class=cB0>;
+<a name="l559"></a>  </span><span class=cBB>fp_getstr2</span><span class=cB0>=old_getstr2;
+<a name="l560"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;win_inhibit=old_win_inhibit;
+<a name="l561"></a>  </span><span class=cB5>LBEqu</span><span class=cB0>(&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_AWAITING_MSG</span><span class=cB0>,old_waiting_msg);
+<a name="l562"></a>}
+<a name="l563"></a>
+<a name="l564"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>Fault3</span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> fault_num,</span><span class=cB9>I64</span><span class=cB0> fault_err_code)
+<a name="l565"></a>{
+<a name="l566"></a>  </span><span class=cB1>no_warn</span><span class=cB0> fault_err_code;
+<a name="l567"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l568"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l569"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Gs</span><span class=cB0>-&gt;num &amp;&amp; </span><span class=cBB>dbg</span><span class=cB0>.mp_crash) </span><span class=cB7>{</span><span class=cB0>
+<a name="l570"></a>    </span><span class=cBB>mp_cnt</span><span class=cB0>=1;
+<a name="l571"></a>    </span><span class=cBB>dbg</span><span class=cB0>.mp_crash-&gt;cpu_num=</span><span class=cB5>Gs</span><span class=cB0>-&gt;num;
+<a name="l572"></a>    </span><span class=cBB>dbg</span><span class=cB0>.mp_crash-&gt;task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l573"></a>    </span><span class=cBB>dbg</span><span class=cB0>.mp_crash-&gt;rip=</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip;
+<a name="l574"></a>    </span><span class=cBB>dbg</span><span class=cB0>.mp_crash-&gt;msg=</span><span class=cBB>dbg</span><span class=cB0>.msg;
+<a name="l575"></a>    </span><span class=cBB>dbg</span><span class=cB0>.mp_crash-&gt;msg_num=</span><span class=cBB>dbg</span><span class=cB0>.msg_num;
+<a name="l576"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l131">MPInt</a></span><span class=cB0>(</span><span class=cB3>I_MP_CRASH</span><span class=cB0>,0);
+<a name="l577"></a>    </span><span class=cB5>SysHlt</span><span class=cB0>;
+<a name="l578"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l579"></a>  </span><span class=cB6>&quot;\n\tTinkerOS Debugger\n\n&quot;</span><span class=cB0>
+<a name="l580"></a>        </span><span class=cB6>&quot;&gt;Help;\t//For help.\n\n&quot;</span><span class=cB0>;
+<a name="l581"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l249">Beep</a></span><span class=cB0>(62,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l582"></a>  </span><span class=cB1>if</span><span class=cB0> (fault_num==</span><span class=cB3>I_DBG</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l583"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>dbg</span><span class=cB0>.msg) {
+<a name="l584"></a>      </span><span class=cB6>&quot;\n!!! %s&quot;</span><span class=cB0>,</span><span class=cBB>dbg</span><span class=cB0>.msg;
+<a name="l585"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>dbg</span><span class=cB0>.msg_num)
+<a name="l586"></a>        </span><span class=cB6>&quot;%016X&quot;</span><span class=cB0>,</span><span class=cBB>dbg</span><span class=cB0>.msg_num;
+<a name="l587"></a>      </span><span class=cB6>&quot; !!!\n\n&quot;</span><span class=cB0>;
+<a name="l588"></a>    }
+<a name="l589"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l590"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>dbg</span><span class=cB0>.panic)
+<a name="l591"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l152">CallerRep</a></span><span class=cB0>;
+<a name="l592"></a>  </span><span class=cBD>Dbg2</span><span class=cB0>;
+<a name="l593"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l594"></a>}
+<a name="l595"></a>
+<a name="l596"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cBD>Fault2</span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> fault_num,</span><span class=cB9>I64</span><span class=cB0> fault_err_code)
+<a name="l597"></a>{</span><span class=cB2>//Called from </span><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l90"><span class=cB4>Fault2</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l598"></a></span><span class=cB2>//Be careful not to swap-out and ruin the saved context</span><span class=cB0>
+<a name="l599"></a>  </span><span class=cB1>Bool</span><span class=cB0> was_raw,was_single_user,was_silent,was_in_dbg;
+<a name="l600"></a>  </span><span class=cB9>I64</span><span class=cB0>  i,old_raw_flags=</span><span class=cBB>text</span><span class=cB0>.raw_flags;
+<a name="l601"></a>  was_single_user=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314">SingleUser</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l602"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l329">IsDbgMode</a></span><span class=cB0>)
+<a name="l603"></a>    </span><span class=cBB>dbg</span><span class=cB0>.focus_task=</span><span class=cBB>sys_focus_task</span><span class=cB0>;
+<a name="l604"></a>  </span><span class=cBB>sys_focus_task</span><span class=cB0>=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l605"></a>  </span><span class=cB1>if</span><span class=cB0> (fault_num==</span><span class=cB3>I_BPT</span><span class=cB0>)
+<a name="l606"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;rip--;
+<a name="l607"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Fs</span><span class=cB0>-&gt;dbg_task)
+<a name="l608"></a>    </span><span class=cB5>CallExtNum</span><span class=cB0>(</span><span class=cB3>EXT_DBG_RESUME</span><span class=cB0>,fault_num,fault_err_code);
+<a name="l609"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l610"></a>    was_raw=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l611"></a>    was_silent=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282">Silent</a></span><span class=cB0>(</span><span class=cB3>OFF</span><span class=cB0>);
+<a name="l612"></a>    </span><span class=cBB>text</span><span class=cB0>.raw_flags|=</span><span class=cB3>RWF_SHOW_DOLLAR</span><span class=cB0>|</span><span class=cB3>RWF_SCROLL</span><span class=cB0>;
+<a name="l613"></a>
+<a name="l614"></a>    </span><span class=cB6>&quot;Task \&quot;&quot;</span><span class=cB0>;
+<a name="l615"></a>    </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_title;
+<a name="l616"></a>    </span><span class=cB6>&quot;\&quot;\n&quot;</span><span class=cB0>;
+<a name="l617"></a>    </span><span class=cB6>&quot;Fault:0x%02X %Z\t\tErr Code:%08X\n&quot;</span><span class=cB0>,
+<a name="l618"></a>          fault_num,fault_num,</span><span class=cB6>&quot;ST_INT_NAMES&quot;</span><span class=cB0>,fault_err_code;
+<a name="l619"></a>    was_in_dbg=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l324">DbgMode</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l620"></a>    </span><span class=cB6>&quot;RIP:%08X&quot;</span><span class=cB0>,</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip; </span><span class=cB2>//Sometimes crashes on %p, so do this first</span><span class=cB0>
+<a name="l621"></a>    </span><span class=cB6>&quot;:%p  RSP:%08X\n&quot;</span><span class=cB0>,</span><span class=cB5>Fs</span><span class=cB0>-&gt;rip,</span><span class=cB5>Fs</span><span class=cB0>-&gt;rsp;
+<a name="l622"></a>    </span><span class=cB1>if</span><span class=cB0> (fault_num==</span><span class=cB3>I_PAGE_FAULT</span><span class=cB0>) {
+<a name="l623"></a>      </span><span class=cB1>MOV_RAX_CR2</span><span class=cB0>
+<a name="l624"></a>      i=</span><span class=cB5>GetRAX</span><span class=cB0>;
+<a name="l625"></a>      </span><span class=cB6>&quot;Fault Addr:%08X:%p\n&quot;</span><span class=cB0>,i,i;
+<a name="l626"></a>    }
+<a name="l627"></a>    </span><span class=cBD>Fault3</span><span class=cB0>(fault_num,fault_err_code);
+<a name="l628"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l324">DbgMode</a></span><span class=cB0>(was_in_dbg);
+<a name="l629"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282">Silent</a></span><span class=cB0>(was_silent);
+<a name="l630"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l302">Raw</a></span><span class=cB0>(was_raw);
+<a name="l631"></a>    </span><span class=cBB>text</span><span class=cB0>.raw_flags=old_raw_flags;
+<a name="l632"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l633"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314">SingleUser</a></span><span class=cB0>(was_single_user);
+<a name="l634"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>LBtr</span><span class=cB7>(</span><span class=cB0>&amp;</span><span class=cB5>Fs</span><span class=cB0>-&gt;task_flags,</span><span class=cB3>TASKf_KILL_AFTER_DBG</span><span class=cB7>)</span><span class=cB0>)
+<a name="l635"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l1">Exit</a></span><span class=cB0>;
+<a name="l636"></a>}
+<a name="l637"></a>
+<a name="l638"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l638">Panic</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *msg=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> msg_num=0,</span><span class=cB1>Bool</span><span class=cB0> panic=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l639"></a>{</span><span class=cB2>//Enter the debugger with panic?</span><span class=cB0>
+<a name="l640"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l641"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l642"></a>  </span><span class=cBB>dbg</span><span class=cB0>.msg=msg;
+<a name="l643"></a>  </span><span class=cBB>dbg</span><span class=cB0>.msg_num=msg_num;
+<a name="l644"></a>  </span><span class=cBB>dbg</span><span class=cB0>.panic=panic;
+<a name="l645"></a>  </span><span class=cB1>INT</span><span class=cB0> </span><span class=cB3>I_DBG</span><span class=cB0>
+<a name="l646"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l647"></a>}
+<a name="l648"></a>
+<a name="l649"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l649">Dbg</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *msg=</span><span class=cB3>NULL</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> msg_num=0)
+<a name="l650"></a>{</span><span class=cB2>//Enter debugger, no panic.</span><span class=cB0>
+<a name="l651"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l638">Panic</a></span><span class=cB0>(msg,msg_num,</span><span class=cB3>FALSE</span><span class=cB0>);
+<a name="l652"></a>}
+</span></div></pre></body>
+</html>

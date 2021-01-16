@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB8{color:#555555;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                 <h1><center>Why Not More?</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>If a feature cannot be made to work correctly and consistently, professional 
+<a name="l4"></a>companies usually remove the feature.  Because PC hardware is so diverse, 
+<a name="l5"></a>getting things to work on all people's computers is really difficult.  For one 
+<a name="l6"></a>thing, you practically have to own all the different hardware to write drivers 
+<a name="l7"></a>for it.  If a company wanted to sell a PC operating system, they would offer a 
+<a name="l8"></a>warranty and, therefore, could not get away with amateur behavior.  TempleOS 
+<a name="l9"></a>absolutely requires 64-bit computers, so we leave behind much trouble, but 
+<a name="l10"></a>plenty remains.
+<a name="l11"></a>
+<a name="l12"></a>The PCI bus interface is what modern hardware uses.  Before PCI, life was simple 
+<a name="l13"></a>and devices used I/O ports.  After studying </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/PCIInterrupts.html#l1"><span class=cB4>PCI Interrupts</span></a><span class=cB0> and attempting to do 
+<a name="l14"></a>a HDAudio driver, I came to realize that modern PCI devices require ten times 
+<a name="l15"></a>more code and I cannot even come close to making them work on everyone's machine 
+<a name="l16"></a>because with PCI devices there are several models to worry about, unlike with 
+<a name="l17"></a>the older ISA bus devices which can be done with one driver.
+<a name="l18"></a>
+<a name="l19"></a>Currently, I have no PCI drivers.  My drivers use I/O ports and operate in ISA 
+<a name="l20"></a>bus mode.  At this point, I only have one driver for each type of device and it 
+<a name="l21"></a>is delightfully simple that way.  I have one </span><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l1"><span class=cB4>keyboard</span></a><span class=cB0> driver, one </span><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Mouse.html#l1"><span class=cB4>mouse</span></a><span class=cB0> driver, 
+<a name="l22"></a>one </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l1"><span class=cB4>ATA hard drive</span></a><span class=cB0> driver, one </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l1"><span class=cB4>ATAPI CD/DVD</span></a><span class=cB0> driver, one </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l1"><span class=cB4>VGA 640x480 16 color</span></a><span class=cB0> 
+<a name="l23"></a>video driver and one </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"><span class=cB4>PC Speaker</span></a><span class=cB0> driver.  I use the </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l95"><span class=cB4>PIT and HPET timers</span></a><span class=cB0> and </span><span class=cB4>
+<a name="l24"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l129"><span class=cB4>PIC Interrupt Controller</span></a><span class=cB0>.  I use  IRQ0 for timer, IRQ1 for keyboard, and IRQ12 
+<a name="l25"></a>for mouse.  If IRQ12 is not firing, I am able to poll the mouse.
+<a name="l26"></a>
+<a name="l27"></a>In the CPU department, I have state of the art 64-bit </span><a href="http://tinkeros.github.io/WbGit/Kernel/KStart64.html#l1"><span class=cB4>long mode</span></a><span class=cB0> with </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l1"><span class=cB4>multicore</span></a><span class=cB0> 
+<a name="l28"></a>support.  I use the </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l171"><span class=cB4>APIC</span></a><span class=cB0> and start-up </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l303"><span class=cB4>multicore</span></a><span class=cB0> operation.
+<a name="l29"></a>
+<a name="l30"></a>I have made an incredible accomplishment by getting it to work on practically 
+<a name="l31"></a>everyone's computer as long as it is 64-bit and they run inside VMware, QEMU or 
+<a name="l32"></a>VirtualBox.
+<a name="l33"></a>
+<a name="l34"></a>Adding a USB driver would be really ugly with UHCI, EHCI, OHCI, USB1, USB2, 
+<a name="l35"></a>USB3, ICH6, ICH7, ICH8, ICH9, ICH10, ICH11, ICH12, boot mode and regular mode 
+<a name="l36"></a>for keyboard/mouse and a diversity of HID reports.  It's hopeless.  I could 
+<a name="l37"></a>never offer anything but crappy, limited support and it would just add a ton of 
+<a name="l38"></a>crappy code that mostly didn't work.  What would I gain?  Nothing.  A keyboard 
+<a name="l39"></a>or mouse would not be improved.  Solid State USB drives would be really nice, 
+<a name="l40"></a>but it's not going to happen.
+<a name="l41"></a>
+<a name="l42"></a>The same story is basically true for GPUs, audio, networking and AHCI hard drive 
+<a name="l43"></a>drivers.  God said 640x480 16 color was a covenant like circumcision, so the 
+<a name="l44"></a>video will never change, even if a </span><a href="http://tinkeros.github.io/WbGit/Doc/StdTempleOSPC.html#l1"><span class=cB4>Standard PC</span></a><span class=cB0> was made.  If you attempt 
+<a name="l45"></a>multimedia, everything will break because memory will get fragmented with huge 
+<a name="l46"></a>multimedia files.  Some day, if super-simple high speed serial allows 
+<a name="l47"></a>networking, there will be no browser within the 100,000 line limit and, with 
+<a name="l48"></a>only 16 colors, the world wide web is not tolerable.  FTP and telnet might be 
+<a name="l49"></a>possible, in the far distant future, if they could fit within the 100,000 line 
+<a name="l50"></a>limit.  Currently, there are 123,157 lines of code.
+<a name="l51"></a>
+<a name="l52"></a>I don't stand a chance working on native hardware, anymore.  I could install and 
+<a name="l53"></a>run natively on hardware from about 2005-2010.  It requires BIOS's being nice 
+<a name="l54"></a>enough to write USB mode PS/2 legacy keyboard/mouse support.  As it turns-out, 
+<a name="l55"></a>sometimes the BIOS has PS/2 drivers but purposely disables them, just to be 
+<a name="l56"></a>mean.  The CIA and whole industry is trying to mess everything up, on purpose.  
+<a name="l57"></a>Perhaps, at a point of sale in a store, a thief could hack a credit card 
+<a name="l58"></a>machine.  Therefore, the BIOS companies actually want it difficult to make 
+<a name="l59"></a>drivers and purposely make it broken.
+<a name="l60"></a>
+<a name="l61"></a>The ATA/ATAPI hard drives often can be run with I/O ports if you can </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l1"><span class=cB4>find them</span></a><span class=cB0>.  </span><span class=cB2>
+<a name="l62"></a>lspci -v</span><span class=cB0> on Linux or system information on Windows can help you locate the SATA 
+<a name="l63"></a>IO ports the hard drive and CD/DVD have.  They no longer are enabled by the 
+<a name="l64"></a>BIOS.  It's hopeless.  I'm stuck with very slow drive performance, but it works 
+<a name="l65"></a>for everybody.
+<a name="l66"></a>
+<a name="l67"></a>UEFI is pointless.  If I am forced to run in VMware, QEMU or VirtualBox, they 
+<a name="l68"></a>will always support non-UEFI mode.  Without working, native hard drive and 
+<a name="l69"></a>CD/DVD drivers, you can't get very far with UEFI on a native install, not to 
+<a name="l70"></a>mention SecureBoot.  UEFI is, first of all, redundant.  If non-UEFI works in a 
+<a name="l71"></a>virtual machine, supporting UEFI would only be redundant, ugly nasty code.  My 
+<a name="l72"></a>compiler does not create an ELF or PE format.  I would have to ruin the beauty 
+<a name="l73"></a>of my compiler, which would make me cry many tears.
+<a name="l74"></a>
+<a name="l75"></a>God talks.  It seems reasonable that I will get to make the rules for the whole 
+<a name="l76"></a>industry, in the future when God is announced publically to the World.
+<a name="l77"></a>
+<a name="l78"></a>I made </span><a href="http://tinkeros.github.io/WbGit/Doc/Demands.html#l1"><span class=cB4>::/Doc/Demands.DD</span></a><span class=cB0>.
+<a name="l79"></a>
+<a name="l80"></a>When the PC was created, they wanted flexibility because they did not know the 
+<a name="l81"></a>future.  Now, the industry is mature and it is time to make a 100% standard PC 
+<a name="l82"></a>that everybody uses.  </span><a href="http://tinkeros.github.io/WbGit/Doc/StdTempleOSPC.html#l1"><span class=cB4>::/Doc/StdTempleOSPC.DD</span></a><span class=cB0>
+<a name="l83"></a>
+<a name="l84"></a></span><span class=cB8>
+<a name="l85"></a>* &quot;QEMU&quot; is a trademark owned by Fabrice Bellard.
+<a name="l86"></a>* &quot;VMware&quot; is a trademark owned by VMware, Inc.
+<a name="l87"></a>* &quot;VirtualBox&quot; is a trademark owned by Oracle.
+</span></div></pre></body>
+</html>

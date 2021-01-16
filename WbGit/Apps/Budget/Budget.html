@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U8</span><span class=cB0> *bgt_string_file;
+<a name="l2"></a></span><span class=cB1>U8</span><span class=cB0> *bgt_accts_file;
+<a name="l3"></a></span><span class=cB1>U8</span><span class=cB0> *bgt_data_file;
+<a name="l4"></a>
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> BE_NORMAL               0
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> BE_GAS                  1
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> BE_ANNIVERSARY          2
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> BE_PRICE                3
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> BE_TEMPLATE_COPY        4
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>class</span><span class=cB0> CBgtTemplate;
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB1>class</span><span class=cB0> CBgtEntry
+<a name="l14"></a>{
+<a name="l15"></a>  CBgtEntry *next,*last;
+<a name="l16"></a>
+<a name="l17"></a>  </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>;
+<a name="l18"></a>  </span><span class=cB9>CDate</span><span class=cB0> date;
+<a name="l19"></a>  </span><span class=cB9>U16</span><span class=cB0> type,flags;
+<a name="l20"></a>  </span><span class=cB9>U32</span><span class=cB0> credit_idx,debit_idx,desc_idx;
+<a name="l21"></a>  </span><span class=cB1>F64</span><span class=cB0> amount;
+<a name="l22"></a>  </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB1>end</span><span class=cB0>;
+<a name="l23"></a>
+<a name="l24"></a>  </span><span class=cB1>U8</span><span class=cB0> *credit,*debit,*desc;
+<a name="l25"></a>  CBgtTemplate *template;
+<a name="l26"></a>  </span><span class=cB9>CDocEntry</span><span class=cB0> *doc_e;
+<a name="l27"></a>} b_head;
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> BE_SIZE (</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>CBgtEntry.</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>CBgtEntry.</span><span class=cB1>start</span><span class=cB7>)</span><span class=cB0>)
+<a name="l29"></a>
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> BT_NULL         0
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> BT_INTERVAL     1
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> BT_MONTHLY      2
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> BT_BIMONTHLY    3
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> BT_SEMIANNUAL   4
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> BT_ANNUAL       5
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13">DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_BGT_TEMPLATE_TYPES&quot;</span><span class=cB0>,
+<a name="l38"></a>        </span><span class=cB6>&quot;Null\0Interval\0Monthly\0Bimonthly\0Semiannual\0Annual\0&quot;</span><span class=cB0>);
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB1>class</span><span class=cB0> CBgtTemplate
+<a name="l41"></a>{
+<a name="l42"></a>  CBgtTemplate *next,*last;
+<a name="l43"></a>
+<a name="l44"></a>  </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>;
+<a name="l45"></a>  </span><span class=cB9>U16</span><span class=cB0> type              format </span><span class=cB6>&quot;$LS,D=\&quot;ST_BGT_TEMPLATE_TYPES\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l46"></a>  </span><span class=cB9>U16</span><span class=cB0> flags;
+<a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> start_date[16]     format </span><span class=cB6>&quot;$DA-P,A=\&quot;Start Date:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l48"></a>  </span><span class=cB1>U8</span><span class=cB0> end_date[16]       format </span><span class=cB6>&quot;$DA-P,A=\&quot;End Date  :%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l49"></a>  </span><span class=cB1>F64</span><span class=cB0> period            format </span><span class=cB6>&quot;$DA,A=\&quot;Period    :%8.2f\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l50"></a>  </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB1>end</span><span class=cB0>;
+<a name="l51"></a>
+<a name="l52"></a>  CBgtEntry b;
+<a name="l53"></a>} t_head;
+<a name="l54"></a>#</span><span class=cB1>define</span><span class=cB0> BT_SIZE (</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>CBgtTemplate.</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>CBgtTemplate.</span><span class=cB1>start</span><span class=cB7>)</span><span class=cB0>)
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB1>U8</span><span class=cB0> view_acct[512];
+<a name="l57"></a></span><span class=cB9>CHashTable</span><span class=cB0> *accts_table=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l58"></a></span><span class=cB9>I64</span><span class=cB0> accts_table_strs=0;
+<a name="l59"></a>
+<a name="l60"></a></span><span class=cB9>CDate</span><span class=cB0> MyStr2Date(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l61"></a>{
+<a name="l62"></a>  </span><span class=cB9>CDateStruct</span><span class=cB0>   ds;
+<a name="l63"></a>  </span><span class=cB9>CDate</span><span class=cB0>         res;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (st&amp;&amp;*st) </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l462">StrOcc</a></span><span class=cB7>(</span><span class=cB0>st,</span><span class=cB6>'['</span><span class=cB7>)</span><span class=cB0>)
+<a name="l66"></a>      res=b_head.next-&gt;date;
+<a name="l67"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l462">StrOcc</a></span><span class=cB7>(</span><span class=cB0>st,</span><span class=cB6>']'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l68"></a>      res=b_head.last-&gt;date;
+<a name="l69"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l70"></a>      res=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l138">Str2Date</a></span><span class=cB0>(st);
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l72"></a>    res=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l191">Now</a></span><span class=cB0>;
+<a name="l73"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39">Date2Struct</a></span><span class=cB0>(&amp;ds,res);
+<a name="l74"></a>  </span><span class=cB1>if</span><span class=cB0> (ds.year&gt;2050)
+<a name="l75"></a>    ds.year-=100;
+<a name="l76"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l14">Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l77"></a>}
+</span></div></pre></body>
+</html>

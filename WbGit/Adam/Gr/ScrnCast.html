@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;ScrnCast;Graphics/Device Contexts;Graphics/GR Files&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> </span><span class=cB3>MV_FILE_MAX</span><span class=cB0>     0x007FF000
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l5">GR2MV</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *print_fmt=</span><span class=cB6>&quot;VID%03d.MV&quot;</span><span class=cB0>,
+<a name="l6"></a>        </span><span class=cB1>U8</span><span class=cB0> *files_find_mask,</span><span class=cB1>U8</span><span class=cB0> *fu_flags=</span><span class=cB3>NULL</span><span class=cB0>)
+<a name="l7"></a>{</span><span class=cB2>/*Merge GR lst to MV file.</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>&quot;+d&quot; will delete GR list files.</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l10"></a>  </span><span class=cB9>I64</span><span class=cB0> fuf_flags=0,file_num=0,size;
+<a name="l11"></a>  </span><span class=cB9>CDirEntry</span><span class=cB0> *tmpde,*tmpde1;
+<a name="l12"></a>  </span><span class=cB1>U8</span><span class=cB0> *base,*dst,*src,*st;
+<a name="l13"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc,*dc_base=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l186">DCNew</a></span><span class=cB0>(</span><span class=cB3>GR_WIDTH</span><span class=cB0>,</span><span class=cB3>GR_HEIGHT</span><span class=cB0>);
+<a name="l14"></a>  </span><span class=cB9>CDate</span><span class=cB0> cdt;
+<a name="l15"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_silent;
+<a name="l16"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l123">ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49">Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;+f+F&quot;</span><span class=cB0>);
+<a name="l17"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l123">ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49">Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,fu_flags);
+<a name="l18"></a>  tmpde=tmpde1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32">FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags&amp;</span><span class=cB3>FUG_FILES_FIND</span><span class=cB0>);
+<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBB>progress1_max</span><span class=cB0>=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l21">LinkedLstCnt</a></span><span class=cB7>(</span><span class=cB0>tmpde1</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    dst=base=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(</span><span class=cB3>MV_FILE_MAX</span><span class=cB0>);
+<a name="l21"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpde) {
+<a name="l22"></a>      dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l394">GRRead</a></span><span class=cB0>(tmpde-&gt;full_name);
+<a name="l23"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l71">GrBlot</a></span><span class=cB0>(dc_base,dc-&gt;x0,dc-&gt;y0,dc);
+<a name="l24"></a>      </span><span class=cB1>if</span><span class=cB0> (dst+</span><span class=cB3>GR_FILE_MAX</span><span class=cB0>&gt;base+</span><span class=cB3>MV_FILE_MAX</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l25"></a>        st=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l954">MStrPrint</a></span><span class=cB0>(print_fmt,file_num++);
+<a name="l26"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95">FileWrite</a></span><span class=cB0>(st,base,dst-base);
+<a name="l27"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(st);
+<a name="l28"></a>        dst=base;
+<a name="l29"></a>
+<a name="l30"></a>        cdt=dc-&gt;cdt;
+<a name="l31"></a>        dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l243">DCCopy</a></span><span class=cB0>(dc_base);
+<a name="l32"></a>        dc-&gt;cdt=cdt;
+<a name="l33"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>      src=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l286">DCSave</a></span><span class=cB0>(dc,&amp;size);
+<a name="l35"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l36"></a>      </span><span class=cB5>MemCpy</span><span class=cB0>(dst,src,size);
+<a name="l37"></a>      dst+=size;
+<a name="l38"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(src);
+<a name="l39"></a>      </span><span class=cB1>if</span><span class=cB0> (fuf_flags&amp;</span><span class=cB3>FUF_DEL</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l40"></a>        old_silent=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282">Silent</a></span><span class=cB0>;
+<a name="l41"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l82">Del</a></span><span class=cB0>(tmpde-&gt;full_name);
+<a name="l42"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282">Silent</a></span><span class=cB0>(old_silent);
+<a name="l43"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l44"></a>      </span><span class=cBB>progress1</span><span class=cB0>++;
+<a name="l45"></a>      tmpde=tmpde-&gt;next;
+<a name="l46"></a>    }
+<a name="l47"></a>    </span><span class=cB1>if</span><span class=cB0> (dst&gt;base) {
+<a name="l48"></a>      st=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l954">MStrPrint</a></span><span class=cB0>(print_fmt,file_num++);
+<a name="l49"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95">FileWrite</a></span><span class=cB0>(st,base,dst-base);
+<a name="l50"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(st);
+<a name="l51"></a>    }
+<a name="l52"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(base);
+<a name="l53"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>  </span><span class=cBB>progress1</span><span class=cB0>=</span><span class=cBB>progress1_max</span><span class=cB0>=0;
+<a name="l55"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39">DirTreeDel</a></span><span class=cB0>(tmpde1);
+<a name="l56"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc_base);
+<a name="l57"></a>  </span><span class=cB1>return</span><span class=cB0> file_num;
+<a name="l58"></a>}
+<a name="l59"></a>
+<a name="l60"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;ScrnCast;Snd/AU Files&quot;</span><span class=cB0>
+<a name="l61"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l61">SndShift</a></span><span class=cB0>(</span><span class=cB9>CSndData</span><span class=cB0> *head,</span><span class=cB1>F64</span><span class=cB0> dt=0)
+<a name="l62"></a>{</span><span class=cB2>//Shift CSndData in time.</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB9>CSndData</span><span class=cB0> *tmpsd,*tmpsd1;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (dt) </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>    tmpsd=head-&gt;next;
+<a name="l66"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpsd!=head) {
+<a name="l67"></a>      tmpsd1=tmpsd-&gt;next;
+<a name="l68"></a>      tmpsd-&gt;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-=dt;
+<a name="l69"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpsd-&gt;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>&lt;tmpsd-&gt;last-&gt;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>        </span><span class=cB5>QueRem</span><span class=cB0>(tmpsd);
+<a name="l71"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(tmpsd);
+<a name="l72"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l73"></a>      tmpsd=tmpsd1;
+<a name="l74"></a>    }
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>}
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l78">AUWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>CSndData</span><span class=cB0> *head,</span><span class=cB9>CDate</span><span class=cB0> *t0_now,</span><span class=cB1>F64</span><span class=cB0> t0_tS)
+<a name="l79"></a>{</span><span class=cB2>//Write AU file.</span><span class=cB0>
+<a name="l80"></a>  </span><span class=cB9>CSndData</span><span class=cB0> *tmpsd;
+<a name="l81"></a>  </span><span class=cB9>CAUData</span><span class=cB0> *base,*dst;
+<a name="l82"></a>  </span><span class=cB9>I64</span><span class=cB0> size=(1+</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l65">QueCnt</a></span><span class=cB7>(</span><span class=cB0>head</span><span class=cB7>)</span><span class=cB0>)*</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CAUData</span><span class=cB0>);
+<a name="l83"></a>  </span><span class=cB1>U8</span><span class=cB0> *st=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l212">ExtDft</a></span><span class=cB0>(filename,</span><span class=cB6>&quot;AU&quot;</span><span class=cB0>);
+<a name="l84"></a>  base=dst=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(size);
+<a name="l85"></a>  tmpsd=head;
+<a name="l86"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l87"></a>    dst-&gt;cdt=t0_now(</span><span class=cB9>I64</span><span class=cB0>)+</span><span class=cB5>ToI64</span><span class=cB0>(</span><span class=cB3>CDATE_FREQ</span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>tmpsd-&gt;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB0>-t0_tS</span><span class=cB7>)</span><span class=cB0>);
+<a name="l88"></a>    dst-&gt;ona=tmpsd-&gt;ona;
+<a name="l89"></a>    dst++;
+<a name="l90"></a>    tmpsd=tmpsd-&gt;next;
+<a name="l91"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (tmpsd!=head);
+<a name="l92"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95">FileWrite</a></span><span class=cB0>(st,base,dst</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>-base</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l93"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(base);
+<a name="l94"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(st);
+<a name="l95"></a>  </span><span class=cB1>return</span><span class=cB0> size;
+<a name="l96"></a>}
+</span></div></pre></body>
+</html>

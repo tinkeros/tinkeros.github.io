@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*Scans the sym table and checks</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>each </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l732"><span class=cB4>HTT_DEFINE_STR</span></a><span class=cB2> entry to see if</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>it only occurs once in files.</span><span class=cB0>
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB2>It's a brute force solution, but</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>gets the job done... slowly.</span><span class=cB0>
+<a name="l7"></a></span><span class=cB4>
+<a name="l8"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Find.html#l145"><span class=cB4>Find</span></a><span class=cB2>() returns a count of matches.</span><span class=cB0>
+<a name="l9"></a></span><span class=cB4>
+<a name="l10"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Find.html#l184"><span class=cB4>FileOcc</span></a><span class=cB2>() is </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Find.html#l145"><span class=cB4>Find</span></a><span class=cB2>() with</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>output </span><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282"><span class=cB4>Silent</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB1>U0</span><span class=cB0> UnusedDefineScan()
+<a name="l15"></a>{
+<a name="l16"></a>  </span><span class=cB9>CDoc</span><span class=cB0> *old_put_doc,*old_display_doc,*doc;
+<a name="l17"></a>  </span><span class=cB9>I64</span><span class=cB0> i,cnt=0;
+<a name="l18"></a>  </span><span class=cB9>CHashTable</span><span class=cB0> *table;
+<a name="l19"></a>  </span><span class=cB9>CHash</span><span class=cB0> *tmph;
+<a name="l20"></a>  </span><span class=cB9>CDocEntry</span><span class=cB0> *doc_e,*doc_e2;
+<a name="l21"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_silent=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l287">IsSilent</a></span><span class=cB0>;
+<a name="l22"></a>
+<a name="l23"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    table=</span><span class=cB5>Fs</span><span class=cB0>-&gt;hash_table;
+<a name="l25"></a>    </span><span class=cB1>while</span><span class=cB0> (table) {
+<a name="l26"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>        tmph=table-&gt;body[i];
+<a name="l28"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph) {
+<a name="l29"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;</span><span class=cB3>HTT_DEFINE_STR</span><span class=cB0>)
+<a name="l30"></a>            cnt++;
+<a name="l31"></a>          tmph=tmph-&gt;next;
+<a name="l32"></a>        }
+<a name="l33"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>      table=table-&gt;next;
+<a name="l35"></a>    }
+<a name="l36"></a>
+<a name="l37"></a>    </span><span class=cBB>progress1</span><span class=cB0>=0;
+<a name="l38"></a>    </span><span class=cBB>progress1_max</span><span class=cB0>=cnt;
+<a name="l39"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321">StrCpy</a></span><span class=cB0>(</span><span class=cBB>progress1_desc</span><span class=cB0>,</span><span class=cB6>&quot;Define Scan&quot;</span><span class=cB0>);
+<a name="l40"></a>
+<a name="l41"></a>    table=</span><span class=cB5>Fs</span><span class=cB0>-&gt;hash_table;
+<a name="l42"></a>    </span><span class=cB1>while</span><span class=cB0> (table) {
+<a name="l43"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l44"></a>        tmph=table-&gt;body[i];
+<a name="l45"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph) {
+<a name="l46"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;</span><span class=cB3>HTT_DEFINE_STR</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>            </span><span class=cBB>progress1</span><span class=cB0>++;
+<a name="l48"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>FileOcc</span><span class=cB7>(</span><span class=cB0>tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB7>)</span><span class=cB0>==1) {
+<a name="l49"></a>              doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l363">DocNew</a></span><span class=cB0>;
+<a name="l50"></a>              old_put_doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2">DocPut</a></span><span class=cB0>;
+<a name="l51"></a>              old_display_doc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l15">DocDisplay</a></span><span class=cB0>;
+<a name="l52"></a>              </span><span class=cB5>Fs</span><span class=cB0>-&gt;put_doc=</span><span class=cB5>Fs</span><span class=cB0>-&gt;display_doc=doc;
+<a name="l53"></a>              </span><span class=cB5>Find</span><span class=cB0>(tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB0>);
+<a name="l54"></a>              </span><span class=cB5>Fs</span><span class=cB0>-&gt;put_doc=old_put_doc;
+<a name="l55"></a>              </span><span class=cB5>Fs</span><span class=cB0>-&gt;display_doc=old_display_doc;
+<a name="l56"></a>              doc_e=doc-&gt;head.next;
+<a name="l57"></a>              </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>                </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==</span><span class=cB3>DOCT_LINK</span><span class=cB0>) {
+<a name="l59"></a>                  </span><span class=cB6>&quot;%s &quot;</span><span class=cB0>,tmph-&gt;str;
+<a name="l60"></a>                  doc_e2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l136">DocEntryCopy</a></span><span class=cB0>(doc,doc_e);
+<a name="l61"></a>                  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l199">DocInsEntry</a></span><span class=cB0>(old_put_doc,doc_e2);
+<a name="l62"></a>                  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l63"></a>                }
+<a name="l64"></a>                doc_e=doc_e-&gt;next;
+<a name="l65"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l66"></a>              </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l311">DocDel</a></span><span class=cB0>(doc);
+<a name="l67"></a>            }
+<a name="l68"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>          tmph=tmph-&gt;next;
+<a name="l70"></a>        }
+<a name="l71"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>      table=table-&gt;next;
+<a name="l73"></a>    }
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l75"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45">PutExcept</a></span><span class=cB0>;
+<a name="l76"></a>
+<a name="l77"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l282">Silent</a></span><span class=cB0>(old_silent);
+<a name="l78"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l79"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l339">ProgressBarsRst</a></span><span class=cB0>;
+<a name="l80"></a>}
+<a name="l81"></a>
+<a name="l82"></a>UnusedDefineScan;
+</span></div></pre></body>
+</html>

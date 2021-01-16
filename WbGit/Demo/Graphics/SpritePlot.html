@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*Sprite graphics can be placed in src code.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>The binary graphic data is stored in the</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>file after the text area.  &lt;CTRL-r&gt; is used</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>to generate a sprite.  Press &lt;CTRL-t&gt; to</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>toggle to plain text mode and see its</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>text place holder $SP...$.  You can place any text</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>in the tag quotes or none.  The text doesn't matter,</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>but the BI=num does.  The num identifies</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>the sprite and can't be changed by you.</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB2>Insert a ptr to a sprite by pressing &lt;CTRL-r&gt;</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>and &quot;Ptr to Sprite&quot;.  This creates an &quot;Insert Bin&quot;,</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>$IB...$ DolDoc cmd you can see by toggling</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>to text with &lt;CTRL-t&gt;.</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>IB's behave like string consts in </span><a href="http://tinkeros.github.io/WbGit/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB2> when</span><span class=cB0>
+<a name="l17"></a></span><span class=cB2>compiled.  That is, they are ptrs to data.</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB2>This file uses the persistent graphic</span><span class=cB0>
+<a name="l20"></a></span><span class=cB2>device context </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3716"><span class=cB4>CDC</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4024"><span class=cB4>gr.dc</span></a><span class=cB2>, while the other</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>demo's use </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4024"><span class=cB4>gr.dc2</span></a><span class=cB2> which must be redrawn at</span><span class=cB0>
+<a name="l22"></a></span><span class=cB2>30 fps by the window mgr task.</span><span class=cB0>  </span><span class=cB2>This demo</span><span class=cB0>
+<a name="l23"></a></span><span class=cB2>is simpler because you do not need</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>a window update callback routine.</span><span class=cB0>
+<a name="l25"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l26"></a>
+<a name="l27"></a>
+<a name="l28"></a>
+<a name="l29"></a>
+<a name="l30"></a>
+<a name="l31"></a>
+<a name="l32"></a>
+<a name="l33"></a>
+<a name="l34"></a>
+<a name="l35"></a>            </span><span class=cBA>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l36"></a>
+<a name="l37"></a>
+<a name="l38"></a>
+<a name="l39"></a>
+<a name="l40"></a>
+<a name="l41"></a>
+<a name="l42"></a>
+<a name="l43"></a>
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB1>U0</span><span class=cB0> SpritePlot()
+<a name="l46"></a>{
+<a name="l47"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l168">DCAlias</a></span><span class=cB0>;
+<a name="l48"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l49"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l50"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;</span><span class=cB3>GR_WIDTH</span><span class=cB0>&gt;&gt;2;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>;
+<a name="l52"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,i,</span><span class=cB3>GR_HEIGHT</span><span class=cB0>&gt;&gt;1,0,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>);
+<a name="l53"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(3);
+<a name="l54"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l55"></a>  </span><span class=cB6>&quot;Image size:%d\n&quot;</span><span class=cB0>,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>;
+<a name="l56"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l57"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>;
+<a name="l59"></a>}
+<a name="l60"></a>
+<a name="l61"></a>SpritePlot;
+</span></div></pre></body>
+</html>

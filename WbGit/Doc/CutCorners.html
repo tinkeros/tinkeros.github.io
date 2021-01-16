@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                  <h1><center>Cut Corners</center></h1>
+<a name="l2"></a></span><span class=cB0>
+<a name="l3"></a>There are a few places where I cut corners in the interest of not junking-up 
+<a name="l4"></a>code.  This is part of the TempleOS mentality.  I try not to let stupid legacy 
+<a name="l5"></a>compatibility issues enter and junk-up TempleOS.
+<a name="l6"></a>
+<a name="l7"></a>* I made my type-casting operator post-fix because it makes the compiler way 
+<a name="l8"></a>cleaner.
+<a name="l9"></a>
+<a name="l10"></a>* TempleOS does not figure-out </span><span class=cB2>FAT32</span><span class=cB0> short name alias numbers.  </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l562"><span class=cB4>FAT32DirNew</span></a><span class=cB0>().  
+<a name="l11"></a>It can cause hard drive corruption, so I might have to do it.  It would really 
+<a name="l12"></a>take a lot of junky code for this hatefully, detestable, legacy issue.  &quot;Please 
+<a name="l13"></a>don't make me ruin my beautiful shiny-new TempleOS with that!&quot;  I am also not 
+<a name="l14"></a>enthused about </span><span class=cB2>FAT32</span><span class=cB0> because it is in patent limbo.  </span><span class=cB2>FAT32</span><span class=cB0> might get removed 
+<a name="l15"></a>from TempleOS.  There is the </span><a href="http://tinkeros.github.io/WbGit/Doc/RedSea.html#l1"><span class=cB4>RedSea</span></a><span class=cB0>  64-bit file system that works perfectly 
+<a name="l16"></a>well.  </span><span class=cB2>FAT32</span><span class=cB0> is useful, however, because it assists in transferring between dual 
+<a name="l17"></a>booted operating systems.
+<a name="l18"></a>
+<a name="l19"></a>* I changed the </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l1"><span class=cB4>asm opcodes</span></a><span class=cB0> names to remove the ambiguity between insts with 
+<a name="l20"></a>different numbers of arguments, making my </span><a href="http://tinkeros.github.io/WbGit/Compiler/Asm.html#l1"><span class=cB4>assembler</span></a><span class=cB0> simpler and I did minimal 
+<a name="l21"></a>16-bit asm support, since 64-bit is what you should be using, unless you're 
+<a name="l22"></a>doing a </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootDVD.html#l1"><span class=cB4>boot loader</span></a><span class=cB0>.
+<a name="l23"></a>
+<a name="l24"></a>* There are no user-controlled file-sharing locks.  However, the drive and file 
+<a name="l25"></a>system have locks and concurrent operations should be fine. 
+<a name="l26"></a>
+<a name="l27"></a>* A hidden window is never refreshed.  Certain tasks are never done, therefore.  
+<a name="l28"></a>During refresh, the entry count limit of the document buffer is, normally, 
+<a name="l29"></a>checked and enforced.  If you print to the command-line in a task whose window 
+<a name="l30"></a>is covered, no limit on buffer exists and it will alloc memory for the document 
+<a name="l31"></a>buffer until the system runs out of memory and crashes.
+<a name="l32"></a>
+<a name="l33"></a>* Even if a local function variable is declared less than 64 bits, the compiler 
+<a name="l34"></a>does calculations with 64-bit.
+<a name="l35"></a>
+<a name="l36"></a>* </span><a href="http://tinkeros.github.io/WbGit/Doc/Print.html#l1"><span class=cB4>Print</span></a><span class=cB0>() uses </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l251"><span class=cB4>StrPrintJoin</span></a><span class=cB0>().  You cannot use vastly over-sized fields for %f.
+<a name="l37"></a>
+<a name="l38"></a>* </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l852"><span class=cB4>GrEllipse3</span></a><span class=cB0>() is broken on transformations.
+<a name="l39"></a> </span></div></pre></body>
+</html>

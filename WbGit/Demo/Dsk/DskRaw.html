@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> RawAccess(</span><span class=cB9>I64</span><span class=cB0> drv_let=0)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB9>CDrv</span><span class=cB0> *dv=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188">Let2Drv</a></span><span class=cB0>(drv_let);
+<a name="l4"></a>  </span><span class=cB9>CBlkDev</span><span class=cB0> *bd=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l180">Let2BlkDev</a></span><span class=cB0>(drv_let);
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> blk,old_offset,old_size;
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387">MAlloc</a></span><span class=cB0>(</span><span class=cB3>BLK_SIZE</span><span class=cB0>);
+<a name="l7"></a>
+<a name="l8"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l302">DrvRep</a></span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l10"></a>
+<a name="l11"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l161">ClassRep</a></span><span class=cB0>(dv);
+<a name="l12"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l13"></a>
+<a name="l14"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l161">ClassRep</a></span><span class=cB0>(bd);
+<a name="l15"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103">PressAKey</a></span><span class=cB0>;
+<a name="l16"></a>
+<a name="l17"></a>  </span><span class=cB2>//Temporarily change partition range to full device.</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB2>//Normally, you are limited to just your partition.</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB2>//This is obviously dangerous!</span><span class=cB0>
+<a name="l20"></a>  old_offset=dv-&gt;drv_offset;
+<a name="l21"></a>  old_size  =dv-&gt;size;
+<a name="l22"></a>  dv-&gt;drv_offset=0;
+<a name="l23"></a>  dv-&gt;size=bd-&gt;max_blk+1;
+<a name="l24"></a>
+<a name="l25"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>    blk=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGet.html#l172">GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;Blk to Read: &quot;</span><span class=cB0>,old_offset,0,bd-&gt;max_blk);
+<a name="l27"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l31">BlkRead</a></span><span class=cB0>(dv,buf,blk,1);
+<a name="l28"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l172">D</a></span><span class=cB0>(buf,</span><span class=cB3>BLK_SIZE</span><span class=cB0>);
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l30"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45">PutExcept</a></span><span class=cB0>;
+<a name="l31"></a>
+<a name="l32"></a>  dv-&gt;drv_offset=old_offset;
+<a name="l33"></a>  dv-&gt;size  =old_size;
+<a name="l34"></a>
+<a name="l35"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(buf);
+<a name="l36"></a>}
+<a name="l37"></a>
+<a name="l38"></a>RawAccess;
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l31"><span class=cB4>BlkRead</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l71"><span class=cB4>BlkWrite</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"><span class=cB4>DrvLock</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l14"><span class=cB4>DrvUnlock</span></a><span class=cB2>()</span><span class=cB0>
+<a name="l41"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l113"><span class=cB4>DBlk</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l114"><span class=cB4>DClus</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l1"><span class=cB4>BlkDevLock</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l15"><span class=cB4>BlkDevUnlock</span></a><span class=cB2>().</span><span class=cB0>
+</span></div></pre></body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l1">BlkDevLock</a></span><span class=cB0>(</span><span class=cB9>CBlkDev</span><span class=cB0> *bd)
+<a name="l2"></a>{</span><span class=cB2>//Make this task have exclusive access to BlkDev.</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l168">BlkDevChk</a></span><span class=cB0>(bd);
+<a name="l4"></a>  </span><span class=cB1>while</span><span class=cB0> (bd-&gt;lock_fwding)
+<a name="l5"></a>    bd=bd-&gt;lock_fwding; </span><span class=cB2>//If two blkdevs on same controller, use just one lock</span><span class=cB0>
+<a name="l6"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;bd-&gt;locked_flags,</span><span class=cB3>BDlf_LOCKED</span><span class=cB7>)</span><span class=cB0> || bd-&gt;owning_task!=</span><span class=cB5>Fs</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l7"></a>    </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB5>LBts</span><span class=cB7>(</span><span class=cB0>&amp;bd-&gt;locked_flags,</span><span class=cB3>BDlf_LOCKED</span><span class=cB7>)</span><span class=cB0>)
+<a name="l8"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l9"></a>    bd-&gt;owning_task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l10"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l11"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l12"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l13"></a>}
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l15">BlkDevUnlock</a></span><span class=cB0>(</span><span class=cB9>CBlkDev</span><span class=cB0> *bd,</span><span class=cB1>Bool</span><span class=cB0> rst=</span><span class=cB3>FALSE</span><span class=cB0>)
+<a name="l16"></a>{</span><span class=cB2>//Release exclusive lock on access to BlkDev.</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l168">BlkDevChk</a></span><span class=cB0>(bd);
+<a name="l18"></a>  </span><span class=cB1>while</span><span class=cB0> (bd-&gt;lock_fwding)
+<a name="l19"></a>    bd=bd-&gt;lock_fwding; </span><span class=cB2>//If two blkdevs on same controller, use just one lock</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Bt</span><span class=cB7>(</span><span class=cB0>&amp;bd-&gt;locked_flags,</span><span class=cB3>BDlf_LOCKED</span><span class=cB7>)</span><span class=cB0> &amp;&amp; bd-&gt;owning_task==</span><span class=cB5>Fs</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    </span><span class=cB1>if</span><span class=cB0> (rst)
+<a name="l22"></a>      bd-&gt;flags&amp;=~(</span><span class=cB3>BDF_INITIALIZED</span><span class=cB0>|</span><span class=cB3>BDF_INIT_IN_PROGRESS</span><span class=cB0>);
+<a name="l23"></a>    bd-&gt;owning_task=</span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l24"></a>    </span><span class=cB5>LBtr</span><span class=cB0>(&amp;bd-&gt;locked_flags,</span><span class=cB3>BDlf_LOCKED</span><span class=cB0>);
+<a name="l25"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>; </span><span class=cB2>//Prevent deadlock</span><span class=cB0>
+<a name="l26"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l28"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l29"></a>}
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>Bool</span><span class=cB0> </span><span class=cBD>BlkDevInit</span><span class=cB0>(</span><span class=cB9>CBlkDev</span><span class=cB0> *bd)
+<a name="l32"></a>{
+<a name="l33"></a>  </span><span class=cB9>CDirEntry</span><span class=cB0> de;
+<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[</span><span class=cB3>STR_LEN</span><span class=cB0>];
+<a name="l35"></a>  </span><span class=cB9>CDrv</span><span class=cB0> *dv=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188">Let2Drv</a></span><span class=cB0>(bd-&gt;first_drv_let);
+<a name="l36"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l37"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB5>LBts</span><span class=cB7>(</span><span class=cB0>&amp;bd-&gt;flags,</span><span class=cB3>BDf_INITIALIZED</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    bd-&gt;flags|=</span><span class=cB3>BDF_INIT_IN_PROGRESS</span><span class=cB0>;
+<a name="l39"></a>    </span><span class=cB1>switch</span><span class=cB0> (bd-&gt;type) {
+<a name="l40"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_RAM</span><span class=cB0>:
+<a name="l41"></a>        </span><span class=cB1>if</span><span class=cB0> (!bd-&gt;RAM_dsk) </span><span class=cB7>{</span><span class=cB0>
+<a name="l42"></a>          bd-&gt;RAM_dsk=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l390">AMAlloc</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>bd-&gt;max_blk+1</span><span class=cB7>)</span><span class=cB0>&lt;&lt;</span><span class=cB3>BLK_SIZE_BITS</span><span class=cB0>);
+<a name="l43"></a>          bd-&gt;max_blk=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l384">MSize</a></span><span class=cB0>(bd-&gt;RAM_dsk)&gt;&gt;</span><span class=cB3>BLK_SIZE_BITS</span><span class=cB0>-1;
+<a name="l44"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l45"></a>        dv-&gt;fs_type=</span><span class=cB3>FSt_REDSEA</span><span class=cB0>;
+<a name="l46"></a>        dv-&gt;size=bd-&gt;max_blk+1-bd-&gt;drv_offset;
+<a name="l47"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBD>RedSeaValidate</span><span class=cB7>(</span><span class=cB0>bd-&gt;first_drv_let</span><span class=cB7>)</span><span class=cB0>)
+<a name="l48"></a>          </span><span class=cBD>RedSeaInit</span><span class=cB0>(dv);
+<a name="l49"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l50"></a>          </span><span class=cBD>RedSeaFmt</span><span class=cB0>(bd-&gt;first_drv_let);
+<a name="l51"></a>        res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l52"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l53"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ISO_FILE_READ</span><span class=cB0>:
+<a name="l54"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65">FileFind</a></span><span class=cB7>(</span><span class=cB0>bd-&gt;file_dsk_name,&amp;de,</span><span class=cB3>FUF_JUST_FILES</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l55"></a>          bd-&gt;max_blk=de.size&gt;&gt;</span><span class=cB3>BLK_SIZE_BITS</span><span class=cB0>-1;
+<a name="l56"></a>          </span><span class=cB1>try</span><span class=cB0> bd-&gt;file_dsk=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9">FOpen</a></span><span class=cB0>(bd-&gt;file_dsk_name,</span><span class=cB6>&quot;rc&quot;</span><span class=cB0>,bd-&gt;max_blk+1);
+<a name="l57"></a>          </span><span class=cB1>catch</span><span class=cB0> {
+<a name="l58"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5>Fs</span><span class=cB0>-&gt;except_ch==</span><span class=cB6>'File'</span><span class=cB0>)
+<a name="l59"></a>              </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l962">PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not Contiguous.  Move file to filename.ISO.C.\n&quot;</span><span class=cB0>);
+<a name="l60"></a>            </span><span class=cB5>Fs</span><span class=cB0>-&gt;catch_except=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l61"></a>          }
+<a name="l62"></a>          </span><span class=cB1>if</span><span class=cB0> (bd-&gt;file_dsk) {
+<a name="l63"></a>            dv-&gt;fs_type=</span><span class=cB3>FSt_REDSEA</span><span class=cB0>;
+<a name="l64"></a>            dv-&gt;size=bd-&gt;max_blk+1-bd-&gt;drv_offset;
+<a name="l65"></a>            </span><span class=cB1>if</span><span class=cB0> (</span><span class=cBD>RedSeaValidate</span><span class=cB7>(</span><span class=cB0>bd-&gt;first_drv_let</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>              </span><span class=cBD>RedSeaInit</span><span class=cB0>(dv);
+<a name="l67"></a>              res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l68"></a>            </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l69"></a>              </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l962">PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not RedSea\n&quot;</span><span class=cB0>);
+<a name="l70"></a>          }
+<a name="l71"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l73"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ISO_FILE_WRITE</span><span class=cB0>:
+<a name="l74"></a>        </span><span class=cB1>if</span><span class=cB0> (!bd-&gt;file_dsk_name) </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>          </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l932">StrPrint</a></span><span class=cB0>(buf,</span><span class=cB6>&quot;%C:/Drv%C.ISO.C&quot;</span><span class=cB0>,
+<a name="l76"></a>                </span><span class=cBB>blkdev</span><span class=cB0>.boot_drv_let,bd-&gt;first_drv_let);
+<a name="l77"></a>          bd-&gt;file_dsk_name=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l461">AStrNew</a></span><span class=cB0>(buf);
+<a name="l78"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;max_blk&lt;7)
+<a name="l80"></a>          bd-&gt;max_blk=7;
+<a name="l81"></a>        bd-&gt;file_dsk=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9">FOpen</a></span><span class=cB0>(bd-&gt;file_dsk_name,</span><span class=cB6>&quot;wc&quot;</span><span class=cB0>,bd-&gt;max_blk+1);
+<a name="l82"></a>        dv-&gt;fs_type=</span><span class=cB3>FSt_REDSEA</span><span class=cB0>;
+<a name="l83"></a>        dv-&gt;size=bd-&gt;max_blk+1-bd-&gt;drv_offset;
+<a name="l84"></a>        </span><span class=cBD>RedSeaFmt</span><span class=cB0>(bd-&gt;first_drv_let);
+<a name="l85"></a>        </span><span class=cB5>CallExtStr</span><span class=cB0>(</span><span class=cB6>&quot;RedSeaISO9660&quot;</span><span class=cB0>,bd-&gt;file_dsk_name,bd-&gt;first_drv_let);
+<a name="l86"></a>        res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l87"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l88"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ATA</span><span class=cB0>:
+<a name="l89"></a>        bd-&gt;max_reads=128;
+<a name="l90"></a>        bd-&gt;max_writes=1;
+<a name="l91"></a>        res=</span><span class=cBD>ATAInit</span><span class=cB0>(bd);
+<a name="l92"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l93"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ATAPI</span><span class=cB0>:
+<a name="l94"></a></span><span class=cB2>//0xFFFF*4 is too big for my taste</span><span class=cB0>
+<a name="l95"></a>        bd-&gt;max_reads=0x800*4;
+<a name="l96"></a></span><span class=cB2>//max of maybe a quarter of disk cache</span><span class=cB0>
+<a name="l97"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;max_reads&gt;</span><span class=cBB>blkdev</span><span class=cB0>.cache_size/</span><span class=cB3>BLK_SIZE</span><span class=cB0>/4)
+<a name="l98"></a>          bd-&gt;max_reads=</span><span class=cBB>blkdev</span><span class=cB0>.cache_size/</span><span class=cB3>BLK_SIZE</span><span class=cB0>/4 &amp; ~3;
+<a name="l99"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;max_reads&lt;128)
+<a name="l100"></a>          bd-&gt;max_reads=128;
+<a name="l101"></a>        bd-&gt;max_writes=0xFFFF*4;
+<a name="l102"></a>        </span><span class=cB1>if</span><span class=cB0> (res=</span><span class=cBD>ATAInit</span><span class=cB7>(</span><span class=cB0>bd</span><span class=cB7>)</span><span class=cB0>)
+<a name="l103"></a>          dv-&gt;size=bd-&gt;max_blk+1;
+<a name="l104"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l105"></a>    }
+<a name="l106"></a>    </span><span class=cB1>if</span><span class=cB0> (res &amp;&amp; bd-&gt;flags &amp; </span><span class=cB3>BDF_READ_CACHE</span><span class=cB0>)
+<a name="l107"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218">DskCacheInvalidate</a></span><span class=cB0>(dv);
+<a name="l108"></a>    bd-&gt;flags&amp;=~</span><span class=cB3>BDF_INIT_IN_PROGRESS</span><span class=cB0>;
+<a name="l109"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l110"></a>    res=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l111"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l112"></a>}
+<a name="l113"></a>
+<a name="l114"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l114">BlkDevsRelease</a></span><span class=cB0>()
+<a name="l115"></a>{</span><span class=cB2>//When task dies, release all owned BlkDevs.</span><span class=cB0>
+<a name="l116"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l117"></a>  </span><span class=cB9>CBlkDev</span><span class=cB0> *bd;
+<a name="l118"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;</span><span class=cB3>BLKDEVS_NUM</span><span class=cB0>;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l119"></a>    bd=&amp;</span><span class=cBB>blkdev</span><span class=cB0>.blkdevs[i];
+<a name="l120"></a>    </span><span class=cB1>if</span><span class=cB0> (bd-&gt;owning_task==</span><span class=cB5>Fs</span><span class=cB0> &amp;&amp; bd-&gt;bd_signature==</span><span class=cB3>BD_SIGNATURE_VAL</span><span class=cB0>)
+<a name="l121"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l15">BlkDevUnlock</a></span><span class=cB0>(bd,</span><span class=cB3>TRUE</span><span class=cB0>);
+<a name="l122"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l123"></a>}
+<a name="l124"></a>
+<a name="l125"></a></span><span class=cB9>CBlkDev</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l125">BlkDevNextFreeSlot</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> first_drv_let,</span><span class=cB9>I64</span><span class=cB0> type)
+<a name="l126"></a>{</span><span class=cB2>//Locate free slot for new BlkDev, like during </span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l164"><span class=cB4>Mount</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0;
+<a name="l128"></a>  </span><span class=cB9>CBlkDev</span><span class=cB0> *res;
+<a name="l129"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l172">Let2BlkDevType</a></span><span class=cB7>(</span><span class=cB0>first_drv_let</span><span class=cB7>)</span><span class=cB0>!=type)
+<a name="l130"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l131"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>    res=&amp;</span><span class=cBB>blkdev</span><span class=cB0>.blkdevs[i];
+<a name="l133"></a>    </span><span class=cB1>if</span><span class=cB0> (res-&gt;bd_signature!=</span><span class=cB3>BD_SIGNATURE_VAL</span><span class=cB0>) {
+<a name="l134"></a>      </span><span class=cB5>MemSet</span><span class=cB0>(res,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CBlkDev</span><span class=cB7>)</span><span class=cB0>);
+<a name="l135"></a>      res-&gt;first_drv_let=first_drv_let;
+<a name="l136"></a>      res-&gt;type=type;
+<a name="l137"></a>      res-&gt;flags=</span><span class=cB3>BDF_READ_CACHE</span><span class=cB0>;
+<a name="l138"></a>      res-&gt;blk_size=</span><span class=cB3>BLK_SIZE</span><span class=cB0>;
+<a name="l139"></a>      res-&gt;max_blk=0xEFFFFFFF;
+<a name="l140"></a>      </span><span class=cB1>switch</span><span class=cB0> (type) </span><span class=cB7>{</span><span class=cB0>
+<a name="l141"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_RAM</span><span class=cB0>:
+<a name="l142"></a>          res-&gt;flags&amp;=~</span><span class=cB3>BDF_READ_CACHE</span><span class=cB0>;
+<a name="l143"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l144"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ISO_FILE_READ</span><span class=cB0>:
+<a name="l145"></a>          res-&gt;flags|=</span><span class=cB3>BDF_READ_ONLY</span><span class=cB0>;
+<a name="l146"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l147"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB3>BDT_ATAPI</span><span class=cB0>:
+<a name="l148"></a>          res-&gt;flags|=</span><span class=cB3>BDF_REMOVABLE</span><span class=cB0>|</span><span class=cB3>BDF_READ_ONLY</span><span class=cB0>;
+<a name="l149"></a>          res-&gt;blk_size=</span><span class=cB3>DVD_BLK_SIZE</span><span class=cB0>;
+<a name="l150"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l151"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l152"></a>      </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l153"></a>    }
+<a name="l154"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (++i&lt;</span><span class=cB3>BLKDEVS_NUM</span><span class=cB0>);
+<a name="l155"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l156"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>; </span><span class=cB2>//never gets here</span><span class=cB0>
+<a name="l157"></a>}
+<a name="l158"></a>
+<a name="l159"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l159">BlkDevDel</a></span><span class=cB0>(</span><span class=cB9>CBlkDev</span><span class=cB0> *bd)
+<a name="l160"></a>{</span><span class=cB2>//Delete BlkDev</span><span class=cB0>
+<a name="l161"></a>  </span><span class=cBD>DrvBlkDevDel</span><span class=cB0>(bd);
+<a name="l162"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l73">FClose</a></span><span class=cB0>(bd-&gt;file_dsk);
+<a name="l163"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(bd-&gt;file_dsk_name);
+<a name="l164"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(bd-&gt;dev_id_record);
+<a name="l165"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(bd,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CBlkDev</span><span class=cB7>)</span><span class=cB0>);
+<a name="l166"></a>}
+<a name="l167"></a>
+<a name="l168"></a></span><span class=cB9>CBlkDev</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l168">BlkDevChk</a></span><span class=cB0>(</span><span class=cB9>CBlkDev</span><span class=cB0> *bd,</span><span class=cB1>Bool</span><span class=cB0> except=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l169"></a>{</span><span class=cB2>//Check for valid BlkDev. Throw exception.</span><span class=cB0>
+<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (!bd || bd-&gt;bd_signature!=</span><span class=cB3>BD_SIGNATURE_VAL</span><span class=cB0> ||
+<a name="l171"></a>        !</span><span class=cB7>(</span><span class=cB3>BDT_NULL</span><span class=cB0>&lt;bd-&gt;type&lt;</span><span class=cB3>BDT_TYPES_NUM</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l172"></a>    </span><span class=cB1>if</span><span class=cB0> (except)
+<a name="l173"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84">throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l174"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l175"></a>      </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l176"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l177"></a>    </span><span class=cB1>return</span><span class=cB0> bd;
+<a name="l178"></a>}
+<a name="l179"></a>
+<a name="l180"></a></span><span class=cB9>CBlkDev</span><span class=cB0> *</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l180">Let2BlkDev</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB1>Bool</span><span class=cB0> except=</span><span class=cB3>TRUE</span><span class=cB0>)
+<a name="l181"></a>{</span><span class=cB2>//Drv letter to BlkDev ptr.</span><span class=cB0>
+<a name="l182"></a>  </span><span class=cB9>CDrv</span><span class=cB0> *dv;
+<a name="l183"></a>  </span><span class=cB1>if</span><span class=cB0> (dv=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188">Let2Drv</a></span><span class=cB7>(</span><span class=cB0>drv_let,except</span><span class=cB7>)</span><span class=cB0>)
+<a name="l184"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l168">BlkDevChk</a></span><span class=cB0>(dv-&gt;bd,except);
+<a name="l185"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l186"></a>    </span><span class=cB1>return</span><span class=cB0> </span><span class=cB3>NULL</span><span class=cB0>;
+<a name="l187"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>asm</span><span class=cB0> {
+<a name="l2"></a></span><span class=cB1>USE32</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//************************************</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//  ASM Global vars not required for 16-bit start-up</span><span class=cB0>
+<a name="l5"></a>        </span><span class=cB1>ALIGN</span><span class=cB0>   8,</span><span class=cB3>OC_NOP</span><span class=cB0>
+<a name="l6"></a></span><span class=cBD>MEM_HEAP_BASE</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l7"></a></span><span class=cBD>MEM_HEAP_LIMIT</span><span class=cB0>::        </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l8"></a></span><span class=cBD>MEM_PAGE_SIZE</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l9"></a></span><span class=cBD>MEM_MAPPED_SPACE</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l10"></a></span><span class=cBD>MEM_2MEG_NUM</span><span class=cB0>::          </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l11"></a></span><span class=cBD>MEM_1GIG_NUM</span><span class=cB0>::          </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l12"></a></span><span class=cBD>MEM_512GIG_NUM</span><span class=cB0>::        </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l13"></a></span><span class=cBD>MEM_PML2</span><span class=cB0>::              </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l14"></a></span><span class=cBD>MEM_PML3</span><span class=cB0>::              </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l15"></a></span><span class=cBD>MEM_PML4</span><span class=cB0>::              </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l16"></a>
+<a name="l17"></a>#</span><span class=cB1>exe</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19">StreamPrint</a></span><span class=cB0>(
+<a name="l19"></a></span><span class=cB6>&quot;SYS_MEM_INIT_FLAG::</span><span class=cB0>    </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l20"></a></span><span class=cB6>&quot;SYS_MEM_INIT_VAL::</span><span class=cB0>     </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l21"></a></span><span class=cB6>&quot;SYS_HEAP_INIT_FLAG::</span><span class=cB0>   </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l22"></a></span><span class=cB6>&quot;SYS_HEAP_INIT_VAL::</span><span class=cB0>    </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l23"></a></span><span class=cB6>&quot;SYS_VAR_INIT_FLAG::</span><span class=cB0>    </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l24"></a></span><span class=cB6>&quot;SYS_VAR_INIT_VAL::</span><span class=cB0>     </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>
+<a name="l25"></a></span><span class=cB6>&quot;SYS_STAFF_MODE_FLAG::</span><span class=cB0>  </span><span class=cB6>DU8</span><span class=cB0>     </span><span class=cB6>%d;&quot;</span><span class=cB0>,
+<a name="l26"></a>kernel_cfg-&gt;opts[CFG_MEM_INIT], kernel_cfg-&gt;mem_init_val,
+<a name="l27"></a>kernel_cfg-&gt;opts[CFG_HEAP_INIT],kernel_cfg-&gt;heap_init_val,
+<a name="l28"></a>kernel_cfg-&gt;opts[CFG_VAR_INIT], kernel_cfg-&gt;var_init_val,
+<a name="l29"></a>kernel_cfg-&gt;opts[CFG_STAFF_MODE]);
+<a name="l30"></a></span><span class=cB7>}</span><span class=cB0>;
+<a name="l31"></a></span><span class=cBD>SYS_HEAP_DBG_FLAG</span><span class=cB0>::     </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>_CFG_HEAP_DBG</span><span class=cB0>;
+<a name="l32"></a>
+<a name="l33"></a>        </span><span class=cB1>ALIGN</span><span class=cB0>   8,0
+<a name="l34"></a></span><span class=cBD>SYS_CTRL_ALT_FLAGS</span><span class=cB0>::    </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l35"></a></span><span class=cBD>SYS_EXTERN_TABLE</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cBD>SYS_CODE_BP</span><span class=cB0>::           </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l38"></a></span><span class=cBD>SYS_DATA_BP</span><span class=cB0>::           </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cBD>SYS_PROGRESSES</span><span class=cB0>::
+<a name="l41"></a></span><span class=cBD>SYS_PROGRESS1</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l42"></a></span><span class=cBD>SYS_PROGRESS1_MAX</span><span class=cB0>::     </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l43"></a></span><span class=cBD>SYS_PROGRESS1_T0</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l44"></a></span><span class=cBD>SYS_PROGRESS1_TF</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l45"></a></span><span class=cBD>SYS_PROGRESS1_DESC</span><span class=cB0>::    </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>PROGRESS_DESC_LEN</span><span class=cB0> </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l46"></a></span><span class=cBD>SYS_PROGRESS2</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l47"></a></span><span class=cBD>SYS_PROGRESS2_MAX</span><span class=cB0>::     </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l48"></a></span><span class=cBD>SYS_PROGRESS2_T0</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l49"></a></span><span class=cBD>SYS_PROGRESS2_TF</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l50"></a></span><span class=cBD>SYS_PROGRESS2_DESC</span><span class=cB0>::    </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>PROGRESS_DESC_LEN</span><span class=cB0> </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l51"></a></span><span class=cBD>SYS_PROGRESS3</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l52"></a></span><span class=cBD>SYS_PROGRESS3_MAX</span><span class=cB0>::     </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l53"></a></span><span class=cBD>SYS_PROGRESS3_T0</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l54"></a></span><span class=cBD>SYS_PROGRESS3_TF</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l55"></a></span><span class=cBD>SYS_PROGRESS3_DESC</span><span class=cB0>::    </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>PROGRESS_DESC_LEN</span><span class=cB0> </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l56"></a></span><span class=cBD>SYS_PROGRESS4</span><span class=cB0>::         </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l57"></a></span><span class=cBD>SYS_PROGRESS4_MAX</span><span class=cB0>::     </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l58"></a></span><span class=cBD>SYS_PROGRESS4_T0</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l59"></a></span><span class=cBD>SYS_PROGRESS4_TF</span><span class=cB0>::      </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l60"></a></span><span class=cBD>SYS_PROGRESS4_DESC</span><span class=cB0>::    </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>PROGRESS_DESC_LEN</span><span class=cB0> </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l61"></a>#</span><span class=cB1>assert</span><span class=cB0> $-</span><span class=cBD>SYS_PROGRESSES</span><span class=cB0>==</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CProgress</span><span class=cB0>)*4
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cBD>SYS_FOCUS_TASK</span><span class=cB0>::        </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l64"></a></span><span class=cBD>SYS_CPU_STRUCTS</span><span class=cB0>::       </span><span class=cB1>DU64</span><span class=cB0>    0;
+<a name="l65"></a></span><span class=cBD>SYS_MP_CNT</span><span class=cB0>::            </span><span class=cB1>DU64</span><span class=cB0>    1;
+<a name="l66"></a></span><span class=cBD>SYS_MP_CNT_INITIAL</span><span class=cB0>::    </span><span class=cB1>DU64</span><span class=cB0>    1;
+<a name="l67"></a></span><span class=cBD>SYS_MP_CNT_LOCK</span><span class=cB0>::       </span><span class=cB1>DU64</span><span class=cB0>    1;
+<a name="l68"></a>
+<a name="l69"></a>        </span><span class=cB1>ALIGN</span><span class=cB0>   </span><span class=cB3>DFT_CACHE_LINE_WIDTH</span><span class=cB0>,</span><span class=cB3>OC_NOP</span><span class=cB0>
+<a name="l70"></a></span><span class=cBD>SYS_CACHE_LINE_WIDTH</span><span class=cB0>::  </span><span class=cB1>DU64</span><span class=cB0>    </span><span class=cB3>DFT_CACHE_LINE_WIDTH</span><span class=cB0>;
+<a name="l71"></a>        </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>DFT_CACHE_LINE_WIDTH</span><span class=cB0>-</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB9>CBinFile</span><span class=cB0>)-8 </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l72"></a></span><span class=cBD>SYS_SEMAS</span><span class=cB0>::             </span><span class=cB1>DU8</span><span class=cB0>     </span><span class=cB3>SEMA_SEMAS_NUM</span><span class=cB0>*</span><span class=cB3>DFT_CACHE_LINE_WIDTH</span><span class=cB0> </span><span class=cB1>DUP</span><span class=cB0>(0);
+<a name="l73"></a></span><span class=cB2>//************************************</span><span class=cB0>
+<a name="l74"></a>        </span><span class=cB1>ALIGN</span><span class=cB0>   16,</span><span class=cB3>OC_NOP</span><span class=cB0>
+<a name="l75"></a></span><span class=cBD>CORE0_32BIT_INIT</span><span class=cB0>:: </span><span class=cB2>//Entry point for </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootRAM.html#l33"><span class=cB4>BootRAM</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l76"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> </span><span class=cB3>RFLAGG_START</span><span class=cB0>
+<a name="l77"></a>        </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l78"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cB3>SYS_START_CR0</span><span class=cB0>
+<a name="l79"></a>        </span><span class=cB1>MOV_CR0_EAX</span><span class=cB0>
+<a name="l80"></a>
+<a name="l81"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cB9>CGDT</span><span class=cB0>.boot_ds </span><span class=cB2>//LOAD DS SELECTOR</span><span class=cB0>
+<a name="l82"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l83"></a>        </span><span class=cB1>BTS</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_RUN_LEVEL</span><span class=cB0>],</span><span class=cB3>RLf_32BIT</span><span class=cB0>
+<a name="l84"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ESI</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_BOOT_PATCH_TABLE_BASE</span><span class=cB0>]
+<a name="l85"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EDI</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>MEM_BOOT_BASE</span><span class=cB0>]
+<a name="l86"></a>
+<a name="l87"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cB9>CGDT</span><span class=cB0>.ds
+<a name="l88"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l89"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l90"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>FS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l91"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>GS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l92"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>SS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l93"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ESP</span><span class=cB0>,</span><span class=cB3>BOOT_RAM_LIMIT</span><span class=cB0> </span><span class=cB2>//Tmp Stk</span><span class=cB0>
+<a name="l94"></a>
+<a name="l95"></a></span><span class=cB2>//Patch abs addresses</span><span class=cB0>
+<a name="l96"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CPatchTableAbsAddr</span><span class=cB0>.abs_addres_cnt[</span><span class=cBC>ESI</span><span class=cB0>]
+<a name="l97"></a>        </span><span class=cB1>LEA</span><span class=cB0>     </span><span class=cBC>ESI</span><span class=cB0>,</span><span class=cB9>U32</span><span class=cB0> </span><span class=cB9>CPatchTableAbsAddr</span><span class=cB0>.abs_addres[</span><span class=cBC>ESI</span><span class=cB0>]
+<a name="l98"></a>@@05:   </span><span class=cB1>LODSD</span><span class=cB0>
+<a name="l99"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l100"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBC>EAX</span><span class=cB0>],</span><span class=cBC>EDI</span><span class=cB0>
+<a name="l101"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@05
+<a name="l102"></a>
+<a name="l103"></a>        </span><span class=cB1>DU8</span><span class=cB0>     0xEA; </span><span class=cB2>//JMP CGDT.cs32:@@10</span><span class=cB0>
+<a name="l104"></a>        </span><span class=cB1>DU32</span><span class=cB0>    @@10;
+<a name="l105"></a>        </span><span class=cB1>DU16</span><span class=cB0>    </span><span class=cB9>CGDT</span><span class=cB0>.cs32;
+<a name="l106"></a>
+<a name="l107"></a>@@10:   </span><span class=cB1>BTS</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [</span><span class=cBD>SYS_RUN_LEVEL</span><span class=cB0>],</span><span class=cB3>RLf_PATCHED</span><span class=cB0>
+<a name="l108"></a>
+<a name="l109"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>SYS_FIND_PCIBIOS_SERVICE_DIR</span><span class=cB0>
+<a name="l110"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>SYS_FIND_PCI_SERVICES</span><span class=cB0>
+<a name="l111"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>SYS_INIT_PAGE_TABLES</span><span class=cB0>
+<a name="l112"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>SYS_INIT_16MEG_SYS_CODE_BP</span><span class=cB0>
+<a name="l113"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> 0   </span><span class=cB2>//Return from next call will be 64-bit</span><span class=cB0>
+<a name="l114"></a>        </span><span class=cB1>CALL</span><span class=cB0>    </span><span class=cBD>SYS_ENTER_LONG_MODE</span><span class=cB0>
+<a name="l115"></a>
+<a name="l116"></a>        </span><span class=cB2>//We fall-thou to </span><a href="http://tinkeros.github.io/WbGit/Kernel/KStart64.html#l1"><span class=cB4>KStart64</span></a><span class=cB2>, next.</span><span class=cB0>
+<a name="l117"></a>}
+</span></div></pre></body>
+</html>

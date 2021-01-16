@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>class</span><span class=cB0> FDStruct
+<a name="l2"></a>{</span><span class=cB2>//Use &lt;CTRL-l&gt; and sel &quot;Data&quot;, &quot;List&quot; or &quot;Check Box&quot;</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//to generate the formats.</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB1>F64</span><span class=cB0> num1      format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Float 1:%12.8f\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l5"></a>  </span><span class=cB1>F64</span><span class=cB0> num2      format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Float 2:%12e\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> num3      format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Int   1:0x%016X\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> num4      format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Int   2:%12d\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> type      format </span><span class=cB6>&quot;$LS,D=\&quot;ST_PERSON_TYPE\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0>  name[32]  format </span><span class=cB6>&quot;$DA-P,A=\&quot;Name   :%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l10"></a>  </span><span class=cB1>U8</span><span class=cB0>  *address1 format </span><span class=cB6>&quot;$DA+M,A=\&quot;Address:%s\&quot;$\n&quot;</span><span class=cB0>; </span><span class=cB2>//+M is unlimited len U8 *.</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB1>U8</span><span class=cB0>  *address2 format </span><span class=cB6>&quot;$DA+M,A=\&quot;Address:%s\&quot;$\n&quot;</span><span class=cB0>; </span><span class=cB2>//+M is unlimited len U8 *.</span><span class=cB0>
+<a name="l12"></a>  </span><span class=cB9>CDate</span><span class=cB0> datetime format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Date   :%8D\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l13"></a>  </span><span class=cB1>Bool</span><span class=cB0>  check   format </span><span class=cB6>&quot;$CB,\&quot;Check\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l14"></a>};
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> FormDemo()
+<a name="l17"></a>{
+<a name="l18"></a>  FDStruct fds;
+<a name="l19"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13">DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_PERSON_TYPE&quot;</span><span class=cB0>,</span><span class=cB6>&quot;Child\0Teen\0Adult\0&quot;</span><span class=cB0>);
+<a name="l20"></a>  fds.num1=12.3e-4;     </span><span class=cB2>//Set defaults</span><span class=cB0>
+<a name="l21"></a>  fds.num2=4.5e3;
+<a name="l22"></a>  fds.num3=0x1234;
+<a name="l23"></a>  fds.num4=-567;
+<a name="l24"></a>  fds.type=1;
+<a name="l25"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321">StrCpy</a></span><span class=cB0>(&amp;fds.name,</span><span class=cB6>&quot;John&quot;</span><span class=cB0>);
+<a name="l26"></a>  fds.address1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446">StrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;1234 Pine St.&quot;</span><span class=cB0>);
+<a name="l27"></a>  fds.address2=</span><span class=cB3>NULL</span><span class=cB0>;    </span><span class=cB2>//Init to NULL if empty.</span><span class=cB0>
+<a name="l28"></a>  fds.datetime=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l191">Now</a></span><span class=cB0>;
+<a name="l29"></a>  fds.check=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l30"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l271">DocForm</a></span><span class=cB7>(</span><span class=cB0>&amp;fds</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>    </span><span class=cB6>&quot;#1\t=%e\n&quot;</span><span class=cB0>,fds.num1;
+<a name="l32"></a>    </span><span class=cB6>&quot;#2\t=%e\n&quot;</span><span class=cB0>,fds.num2;
+<a name="l33"></a>    </span><span class=cB6>&quot;#3\t=%d\n&quot;</span><span class=cB0>,fds.num3;
+<a name="l34"></a>    </span><span class=cB6>&quot;#4\t=%d\n&quot;</span><span class=cB0>,fds.num4;
+<a name="l35"></a>    </span><span class=cB6>&quot;Type\t=%s\n&quot;</span><span class=cB0>,</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60">DefineSub</a></span><span class=cB0>(fds.type,</span><span class=cB6>&quot;ST_PERSON_TYPE&quot;</span><span class=cB0>);
+<a name="l36"></a>    </span><span class=cB6>&quot;Name\t=%s\n&quot;</span><span class=cB0>,fds.name;
+<a name="l37"></a>    </span><span class=cB6>&quot;Address1=%s\n&quot;</span><span class=cB0>,fds.address1;
+<a name="l38"></a>    </span><span class=cB6>&quot;Address2=%s\n&quot;</span><span class=cB0>,fds.address2;
+<a name="l39"></a>    </span><span class=cB6>&quot;Date\t=%D\n&quot;</span><span class=cB0>,fds.datetime;
+<a name="l40"></a>    </span><span class=cB6>&quot;Check\t=%d\n&quot;</span><span class=cB0>,fds.check;
+<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l42"></a>    </span><span class=cB6>&quot;Cancel\n&quot;</span><span class=cB0>;
+<a name="l43"></a>
+<a name="l44"></a>  </span><span class=cB6>&quot;\n\nClassRep Example\n&quot;</span><span class=cB0>;
+<a name="l45"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l161">ClassRep</a></span><span class=cB0>(&amp;fds);
+<a name="l46"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(fds.address1);
+<a name="l47"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(fds.address2);
+<a name="l48"></a>  </span><span class=cB2>//See also </span><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l183"><span class=cB4>ClassRepD</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l49"></a>}
+<a name="l50"></a>
+<a name="l51"></a>FormDemo;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*This highlights the 4th dimension</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>of the transformation matrix which</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>is used for storing translations (shifts)</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>in matricies so they can be combined</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>with a matrix multiplication.</span><span class=cB0>
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB2>Scroll bar works.</span><span class=cB0>
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB2>The multiplication takes place in the</span><span class=cB4>
+<a name="l10"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l285"><span class=cB4>Sprite3ZB</span></a><span class=cB2> routine.</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l12"></a>
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> SLIDER_SPACING 20
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> SLIDER_RANGE   30
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> SLIDER_BORDER  2
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>class</span><span class=cB0> CSliderState
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> s1,s2,s3;
+<a name="l20"></a>  </span><span class=cB1>F64</span><span class=cB0> arg1,arg2,scale;
+<a name="l21"></a>} s;
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> DrawCtrlSlider(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>CCtrl</span><span class=cB0> *c)
+<a name="l24"></a>{
+<a name="l25"></a>  CSliderState *s=c-&gt;state;
+<a name="l26"></a>
+<a name="l27"></a>  dc-&gt;color=</span><span class=cB3>LTGREEN</span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc, c-&gt;left,c-&gt;top,SLIDER_SPACING*4+3,SLIDER_SPACING*2+SLIDER_RANGE);
+<a name="l29"></a>  dc-&gt;color=</span><span class=cB3>BROWN</span><span class=cB0>;
+<a name="l30"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc, c-&gt;left+SLIDER_BORDER,c-&gt;top+SLIDER_BORDER,
+<a name="l31"></a>        SLIDER_SPACING*4+3-2*SLIDER_BORDER,
+<a name="l32"></a>        SLIDER_SPACING*2+SLIDER_RANGE-2*SLIDER_BORDER);
+<a name="l33"></a>  dc-&gt;color=</span><span class=cB3>BLACK</span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l568">GrLine</a></span><span class=cB0>(dc,c-&gt;left+SLIDER_SPACING,c-&gt;top+SLIDER_SPACING,
+<a name="l35"></a>        c-&gt;left+SLIDER_SPACING,c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1);
+<a name="l36"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l568">GrLine</a></span><span class=cB0>(dc,c-&gt;left+2*SLIDER_SPACING+1,c-&gt;top+SLIDER_SPACING,
+<a name="l37"></a>        c-&gt;left+2*SLIDER_SPACING+1,c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1);
+<a name="l38"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l568">GrLine</a></span><span class=cB0>(dc,c-&gt;left+3*SLIDER_SPACING+2,c-&gt;top+SLIDER_SPACING,
+<a name="l39"></a>        c-&gt;left+3*SLIDER_SPACING+2,c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1);
+<a name="l40"></a>
+<a name="l41"></a>  dc-&gt;color=</span><span class=cB3>LTGREEN</span><span class=cB0>;
+<a name="l42"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989">GrPrint</a></span><span class=cB0>(dc,c-&gt;left+SLIDER_SPACING-</span><span class=cB3>FONT_WIDTH</span><span class=cB0>/2,
+<a name="l43"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE+3,
+<a name="l44"></a>        </span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,s-&gt;s1*10/SLIDER_RANGE);
+<a name="l45"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989">GrPrint</a></span><span class=cB0>(dc,c-&gt;left+2*SLIDER_SPACING+1-</span><span class=cB3>FONT_WIDTH</span><span class=cB0>/2,
+<a name="l46"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE+3,
+<a name="l47"></a>        </span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,s-&gt;s2*10/SLIDER_RANGE);
+<a name="l48"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l989">GrPrint</a></span><span class=cB0>(dc,c-&gt;left+3*SLIDER_SPACING+2-</span><span class=cB3>FONT_WIDTH</span><span class=cB0>/2,
+<a name="l49"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE+3,
+<a name="l50"></a>        </span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,s-&gt;s3*10/SLIDER_RANGE);
+<a name="l51"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+SLIDER_SPACING-3,
+<a name="l52"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s1-2 ,7,5);
+<a name="l53"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+2*SLIDER_SPACING+1-3,
+<a name="l54"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s2-2,7,5);
+<a name="l55"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+3*SLIDER_SPACING+2-3,
+<a name="l56"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s3-2,7,5);
+<a name="l57"></a>  dc-&gt;color=</span><span class=cB3>GREEN</span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+SLIDER_SPACING-2,
+<a name="l59"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s1-1 ,5,3);
+<a name="l60"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+2*SLIDER_SPACING+1-2,
+<a name="l61"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s2-1,5,3);
+<a name="l62"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,c-&gt;left+3*SLIDER_SPACING+2-2,
+<a name="l63"></a>        c-&gt;top+SLIDER_SPACING+SLIDER_RANGE-1-s-&gt;s3-1,5,3);
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>U0</span><span class=cB0> UpdateDerivedCtrlSlider(</span><span class=cB9>CCtrl</span><span class=cB0> *c)
+<a name="l67"></a>{
+<a name="l68"></a>  CSliderState *s=c-&gt;state;
+<a name="l69"></a>  c-&gt;left=c-&gt;win_task-&gt;pix_width/2-(SLIDER_SPACING*4+3)/2;
+<a name="l70"></a>  c-&gt;right=c-&gt;left+SLIDER_SPACING*4+3;
+<a name="l71"></a>  c-&gt;top=c-&gt;win_task-&gt;pix_height/2-(SLIDER_SPACING*2+SLIDER_RANGE)/2;
+<a name="l72"></a>  c-&gt;bottom=c-&gt;top+SLIDER_SPACING*2+SLIDER_RANGE;
+<a name="l73"></a>  s-&gt;s1=</span><span class=cB5>ClampI64</span><span class=cB0>(s-&gt;s1,0,SLIDER_RANGE-1);
+<a name="l74"></a>  s-&gt;s2=</span><span class=cB5>ClampI64</span><span class=cB0>(s-&gt;s2,0,SLIDER_RANGE-1);
+<a name="l75"></a>  s-&gt;s3=</span><span class=cB5>ClampI64</span><span class=cB0>(s-&gt;s3,1,SLIDER_RANGE-1);
+<a name="l76"></a>  s-&gt;arg1=</span><span class=cB3>pi</span><span class=cB0>/2.0*s-&gt;s1/SLIDER_RANGE;
+<a name="l77"></a>  s-&gt;arg2=1.0*(s-&gt;s2-SLIDER_RANGE/2)/SLIDER_RANGE;
+<a name="l78"></a>  s-&gt;scale=2.0*s-&gt;s3/SLIDER_RANGE;
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB1>U0</span><span class=cB0> LeftClickSlider(</span><span class=cB9>CCtrl</span><span class=cB0> *c,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB1>Bool</span><span class=cB0>)
+<a name="l82"></a>{
+<a name="l83"></a>  CSliderState *s=c-&gt;state;
+<a name="l84"></a>  </span><span class=cB1>if</span><span class=cB0> (x&lt;c-&gt;left+</span><span class=cB7>(</span><span class=cB0>c-&gt;right-c-&gt;left</span><span class=cB7>)</span><span class=cB0>/3)
+<a name="l85"></a>    s-&gt;s1=SLIDER_RANGE-1-(y-</span><span class=cB7>(</span><span class=cB0>c-&gt;top+SLIDER_SPACING</span><span class=cB7>)</span><span class=cB0>);
+<a name="l86"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (x&lt;c-&gt;left+2*</span><span class=cB7>(</span><span class=cB0>c-&gt;right-c-&gt;left</span><span class=cB7>)</span><span class=cB0>/3)
+<a name="l87"></a>    s-&gt;s2=SLIDER_RANGE-1-(y-</span><span class=cB7>(</span><span class=cB0>c-&gt;top+SLIDER_SPACING</span><span class=cB7>)</span><span class=cB0>);
+<a name="l88"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l89"></a>    s-&gt;s3=SLIDER_RANGE-1-(y-</span><span class=cB7>(</span><span class=cB0>c-&gt;top+SLIDER_SPACING</span><span class=cB7>)</span><span class=cB0>);
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;update_derived_vals)
+<a name="l91"></a>    (*c-&gt;update_derived_vals)(c);
+<a name="l92"></a>}
+<a name="l93"></a>
+<a name="l94"></a></span><span class=cB9>CCtrl</span><span class=cB0> *SliderNew()
+<a name="l95"></a>{
+<a name="l96"></a>  </span><span class=cB9>CCtrl</span><span class=cB0> *c=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395">CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CCtrl</span><span class=cB7>)</span><span class=cB0>);
+<a name="l97"></a>  c-&gt;win_task=</span><span class=cB5>Fs</span><span class=cB0>;
+<a name="l98"></a>  c-&gt;flags=</span><span class=cB3>CTRLF_SHOW</span><span class=cB0>|</span><span class=cB3>CTRLF_CAPTURE_LEFT_MS</span><span class=cB0>;
+<a name="l99"></a>  c-&gt;type=</span><span class=cB3>CTRLT_GENERIC</span><span class=cB0>;
+<a name="l100"></a>  c-&gt;state=&amp;s;
+<a name="l101"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(&amp;s,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>s</span><span class=cB7>)</span><span class=cB0>);
+<a name="l102"></a>  c-&gt;draw_it=&amp;DrawCtrlSlider;
+<a name="l103"></a>  c-&gt;left_click=&amp;LeftClickSlider;
+<a name="l104"></a>  c-&gt;update_derived_vals=&amp;UpdateDerivedCtrlSlider;
+<a name="l105"></a>  </span><span class=cB5>QueIns</span><span class=cB0>(c,</span><span class=cB5>Fs</span><span class=cB0>-&gt;last_ctrl);
+<a name="l106"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l291">TaskDerivedValsUpdate</a></span><span class=cB0>;
+<a name="l107"></a>  </span><span class=cB1>return</span><span class=cB0> c;
+<a name="l108"></a>}
+<a name="l109"></a>
+<a name="l110"></a></span><span class=cB1>U0</span><span class=cB0> SliderDel(</span><span class=cB9>CCtrl</span><span class=cB0> *c)
+<a name="l111"></a>{
+<a name="l112"></a>  </span><span class=cB5>QueRem</span><span class=cB0>(c);
+<a name="l113"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(c);
+<a name="l114"></a>}
+<a name="l115"></a>
+<a name="l116"></a>
+<a name="l117"></a>
+<a name="l118"></a>
+<a name="l119"></a></span><span class=cBA>
+<a name="l120"></a>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l121"></a>
+<a name="l122"></a>#</span><span class=cB1>define</span><span class=cB0> MAP_HEIGHT      2048
+<a name="l123"></a>#</span><span class=cB1>define</span><span class=cB0> MAP_WIDTH       2048
+<a name="l124"></a>
+<a name="l125"></a>#</span><span class=cB1>define</span><span class=cB0> TREES_NUM       256
+<a name="l126"></a>
+<a name="l127"></a></span><span class=cB9>I64</span><span class=cB0> tree_x[TREES_NUM],tree_y[TREES_NUM];
+<a name="l128"></a>
+<a name="l129"></a></span><span class=cB1>class</span><span class=cB0> MPCtrl {
+<a name="l130"></a>  </span><span class=cB9>I64</span><span class=cB0> </span><span class=cBB>mp_cnt</span><span class=cB0>;
+<a name="l131"></a>  </span><span class=cB9>I64</span><span class=cB0> r[16];
+<a name="l132"></a>  </span><span class=cB1>F64</span><span class=cB0> a;
+<a name="l133"></a>} mp;
+<a name="l134"></a>
+<a name="l135"></a></span><span class=cB9>I64</span><span class=cB0> mp_not_done_flags;
+<a name="l136"></a>
+<a name="l137"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteMesh.html#l448">MPDrawIt</a></span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task)
+<a name="l138"></a>{
+<a name="l139"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l168">DCAlias</a></span><span class=cB0>(</span><span class=cBB>gr</span><span class=cB0>.dc2,task);
+<a name="l140"></a>  </span><span class=cB9>I64</span><span class=cB0> i,lo=</span><span class=cB5>Gs</span><span class=cB0>-&gt;num*TREES_NUM/mp.</span><span class=cBB>mp_cnt</span><span class=cB0>,hi=(</span><span class=cB5>Gs</span><span class=cB0>-&gt;num+1)*TREES_NUM/mp.</span><span class=cBB>mp_cnt</span><span class=cB0>;
+<a name="l141"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(dc-&gt;r,mp.r,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>*16);
+<a name="l142"></a>  dc-&gt;flags|=</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l143"></a>  </span><span class=cB1>for</span><span class=cB0> (i=lo;i&lt;hi;i++)
+<a name="l144"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l285">Sprite3ZB</a></span><span class=cB0>(dc,tree_x[i],
+<a name="l145"></a>          tree_y[i],0,</span><span class=cBA>&lt;tree&gt;</span><span class=cB0>,mp.a);
+<a name="l146"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l147"></a>  </span><span class=cB5>LBtr</span><span class=cB0>(&amp;mp_not_done_flags,</span><span class=cB5>Gs</span><span class=cB0>-&gt;num);
+<a name="l148"></a>}
+<a name="l149"></a>
+<a name="l150"></a></span><span class=cB1>U0</span><span class=cB0> </span><span class=cB5>DrawIt</span><span class=cB0>(</span><span class=cB9>CTask</span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l151"></a>{
+<a name="l152"></a>  </span><span class=cB9>I64</span><span class=cB0> i,h,v;
+<a name="l153"></a>  task-&gt;horz_scroll.min=-s.scale*MAP_HEIGHT*</span><span class=cB5>Sin</span><span class=cB0>(s.arg1);
+<a name="l154"></a>  task-&gt;horz_scroll.max=s.scale*MAP_WIDTH*</span><span class=cB5>Cos</span><span class=cB0>(s.arg1)-task-&gt;pix_width;
+<a name="l155"></a>  task-&gt;vert_scroll.min=0;
+<a name="l156"></a>  task-&gt;vert_scroll.max=s.scale*(MAP_HEIGHT*</span><span class=cB5>Cos</span><span class=cB7>(</span><span class=cB0>s.arg1</span><span class=cB7>)</span><span class=cB0>+MAP_WIDTH*</span><span class=cB5>Sin</span><span class=cB7>(</span><span class=cB0>s.arg1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l157"></a>  -task-&gt;pix_height;
+<a name="l158"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l291">TaskDerivedValsUpdate</a></span><span class=cB0>(task);
+<a name="l159"></a>
+<a name="l160"></a>  h=task-&gt;horz_scroll.pos;
+<a name="l161"></a>  v=task-&gt;vert_scroll.pos;
+<a name="l162"></a>
+<a name="l163"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l141">Mat4x4RotZ</a></span><span class=cB0>(dc-&gt;r,s.arg1);
+<a name="l164"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l155">Mat4x4Scale</a></span><span class=cB0>(dc-&gt;r,s.scale);
+<a name="l165"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l47">DCMat4x4Set</a></span><span class=cB0>(dc,dc-&gt;r);
+<a name="l166"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l176">Mat4x4TranslationEqu</a></span><span class=cB0>(dc-&gt;r,-h,-v,0);
+<a name="l167"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(mp.r,dc-&gt;r,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>*16);
+<a name="l168"></a>  mp.a=s.arg2;
+<a name="l169"></a>
+<a name="l170"></a>  mp_not_done_flags=1&lt;&lt;</span><span class=cBB>mp_cnt</span><span class=cB0>-1;
+<a name="l171"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;mp.</span><span class=cBB>mp_cnt</span><span class=cB0>;i++)
+<a name="l172"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221">JobQue</a></span><span class=cB0>(&amp;</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteMesh.html#l448">MPDrawIt</a></span><span class=cB0>,task,i);
+<a name="l173"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
+<a name="l174"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l175"></a>
+<a name="l176"></a>  dc-&gt;flags|=</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>;
+<a name="l177"></a>  dc-&gt;color=</span><span class=cB3>BROWN</span><span class=cB0>;
+<a name="l178"></a>  dc-&gt;thick=4;
+<a name="l179"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,2,2,0,MAP_WIDTH-3,2,0);
+<a name="l180"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,2,MAP_HEIGHT-3,0,MAP_WIDTH-3,MAP_HEIGHT-3,0);
+<a name="l181"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,2,2,0,2,MAP_HEIGHT-3,0);
+<a name="l182"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l770">GrLine3</a></span><span class=cB0>(dc,MAP_WIDTH-3,2,0,MAP_WIDTH-3,MAP_HEIGHT-3,0);
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l186"></a>{
+<a name="l187"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l188"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;TREES_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l189"></a>    tree_x[i]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l87">RandU16</a></span><span class=cB0>%MAP_WIDTH;
+<a name="l190"></a>    tree_y[i]=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l87">RandU16</a></span><span class=cB0>%MAP_HEIGHT;
+<a name="l191"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l192"></a>}
+<a name="l193"></a>
+<a name="l194"></a></span><span class=cB1>U0</span><span class=cB0> TransformDemo(</span><span class=cB9>I64</span><span class=cB0> _mp_cnt=</span><span class=cBB>mp_cnt</span><span class=cB0>)
+<a name="l195"></a>{
+<a name="l196"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l197"></a>  Init;
+<a name="l198"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;win_inhibit=</span><span class=cB3>WIG_TASK_DFT</span><span class=cB0>-</span><span class=cB3>WIF_SELF_FOCUS</span><span class=cB0>-</span><span class=cB3>WIF_SELF_BORDER</span><span class=cB0>
+<a name="l199"></a>        -</span><span class=cB3>WIF_SELF_GRAB_SCROLL</span><span class=cB0>-</span><span class=cB3>WIF_FOCUS_TASK_MENU</span><span class=cB0>-</span><span class=cB3>WIF_SELF_CTRLS</span><span class=cB0>;
+<a name="l200"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;</span><span class=cB5>DrawIt</span><span class=cB0>;
+<a name="l201"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l521">WinBorder</a></span><span class=cB0>(</span><span class=cB3>ON</span><span class=cB0>);
+<a name="l202"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l136">DocCursor</a></span><span class=cB0>;
+<a name="l203"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l204"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l150">DocScroll</a></span><span class=cB0>;
+<a name="l205"></a>
+<a name="l206"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;horz_scroll.pos=0;
+<a name="l207"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;vert_scroll.pos=0;
+<a name="l208"></a>  </span><span class=cB9>CCtrl</span><span class=cB0> *c=SliderNew;
+<a name="l209"></a>  s.s1=0;
+<a name="l210"></a>  s.s2=SLIDER_RANGE/2;
+<a name="l211"></a>  s.s3=SLIDER_RANGE/2;
+<a name="l212"></a>
+<a name="l213"></a>  </span><span class=cB5>MemSet</span><span class=cB0>(&amp;mp,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>MPCtrl</span><span class=cB7>)</span><span class=cB0>);
+<a name="l214"></a>  mp.</span><span class=cBB>mp_cnt</span><span class=cB0>=_mp_cnt;
+<a name="l215"></a>
+<a name="l216"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3">View</a></span><span class=cB0>;
+<a name="l217"></a>  SliderDel(c);
+<a name="l218"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>;
+<a name="l219"></a></span><span class=cB2>//You might want to save the original state of the scroll bars.</span><span class=cB0>
+<a name="l220"></a>}
+<a name="l221"></a>
+<a name="l222"></a>TransformDemo;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBB{color:#55ffff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> GRID    5
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> DrawMyMs(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l4"></a>{
+<a name="l5"></a>  dc-&gt;thick=1;
+<a name="l6"></a>  dc-&gt;flags&amp;=~(</span><span class=cB3>DCF_TRANSFORMATION</span><span class=cB0>|</span><span class=cB3>DCF_SYMMETRY</span><span class=cB0>);
+<a name="l7"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1008">GrRect</a></span><span class=cB0>(dc,x,y,GRID,GRID);
+<a name="l8"></a>}
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> GridDemo()
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB9>CGridGlbls</span><span class=cB0> old_grid;
+<a name="l13"></a>  </span><span class=cB1>U0</span><span class=cB0> (*old_draw_ms)(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y); </span><span class=cB2>//Can't init this type of var.</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;old_grid,&amp;</span><span class=cBB>ms_grid</span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CGridGlbls</span><span class=cB7>)</span><span class=cB0>);
+<a name="l15"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Mouse.html#l1">GridInit</a></span><span class=cB0>;
+<a name="l16"></a>  </span><span class=cBB>ms_grid</span><span class=cB0>.snap=</span><span class=cB3>TRUE</span><span class=cB0>; </span><span class=cB2>//You can set other </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3137"><span class=cB4>stuff</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cBB>ms_grid</span><span class=cB0>.x=GRID;
+<a name="l18"></a>  </span><span class=cBB>ms_grid</span><span class=cB0>.y=GRID;
+<a name="l19"></a>  old_draw_ms=</span><span class=cBB>gr</span><span class=cB0>.fp_draw_ms;
+<a name="l20"></a>  </span><span class=cBB>gr</span><span class=cB0>.fp_draw_ms=&amp;DrawMyMs;
+<a name="l21"></a>  </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cBB>ms</span><span class=cB0>.lb)  </span><span class=cB7>{</span><span class=cB2>//Left bttn to exit.</span><span class=cB0>
+<a name="l22"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l51">GrPlot</a></span><span class=cB0>(,</span><span class=cBB>ms</span><span class=cB0>.pos.x,</span><span class=cBB>ms</span><span class=cB0>.pos.y);
+<a name="l23"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284">Yield</a></span><span class=cB0>;
+<a name="l24"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>;
+<a name="l26"></a>  </span><span class=cBB>gr</span><span class=cB0>.fp_draw_ms=old_draw_ms;
+<a name="l27"></a>  </span><span class=cB5>MemCpy</span><span class=cB0>(&amp;</span><span class=cBB>ms_grid</span><span class=cB0>,&amp;old_grid,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CGridGlbls</span><span class=cB7>)</span><span class=cB0>);
+<a name="l28"></a>}
+<a name="l29"></a>
+<a name="l30"></a>GridDemo;
+</span></div></pre></body>
+</html>

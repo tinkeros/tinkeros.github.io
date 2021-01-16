@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> x=0,y=0;
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> DrawMap(</span><span class=cB9>CTask</span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> last_x;
+<a name="l6"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> last_left;
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (x&lt;last_x)
+<a name="l8"></a>    last_left=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (x&gt;last_x)
+<a name="l10"></a>    last_left=</span><span class=cB3>FALSE</span><span class=cB0>;
+<a name="l11"></a>  dc-&gt;thick=1;
+<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (last_left)
+<a name="l13"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,x,y,0,left_imgs [</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>6.0*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB7>)</span><span class=cB0>&amp;3]);
+<a name="l14"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l15"></a>    </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18">Sprite3</a></span><span class=cB0>(dc,x,y,0,right_imgs[</span><span class=cB5>ToI64</span><span class=cB7>(</span><span class=cB0>6.0*</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122">tS</a></span><span class=cB7>)</span><span class=cB0>&amp;3]);
+<a name="l16"></a>  last_x=x;
+<a name="l17"></a>}
+<a name="l18"></a>
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> AE1_MIN 0.02
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> AE1_MAX 0.05
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> AE2_MIN 0.15
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> AE2_MAX 0.30
+<a name="l23"></a>
+<a name="l24"></a></span><span class=cB1>U0</span><span class=cB0> AEMap()
+<a name="l25"></a>{
+<a name="l26"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0,
+<a name="l27"></a>      cx=</span><span class=cB5>Fs</span><span class=cB0>-&gt;pix_width&gt;&gt;1,
+<a name="l28"></a>      cy=</span><span class=cB5>Fs</span><span class=cB0>-&gt;pix_height&gt;&gt;1,
+<a name="l29"></a>      c_min=</span><span class=cB5>MinI64</span><span class=cB0>(cx,cy),
+<a name="l30"></a>      *r=</span><span class=cB3>NULL</span><span class=cB0>,
+<a name="l31"></a>       x1=0,y1=0,z1=0,
+<a name="l32"></a>       x_last=x1,y_last=y1;
+<a name="l33"></a>  </span><span class=cB1>F64</span><span class=cB0> a,a1=(AE1_MAX+AE1_MIN)/2,a2=(AE2_MAX+AE2_MIN)/2,a2_total=a2,
+<a name="l34"></a>        x_scale=</span><span class=cB5>ToF64</span><span class=cB0>(cx)/c_min,y_scale=</span><span class=cB5>ToF64</span><span class=cB0>(cy)/c_min;
+<a name="l35"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l168">DCAlias</a></span><span class=cB0>;
+<a name="l36"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3">SettingsPush</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>); </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l37"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;text_attr=</span><span class=cB3>YELLOW</span><span class=cB0>&lt;&lt;4+</span><span class=cB3>BLUE</span><span class=cB0>;
+<a name="l38"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l39"></a>  </span><span class=cB6>&quot;$BG,YELLOW$%h*c&quot;</span><span class=cB0>
+<a name="l40"></a>  ,</span><span class=cB3>TEXT_ROWS</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l41"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/God/GodBible.html#l240">BibleVerse</a></span><span class=cB0>(,</span><span class=cB6>&quot;Exodus,16:35&quot;</span><span class=cB0>,3);
+<a name="l42"></a>  </span><span class=cB5>Fs</span><span class=cB0>-&gt;draw_it=&amp;DrawMap;
+<a name="l43"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l44"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l110">ScanChar</a></span><span class=cB0>)
+<a name="l46"></a>    {
+<a name="l47"></a>      dc-&gt;color=</span><span class=cB3>BLACK</span><span class=cB0>;
+<a name="l48"></a>      a1=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1">Clamp</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l19">Wrap</a></span><span class=cB7>(</span><span class=cB0>a1+(AE1_MAX+AE1_MIN)/5.0*(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>-0.5)</span><span class=cB7>)</span><span class=cB0>,-AE1_MAX,AE1_MAX);
+<a name="l49"></a>      a=a1;
+<a name="l50"></a>      </span><span class=cB1>if</span><span class=cB0> ( 0.0&lt;=a&lt;=AE1_MIN) a=AE1_MIN;
+<a name="l51"></a>      </span><span class=cB1>if</span><span class=cB0> (-AE1_MIN&lt;=a&lt;=0.0) a=-AE1_MIN;
+<a name="l52"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(r);
+<a name="l53"></a>      r=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l34">Mat4x4IdentNew</a></span><span class=cB0>;
+<a name="l54"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l141">Mat4x4RotZ</a></span><span class=cB0>(r,a);
+<a name="l55"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6">Mat4x4MulXYZ</a></span><span class=cB0>(r,&amp;x1,&amp;y1,&amp;z1);
+<a name="l56"></a>      a2=</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1">Clamp</a></span><span class=cB0>(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l19">Wrap</a></span><span class=cB7>(</span><span class=cB0>a2+(AE2_MAX+AE2_MIN)/5.0*(</span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l137">Rand</a></span><span class=cB0>-0.5)</span><span class=cB7>)</span><span class=cB0>,-AE2_MAX,AE2_MAX);
+<a name="l57"></a>      a=a2;
+<a name="l58"></a>      </span><span class=cB1>if</span><span class=cB0> ( 0.0&lt;=a&lt;=AE2_MIN) a=AE2_MIN;
+<a name="l59"></a>      </span><span class=cB1>if</span><span class=cB0> (-AE2_MIN&lt;=a&lt;=0.0) a=-AE2_MIN;
+<a name="l60"></a>      a2_total+=a;
+<a name="l61"></a>      x1=</span><span class=cB5>ClampI64</span><span class=cB0>(x1+6.0*</span><span class=cB5>Cos</span><span class=cB7>(</span><span class=cB0>a2_total</span><span class=cB7>)</span><span class=cB0>,-c_min+10,c_min-10);
+<a name="l62"></a>      y1=</span><span class=cB5>ClampI64</span><span class=cB0>(y1+6.0*</span><span class=cB5>Sin</span><span class=cB7>(</span><span class=cB0>a2_total</span><span class=cB7>)</span><span class=cB0>,-c_min+10,c_min-10);
+<a name="l63"></a>      x=x_scale*x1+cx;
+<a name="l64"></a>      y=y_scale*y1+cy;
+<a name="l65"></a>      </span><span class=cB1>if</span><span class=cB0> (i++&amp;1)
+<a name="l66"></a>        </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l568">GrLine</a></span><span class=cB0>(dc,x_last,y_last,x,y);
+<a name="l67"></a>      x_last=x;
+<a name="l68"></a>      y_last=y;
+<a name="l69"></a>      </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167">Sleep</a></span><span class=cB0>(15);
+<a name="l70"></a>    }
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l73"></a>    </span><span class=cB5>Fs</span><span class=cB0>-&gt;catch_except=</span><span class=cB3>TRUE</span><span class=cB0>;
+<a name="l74"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l120">DocClear</a></span><span class=cB0>;
+<a name="l75"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l89">SettingsPop</a></span><span class=cB0>(</span><span class=cB5>Fs</span><span class=cB0>,</span><span class=cB3>TSF_SAME_SONG</span><span class=cB0>);
+<a name="l76"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383">Free</a></span><span class=cB0>(r);
+<a name="l77"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l122">DCFill</a></span><span class=cB0>(dc);
+<a name="l78"></a>  </span><span class=cB5><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l208">DCDel</a></span><span class=cB0>(dc);
+<a name="l79"></a>}
+</span></div></pre></body>
+</html>
