@@ -49,54 +49,54 @@
 <a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l638"></span><span class=cB5>Panic</a></span><span class=cB0>(</span><span class=cB6>&quot;Bad MAlloc:&quot;</span><span class=cB0>,ptr);
 <a name="l9"></a>}
 <a name="l10"></a>
-<a name="l11"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l11"></span><span class=cB5>MemPagAlloc</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> pags,</span><span class=cB9>CBlkPool</span><span class=cB0> *bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l11"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l11"></span><span class=cB5>MemPagAlloc</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> pags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2967"></span><span class=cB9>CBlkPool</a></span><span class=cB0> *bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
 <a name="l12"></a>{</span><span class=cB2>/*Alloc pags from BlkPool. Don't link to task.</span><span class=cB0>
 <a name="l13"></a></span><span class=cB2>(Linking to a task means they will be freed when the task dies.)</span><span class=cB0>
 <a name="l14"></a></span><span class=cB2>It might give you more than you asked for.</span><span class=cB0>
 <a name="l15"></a>
 <a name="l16"></a></span><span class=cB2>Return: NULL if out of memory.</span><span class=cB0>
 <a name="l17"></a></span><span class=cB2>*/</span><span class=cB0>
-<a name="l18"></a>  </span><span class=cB9>CMemBlk</span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,*m;
+<a name="l18"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2932"></span><span class=cB9>CMemBlk</a></span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*m;
 <a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l20"></a>  </span><span class=cB1>if</span><span class=cB0> (!bp) bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>;
 <a name="l21"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
 <a name="l22"></a>  </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2964"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2966"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l24"></a>    </span><span class=cB1>PAUSE</span><span class=cB0>
-<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (pags&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2951"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (pags&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2953"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l26"></a>    </span><span class=cB1>if</span><span class=cB0> (res=bp-&gt;free_pag_hash[pags]) {
 <a name="l27"></a>      bp-&gt;free_pag_hash[pags]=res-&gt;next;
 <a name="l28"></a>      </span><span class=cB1>goto</span><span class=cB0> at_done;
 <a name="l29"></a>    }
-<a name="l30"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2951"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>)+1;
+<a name="l30"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2953"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>)+1;
 <a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l32"></a></span><span class=cB2>//We'll now round-up to a power of two.</span><span class=cB0>
 <a name="l33"></a>    </span><span class=cB2>//There is some overhead on allocations and</span><span class=cB0>
 <a name="l34"></a>    </span><span class=cB2>//we wouldn't want to round to the next</span><span class=cB0>
 <a name="l35"></a>    </span><span class=cB2>//power of two if a power of two was requested.</span><span class=cB0>
 <a name="l36"></a>    </span><span class=cB2>//So we use a little more than a power of two.</span><span class=cB0>
-<a name="l37"></a>    pags-=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2954"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
+<a name="l37"></a>    pags-=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2956"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
 <a name="l38"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(pags)+1;
-<a name="l39"></a>    pags=1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2954"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
+<a name="l39"></a>    pags=1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2956"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
 <a name="l40"></a>    </span><span class=cB1>if</span><span class=cB0> (res=bp-&gt;free_pag_hash2[i]) {
 <a name="l41"></a>      bp-&gt;free_pag_hash2[i]=res-&gt;next;
 <a name="l42"></a>      </span><span class=cB1>goto</span><span class=cB0> at_done;
 <a name="l43"></a>    }
 <a name="l44"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l45"></a>  m=&amp;bp-&gt;mem_free_lst;
-<a name="l46"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l47"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>res=m-&gt;next</span><span class=cB7>)</span><span class=cB0>) {
 <a name="l48"></a></span><span class=cB2>//We're probably out of luck, but lets search for a</span><span class=cB0>
 <a name="l49"></a>      </span><span class=cB2>//freed larger size block... and, screw-it, return the whole thing.</span><span class=cB0>
 <a name="l50"></a>      </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l51"></a>        </span><span class=cB1>if</span><span class=cB0> (res=bp-&gt;free_pag_hash2[++i]) {
-<a name="l52"></a>          pags=1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2954"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
+<a name="l52"></a>          pags=1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2956"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
 <a name="l53"></a>          bp-&gt;free_pag_hash2[i]=res-&gt;next;
 <a name="l54"></a>          </span><span class=cB1>goto</span><span class=cB0> at_done;
 <a name="l55"></a>        }
-<a name="l56"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (i&lt;64-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>-1);
+<a name="l56"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (i&lt;64-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>-1);
 <a name="l57"></a>      pags=0;
-<a name="l58"></a>      res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>; </span><span class=cB2>//Out of memory</span><span class=cB0>
+<a name="l58"></a>      res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>; </span><span class=cB2>//Out of memory</span><span class=cB0>
 <a name="l59"></a>      </span><span class=cB1>goto</span><span class=cB0> at_done2;
 <a name="l60"></a>    }
 <a name="l61"></a>    </span><span class=cB1>if</span><span class=cB0> (res-&gt;pags&lt;pags)
@@ -107,33 +107,33 @@
 <a name="l66"></a>        </span><span class=cB1>goto</span><span class=cB0> at_done;
 <a name="l67"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l68"></a>        res-&gt;pags-=pags;
-<a name="l69"></a>        res(</span><span class=cB1>U8</span><span class=cB0> *)+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
+<a name="l69"></a>        res(</span><span class=cB1>U8</span><span class=cB0> *)+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
 <a name="l70"></a>        res-&gt;pags=pags;
 <a name="l71"></a>        </span><span class=cB1>goto</span><span class=cB0> at_done;
 <a name="l72"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l73"></a>    }
 <a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l75"></a>at_done:
-<a name="l76"></a>  bp-&gt;used_u8s+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
+<a name="l76"></a>  bp-&gt;used_u8s+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
 <a name="l77"></a>at_done2:
-<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2964"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB0>);
+<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2966"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB0>);
 <a name="l79"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
 <a name="l80"></a>  </span><span class=cB1>return</span><span class=cB0> res;
 <a name="l81"></a>}
 <a name="l82"></a>
-<a name="l83"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l83"></span><span class=cB5>MemPagFree</a></span><span class=cB0>(</span><span class=cB9>CMemBlk</span><span class=cB0> *m,</span><span class=cB9>CBlkPool</span><span class=cB0> *bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l83"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l83"></span><span class=cB5>MemPagFree</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2932"></span><span class=cB9>CMemBlk</a></span><span class=cB0> *m,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2967"></span><span class=cB9>CBlkPool</a></span><span class=cB0> *bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
 <a name="l84"></a>{</span><span class=cB2>//Return non-task pags to BlkPool.</span><span class=cB0>
 <a name="l85"></a>  </span><span class=cB9>I64</span><span class=cB0> i,pags;
 <a name="l86"></a>  </span><span class=cB1>if</span><span class=cB0> (m) </span><span class=cB7>{</span><span class=cB0>
 <a name="l87"></a>    </span><span class=cB1>if</span><span class=cB0> (!bp) bp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>;
 <a name="l88"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
 <a name="l89"></a>    </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l90"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2964"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l90"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2966"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l91"></a>      </span><span class=cB1>PAUSE</span><span class=cB0>
 <a name="l92"></a>    pags=m-&gt;pags;
-<a name="l93"></a>    m-&gt;mb_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2929"></span><span class=cB3>MBS_UNUSED_SIGNATURE_VAL</a></span><span class=cB0>;
-<a name="l94"></a>    bp-&gt;used_u8s-=pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
-<a name="l95"></a>    </span><span class=cB1>if</span><span class=cB0> (pags&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2951"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>) {
+<a name="l93"></a>    m-&gt;mb_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2931"></span><span class=cB3>MBS_UNUSED_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l94"></a>    bp-&gt;used_u8s-=pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
+<a name="l95"></a>    </span><span class=cB1>if</span><span class=cB0> (pags&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2953"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>) {
 <a name="l96"></a>      m-&gt;next=bp-&gt;free_pag_hash[pags];
 <a name="l97"></a>      bp-&gt;free_pag_hash[pags]=m;
 <a name="l98"></a>    } </span><span class=cB1>else</span><span class=cB0> {
@@ -142,38 +142,38 @@
 <a name="l101"></a>      </span><span class=cB2>//we wouldn't want to round to the next</span><span class=cB0>
 <a name="l102"></a>      </span><span class=cB2>//power of two if a power of two was requested.</span><span class=cB0>
 <a name="l103"></a>      </span><span class=cB2>//So we use a little more than a power of two.</span><span class=cB0>
-<a name="l104"></a>      pags-=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2954"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
+<a name="l104"></a>      pags-=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2956"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>;
 <a name="l105"></a>      i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(pags);
 <a name="l106"></a>      m-&gt;next=bp-&gt;free_pag_hash2[i];
 <a name="l107"></a>      bp-&gt;free_pag_hash2[i]=m;
 <a name="l108"></a>    }
-<a name="l109"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2964"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB0>);
+<a name="l109"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;bp-&gt;locked_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2966"></span><span class=cB3>BPlf_LOCKED</a></span><span class=cB0>);
 <a name="l110"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
 <a name="l111"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l112"></a>}
 <a name="l113"></a>
-<a name="l114"></a></span><span class=cB9>CMemBlk</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l114"></span><span class=cBD>MemPagTaskAlloc</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> pags,</span><span class=cB9>CHeapCtrl</span><span class=cB0> *hc)
+<a name="l114"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2932"></span><span class=cB9>CMemBlk</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l114"></span><span class=cBD>MemPagTaskAlloc</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> pags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2981"></span><span class=cB9>CHeapCtrl</a></span><span class=cB0> *hc)
 <a name="l115"></a>{</span><span class=cB2>/*hc must be locked.  Don't preempt this routine.</span><span class=cB0>
 <a name="l116"></a></span><span class=cB2>Currently, this is only called from </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l117"></a></span><span class=cB2>Return: NULL if out of memory.</span><span class=cB0>
 <a name="l118"></a></span><span class=cB2>*/</span><span class=cB0>
-<a name="l119"></a>  </span><span class=cB9>CMemBlk</span><span class=cB0> *res;
+<a name="l119"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2932"></span><span class=cB9>CMemBlk</a></span><span class=cB0> *res;
 <a name="l120"></a>  </span><span class=cB9>I64</span><span class=cB0> threshold,cnt,size;
-<a name="l121"></a>  </span><span class=cB9>CMemUnused</span><span class=cB0> *uum,**_uum,**_ptr;
+<a name="l121"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2910"></span><span class=cB9>CMemUnused</a></span><span class=cB0> *uum,**_uum,**_ptr;
 <a name="l122"></a>  </span><span class=cB1>if</span><span class=cB0> (res=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l11"></span><span class=cB5>MemPagAlloc</a></span><span class=cB7>(</span><span class=cB0>pags,hc-&gt;bp</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l123"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(res,hc-&gt;last_mem_blk);
-<a name="l124"></a>    res-&gt;mb_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2928"></span><span class=cB3>MBS_USED_SIGNATURE_VAL</a></span><span class=cB0>;
-<a name="l125"></a>    hc-&gt;alloced_u8s+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
+<a name="l124"></a>    res-&gt;mb_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2930"></span><span class=cB3>MBS_USED_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l125"></a>    hc-&gt;alloced_u8s+=res-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
 <a name="l126"></a>
 <a name="l127"></a>    </span><span class=cB2>//Tidy-up free lst (Move into heap hash)</span><span class=cB0>
 <a name="l128"></a>    </span><span class=cB2>//because if free lst gets long, delay causes crash.</span><span class=cB0>
-<a name="l129"></a>    threshold=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>&gt;&gt;4;
-<a name="l130"></a>#</span><span class=cB1>assert</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>&gt;&gt;4&gt;=</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *)
+<a name="l129"></a>    threshold=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2952"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>&gt;&gt;4;
+<a name="l130"></a>#</span><span class=cB1>assert</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2952"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>&gt;&gt;4&gt;=</span><span class=cB1>sizeof</span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *)
 <a name="l131"></a>    </span><span class=cB1>do</span><span class=cB0> {
 <a name="l132"></a>      cnt=0;
 <a name="l133"></a>      _uum=&amp;hc-&gt;malloc_free_lst;
 <a name="l134"></a>      </span><span class=cB1>while</span><span class=cB0> (uum=*_uum) </span><span class=cB7>{</span><span class=cB0>
-<a name="l135"></a>#</span><span class=cB1>assert</span><span class=cB0> !</span><span class=cB1>offset</span><span class=cB0>(</span><span class=cB9>CMemUnused</span><span class=cB0>.next)
+<a name="l135"></a>#</span><span class=cB1>assert</span><span class=cB0> !</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2910"></span><span class=cB9>CMemUnused</a></span><span class=cB0>.next)
 <a name="l136"></a>        size=uum-&gt;size;
 <a name="l137"></a>        </span><span class=cB1>if</span><span class=cB0> (size&lt;threshold) {
 <a name="l138"></a>          *_uum=uum-&gt;next;
@@ -186,21 +186,21 @@
 <a name="l145"></a>        }
 <a name="l146"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l147"></a>      threshold&lt;&lt;=1;
-<a name="l148"></a>    } </span><span class=cB1>while</span><span class=cB0> (cnt&gt;8 &amp;&amp; threshold&lt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>);
+<a name="l148"></a>    } </span><span class=cB1>while</span><span class=cB0> (cnt&gt;8 &amp;&amp; threshold&lt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2952"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>);
 <a name="l149"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l150"></a>  </span><span class=cB1>return</span><span class=cB0> res;
 <a name="l151"></a>}
 <a name="l152"></a>
-<a name="l153"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l153"></span><span class=cBD>MemPagTaskFree</a></span><span class=cB0>(</span><span class=cB9>CMemBlk</span><span class=cB0> *m,</span><span class=cB9>CHeapCtrl</span><span class=cB0> *hc)
+<a name="l153"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l153"></span><span class=cBD>MemPagTaskFree</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2932"></span><span class=cB9>CMemBlk</a></span><span class=cB0> *m,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2981"></span><span class=cB9>CHeapCtrl</a></span><span class=cB0> *hc)
 <a name="l154"></a>{</span><span class=cB2>//hc must be locked</span><span class=cB0>
 <a name="l155"></a>  </span><span class=cB1>if</span><span class=cB0> (m) </span><span class=cB7>{</span><span class=cB0>
 <a name="l156"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
 <a name="l157"></a>    </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l158"></a>    </span><span class=cB1>if</span><span class=cB0> (m-&gt;mb_signature!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2928"></span><span class=cB3>MBS_USED_SIGNATURE_VAL</a></span><span class=cB0>)
+<a name="l158"></a>    </span><span class=cB1>if</span><span class=cB0> (m-&gt;mb_signature!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2930"></span><span class=cB3>MBS_USED_SIGNATURE_VAL</a></span><span class=cB0>)
 <a name="l159"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l1"></span><span class=cBD>SysBadFree</a></span><span class=cB0>(m);
 <a name="l160"></a>    </span><span class=cB1>else</span><span class=cB0> {
 <a name="l161"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(m);
-<a name="l162"></a>      hc-&gt;alloced_u8s-=m-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2948"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
+<a name="l162"></a>      hc-&gt;alloced_u8s-=m-&gt;pags&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2950"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>;
 <a name="l163"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l83"></span><span class=cB5>MemPagFree</a></span><span class=cB0>(m,hc-&gt;bp);
 <a name="l164"></a>    }
 <a name="l165"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
