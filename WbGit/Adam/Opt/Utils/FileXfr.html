@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;::/Adam/Net/SnailLite&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/FileXfr.html#l3"></span><span class=cB5>Fget</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l4"></a>{</span><span class=cB2>//Gets file from another PC over serial</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB1>U8</span><span class=cB0>* data;
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> len,lenlen;
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l48"></span><span class=cB5>SocketInit</a></span><span class=cB0>;
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l3"></span><span class=cB3>CMD_FILE_SEND</a></span><span class=cB0>);
+<a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>filename</span><span class=cB7>)</span><span class=cB0>);
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l126"></span><span class=cB5>CommPutS</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>,filename);
+<a name="l11"></a>  lenlen=<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l22"></span><span class=cB5>ReadI8</a></span><span class=cB0>;
+<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (lenlen &gt; 0)
+<a name="l13"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l14"></a>    data=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(lenlen+1);
+<a name="l15"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l34"></span><span class=cB5>ReadBlock</a></span><span class=cB0>(data,lenlen);
+<a name="l16"></a>    len=<a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(data);
+<a name="l17"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l18"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    </span><span class=cB6>&quot;Failed to read file %s (or file size is zero)!\n&quot;</span><span class=cB0>,filename;
+<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, 0);
+<a name="l23"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l24"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>  data=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(len);
+<a name="l26"></a>  </span><span class=cB1>if</span><span class=cB0> (data)
+<a name="l27"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, lenlen);
+<a name="l29"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l34"></span><span class=cB5>ReadBlock</a></span><span class=cB0>(data,len);
+<a name="l30"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95"></span><span class=cB5>FileWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l109"></span><span class=cB5>FileBaseName</a></span><span class=cB7>(</span><span class=cB0>filename</span><span class=cB7>)</span><span class=cB0>,data,len);
+<a name="l31"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l32"></a>    </span><span class=cB1>return</span><span class=cB0> len;
+<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    </span><span class=cB6>&quot;Failed to malloc space for file %s!\n&quot;</span><span class=cB0>,filename;
+<a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, 0);
+<a name="l38"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l39"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l40"></a>}
+<a name="l41"></a>
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/FileXfr.html#l43"></span><span class=cB5>Fput</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l44"></a>{</span><span class=cB2>//Transfers file using to another PC over serial</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB1>U8</span><span class=cB0> *data, *len_str;
+<a name="l46"></a>  </span><span class=cB9>I64</span><span class=cB0> len,lenlen;
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l48"></span><span class=cB5>SocketInit</a></span><span class=cB0>;
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2638"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(filename);
+<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (!de)
+<a name="l50"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    </span><span class=cB6>&quot;Failed to find file %s?\n&quot;</span><span class=cB0>,filename;
+<a name="l52"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l53"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>  data = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB0>(de-&gt;full_name, &amp;len);
+<a name="l55"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(de);
+<a name="l56"></a>  </span><span class=cB1>if</span><span class=cB0> (!len)
+<a name="l57"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>    </span><span class=cB6>&quot;File %s is empty? Not transferring.\n&quot;</span><span class=cB0>,filename;
+<a name="l59"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l60"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l61"></a>  len_str = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l939"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,len);
+<a name="l62"></a>  lenlen = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(len_str);
+<a name="l63"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l2"></span><span class=cB3>CMD_FILE_RECV</a></span><span class=cB0>);
+<a name="l64"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, lenlen);
+<a name="l65"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l126"></span><span class=cB5>CommPutS</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>,len_str);
+<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(len_str);
+<a name="l67"></a>  lenlen = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(filename);
+<a name="l68"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l89"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>, lenlen);
+<a name="l69"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l126"></span><span class=cB5>CommPutS</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>,filename);
+<a name="l70"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Comm.html#l133"></span><span class=cB5>CommPutBlk</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l6"></span><span class=cB3>SNAIL_COM</a></span><span class=cB0>,data,len);
+<a name="l71"></a>  </span><span class=cB1>if</span><span class=cB0> (lenlen == <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l22"></span><span class=cB5>ReadI8</a></span><span class=cB0>)
+<a name="l72"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>    </span><span class=cB6>&quot;File %s was transferred!\n&quot;</span><span class=cB0>,filename;
+<a name="l74"></a>    </span><span class=cB1>return</span><span class=cB0> len;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l77"></a>    </span><span class=cB6>&quot;File %s was not transferred! An unknown error occurred in transfer!\n&quot;</span><span class=cB0>,filename;
+<a name="l78"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a>
+</span></div></pre></body>
+</html>

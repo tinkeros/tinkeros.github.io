@@ -8,4 +8,7 @@
 #define WIDTH_SCALE 1
 #define HEIGHT_SCALE 1
 #define DO_SCALING 0
+#define LETTER_BOX 0
+#define SCREEN_SAVER_TIMEOUT 300
+#define LETTER_BOX_BAR_WIDTH 0
 #define GR_TEXT_MODE 0
