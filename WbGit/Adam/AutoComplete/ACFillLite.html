@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.06">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;AutoComplete/Dictionary&quot;</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>/*Fmt of word lst entry:</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>  U8 ACD_WORD_CHAR</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>  U8 word[] with terminating zero</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>  I16 block;</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l7"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l7"></span><span class=cB5>ACDWordPtAt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l8"></a>{</span><span class=cB2>//Point to word in word list.</span><span class=cB0>
+<a name="l9"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l10"></a>  </span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst,*r=</span><span class=cB1>start</span><span class=cB0>,
+<a name="l11"></a>        *</span><span class=cB1>end</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst_size;
+<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (!st || !*st)
+<a name="l13"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst;
+<a name="l14"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst_size) </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>    </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB1>start</span><span class=cB0>+3&lt;</span><span class=cB1>end</span><span class=cB0>) {
+<a name="l16"></a>      r=(</span><span class=cB1>start</span><span class=cB0>+</span><span class=cB1>end</span><span class=cB0>)&gt;&gt;1;
+<a name="l17"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>        </span><span class=cB1>while</span><span class=cB0> (*r!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0> &amp;&amp; r&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst)
+<a name="l19"></a>          r--;
+<a name="l20"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>r[2]==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>||r[1]==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB7>)</span><span class=cB0>&amp;&amp;r-3&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst)
+<a name="l21"></a>          r--;
+<a name="l22"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l23"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l24"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>      </span><span class=cB1>if</span><span class=cB0> (*r==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>        i=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(st,r+1);
+<a name="l27"></a>        </span><span class=cB1>if</span><span class=cB0> (i&lt;0)
+<a name="l28"></a>          </span><span class=cB1>end</span><span class=cB0>=r-1;
+<a name="l29"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i&gt;0)
+<a name="l30"></a>          </span><span class=cB1>start</span><span class=cB0>=r+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(r)+3;
+<a name="l31"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l32"></a>          </span><span class=cB1>return</span><span class=cB0> r;
+<a name="l33"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l35"></a>    }
+<a name="l36"></a>    r=(</span><span class=cB1>start</span><span class=cB0>+</span><span class=cB1>end</span><span class=cB0>)&gt;&gt;1;
+<a name="l37"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l38"></a>      </span><span class=cB1>while</span><span class=cB0> (*r!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0> &amp;&amp; r&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst)
+<a name="l39"></a>        r--;
+<a name="l40"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>r[2]==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>||r[1]==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB7>)</span><span class=cB0>&amp;&amp;r-3&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst)
+<a name="l41"></a>        r--;
+<a name="l42"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l44"></a>    }
+<a name="l45"></a>    </span><span class=cB1>if</span><span class=cB0> (*r==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>st,r+1</span><span class=cB7>)</span><span class=cB0>&gt;0)
+<a name="l46"></a>      r+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(r)+3;
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (*r==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1614"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>)
+<a name="l49"></a>    </span><span class=cB1>return</span><span class=cB0> r;
+<a name="l50"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l51"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst;
+<a name="l52"></a>}
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l54"></span><span class=cB5>ACDFillin</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l55"></a>{
+<a name="l56"></a>  </span><span class=cB1>U8</span><span class=cB0> *s;
+<a name="l57"></a>  </span><span class=cB9>I64</span><span class=cB0> len;
+<a name="l58"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=n&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.num_fillins) </span><span class=cB7>{</span><span class=cB0>
+<a name="l59"></a>    s=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>acd</a></span><span class=cB0>.fillins[n]+1;
+<a name="l60"></a>    len=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(s);
+<a name="l61"></a>    </span><span class=cB1>if</span><span class=cB0> (len&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.partial_len)
+<a name="l62"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l482"></span><span class=cB5>In</a></span><span class=cB0>(s+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.partial_len);
+<a name="l63"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l67"></span><span class=cB5>ACDDefUI</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"></span><span class=cB9>CTask</a></span><span class=cB0> *parent=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l68"></a>{
+<a name="l69"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l70"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;Dictionary is not implemented.\n\&quot;;View;&quot;</span><span class=cB0>);
+<a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l376"></span><span class=cB5>PopUp</a></span><span class=cB0>(buf,parent);
+<a name="l72"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l73"></a>}
+<a name="l74"></a>
+<a name="l75"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l75"></span><span class=cB5>ACDDef</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> n,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"></span><span class=cB9>CTask</a></span><span class=cB0> *parent=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l76"></a>{
+<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;=0)
+<a name="l78"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l67"></span><span class=cB5>ACDDefUI</a></span><span class=cB0>(parent);
+<a name="l79"></a>
+<a name="l80"></a>}
+<a name="l81"></a>
+<a name="l82"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;AutoComplete&quot;</span><span class=cB0>
+<a name="l83"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l83"></span><span class=cB5>ACFillIn</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l84"></a>{
+<a name="l85"></a>  </span><span class=cB1>U8</span><span class=cB0> *s;
+<a name="l86"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=--n&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.num_fillins) </span><span class=cB7>{</span><span class=cB0>
+<a name="l87"></a>    s=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.fillin_matches[n]-&gt;str;
+<a name="l88"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>s</span><span class=cB7>)</span><span class=cB0>&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.partial_len)
+<a name="l89"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l482"></span><span class=cB5>In</a></span><span class=cB0>(s+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.partial_len);
+<a name="l90"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l91"></a>}
+<a name="l92"></a>
+<a name="l93"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACFillLite.html#l93"></span><span class=cB5>ACMan</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> n,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"></span><span class=cB9>CTask</a></span><span class=cB0> *parent_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l94"></a>{
+<a name="l95"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l845"></span><span class=cB9>CHashAC</a></span><span class=cB0> *tmpw;
+<a name="l96"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l816"></span><span class=cB9>CHashSrcSym</a></span><span class=cB0> *tmph;
+<a name="l97"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=--n&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.num_fillins &amp;&amp; </span><span class=cB7>(</span><span class=cB0>tmpw=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ac</a></span><span class=cB0>.fillin_matches[n]</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l98"></a>        </span><span class=cB7>(</span><span class=cB0>tmph=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(tmpw-&gt;str,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l804"></span><span class=cB3>HTG_SRC_SYM</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l99"></a>        tmph-&gt;src_link)
+<a name="l100"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l259"></span><span class=cB5>PopUpEd</a></span><span class=cB0>(tmph-&gt;src_link,parent_task);
+<a name="l101"></a>}
+</span></div></pre></body>
+</html>
