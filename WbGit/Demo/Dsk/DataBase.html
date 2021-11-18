@@ -45,24 +45,24 @@
 <a name="l6"></a>{</span><span class=cB2>//Use &lt;CTRL-l&gt; to help generate formats.</span><span class=cB0>
 <a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> name[32] format </span><span class=cB6>&quot;$DA-P,LEN=32,A=\&quot;Name:%s\&quot;$\n&quot;</span><span class=cB0>;
 <a name="l8"></a>  </span><span class=cB1>U8</span><span class=cB0> addr[64] format </span><span class=cB6>&quot;$DA-P,LEN=64,A=\&quot;Addr:%s\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0> pad[DB_ACCT_BLKS*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2356"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-64-32];
+<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0> pad[DB_ACCT_BLKS*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2402"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-64-32];
 <a name="l10"></a>};
 <a name="l11"></a>
 <a name="l12"></a></span><span class=cB1>U0</span><span class=cB0> InitDatabase()
 <a name="l13"></a>{ </span><span class=cB2>//Write new contiguous file</span><span class=cB0>
-<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2884"></span><span class=cB9>CFile</a></span><span class=cB0> *f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;w&quot;</span><span class=cB0>,DB_ACCT_MAX*DB_ACCT_BLKS);
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3231"></span><span class=cB9>CFile</a></span><span class=cB0> *f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;w&quot;</span><span class=cB0>,DB_ACCT_MAX*DB_ACCT_BLKS);
 <a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l73"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
 <a name="l16"></a>}
 <a name="l17"></a>
 <a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> WriteAcct()
 <a name="l19"></a>{
-<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2884"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3231"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
 <a name="l21"></a>  Acct a;
 <a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> acctnum;
 <a name="l23"></a>
 <a name="l24"></a>  acctnum=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGet.html#l172"></span><span class=cB5>GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;Acct #&quot;</span><span class=cB0>,-1);
 <a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=acctnum&lt;DB_ACCT_MAX) </span><span class=cB7>{</span><span class=cB0>
-<a name="l26"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;a,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2356"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
+<a name="l26"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;a,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2402"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
 <a name="l27"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l271"></span><span class=cB5>DocForm</a></span><span class=cB7>(</span><span class=cB0>&amp;a</span><span class=cB7>)</span><span class=cB0>) {
 <a name="l28"></a>      f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;w+&quot;</span><span class=cB0>);
 <a name="l29"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l181"></span><span class=cB5>FBlkWrite</a></span><span class=cB0>(f,&amp;a,acctnum*DB_ACCT_BLKS,DB_ACCT_BLKS);
@@ -73,7 +73,7 @@
 <a name="l34"></a>
 <a name="l35"></a></span><span class=cB1>U0</span><span class=cB0> ReadAcct()
 <a name="l36"></a>{
-<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2884"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3231"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
 <a name="l38"></a>  Acct a;
 <a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> acctnum;
 <a name="l40"></a>
@@ -97,7 +97,7 @@
 <a name="l58"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
 <a name="l59"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'R'</span><span class=cB0>) ReadAcct;
 <a name="l60"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'W'</span><span class=cB0>) WriteAcct;
-<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (ch!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3579"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0> &amp;&amp; ch!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3578"></span><span class=cB3>CH_ESC</a></span><span class=cB0>);
+<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (ch!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3926"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0> &amp;&amp; ch!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3925"></span><span class=cB3>CH_ESC</a></span><span class=cB0>);
 <a name="l62"></a>}
 <a name="l63"></a>
 <a name="l64"></a>DatabaseDemo;

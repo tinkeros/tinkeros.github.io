@@ -51,204 +51,230 @@
 <a name="l10"></a>{</span><span class=cB2>//Change directory. Optionally, make directories, too.</span><span class=cB0>
 <a name="l11"></a>  </span><span class=cB9>I64</span><span class=cB0> maxlen,cur_dir_clus=0;
 <a name="l12"></a>  </span><span class=cB1>U8</span><span class=cB0> *chg_to_buf,*new_cur_dir,*buf;
-<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2809"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
 <a name="l14"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (!dirname)
 <a name="l16"></a>    dirname=</span><span class=cB6>&quot;~&quot;</span><span class=cB0>;
 <a name="l17"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!*dirname)
 <a name="l18"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (dirname[1]==</span><span class=cB6>':'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l20"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>':'</span><span class=cB0>) {
-<a name="l21"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l200"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB6>':'</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l275"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0>)
-<a name="l22"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l23"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l200"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l275"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0>)
-<a name="l24"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l25"></a>    dirname+=2;
-<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l27"></a>  </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>'/'</span><span class=cB0> || !*dirname || !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir) </span><span class=cB7>{</span><span class=cB0>
-<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
-<a name="l29"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l30"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>'/'</span><span class=cB0>)
-<a name="l31"></a>      dirname++;
-<a name="l32"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l33"></a>  chg_to_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(dirname,
-<a name="l34"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3853"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3854"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3852"></span><span class=cB3>SUF_REM_CTRL_CHARS</a></span><span class=cB0>);
-<a name="l35"></a>  maxlen=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir)+1+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(chg_to_buf)+1;
-<a name="l36"></a>  new_cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(maxlen);
-<a name="l37"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(maxlen);
-<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
-<a name="l39"></a>  </span><span class=cB1>while</span><span class=cB0> (*chg_to_buf &amp;&amp; res) </span><span class=cB7>{</span><span class=cB0>
-<a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l577"></span><span class=cB5>StrFirstRem</a></span><span class=cB0>(chg_to_buf,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>,buf);
-<a name="l41"></a>    </span><span class=cB1>if</span><span class=cB0> (!*buf)
-<a name="l42"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l43"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;..&quot;</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l44"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l604"></span><span class=cB5>StrLastRem</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l45"></a>      </span><span class=cB1>if</span><span class=cB0> (!*new_cur_dir)
-<a name="l46"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l47"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;~&quot;</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l48"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(new_cur_dir);
-<a name="l49"></a>      new_cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>blkdev</a></span><span class=cB0>.home_dir+2</span><span class=cB7>)</span><span class=cB0>+1+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>chg_to_buf</span><span class=cB7>)</span><span class=cB0>+1);
-<a name="l50"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>blkdev</a></span><span class=cB0>.home_dir+2);
-<a name="l51"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l200"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB6>'~'</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l275"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB6>'~'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l52"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l53"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;.&quot;</span><span class=cB7>)</span><span class=cB0> &amp;&amp; *buf) {
-<a name="l54"></a>      dv=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv;
-<a name="l55"></a>      cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,new_cur_dir);
-<a name="l56"></a>      </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type) </span><span class=cB7>{</span><span class=cB0>
-<a name="l57"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2780"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
-<a name="l58"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l236"></span><span class=cBD>RedSeaCd</a></span><span class=cB0>(buf,cur_dir_clus);
-<a name="l59"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l60"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2781"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
-<a name="l61"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l387"></span><span class=cBD>FAT32Cd</a></span><span class=cB0>(buf,cur_dir_clus);
-<a name="l62"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l63"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2782"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
-<a name="l64"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysISO.html#l181"></span><span class=cBD>ISO1Cd</a></span><span class=cB0>(buf,cur_dir_clus);
-<a name="l65"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l66"></a>        </span><span class=cB1>default</span><span class=cB0>:
-<a name="l67"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l947"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
-<a name="l68"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l69"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l70"></a>      </span><span class=cB1>if</span><span class=cB0> (!res &amp;&amp; make_dirs) </span><span class=cB7>{</span><span class=cB0>
-<a name="l71"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
-<a name="l72"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(new_cur_dir);
-<a name="l73"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l176"></span><span class=cB5>DirMk</a></span><span class=cB0>(buf);
-<a name="l74"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l75"></a>      </span><span class=cB1>if</span><span class=cB0> (res) </span><span class=cB7>{</span><span class=cB0>
-<a name="l76"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB7>)</span><span class=cB0>)
-<a name="l77"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l922"></span><span class=cB5>CatPrint</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l78"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l922"></span><span class=cB5>CatPrint</a></span><span class=cB0>(new_cur_dir,buf);
-<a name="l79"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l80"></a>    }
-<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l82"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
-<a name="l83"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(new_cur_dir);
-<a name="l84"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l85"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(chg_to_buf);
-<a name="l86"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(new_cur_dir);
-<a name="l87"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l88"></a>}
-<a name="l89"></a>
-<a name="l90"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l90"></span><span class=cB5>IsDir</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dir_name)
-<a name="l91"></a>{</span><span class=cB2>//Is a str a valid, existing Dir?</span><span class=cB0>
-<a name="l92"></a>  </span><span class=cB1>U8</span><span class=cB0> *mask=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l939"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s/*&quot;</span><span class=cB0>,dir_name);
-<a name="l93"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>dir_name</span><span class=cB7>)</span><span class=cB0>&gt;1 &amp;&amp; dir_name[1]==</span><span class=cB6>':'</span><span class=cB0>)
-<a name="l94"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l200"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB0>dir_name[1],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l95"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l96"></a>  </span><span class=cB1>Bool</span><span class=cB0> res,old_silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l290"></span><span class=cB5>Silent</a></span><span class=cB0>;
-<a name="l97"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2868"></span><span class=cB9>CDirContext</a></span><span class=cB0> *dirc;
-<a name="l98"></a>  </span><span class=cB1>if</span><span class=cB0> (dirc=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l23"></span><span class=cB5>DirContextNew</a></span><span class=cB7>(</span><span class=cB0>mask</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l99"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l1"></span><span class=cB5>DirContextDel</a></span><span class=cB0>(dirc);
-<a name="l100"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l101"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l102"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l103"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(mask);
-<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l290"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
-<a name="l105"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l106"></a>}
-<a name="l107"></a>
-<a name="l108"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l108"></span><span class=cB5>Dir</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask=</span><span class=cB6>&quot;*&quot;</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> full=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
-<a name="l109"></a>{</span><span class=cB2>//List directory.</span><span class=cB0>
-<a name="l110"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2639"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*tmpde2;
-<a name="l111"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
-<a name="l112"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l195"></span><span class=cB9>CDateStruct</a></span><span class=cB0> ds;
-<a name="l113"></a>  </span><span class=cB9>I64</span><span class=cB0> csize=0xFFFF,c=0xFFFF,res=0;
-<a name="l114"></a>  tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask);
-<a name="l115"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l281"></span><span class=cB5>DirCur</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l116"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l947"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid Drive\n&quot;</span><span class=cB0>);
-<a name="l117"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l118"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpde1) {
-<a name="l119"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
-<a name="l120"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l407"></span><span class=cB5>MAllocIdent</a></span><span class=cB0>(tmpde1-&gt;full_name);
-<a name="l121"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l604"></span><span class=cB5>StrLastRem</a></span><span class=cB0>(st,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l122"></a>      </span><span class=cB1>if</span><span class=cB0> (!st[2])
-<a name="l123"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(st+2,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
-<a name="l124"></a></span><span class=cB2>//Find max columns</span><span class=cB0>
-<a name="l125"></a>      tmpde2=tmpde1;
-<a name="l126"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde2) </span><span class=cB7>{</span><span class=cB0>
-<a name="l127"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde2-&gt;size&gt;csize)
-<a name="l128"></a>          csize=tmpde2-&gt;size;
-<a name="l129"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde2-&gt;clus&gt;c)
-<a name="l130"></a>          c=tmpde2-&gt;clus;
-<a name="l131"></a>        tmpde2=tmpde2-&gt;next;
-<a name="l132"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l133"></a>      csize=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(csize)/4+1;
-<a name="l134"></a>      c=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(c)/4+1;
-<a name="l135"></a>
-<a name="l136"></a>      </span><span class=cB6>&quot;$MA,T=\&quot;Directory\&quot;,LM=\&quot;PopUpCd;Dir;\n\&quot;$ of %s\n&quot;</span><span class=cB0>,st;
-<a name="l137"></a>      </span><span class=cB1>if</span><span class=cB0> (full)
-<a name="l138"></a>        </span><span class=cB6>&quot;__DATE__ __TIME__ %*ts %*ts\n&quot;</span><span class=cB0>,
-<a name="l139"></a>              csize,</span><span class=cB6>&quot;SIZE&quot;</span><span class=cB0>,c,</span><span class=cB6>&quot;BLK&quot;</span><span class=cB0>;
-<a name="l140"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l141"></a>        </span><span class=cB6>&quot;DATE_ TIME_ %*ts\n&quot;</span><span class=cB0>,csize,</span><span class=cB6>&quot;SIZE&quot;</span><span class=cB0>;
-<a name="l142"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde1) </span><span class=cB7>{</span><span class=cB0>
-<a name="l143"></a>        tmpde2=tmpde1-&gt;next;
-<a name="l144"></a>        res++;
-<a name="l145"></a>        </span><span class=cB1>if</span><span class=cB0> (full)
-<a name="l146"></a>          </span><span class=cB6>&quot;%D %T %0*tX %0*tX &quot;</span><span class=cB0>,tmpde1-&gt;datetime,tmpde1-&gt;datetime,
-<a name="l147"></a>                csize,tmpde1-&gt;size,c,tmpde1-&gt;clus;
-<a name="l148"></a>        </span><span class=cB1>else</span><span class=cB0> {
-<a name="l149"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39"></span><span class=cB5>Date2Struct</a></span><span class=cB0>(&amp;ds,tmpde1-&gt;datetime+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l26"></span><span class=cB6>local_time_offset</a></span><span class=cB0>);
-<a name="l150"></a>          </span><span class=cB6>&quot;%02d/%02d %02d:%02d %0*tX &quot;</span><span class=cB0>,ds.mon,ds.day_of_mon,ds.hour,ds.min,
-<a name="l151"></a>                csize,tmpde1-&gt;size;
-<a name="l152"></a>        }
-<a name="l153"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde1-&gt;attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2620"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)
-<a name="l154"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l224"></span><span class=cB5>PutDirLink</a></span><span class=cB0>(tmpde1-&gt;name,tmpde1-&gt;full_name);
-<a name="l155"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l156"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l178"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(tmpde1-&gt;name,tmpde1-&gt;full_name);
-<a name="l157"></a>        </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l158"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde1);
-<a name="l159"></a>        tmpde1=tmpde2;
-<a name="l160"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l161"></a>    } </span><span class=cB1>else</span><span class=cB0>
-<a name="l162"></a>      </span><span class=cB6>&quot;No matching entries\n&quot;</span><span class=cB0>;
-<a name="l163"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
-<a name="l164"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l165"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l166"></a>}
-<a name="l167"></a>
-<a name="l168"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l168"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dirname=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> make_dirs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
-<a name="l169"></a>{</span><span class=cB2>//Change directory and list contents</span><span class=cB0>
-<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>dirname,make_dirs</span><span class=cB7>)</span><span class=cB0>)
-<a name="l171"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l108"></span><span class=cB5>Dir</a></span><span class=cB0>&gt;0;
-<a name="l172"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l173"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l174"></a>}
-<a name="l175"></a>
-<a name="l176"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l176"></span><span class=cB5>DirMk</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> entry_cnt=0)
-<a name="l177"></a>{</span><span class=cB2>//Make directory. </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB4>Cd</span></a><span class=cB2>() can also make directories.</span><span class=cB0>
-<a name="l178"></a></span><span class=cB2>//entry_cnt is for preallocating dir blks, leave it zero if you like.</span><span class=cB0>
-<a name="l179"></a>  </span><span class=cB1>U8</span><span class=cB0> *name;
-<a name="l180"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2868"></span><span class=cB9>CDirContext</a></span><span class=cB0> *dirc;
-<a name="l181"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l182"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65"></span><span class=cB5>FileFind</a></span><span class=cB7>(</span><span class=cB0>filename,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2696"></span><span class=cB3>FUF_JUST_DIRS</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l183"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l184"></a>  </span><span class=cB1>if</span><span class=cB0> (dirc=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l23"></span><span class=cB5>DirContextNew</a></span><span class=cB7>(</span><span class=cB0>filename</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l185"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirc-&gt;mask) {
-<a name="l186"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l249"></span><span class=cB5>FileNameChk</a></span><span class=cB7>(</span><span class=cB0>dirc-&gt;mask</span><span class=cB7>)</span><span class=cB0>)
-<a name="l187"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l947"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid FileName.\n&quot;</span><span class=cB0>);
-<a name="l188"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l189"></a>        </span><span class=cB6>&quot;Make Directory:%s\n&quot;</span><span class=cB0>,filename;
-<a name="l190"></a>        name=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(dirc-&gt;mask,
-<a name="l191"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3853"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3854"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3852"></span><span class=cB3>SUF_REM_CTRL_CHARS</a></span><span class=cB0>);
-<a name="l192"></a>        </span><span class=cB1>switch</span><span class=cB0> (dirc-&gt;dv-&gt;fs_type) {
-<a name="l193"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2780"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
-<a name="l194"></a>            res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l602"></span><span class=cBD>RedSeaMkDir</a></span><span class=cB0>(dirc-&gt;dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir,name,entry_cnt);
-<a name="l195"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l196"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2781"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
-<a name="l197"></a>            res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l919"></span><span class=cBD>FAT32MkDir</a></span><span class=cB0>(dirc-&gt;dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir,name,entry_cnt);
-<a name="l198"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l199"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2782"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
-<a name="l200"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l947"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not Writable\n&quot;</span><span class=cB0>);
-<a name="l201"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l202"></a>          </span><span class=cB1>default</span><span class=cB0>:
-<a name="l203"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l947"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
-<a name="l204"></a>        }
-<a name="l205"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(name);
-<a name="l206"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l207"></a>    }
-<a name="l208"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l1"></span><span class=cB5>DirContextDel</a></span><span class=cB0>(dirc);
-<a name="l209"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l210"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l211"></a>}
+<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (dirname[1]==</span><span class=cB6>':'</span><span class=cB0>)
+<a name="l20"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>':'</span><span class=cB0>)
+<a name="l22"></a>    {
+<a name="l23"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB6>':'</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l306"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0>)
+<a name="l24"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l25"></a>    }
+<a name="l26"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l306"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB0>*dirname</span><span class=cB7>)</span><span class=cB0>)
+<a name="l27"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l28"></a>    dirname+=2;
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>'/'</span><span class=cB0> || !*dirname || !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir)
+<a name="l31"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
+<a name="l33"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l34"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirname==</span><span class=cB6>'/'</span><span class=cB0>)
+<a name="l35"></a>      dirname++;
+<a name="l36"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l37"></a>  chg_to_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(dirname,
+<a name="l38"></a>                      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4200"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4201"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4199"></span><span class=cB3>SUF_REM_CTRL_CHARS</a></span><span class=cB0>);
+<a name="l39"></a>  maxlen=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir)+1+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(chg_to_buf)+1;
+<a name="l40"></a>  new_cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(maxlen);
+<a name="l41"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(maxlen);
+<a name="l42"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
+<a name="l43"></a>  </span><span class=cB1>while</span><span class=cB0> (*chg_to_buf &amp;&amp; res)
+<a name="l44"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l624"></span><span class=cB5>StrFirstRem</a></span><span class=cB0>(chg_to_buf,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>,buf);
+<a name="l46"></a>    </span><span class=cB1>if</span><span class=cB0> (!*buf)
+<a name="l47"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l48"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;..&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l49"></a>    {
+<a name="l50"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l653"></span><span class=cB5>StrLastRem</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l51"></a>      </span><span class=cB1>if</span><span class=cB0> (!*new_cur_dir)
+<a name="l52"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l53"></a>    }
+<a name="l54"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;~&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l55"></a>    {
+<a name="l56"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(new_cur_dir);
+<a name="l57"></a>      new_cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>blkdev</a></span><span class=cB0>.home_dir+2</span><span class=cB7>)</span><span class=cB0>+1+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>chg_to_buf</span><span class=cB7>)</span><span class=cB0>+1);
+<a name="l58"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(new_cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>blkdev</a></span><span class=cB0>.home_dir+2);
+<a name="l59"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB6>'~'</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l306"></span><span class=cB5>Drv</a></span><span class=cB7>(</span><span class=cB6>'~'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l60"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l61"></a>    }
+<a name="l62"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;.&quot;</span><span class=cB7>)</span><span class=cB0> &amp;&amp; *buf)
+<a name="l63"></a>    {
+<a name="l64"></a>      dv=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv;
+<a name="l65"></a>      cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,new_cur_dir);
+<a name="l66"></a>      </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
+<a name="l67"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l68"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3125"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l69"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l236"></span><span class=cBD>RedSeaCd</a></span><span class=cB0>(buf,cur_dir_clus);
+<a name="l70"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l71"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3126"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l72"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l387"></span><span class=cBD>FAT32Cd</a></span><span class=cB0>(buf,cur_dir_clus);
+<a name="l73"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l74"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3127"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
+<a name="l75"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysISO.html#l181"></span><span class=cBD>ISO1Cd</a></span><span class=cB0>(buf,cur_dir_clus);
+<a name="l76"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l77"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l78"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
+<a name="l79"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l80"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>      </span><span class=cB1>if</span><span class=cB0> (!res &amp;&amp; make_dirs)
+<a name="l82"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l83"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
+<a name="l84"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(new_cur_dir);
+<a name="l85"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l198"></span><span class=cB5>DirMk</a></span><span class=cB0>(buf);
+<a name="l86"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>      </span><span class=cB1>if</span><span class=cB0> (res)
+<a name="l88"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l89"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l90"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(new_cur_dir,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l91"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(new_cur_dir,buf);
+<a name="l92"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l93"></a>    }
+<a name="l94"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l95"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
+<a name="l96"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(new_cur_dir);
+<a name="l97"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(chg_to_buf);
+<a name="l99"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(new_cur_dir);
+<a name="l100"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l101"></a>}
+<a name="l102"></a>
+<a name="l103"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l103"></span><span class=cB5>IsDir</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dir_name)
+<a name="l104"></a>{</span><span class=cB2>//Is a str a valid, existing Dir?</span><span class=cB0>
+<a name="l105"></a>  </span><span class=cB1>U8</span><span class=cB0> *mask=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s/*&quot;</span><span class=cB0>,dir_name);
+<a name="l106"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>dir_name</span><span class=cB7>)</span><span class=cB0>&gt;1 &amp;&amp; dir_name[1]==</span><span class=cB6>':'</span><span class=cB0>)
+<a name="l107"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB0>dir_name[1],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l108"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l109"></a>  </span><span class=cB1>Bool</span><span class=cB0> res,old_silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314"></span><span class=cB5>Silent</a></span><span class=cB0>;
+<a name="l110"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3215"></span><span class=cB9>CDirContext</a></span><span class=cB0> *dirc;
+<a name="l111"></a>  </span><span class=cB1>if</span><span class=cB0> (dirc=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l23"></span><span class=cB5>DirContextNew</a></span><span class=cB7>(</span><span class=cB0>mask</span><span class=cB7>)</span><span class=cB0>)
+<a name="l112"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l113"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l1"></span><span class=cB5>DirContextDel</a></span><span class=cB0>(dirc);
+<a name="l114"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l115"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l116"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l117"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l118"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(mask);
+<a name="l119"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
+<a name="l120"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l121"></a>}
+<a name="l122"></a>
+<a name="l123"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"></span><span class=cB5>Dir</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask=</span><span class=cB6>&quot;*&quot;</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> full=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l124"></a>{</span><span class=cB2>//List directory.</span><span class=cB0>
+<a name="l125"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2685"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*tmpde2;
+<a name="l126"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l127"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l195"></span><span class=cB9>CDateStruct</a></span><span class=cB0> ds;
+<a name="l128"></a>  </span><span class=cB9>I64</span><span class=cB0> csize=0xFFFF,c=0xFFFF,res=0;
+<a name="l129"></a>  tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask);
+<a name="l130"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l281"></span><span class=cB5>DirCur</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l131"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid Drive\n&quot;</span><span class=cB0>);
+<a name="l132"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l133"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l134"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpde1)
+<a name="l135"></a>    {
+<a name="l136"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l137"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l407"></span><span class=cB5>MAllocIdent</a></span><span class=cB0>(tmpde1-&gt;full_name);
+<a name="l138"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l653"></span><span class=cB5>StrLastRem</a></span><span class=cB0>(st,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l139"></a>      </span><span class=cB1>if</span><span class=cB0> (!st[2])
+<a name="l140"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(st+2,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>);
+<a name="l141"></a></span><span class=cB2>//Find max columns</span><span class=cB0>
+<a name="l142"></a>      tmpde2=tmpde1;
+<a name="l143"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde2)
+<a name="l144"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l145"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde2-&gt;size&gt;csize)
+<a name="l146"></a>          csize=tmpde2-&gt;size;
+<a name="l147"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde2-&gt;clus&gt;c)
+<a name="l148"></a>          c=tmpde2-&gt;clus;
+<a name="l149"></a>        tmpde2=tmpde2-&gt;next;
+<a name="l150"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l151"></a>      csize=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(csize)/4+1;
+<a name="l152"></a>      c=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(c)/4+1;
+<a name="l153"></a>      </span><span class=cB6>&quot;$MA,T=\&quot;Directory\&quot;,LM=\&quot;PopUpCd;Dir;\n\&quot;$ of %s\n&quot;</span><span class=cB0>
+<a name="l154"></a>      ,st;
+<a name="l155"></a>      </span><span class=cB1>if</span><span class=cB0> (full)
+<a name="l156"></a>        </span><span class=cB6>&quot;__DATE__ __TIME__ %*ts %*ts\n&quot;</span><span class=cB0>,
+<a name="l157"></a>        csize,</span><span class=cB6>&quot;SIZE&quot;</span><span class=cB0>,c,</span><span class=cB6>&quot;BLK&quot;</span><span class=cB0>;
+<a name="l158"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l159"></a>        </span><span class=cB6>&quot;DATE_ TIME_ %*ts\n&quot;</span><span class=cB0>,csize,</span><span class=cB6>&quot;SIZE&quot;</span><span class=cB0>;
+<a name="l160"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde1)
+<a name="l161"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l162"></a>        tmpde2=tmpde1-&gt;next;
+<a name="l163"></a>        res++;
+<a name="l164"></a>        </span><span class=cB1>if</span><span class=cB0> (full)
+<a name="l165"></a>          </span><span class=cB6>&quot;%D %T %0*tX %0*tX &quot;</span><span class=cB0>,tmpde1-&gt;datetime,tmpde1-&gt;datetime,
+<a name="l166"></a>          csize,tmpde1-&gt;size,c,tmpde1-&gt;clus;
+<a name="l167"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l168"></a>        {
+<a name="l169"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l39"></span><span class=cB5>Date2Struct</a></span><span class=cB0>(&amp;ds,tmpde1-&gt;datetime+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l26"></span><span class=cB6>local_time_offset</a></span><span class=cB0>);
+<a name="l170"></a>          </span><span class=cB6>&quot;%02d/%02d %02d:%02d %0*tX &quot;</span><span class=cB0>
+<a name="l171"></a>          ,ds.mon,ds.day_of_mon,ds.hour,ds.min,
+<a name="l172"></a>          csize,tmpde1-&gt;size;
+<a name="l173"></a>        }
+<a name="l174"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde1-&gt;attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2666"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)
+<a name="l175"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l224"></span><span class=cB5>PutDirLink</a></span><span class=cB0>(tmpde1-&gt;name,tmpde1-&gt;full_name);
+<a name="l176"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l177"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l178"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(tmpde1-&gt;name,tmpde1-&gt;full_name);
+<a name="l178"></a>        </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l179"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde1);
+<a name="l180"></a>        tmpde1=tmpde2;
+<a name="l181"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l182"></a>    }
+<a name="l183"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l184"></a>      </span><span class=cB6>&quot;No matching entries\n&quot;</span><span class=cB0>;
+<a name="l185"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l186"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l188"></a>}
+<a name="l189"></a>
+<a name="l190"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l190"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dirname=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> make_dirs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l191"></a>{</span><span class=cB2>//Change directory and list contents</span><span class=cB0>
+<a name="l192"></a>  </span><span class=cB1>if</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>dirname,make_dirs</span><span class=cB7>)</span><span class=cB0>)
+<a name="l193"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"></span><span class=cB5>Dir</a></span><span class=cB0>&gt;0;
+<a name="l194"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l195"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l196"></a>}
+<a name="l197"></a>
+<a name="l198"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l198"></span><span class=cB5>DirMk</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> entry_cnt=0)
+<a name="l199"></a>{</span><span class=cB2>//Make directory. </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB4>Cd</span></a><span class=cB2>() can also make directories.</span><span class=cB0>
+<a name="l200"></a></span><span class=cB2>//entry_cnt is for preallocating dir blks, leave it zero if you like.</span><span class=cB0>
+<a name="l201"></a>  </span><span class=cB1>U8</span><span class=cB0> *name;
+<a name="l202"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3215"></span><span class=cB9>CDirContext</a></span><span class=cB0> *dirc;
+<a name="l203"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l204"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65"></span><span class=cB5>FileFind</a></span><span class=cB7>(</span><span class=cB0>filename,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2742"></span><span class=cB3>FUF_JUST_DIRS</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l205"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l206"></a>  </span><span class=cB1>if</span><span class=cB0> (dirc=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l23"></span><span class=cB5>DirContextNew</a></span><span class=cB7>(</span><span class=cB0>filename</span><span class=cB7>)</span><span class=cB0>)
+<a name="l207"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l208"></a>    </span><span class=cB1>if</span><span class=cB0> (*dirc-&gt;mask)
+<a name="l209"></a>    {
+<a name="l210"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l249"></span><span class=cB5>FileNameChk</a></span><span class=cB7>(</span><span class=cB0>dirc-&gt;mask</span><span class=cB7>)</span><span class=cB0>)
+<a name="l211"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid FileName.\n&quot;</span><span class=cB0>);
+<a name="l212"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l213"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l214"></a>        </span><span class=cB6>&quot;Make Directory:%s\n&quot;</span><span class=cB0>,filename;
+<a name="l215"></a>        name=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(dirc-&gt;mask,
+<a name="l216"></a>                      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4200"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4201"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4199"></span><span class=cB3>SUF_REM_CTRL_CHARS</a></span><span class=cB0>);
+<a name="l217"></a>        </span><span class=cB1>switch</span><span class=cB0> (dirc-&gt;dv-&gt;fs_type)
+<a name="l218"></a>        {
+<a name="l219"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3125"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l220"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l602"></span><span class=cBD>RedSeaMkDir</a></span><span class=cB0>(dirc-&gt;dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir,name,entry_cnt);
+<a name="l221"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l222"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3126"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l223"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l919"></span><span class=cBD>FAT32MkDir</a></span><span class=cB0>(dirc-&gt;dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir,name,entry_cnt);
+<a name="l224"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l225"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3127"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
+<a name="l226"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not Writable\n&quot;</span><span class=cB0>);
+<a name="l227"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l228"></a>        </span><span class=cB1>default</span><span class=cB0>:
+<a name="l229"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
+<a name="l230"></a>        }
+<a name="l231"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(name);
+<a name="l232"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l233"></a>    }
+<a name="l234"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirContext.html#l1"></span><span class=cB5>DirContextDel</a></span><span class=cB0>(dirc);
+<a name="l235"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l236"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l237"></a>}
 </span></div></pre></body>
 </html>

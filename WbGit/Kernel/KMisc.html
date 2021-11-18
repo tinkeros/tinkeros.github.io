@@ -80,22 +80,22 @@
 <a name="l39"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l39"></span><span class=cB5>BCnt</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> d)
 <a name="l40"></a>{</span><span class=cB2>//Count set bits in I64.</span><span class=cB0>
 <a name="l41"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0,i;
-<a name="l42"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;8;i++)
+<a name="l42"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
 <a name="l43"></a>    res+=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l25"></span><span class=cB6>set_bits_table</a></span><span class=cB0>[d.u8[i]];
 <a name="l44"></a>  </span><span class=cB1>return</span><span class=cB0> res;
 <a name="l45"></a>}
 <a name="l46"></a>
-<a name="l47"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l47"></span><span class=cBD>IntCore0TimerHndlr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3393"></span><span class=cB9>CTask</a></span><span class=cB0> *)
+<a name="l47"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l47"></span><span class=cBD>IntCore0TimerHndlr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"></span><span class=cB9>CTask</a></span><span class=cB0> *)
 <a name="l48"></a>{</span><span class=cB2>//Called from </span><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l55"><span class=cB4>IntCore0TimerHndlr</span></a><span class=cB0>
 <a name="l49"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l50"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
-<a name="l51"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l50"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
+<a name="l51"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l700"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
 <a name="l52"></a>      </span><span class=cB1>PAUSE</span><span class=cB0>
-<a name="l53"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies++;
-<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.timer+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l619"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>+1;
-<a name="l55"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0);
-<a name="l56"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++)
-<a name="l57"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l131"></span><span class=cB5>MPInt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l307"></span><span class=cB3>I_TIMER</a></span><span class=cB0>,i);
+<a name="l53"></a>      </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies++;
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.timer+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>+1;
+<a name="l55"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l700"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0);
+<a name="l56"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l57"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l131"></span><span class=cB5>MPInt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l347"></span><span class=cB3>I_TIMER</a></span><span class=cB0>,i);
 <a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x20,0x20); </span><span class=cB2>//Acknowledge PIC Interrupt</span><span class=cB0>
 <a name="l59"></a>}
 <a name="l60"></a>
@@ -104,321 +104,344 @@
 <a name="l63"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res;
 <a name="l64"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
 <a name="l65"></a>  </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
-<a name="l67"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
+<a name="l67"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l700"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
 <a name="l68"></a>      </span><span class=cB1>PAUSE</span><span class=cB0>
-<a name="l69"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x43,0); </span><span class=cB2>//Latch Timer0</span><span class=cB0>
-<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(0x40)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(0x40)&lt;&lt;8</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l619"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l71"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x20</span><span class=cB7>)</span><span class=cB0> &amp; 1)
-<a name="l72"></a>      i=-1;
-<a name="l73"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l74"></a>  res=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.timer+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l619"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>-i;
-<a name="l75"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0);
-<a name="l76"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
-<a name="l77"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l78"></a>}
-<a name="l79"></a>
-<a name="l80"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>()
-<a name="l81"></a>{ </span><span class=cB2>//Get high precision event timer.</span><span class=cB0>
-<a name="l82"></a>  </span><span class=cB1>return</span><span class=cB0> *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l601"></span><span class=cB3>HPET_MAIN_CNT</a></span><span class=cB0>)(</span><span class=cB9>I64</span><span class=cB0> *);
-<a name="l83"></a>}
-<a name="l84"></a>
-<a name="l85"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l85"></span><span class=cB5>TimeCal</a></span><span class=cB0>()
-<a name="l86"></a>{
-<a name="l87"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> time_stamp_start=0,timer_start=0,HPET_start=0;
-<a name="l88"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l89"></a>  </span><span class=cB1>if</span><span class=cB0> (time_stamp_start) </span><span class=cB7>{</span><span class=cB0>
-<a name="l90"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
-<a name="l91"></a>    </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l92"></a>    </span><span class=cB1>if</span><span class=cB0> (HPET_start) {
-<a name="l93"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq*(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>GetTSC</a></span><span class=cB0>-time_stamp_start);
-<a name="l94"></a>      i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>-HPET_start;
-<a name="l95"></a>    } </span><span class=cB1>else</span><span class=cB0> {
-<a name="l96"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l618"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>*(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>GetTSC</a></span><span class=cB0>-time_stamp_start);
-<a name="l97"></a>      i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>-timer_start;
+<a name="l69"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x43,0); </span><span class=cB2>//Latch Timer0</span><span class=cB0>
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(0x40)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(0x40)&lt;&lt;8</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>)
+<a name="l71"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x20</span><span class=cB7>)</span><span class=cB0> &amp; 1)
+<a name="l73"></a>      i=-1;
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>  res=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.timer+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SYS_TIMER0_PERIOD</a></span><span class=cB0>-i;
+<a name="l76"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l700"></span><span class=cB3>SEMA_SYS_TIMER</a></span><span class=cB0>],0);
+<a name="l77"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l78"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>()
+<a name="l82"></a>{</span><span class=cB2>//Get high precision event timer.</span><span class=cB0>
+<a name="l83"></a>  </span><span class=cB1>return</span><span class=cB0> *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l643"></span><span class=cB3>HPET_MAIN_CNT</a></span><span class=cB0>)(</span><span class=cB9>I64</span><span class=cB0> *);
+<a name="l84"></a>}
+<a name="l85"></a>
+<a name="l86"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l86"></span><span class=cB5>TimeCal</a></span><span class=cB0>()
+<a name="l87"></a>{
+<a name="l88"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> time_stamp_start=0,timer_start=0,HPET_start=0;
+<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (time_stamp_start)
+<a name="l91"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l92"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l93"></a>    </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l94"></a>    </span><span class=cB1>if</span><span class=cB0> (HPET_start)
+<a name="l95"></a>    {
+<a name="l96"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq*(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l294"></span><span class=cB5>GetTSC</a></span><span class=cB0>-time_stamp_start);
+<a name="l97"></a>      i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>-HPET_start;
 <a name="l98"></a>    }
-<a name="l99"></a>    </span><span class=cB1>if</span><span class=cB0> (!i)
-<a name="l100"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l433"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Timer Cal Error&quot;</span><span class=cB0>);
-<a name="l101"></a>    </span><span class=cB1>else</span><span class=cB0> {
-<a name="l102"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq/=i;
-<a name="l103"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_kHz_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq/1000;
-<a name="l104"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_calibrated=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l105"></a>    }
-<a name="l106"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
-<a name="l107"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l108"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
-<a name="l109"></a>  </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq) </span><span class=cB7>{</span><span class=cB0>
-<a name="l111"></a>    timer_start=0;
-<a name="l112"></a>    HPET_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>;
-<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l114"></a>    timer_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>;
-<a name="l115"></a>    HPET_start=0;
-<a name="l116"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l117"></a>  time_stamp_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
-<a name="l118"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
-<a name="l119"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq;
-<a name="l120"></a>}
-<a name="l121"></a>
-<a name="l122"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>()
-<a name="l123"></a>{</span><span class=cB2>//Time since boot in seconds as a float.</span><span class=cB0>
-<a name="l124"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq)
-<a name="l125"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_initial)/<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq;
-<a name="l126"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l127"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l618"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>);
-<a name="l128"></a>}
-<a name="l129"></a>
-<a name="l130"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Blink</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> Hz=2.5)
-<a name="l131"></a>{</span><span class=cB2>//Return TRUE, then FALSE, then TRUE at given frequency.</span><span class=cB0>
-<a name="l132"></a>  </span><span class=cB1>if</span><span class=cB0> (!Hz) </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l133"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l11"></span><span class=cB6>blink_master_flag</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l134"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies*2*Hz/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l616"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)&amp;1;
-<a name="l135"></a>}
-<a name="l136"></a>
-<a name="l137"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Busy</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> uS)
-<a name="l138"></a>{</span><span class=cB2>//Loosely timed.</span><span class=cB0>
-<a name="l139"></a>  </span><span class=cB2>// TODO deprecate HPET?, switch to TSC?</span><span class=cB0>
-<a name="l140"></a>  </span><span class=cB2>//</span><span class=cB0>
-<a name="l141"></a>  </span><span class=cB2>// TSC used to be unreliable, but on newer</span><span class=cB0>
-<a name="l142"></a>  </span><span class=cB2>// boards this may not be an issue</span><span class=cB0>
-<a name="l143"></a>  </span><span class=cB2>//</span><span class=cB0>
-<a name="l144"></a>  </span><span class=cB2>// &quot;recent processors also allow a constant-rate TSC which ticks at</span><span class=cB0>
-<a name="l145"></a>  </span><span class=cB2>// the nominal frequency of the CPU rather than the current-frequency&quot;</span><span class=cB0>
-<a name="l146"></a>  </span><span class=cB2>//</span><span class=cB0>
-<a name="l147"></a>  </span><span class=cB2>// https://wiki.osdev.org/TSC</span><span class=cB0>
-<a name="l148"></a>
-<a name="l149"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l150"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq) </span><span class=cB7>{</span><span class=cB0>
-<a name="l151"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq*uS/1000000;
-<a name="l152"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l80"></span><span class=cB5>HPET</a></span><span class=cB0>&lt;i);
-<a name="l153"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l154"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;uS;i++)
-<a name="l155"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l1"></span><span class=cB5>PortNop</a></span><span class=cB0>;
-<a name="l156"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l157"></a>}
-<a name="l158"></a>
-<a name="l159"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>SleepUntil</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> wake_jiffy)
-<a name="l160"></a>{</span><span class=cB2>//Not for power-saving.  It is to make a program pause without hogging the CPU.</span><span class=cB0>
-<a name="l161"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3354"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>);
-<a name="l162"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;wake_jiffy=wake_jiffy;
-<a name="l163"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l164"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3354"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>,old_idle);
-<a name="l165"></a>}
-<a name="l166"></a>
-<a name="l167"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167"></span><span class=cB5>Sleep</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mS)
-<a name="l168"></a>{</span><span class=cB2>//Not for power-saving.  It is to make a program pause without hogging the CPU.</span><span class=cB0>
-<a name="l169"></a>  </span><span class=cB1>if</span><span class=cB0> (!mS)
-<a name="l170"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l171"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l172"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>SleepUntil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies+mS*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l616"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/1000);
-<a name="l173"></a>}
-<a name="l174"></a>
-<a name="l175"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l175"></span><span class=cB5>Ona2Freq</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona)
-<a name="l176"></a>{</span><span class=cB2>//Ona to freq. Ona=60 is 440.0Hz.</span><span class=cB0>
-<a name="l177"></a>  </span><span class=cB1>if</span><span class=cB0> (!ona)
-<a name="l178"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l179"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l180"></a>    </span><span class=cB1>return</span><span class=cB0> 440.0/32*2.0`(ona/12.0);
-<a name="l181"></a>}
-<a name="l182"></a>
-<a name="l183"></a></span><span class=cB1>I8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l183"></span><span class=cB5>Freq2Ona</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> freq)
-<a name="l184"></a>{</span><span class=cB2>//Freq to Ona. 440.0Hz is Ona=60.</span><span class=cB0>
-<a name="l185"></a>  </span><span class=cB1>if</span><span class=cB0> (freq&gt;0)
-<a name="l186"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(12*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l136"></span><span class=cB5>Log2</a></span><span class=cB7>(</span><span class=cB0>32.0/440.0*freq</span><span class=cB7>)</span><span class=cB0>,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l27"></span><span class=cB3>I8_MAX</a></span><span class=cB0>);
-<a name="l187"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l188"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l189"></a>}
-<a name="l190"></a>
-<a name="l191"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona=0)
-<a name="l192"></a>{</span><span class=cB2>//Play ona, a piano key num. 0 means rest.</span><span class=cB0>
-<a name="l193"></a>  </span><span class=cB9>I64</span><span class=cB0> period;
-<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3904"></span><span class=cB9>CSndData</a></span><span class=cB0> *d;
-<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l673"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l196"></a>        !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0> </span><span class=cB2>//Mutex. Just throw-out if in use</span><span class=cB0>
-<a name="l197"></a>    </span><span class=cB1>if</span><span class=cB0> (!ona) {
-<a name="l198"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
-<a name="l199"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona=ona;
-<a name="l200"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x61,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x61</span><span class=cB7>)</span><span class=cB0>&amp;~3);
-<a name="l201"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ona!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona || ona!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona) {
-<a name="l202"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
-<a name="l203"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona=ona;
-<a name="l204"></a>      period=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l618"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l175"></span><span class=cB5>Ona2Freq</a></span><span class=cB7>(</span><span class=cB0>ona</span><span class=cB7>)</span><span class=cB0>,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l33"></span><span class=cB3>U16_MAX</a></span><span class=cB0>);
-<a name="l205"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x43,0xB6);
-<a name="l206"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x42,period);
-<a name="l207"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x42,period.u8[1]);
-<a name="l208"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x61,3|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x61</span><span class=cB7>)</span><span class=cB0>);
-<a name="l209"></a>    }
-<a name="l210"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>IsDbgMode</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record) {
-<a name="l211"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3904"></span><span class=cB9>CSndData</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l212"></a>      d-&gt;ona=ona;
-<a name="l213"></a>      d-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l214"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(d,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.last);
-<a name="l215"></a>    }
-<a name="l216"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>IsDbgMode</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.record) {
-<a name="l217"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3904"></span><span class=cB9>CSndData</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l218"></a>      d-&gt;ona=ona;
-<a name="l219"></a>      d-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l220"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(d,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.last);
-<a name="l221"></a>    }
-<a name="l222"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
-<a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l224"></a>}
-<a name="l225"></a>
-<a name="l226"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l226"></span><span class=cB5>ScrnCast</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> just_audio=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *print_fmt=</span><span class=cB6>&quot;B:/Tmp/%X.GR&quot;</span><span class=cB0>)
-<a name="l227"></a>{</span><span class=cB2>//WinMgr saves GR files to a dir.</span><span class=cB0>
-<a name="l228"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_val;
-<a name="l229"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.just_audio=just_audio;
-<a name="l230"></a>  </span><span class=cB1>if</span><span class=cB0> (val) </span><span class=cB7>{</span><span class=cB0>
-<a name="l231"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>old_val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0)</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l232"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.print_fmt);
-<a name="l233"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.print_fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(print_fmt);
-<a name="l234"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.t0_now=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l191"></span><span class=cB5>Now</a></span><span class=cB0>;
-<a name="l235"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.t0_tS=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l236"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.ona=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona;
-<a name="l237"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0);
+<a name="l99"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l100"></a>    {
+<a name="l101"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>*(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l294"></span><span class=cB5>GetTSC</a></span><span class=cB0>-time_stamp_start);
+<a name="l102"></a>      i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>-timer_start;
+<a name="l103"></a>    }
+<a name="l104"></a>    </span><span class=cB1>if</span><span class=cB0> (!i)
+<a name="l105"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l433"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Timer Cal Error&quot;</span><span class=cB0>);
+<a name="l106"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l107"></a>    {
+<a name="l108"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq/=i;
+<a name="l109"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_kHz_freq=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq/1000;
+<a name="l110"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_calibrated=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l111"></a>    }
+<a name="l112"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l114"></a>  </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l115"></a>  </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l116"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq)
+<a name="l117"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l118"></a>    timer_start=0;
+<a name="l119"></a>    HPET_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>;
+<a name="l120"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l121"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l122"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l123"></a>    timer_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>;
+<a name="l124"></a>    HPET_start=0;
+<a name="l125"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l126"></a>  time_stamp_start=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l294"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l127"></a>  </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l128"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq;
+<a name="l129"></a>}
+<a name="l130"></a>
+<a name="l131"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>()
+<a name="l132"></a>{</span><span class=cB2>//Time since boot in seconds as a float.</span><span class=cB0>
+<a name="l133"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq)
+<a name="l134"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_initial)/<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq;
+<a name="l135"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l136"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l61"></span><span class=cB5>SysTimerRead</a></span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>);
+<a name="l137"></a>}
+<a name="l138"></a>
+<a name="l139"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l139"></span><span class=cB5>Blink</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> Hz=2.5)
+<a name="l140"></a>{</span><span class=cB2>//Return TRUE, then FALSE, then TRUE at given frequency.</span><span class=cB0>
+<a name="l141"></a>  </span><span class=cB1>if</span><span class=cB0> (!Hz) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l142"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l11"></span><span class=cB6>blink_master_flag</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l143"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies*2*Hz/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)&amp;1;
+<a name="l144"></a>}
+<a name="l145"></a>
+<a name="l146"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l146"></span><span class=cB5>Busy</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> uS)
+<a name="l147"></a>{</span><span class=cB2>//Loosely timed.</span><span class=cB0>
+<a name="l148"></a>  </span><span class=cB2>// TODO deprecate HPET?, switch to TSC?</span><span class=cB0>
+<a name="l149"></a>  </span><span class=cB2>//</span><span class=cB0>
+<a name="l150"></a>  </span><span class=cB2>// TSC used to be unreliable, but on newer</span><span class=cB0>
+<a name="l151"></a>  </span><span class=cB2>// boards this may not be an issue</span><span class=cB0>
+<a name="l152"></a>  </span><span class=cB2>//</span><span class=cB0>
+<a name="l153"></a>  </span><span class=cB2>// &quot;recent processors also allow a constant-rate TSC which ticks at</span><span class=cB0>
+<a name="l154"></a>  </span><span class=cB2>// the nominal frequency of the CPU rather than the current-frequency&quot;</span><span class=cB0>
+<a name="l155"></a>  </span><span class=cB2>//</span><span class=cB0>
+<a name="l156"></a>  </span><span class=cB2>// https://wiki.osdev.org/TSC</span><span class=cB0>
+<a name="l157"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l158"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq)
+<a name="l159"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l160"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.HPET_freq*uS/1000000;
+<a name="l161"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l81"></span><span class=cB5>HPET</a></span><span class=cB0>&lt;i);
+<a name="l162"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l163"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;uS; i++)
+<a name="l166"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l1"></span><span class=cB5>PortNop</a></span><span class=cB0>;
+<a name="l167"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l168"></a>}
+<a name="l169"></a>
+<a name="l170"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l170"></span><span class=cB5>SleepUntil</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> wake_jiffy)
+<a name="l171"></a>{</span><span class=cB2>//Not for power-saving.  It is to make a program pause without hogging the CPU.</span><span class=cB0>
+<a name="l172"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3701"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>);
+<a name="l173"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;wake_jiffy=wake_jiffy;
+<a name="l174"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l175"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3701"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>,old_idle);
+<a name="l176"></a>}
+<a name="l177"></a>
+<a name="l178"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mS)
+<a name="l179"></a>{</span><span class=cB2>//Not for power-saving.  It is to make a program pause without hogging the CPU.</span><span class=cB0>
+<a name="l180"></a>  </span><span class=cB1>if</span><span class=cB0> (!mS)
+<a name="l181"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l182"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l183"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l170"></span><span class=cB5>SleepUntil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies+mS*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l658"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/1000);
+<a name="l184"></a>}
+<a name="l185"></a>
+<a name="l186"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l186"></span><span class=cB5>Ona2Freq</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona)
+<a name="l187"></a>{</span><span class=cB2>//Ona to freq. Ona=60 is 440.0Hz.</span><span class=cB0>
+<a name="l188"></a>  </span><span class=cB1>if</span><span class=cB0> (!ona)
+<a name="l189"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l190"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l191"></a>    </span><span class=cB1>return</span><span class=cB0> 440.0/32*2.0`(ona/12.0);
+<a name="l192"></a>}
+<a name="l193"></a>
+<a name="l194"></a></span><span class=cB1>I8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l194"></span><span class=cB5>Freq2Ona</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> freq)
+<a name="l195"></a>{</span><span class=cB2>//Freq to Ona. 440.0Hz is Ona=60.</span><span class=cB0>
+<a name="l196"></a>  </span><span class=cB1>if</span><span class=cB0> (freq&gt;0)
+<a name="l197"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(12*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l136"></span><span class=cB5>Log2</a></span><span class=cB7>(</span><span class=cB0>32.0/440.0*freq</span><span class=cB7>)</span><span class=cB0>,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l27"></span><span class=cB3>I8_MAX</a></span><span class=cB0>);
+<a name="l198"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l199"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l200"></a>}
+<a name="l201"></a>
+<a name="l202"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona=0)
+<a name="l203"></a>{</span><span class=cB2>//Play ona, a piano key num. 0 means rest.</span><span class=cB0>
+<a name="l204"></a>  </span><span class=cB9>I64</span><span class=cB0> period;
+<a name="l205"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4251"></span><span class=cB9>CSndData</a></span><span class=cB0> *d;
+<a name="l206"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l207"></a>      !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l703"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)   </span><span class=cB2>//Mutex. Just throw-out if in use</span><span class=cB0>
+<a name="l208"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l209"></a>    </span><span class=cB1>if</span><span class=cB0> (!ona)
+<a name="l210"></a>    {
+<a name="l211"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
+<a name="l212"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona=ona;
+<a name="l213"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x61,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x61</span><span class=cB7>)</span><span class=cB0>&amp;~3);
+<a name="l214"></a>    }
+<a name="l215"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ona!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona || ona!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona)
+<a name="l216"></a>    {
+<a name="l217"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
+<a name="l218"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.ona=ona;
+<a name="l219"></a>      period=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>SYS_TIMER_FREQ</a></span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l186"></span><span class=cB5>Ona2Freq</a></span><span class=cB7>(</span><span class=cB0>ona</span><span class=cB7>)</span><span class=cB0>,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l33"></span><span class=cB3>U16_MAX</a></span><span class=cB0>);
+<a name="l220"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x43,0xB6);
+<a name="l221"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x42,period);
+<a name="l222"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x42,period.u8[1]);
+<a name="l223"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x61,3|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>0x61</span><span class=cB7>)</span><span class=cB0>);
+<a name="l224"></a>    }
+<a name="l225"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l361"></span><span class=cB5>IsDbgMode</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record)
+<a name="l226"></a>    {
+<a name="l227"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4251"></span><span class=cB9>CSndData</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l228"></a>      d-&gt;ona=ona;
+<a name="l229"></a>      d-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l230"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(d,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.last);
+<a name="l231"></a>    }
+<a name="l232"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l361"></span><span class=cB5>IsDbgMode</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l42"></span><span class=cB6>snd</a></span><span class=cB0>.record)
+<a name="l233"></a>    {
+<a name="l234"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4251"></span><span class=cB9>CSndData</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l235"></a>      d-&gt;ona=ona;
+<a name="l236"></a>      d-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l237"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(d,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.last);
 <a name="l238"></a>    }
-<a name="l239"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l240"></a>    old_val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0);
-<a name="l241"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>;
-<a name="l242"></a>  </span><span class=cB1>return</span><span class=cB0> old_val;
-<a name="l243"></a>}
-<a name="l244"></a>
-<a name="l245"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l245"></span><span class=cB5>SndRst</a></span><span class=cB0>()
-<a name="l246"></a>{</span><span class=cB2>//Fix stuck sound.</span><span class=cB0>
-<a name="l247"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l248"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l249"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l250"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l251"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
-<a name="l252"></a>    }
-<a name="l253"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l254"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>;
-<a name="l255"></a>}
-<a name="l256"></a>
-<a name="l257"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l257"></span><span class=cB5>Beep</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona=62,</span><span class=cB1>Bool</span><span class=cB0> busy=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
-<a name="l258"></a>{</span><span class=cB2>//Make beep at given ona freq.</span><span class=cB0>
-<a name="l259"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>(ona);
-<a name="l260"></a>  </span><span class=cB1>if</span><span class=cB0> (busy)
-<a name="l261"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Busy</a></span><span class=cB0>(500000);
-<a name="l262"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l263"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167"></span><span class=cB5>Sleep</a></span><span class=cB0>(500);
-<a name="l264"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>;
-<a name="l265"></a>  </span><span class=cB1>if</span><span class=cB0> (busy)
-<a name="l266"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Busy</a></span><span class=cB0>(200000);
-<a name="l267"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l268"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l167"></span><span class=cB5>Sleep</a></span><span class=cB0>(200);
-<a name="l269"></a>}
-<a name="l270"></a>
-<a name="l271"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l271"></span><span class=cB5>Mute</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
-<a name="l272"></a>{</span><span class=cB2>//Turn-off sound.</span><span class=cB0>
-<a name="l273"></a>  </span><span class=cB1>Bool</span><span class=cB0> res;
-<a name="l274"></a>  </span><span class=cB1>if</span><span class=cB0> (val) </span><span class=cB7>{</span><span class=cB0>
-<a name="l275"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
-<a name="l276"></a>    </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l277"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l191"></span><span class=cB5>Snd</a></span><span class=cB0>;
-<a name="l278"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l673"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
-<a name="l279"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
-<a name="l280"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l281"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l673"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
-<a name="l282"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l283"></a>}
-<a name="l284"></a>
-<a name="l285"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l285"></span><span class=cB5>IsMute</a></span><span class=cB0>()
-<a name="l286"></a>{</span><span class=cB2>//Return is-mute flag.</span><span class=cB0>
-<a name="l287"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l673"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
-<a name="l288"></a>}
-<a name="l289"></a>
-<a name="l290"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l290"></span><span class=cB5>Silent</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>)
-<a name="l291"></a>{</span><span class=cB2>//Turn-off StdOut console text. (Not sound.)</span><span class=cB0>
-<a name="l292"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3371"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB0>,val);
-<a name="l293"></a>}
-<a name="l294"></a>
-<a name="l295"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l295"></span><span class=cB5>IsSilent</a></span><span class=cB0>()
-<a name="l296"></a>{</span><span class=cB2>//Return StdOut turned-off?</span><span class=cB0>
-<a name="l297"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3371"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB0>);
-<a name="l298"></a>}
-<a name="l299"></a>
-<a name="l300"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l300"></span><span class=cB5>SysDbg</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
-<a name="l301"></a>{</span><span class=cB2>//Set SysDbg bit you can use while debugging.</span><span class=cB0>
-<a name="l302"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l656"></span><span class=cB3>SEMA_DEBUG</a></span><span class=cB0>],0,val);
-<a name="l303"></a>}
-<a name="l304"></a>
-<a name="l305"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l305"></span><span class=cB5>IsSysDbg</a></span><span class=cB0>()
-<a name="l306"></a>{</span><span class=cB2>//Return SysDbg bit.</span><span class=cB0>
-<a name="l307"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l656"></span><span class=cB3>SEMA_DEBUG</a></span><span class=cB0>],0);
-<a name="l308"></a>}
-<a name="l309"></a>
-<a name="l310"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l310"></span><span class=cB5>Raw</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
-<a name="l311"></a>{</span><span class=cB2>//Set to direct scrn, BLACK &amp; WHITE, non-windowed output mode.</span><span class=cB0>
-<a name="l312"></a>  </span><span class=cB1>if</span><span class=cB0> (!val)
-<a name="l313"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
-<a name="l314"></a>  </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3370"></span><span class=cB3>DISPLAYf_NOT_RAW</a></span><span class=cB0>,!val);
-<a name="l315"></a>}
-<a name="l316"></a>
-<a name="l317"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l317"></span><span class=cB5>IsRaw</a></span><span class=cB0>()
-<a name="l318"></a>{</span><span class=cB2>//Are we in BLACK &amp; WHITE raw scrn mode?</span><span class=cB0>
-<a name="l319"></a>  </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3370"></span><span class=cB3>DISPLAYf_NOT_RAW</a></span><span class=cB0>);
-<a name="l320"></a>}
-<a name="l321"></a>
-<a name="l322"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l322"></span><span class=cB5>SingleUser</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
-<a name="l323"></a>{</span><span class=cB2>//Set single-user mode.</span><span class=cB0>
-<a name="l324"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l666"></span><span class=cB3>SEMA_SINGLE_USER</a></span><span class=cB0>],0,val);
-<a name="l325"></a>}
-<a name="l326"></a>
-<a name="l327"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l327"></span><span class=cB5>IsSingleUser</a></span><span class=cB0>()
-<a name="l328"></a>{</span><span class=cB2>//Return single-user mode.</span><span class=cB0>
-<a name="l329"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l666"></span><span class=cB3>SEMA_SINGLE_USER</a></span><span class=cB0>],0);
-<a name="l330"></a>}
-<a name="l331"></a>
-<a name="l332"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l332"></span><span class=cB5>DbgMode</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
-<a name="l333"></a>{</span><span class=cB2>//Set dbg-mode.</span><span class=cB0>
-<a name="l334"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>SEMA_DBG_MODE</a></span><span class=cB0>],0,val);
-<a name="l335"></a>}
-<a name="l336"></a>
-<a name="l337"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>IsDbgMode</a></span><span class=cB0>()
-<a name="l338"></a>{</span><span class=cB2>//Return dbg-mode.</span><span class=cB0>
-<a name="l339"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>SEMA_DBG_MODE</a></span><span class=cB0>],0);
-<a name="l340"></a>}
-<a name="l341"></a>
-<a name="l342"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3393"></span><span class=cB9>CTask</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l342"></span><span class=cB5>LastTask</a></span><span class=cB0>()
-<a name="l343"></a>{
-<a name="l344"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>last_init_task</a></span><span class=cB0>;
-<a name="l345"></a>}
-<a name="l346"></a>
-<a name="l347"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l347"></span><span class=cB5>ProgressBarsRst</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *path=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l348"></a>{</span><span class=cB2>//Reset all progress bars to zero.</span><span class=cB0>
-<a name="l349"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l46"></span><span class=cB5>CallExtStr</a></span><span class=cB0>(</span><span class=cB6>&quot;ProgressBarsRegTf&quot;</span><span class=cB0>,path);
-<a name="l350"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l234"></span><span class=cB6>sys_progresses</a></span><span class=cB0>,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l234"></span><span class=cB6>sys_progresses</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l351"></a>}
-<a name="l352"></a>
-<a name="l353"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l353"></span><span class=cB5>KeyStateRst</a></span><span class=cB0>()
-<a name="l354"></a>{</span><span class=cB2>//Clears state of all keys in key_state and sc_state</span><span class=cB0>
-<a name="l355"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l49"></span><span class=cB6>key_state</a></span><span class=cB0>,0,16);
-<a name="l356"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l49"></span><span class=cB6>sc_state</a></span><span class=cB0>,0,32);
-<a name="l357"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l50"></span><span class=cB6>sc_flags_state</a></span><span class=cB0>=0;
-<a name="l358"></a>}
-<a name="l359"></a>
-<a name="l360"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l360"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *bit_field, </span><span class=cB1>U8</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>, </span><span class=cB1>U8</span><span class=cB0> size, </span><span class=cB1>U8</span><span class=cB0> value)
-<a name="l361"></a>{</span><span class=cB2>//Sets values in a bit field</span><span class=cB0>
-<a name="l362"></a></span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l363"></a></span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;size;i++)
-<a name="l364"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l28"></span><span class=cB5>BEqu</a></span><span class=cB0>(bit_field,</span><span class=cB1>offset</span><span class=cB0>+i,value&gt;&gt;i);
+<a name="l239"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l703"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
+<a name="l240"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l241"></a>}
+<a name="l242"></a>
+<a name="l243"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l243"></span><span class=cB5>ScrnCast</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> just_audio=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *print_fmt=</span><span class=cB6>&quot;B:/Tmp/%X.GR&quot;</span><span class=cB0>)
+<a name="l244"></a>{</span><span class=cB2>//WinMgr saves GR files to a dir.</span><span class=cB0>
+<a name="l245"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_val;
+<a name="l246"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.just_audio=just_audio;
+<a name="l247"></a>  </span><span class=cB1>if</span><span class=cB0> (val)
+<a name="l248"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l249"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>old_val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l250"></a>    {
+<a name="l251"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.print_fmt);
+<a name="l252"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.print_fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(print_fmt);
+<a name="l253"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.t0_now=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l191"></span><span class=cB5>Now</a></span><span class=cB0>;
+<a name="l254"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.t0_tS=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l255"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.ona=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona;
+<a name="l256"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0);
+<a name="l257"></a>    }
+<a name="l258"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l259"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l260"></a>    old_val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l41"></span><span class=cB6>scrncast</a></span><span class=cB0>.record,0);
+<a name="l261"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>;
+<a name="l262"></a>  </span><span class=cB1>return</span><span class=cB0> old_val;
+<a name="l263"></a>}
+<a name="l264"></a>
+<a name="l265"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l265"></span><span class=cB5>SndRst</a></span><span class=cB0>()
+<a name="l266"></a>{</span><span class=cB2>//Fix stuck sound.</span><span class=cB0>
+<a name="l267"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l703"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l268"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l269"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l270"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l703"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l271"></a>    {
+<a name="l272"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l273"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l703"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
+<a name="l274"></a>    }
+<a name="l275"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l276"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>;
+<a name="l277"></a>}
+<a name="l278"></a>
+<a name="l279"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l279"></span><span class=cB5>Beep</a></span><span class=cB0>(</span><span class=cB1>I8</span><span class=cB0> ona=62,</span><span class=cB1>Bool</span><span class=cB0> busy=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l280"></a>{</span><span class=cB2>//Make beep at given ona freq.</span><span class=cB0>
+<a name="l281"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>(ona);
+<a name="l282"></a>  </span><span class=cB1>if</span><span class=cB0> (busy)
+<a name="l283"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l146"></span><span class=cB5>Busy</a></span><span class=cB0>(500000);
+<a name="l284"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l285"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(500);
+<a name="l286"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>;
+<a name="l287"></a>  </span><span class=cB1>if</span><span class=cB0> (busy)
+<a name="l288"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l146"></span><span class=cB5>Busy</a></span><span class=cB0>(200000);
+<a name="l289"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l290"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(200);
+<a name="l291"></a>}
+<a name="l292"></a>
+<a name="l293"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l293"></span><span class=cB5>Mute</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l294"></a>{</span><span class=cB2>//Turn-off sound.</span><span class=cB0>
+<a name="l295"></a>  </span><span class=cB1>Bool</span><span class=cB0> res;
+<a name="l296"></a>  </span><span class=cB1>if</span><span class=cB0> (val)
+<a name="l297"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l298"></a>    </span><span class=cB1>PUSHFD</span><span class=cB0>
+<a name="l299"></a>    </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l300"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l202"></span><span class=cB5>Snd</a></span><span class=cB0>;
+<a name="l301"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
+<a name="l302"></a>    </span><span class=cB1>POPFD</span><span class=cB0>
+<a name="l303"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l304"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l305"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
+<a name="l306"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l307"></a>}
+<a name="l308"></a>
+<a name="l309"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l309"></span><span class=cB5>IsMute</a></span><span class=cB0>()
+<a name="l310"></a>{</span><span class=cB2>//Return is-mute flag.</span><span class=cB0>
+<a name="l311"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0);
+<a name="l312"></a>}
+<a name="l313"></a>
+<a name="l314"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314"></span><span class=cB5>Silent</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>)
+<a name="l315"></a>{</span><span class=cB2>//Turn-off StdOut console text. (Not sound.)</span><span class=cB0>
+<a name="l316"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3718"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB0>,val);
+<a name="l317"></a>}
+<a name="l318"></a>
+<a name="l319"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l319"></span><span class=cB5>IsSilent</a></span><span class=cB0>()
+<a name="l320"></a>{</span><span class=cB2>//Return StdOut turned-off?</span><span class=cB0>
+<a name="l321"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3718"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB0>);
+<a name="l322"></a>}
+<a name="l323"></a>
+<a name="l324"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l324"></span><span class=cB5>SysDbg</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l325"></a>{</span><span class=cB2>//Set SysDbg bit you can use while debugging.</span><span class=cB0>
+<a name="l326"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l698"></span><span class=cB3>SEMA_DEBUG</a></span><span class=cB0>],0,val);
+<a name="l327"></a>}
+<a name="l328"></a>
+<a name="l329"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l329"></span><span class=cB5>IsSysDbg</a></span><span class=cB0>()
+<a name="l330"></a>{</span><span class=cB2>//Return SysDbg bit.</span><span class=cB0>
+<a name="l331"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l698"></span><span class=cB3>SEMA_DEBUG</a></span><span class=cB0>],0);
+<a name="l332"></a>}
+<a name="l333"></a>
+<a name="l334"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l334"></span><span class=cB5>Raw</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l335"></a>{</span><span class=cB2>//Set to direct scrn, BLACK &amp; WHITE, non-windowed output mode.</span><span class=cB0>
+<a name="l336"></a>  </span><span class=cB1>if</span><span class=cB0> (!val)
+<a name="l337"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l338"></a>  </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3717"></span><span class=cB3>DISPLAYf_NOT_RAW</a></span><span class=cB0>,!val);
+<a name="l339"></a>}
+<a name="l340"></a>
+<a name="l341"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l341"></span><span class=cB5>IsRaw</a></span><span class=cB0>()
+<a name="l342"></a>{</span><span class=cB2>//Are we in BLACK &amp; WHITE raw scrn mode?</span><span class=cB0>
+<a name="l343"></a>  </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3717"></span><span class=cB3>DISPLAYf_NOT_RAW</a></span><span class=cB0>);
+<a name="l344"></a>}
+<a name="l345"></a>
+<a name="l346"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l346"></span><span class=cB5>SingleUser</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l347"></a>{</span><span class=cB2>//Set single-user mode.</span><span class=cB0>
+<a name="l348"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l708"></span><span class=cB3>SEMA_SINGLE_USER</a></span><span class=cB0>],0,val);
+<a name="l349"></a>}
+<a name="l350"></a>
+<a name="l351"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l351"></span><span class=cB5>IsSingleUser</a></span><span class=cB0>()
+<a name="l352"></a>{</span><span class=cB2>//Return single-user mode.</span><span class=cB0>
+<a name="l353"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l708"></span><span class=cB3>SEMA_SINGLE_USER</a></span><span class=cB0>],0);
+<a name="l354"></a>}
+<a name="l355"></a>
+<a name="l356"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l356"></span><span class=cB5>DbgMode</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> val)
+<a name="l357"></a>{</span><span class=cB2>//Set dbg-mode.</span><span class=cB0>
+<a name="l358"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l702"></span><span class=cB3>SEMA_DBG_MODE</a></span><span class=cB0>],0,val);
+<a name="l359"></a>}
+<a name="l360"></a>
+<a name="l361"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l361"></span><span class=cB5>IsDbgMode</a></span><span class=cB0>()
+<a name="l362"></a>{</span><span class=cB2>//Return dbg-mode.</span><span class=cB0>
+<a name="l363"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l702"></span><span class=cB3>SEMA_DBG_MODE</a></span><span class=cB0>],0);
+<a name="l364"></a>}
 <a name="l365"></a>
-<a name="l366"></a>}
-<a name="l367"></a>
-<a name="l368"></a>
-<a name="l369"></a></span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l369"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *bit_field, </span><span class=cB1>U8</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>, </span><span class=cB1>U8</span><span class=cB0> size)
-<a name="l370"></a>{</span><span class=cB2>//Gets values from a bit field</span><span class=cB0>
-<a name="l371"></a></span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l372"></a></span><span class=cB9>U64</span><span class=cB0> val=0;
-<a name="l373"></a></span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;size;i++)
-<a name="l374"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l28"></span><span class=cB5>BEqu</a></span><span class=cB0>(&amp;val,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>bit_field,</span><span class=cB1>offset</span><span class=cB0>+i</span><span class=cB7>)</span><span class=cB0>);
-<a name="l375"></a></span><span class=cB1>return</span><span class=cB0> val;
-<a name="l376"></a>}
-<a name="l377"></a>
-<a name="l378"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l378"></span><span class=cBD>HypeInfo</a></span><span class=cB0>()
-<a name="l379"></a>{
-<a name="l380"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l56"></span><span class=cBD>hype_info</a></span><span class=cB0>;
-<a name="l381"></a>}
+<a name="l366"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"></span><span class=cB9>CTask</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l366"></span><span class=cB5>LastTask</a></span><span class=cB0>()
+<a name="l367"></a>{
+<a name="l368"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>last_init_task</a></span><span class=cB0>;
+<a name="l369"></a>}
+<a name="l370"></a>
+<a name="l371"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l371"></span><span class=cB5>ProgressBarsRst</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *path=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l372"></a>{</span><span class=cB2>//Reset all progress bars to zero.</span><span class=cB0>
+<a name="l373"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l46"></span><span class=cB5>CallExtStr</a></span><span class=cB0>(</span><span class=cB6>&quot;ProgressBarsRegTf&quot;</span><span class=cB0>,path);
+<a name="l374"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l236"></span><span class=cB6>sys_progresses</a></span><span class=cB0>,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l236"></span><span class=cB6>sys_progresses</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l375"></a>}
+<a name="l376"></a>
+<a name="l377"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l377"></span><span class=cB5>KeyStateRst</a></span><span class=cB0>()
+<a name="l378"></a>{</span><span class=cB2>//Clears state of all keys in key_state and sc_state</span><span class=cB0>
+<a name="l379"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l175"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l49"></span><span class=cB6>key_state</a></span><span class=cB0>,0,16);
+<a name="l380"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l175"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l49"></span><span class=cB6>sc_state</a></span><span class=cB0>,0,32);
+<a name="l381"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l50"></span><span class=cB6>sc_flags_state</a></span><span class=cB0>=0;
+<a name="l382"></a>}
+<a name="l383"></a>
+<a name="l384"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l384"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *bit_field, </span><span class=cB1>U8</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>, </span><span class=cB1>U8</span><span class=cB0> size, </span><span class=cB1>U8</span><span class=cB0> value)
+<a name="l385"></a>{</span><span class=cB2>//Sets values in a bit field</span><span class=cB0>
+<a name="l386"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l387"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;size; i++)
+<a name="l388"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l28"></span><span class=cB5>BEqu</a></span><span class=cB0>(bit_field,</span><span class=cB1>offset</span><span class=cB0>+i,value&gt;&gt;i);
+<a name="l389"></a>}
+<a name="l390"></a>
+<a name="l391"></a>
+<a name="l392"></a></span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l392"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *bit_field, </span><span class=cB1>U8</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>, </span><span class=cB1>U8</span><span class=cB0> size)
+<a name="l393"></a>{</span><span class=cB2>//Gets values from a bit field</span><span class=cB0>
+<a name="l394"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l395"></a>  </span><span class=cB9>U64</span><span class=cB0> val=0;
+<a name="l396"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;size; i++)
+<a name="l397"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l28"></span><span class=cB5>BEqu</a></span><span class=cB0>(&amp;val,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>bit_field,</span><span class=cB1>offset</span><span class=cB0>+i</span><span class=cB7>)</span><span class=cB0>);
+<a name="l398"></a>  </span><span class=cB1>return</span><span class=cB0> val;
+<a name="l399"></a>}
+<a name="l400"></a>
+<a name="l401"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l401"></span><span class=cBD>HypeInfo</a></span><span class=cB0>()
+<a name="l402"></a>{
+<a name="l403"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l57"></span><span class=cBD>hype_info</a></span><span class=cB0>;
+<a name="l404"></a>}
 </span></div></pre></body>
 </html>

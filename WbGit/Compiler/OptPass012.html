@@ -51,7 +51,7 @@
 <a name="l10"></a></span><span class=cB2>Eliminated opcodes are set to NOP.</span><span class=cB0>
 <a name="l11"></a></span><span class=cB2>Types are determined by reconstructing an</span><span class=cB0>
 <a name="l12"></a></span><span class=cB2>expression tree for operators</span><span class=cB4>
-<a name="l13"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1713"><span class=cB4>CIntermediateCode</span></a><span class=cB2>.</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"><span class=cB4>CICTreeLinks</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l13"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1755"><span class=cB4>CIntermediateCode</span></a><span class=cB2>.</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1739"><span class=cB4>CICTreeLinks</span></a><span class=cB2>.</span><span class=cB0>
 <a name="l14"></a>
 <a name="l15"></a></span><span class=cB2>Pointer arithmetic size is set, once</span><span class=cB0>
 <a name="l16"></a></span><span class=cB2>the type is determined.</span><span class=cB0>
@@ -61,7 +61,7 @@
 <a name="l20"></a>
 <a name="l21"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l22"></a>
-<a name="l23"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1713"></span><span class=cB9>CIntermediateCode</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Compiler/OptPass012.html#l23"></span><span class=cBD>OptPass012</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2226"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc)
+<a name="l23"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1755"></span><span class=cB9>CIntermediateCode</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Compiler/OptPass012.html#l23"></span><span class=cBD>OptPass012</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2268"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc)
 <a name="l24"></a>{</span><span class=cB2>/*Simplify CONST arithmetic.</span><span class=cB0>
 <a name="l25"></a></span><span class=cB2>Sets the class throughout Expression trees.</span><span class=cB0>
 <a name="l26"></a></span><span class=cB2>Returns the type of an Expression for use</span><span class=cB0>
@@ -70,13 +70,13 @@
 <a name="l29"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l30"></a>  </span><span class=cB9>I64</span><span class=cB0> code,i;
 <a name="l31"></a>  </span><span class=cB1>Bool</span><span class=cB0> is_unsigned;
-<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l883"></span><span class=cB9>CHashClass</a></span><span class=cB0> *tmpc,*tmpc1,*tmpc2;
-<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1713"></span><span class=cB9>CIntermediateCode</a></span><span class=cB0> *tmpi,*tmpi1,*tmpi2,*tmpi3,*tmpi_push,
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l925"></span><span class=cB9>CHashClass</a></span><span class=cB0> *tmpc,*tmpc1,*tmpc2;
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1755"></span><span class=cB9>CIntermediateCode</a></span><span class=cB0> *tmpi,*tmpi1,*tmpi2,*tmpi3,*tmpi_push,
 <a name="l34"></a>        *last_with_class=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l35"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1762"></span><span class=cB9>CCodeMisc</a></span><span class=cB0> *lb,*lb1,*lb2;
-<a name="l36"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1736"></span><span class=cB9>CPrsStk</a></span><span class=cB0> *ps;
+<a name="l35"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1804"></span><span class=cB9>CCodeMisc</a></span><span class=cB0> *lb,*lb1,*lb2;
+<a name="l36"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1778"></span><span class=cB9>CPrsStk</a></span><span class=cB0> *ps;
 <a name="l37"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>ps=cc-&gt;ps</span><span class=cB7>)</span><span class=cB0>)
-<a name="l38"></a>    ps=cc-&gt;ps=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1736"></span><span class=cB9>CPrsStk</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l38"></a>    ps=cc-&gt;ps=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1778"></span><span class=cB9>CPrsStk</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l39"></a>  ps-&gt;ptr=0;
 <a name="l40"></a>  ps-&gt;ptr2=0;
 <a name="l41"></a>  tmpi=cc-&gt;coc.coc_head.next;
@@ -84,7 +84,7 @@
 <a name="l43"></a>    tmpc=tmpi-&gt;ic_class;
 <a name="l44"></a>    tmpi-&gt;ic_class2=tmpc;
 <a name="l45"></a>    tmpi_push=tmpi;
-<a name="l46"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;tmpi-&gt;arg1,0,3*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1690"></span><span class=cB9>CICArg</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l46"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;tmpi-&gt;arg1,0,3*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1732"></span><span class=cB9>CICArg</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l47"></a>    tmpi-&gt;arg1_type_pointed_to=0;
 <a name="l48"></a>    </span><span class=cB1>switch</span><span class=cB0> [<a href="http://tinkeros.github.io/WbGit/Compiler/CInit.html#l16"></span><span class=cBD>intermediate_code_table</a></span><span class=cB0>[code].arg_cnt] {
 <a name="l49"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l6"></span><span class=cB3>IS_V_ARG</a></span><span class=cB0>:
@@ -105,29 +105,29 @@
 <a name="l64"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l65"></a>    }
 <a name="l66"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/CInit.html#l16"></span><span class=cBD>intermediate_code_table</a></span><span class=cB0>[code].not_const)
-<a name="l67"></a>      cc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2198"></span><span class=cB3>CCF_NOT_CONST</a></span><span class=cB0>;
+<a name="l67"></a>      cc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2240"></span><span class=cB3>CCF_NOT_CONST</a></span><span class=cB0>;
 <a name="l68"></a>    </span><span class=cB1>switch</span><span class=cB0> [code] {
 <a name="l69"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>:
-<a name="l70"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
-<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l72"></a>          tmpi-&gt;ic_data=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(tmpi-&gt;ic_data</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
-<a name="l73"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l73"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
 <a name="l74"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
-<a name="l75"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l75"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l76"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l77"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l78"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>:
-<a name="l79"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
-<a name="l80"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l80"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l81"></a>          tmpi-&gt;ic_data(</span><span class=cB1>F64</span><span class=cB0>)=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(tmpi-&gt;ic_data);
-<a name="l82"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l82"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
 <a name="l83"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
-<a name="l84"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l84"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l85"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l86"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l87"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l53"></span><span class=cB3>IC_HOLYC_TYPECAST</a></span><span class=cB0>:
 <a name="l88"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> || tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l89"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l89"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
 <a name="l90"></a>            tmpi1-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
 <a name="l91"></a>          </span><span class=cB1>else</span><span class=cB0>
 <a name="l92"></a>            tmpi1-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
@@ -138,10 +138,10 @@
 <a name="l97"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l98"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_data) {</span><span class=cB2>//was paren</span><span class=cB0>
 <a name="l99"></a>            </span><span class=cB1>if</span><span class=cB0> (!tmpi_push-&gt;ic_class-&gt;ptr_stars_cnt) </span><span class=cB7>{</span><span class=cB0>
-<a name="l100"></a>              </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l101"></a>                tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l100"></a>              </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l101"></a>                tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l102"></a>              </span><span class=cB1>else</span><span class=cB0>
-<a name="l103"></a>                tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l103"></a>                tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l104"></a>            </span><span class=cB7>}</span><span class=cB0>
 <a name="l105"></a>          } </span><span class=cB1>else</span><span class=cB0> {
 <a name="l106"></a>            tmpi1-&gt;ic_class=tmpi-&gt;ic_class;
@@ -159,7 +159,7 @@
 <a name="l118"></a>        tmpi3=tmpi2-&gt;next; </span><span class=cB2>//DEREF</span><span class=cB0>
 <a name="l119"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l83"></span><span class=cB3>IC_ADD</a></span><span class=cB0> &amp;&amp;
 <a name="l120"></a>              tmpi3-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l60"></span><span class=cB3>IC_DEREF</a></span><span class=cB0> &amp;&amp;
-<a name="l121"></a>              !</span><span class=cB7>(</span><span class=cB0>tmpi3-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1679"></span><span class=cB3>ICG_NO_CVT_MASK</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l121"></a>              !</span><span class=cB7>(</span><span class=cB0>tmpi3-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1721"></span><span class=cB3>ICG_NO_CVT_MASK</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l122"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags|tmpi2-&gt;ic_flags|tmpi3-&gt;ic_flags;
 <a name="l123"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l41"></span><span class=cB3>IC_FS</a></span><span class=cB0>)
 <a name="l124"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l42"></span><span class=cB3>IC_MOV_FS</a></span><span class=cB0>;
@@ -188,8 +188,8 @@
 <a name="l147"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l148"></a>        tmpi-&gt;ic_class2=tmpi-&gt;ic_class;
 <a name="l149"></a>        tmpi-&gt;ic_data=0;
-<a name="l150"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l151"></a>          tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l150"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l151"></a>          tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l152"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l153"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l56"></span><span class=cB3>IC_COM</a></span><span class=cB0>:
 <a name="l154"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
@@ -198,11 +198,11 @@
 <a name="l157"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags;
 <a name="l158"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l159"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l160"></a>        tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l160"></a>        tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l161"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l162"></a>      </span><span class=cB1>start</span><span class=cB0>:
 <a name="l163"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l57"></span><span class=cB3>IC_NOT</a></span><span class=cB0>:
-<a name="l164"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l164"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l165"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>) {
 <a name="l166"></a>              tmpi-&gt;ic_data(</span><span class=cB1>F64</span><span class=cB0>)=!tmpi1-&gt;ic_data(</span><span class=cB1>F64</span><span class=cB0>);
 <a name="l167"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
@@ -228,7 +228,7 @@
 <a name="l187"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
 <a name="l188"></a>            }
 <a name="l189"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l190"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc1-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l737"></span><span class=cB3>HTT_INTERNAL_TYPE</a></span><span class=cB0> &amp;&amp; tmpc1-&gt;raw_type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1627"></span><span class=cB3>RTF_UNSIGNED</a></span><span class=cB0>)
+<a name="l190"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc1-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l779"></span><span class=cB3>HTT_INTERNAL_TYPE</a></span><span class=cB0> &amp;&amp; tmpc1-&gt;raw_type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1669"></span><span class=cB3>RTF_UNSIGNED</a></span><span class=cB0>)
 <a name="l191"></a>            tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[tmpc1-&gt;raw_type-1];
 <a name="l192"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l193"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l70"></span><span class=cB3>IC_SHL_CONST</a></span><span class=cB0>:
@@ -307,17 +307,17 @@
 <a name="l266"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l267"></a>      </span><span class=cB1>end</span><span class=cB0>:
 <a name="l268"></a>        </span><span class=cB1>if</span><span class=cB0> (!tmpi_push-&gt;ic_class-&gt;ptr_stars_cnt) </span><span class=cB7>{</span><span class=cB0>
-<a name="l269"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l270"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l269"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l270"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l271"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l272"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l272"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l273"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l274"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l275"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l60"></span><span class=cB3>IC_DEREF</a></span><span class=cB0>:
 <a name="l276"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2) </span><span class=cB7>{</span><span class=cB0>
 <a name="l277"></a>          </span><span class=cB1>if</span><span class=cB0> (!tmpc-&gt;size)
 <a name="l278"></a>            <a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l73"></span><span class=cB5>LexWarn</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Dereference U0 &quot;</span><span class=cB0>);
-<a name="l279"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) {
+<a name="l279"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) {
 <a name="l280"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l63"></span><span class=cB3>IC__PP</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l281"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l61"></span><span class=cB3>IC_DEREF_PP</a></span><span class=cB0>;
 <a name="l282"></a>              tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags;
@@ -338,12 +338,12 @@
 <a name="l297"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l73"></span><span class=cB5>LexWarn</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Dereference U0 &quot;</span><span class=cB0>);
 <a name="l298"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l299"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l72"></span><span class=cB3>IC_POWER</a></span><span class=cB0>:
-<a name="l300"></a>        tmpc=tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
-<a name="l301"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpc1-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l302"></a>          tmpi1-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
-<a name="l303"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l304"></a>          tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
-<a name="l305"></a>        tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l300"></a>        tmpc=tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l301"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpc1-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l302"></a>          tmpi1-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l303"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l304"></a>          tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l305"></a>        tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l306"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l307"></a>      </span><span class=cB1>start</span><span class=cB0>:
 <a name="l308"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l74"></span><span class=cB3>IC_MUL</a></span><span class=cB0>:
@@ -490,8 +490,8 @@
 <a name="l449"></a>            }
 <a name="l450"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp;
 <a name="l451"></a>                </span><span class=cB7>(</span><span class=cB0>i=tmpi2-&gt;ic_data</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l452"></a>                tmpi_push-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
-<a name="l453"></a>                tmpi_push-&gt;ic_class-&gt;raw_type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1627"></span><span class=cB3>RTF_UNSIGNED</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB2>//do only unsigned</span><span class=cB0>
+<a name="l452"></a>                tmpi_push-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l453"></a>                tmpi_push-&gt;ic_class-&gt;raw_type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1669"></span><span class=cB3>RTF_UNSIGNED</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB2>//do only unsigned</span><span class=cB0>
 <a name="l454"></a>            tmpi2-&gt;ic_data=i-1;
 <a name="l455"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l78"></span><span class=cB3>IC_AND</a></span><span class=cB0>;
 <a name="l456"></a>          </span><span class=cB7>}</span><span class=cB0>
@@ -736,30 +736,30 @@
 <a name="l695"></a>            tmpi-&gt;ic_data=tmpi1-&gt;ic_data&amp;&amp;tmpi2-&gt;ic_data;
 <a name="l696"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l697"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l698"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l698"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l699"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l700"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l98"></span><span class=cB3>IC_OR_OR</a></span><span class=cB0>:
 <a name="l701"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l96"></span><span class=cBD>OptFixupBinaryOp1</a></span><span class=cB7>(</span><span class=cB0>tmpi,tmpi1,tmpi2,&amp;is_unsigned</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l702"></a>            tmpi-&gt;ic_data=tmpi1-&gt;ic_data||tmpi2-&gt;ic_data;
 <a name="l703"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l704"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l705"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l705"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l706"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l707"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l99"></span><span class=cB3>IC_XOR_XOR</a></span><span class=cB0>:
 <a name="l708"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l96"></span><span class=cBD>OptFixupBinaryOp1</a></span><span class=cB7>(</span><span class=cB0>tmpi,tmpi1,tmpi2,&amp;is_unsigned</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l709"></a>            tmpi-&gt;ic_data=tmpi1-&gt;ic_data^^tmpi2-&gt;ic_data;
 <a name="l710"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l711"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l712"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l712"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l713"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l714"></a>      </span><span class=cB1>end</span><span class=cB0>:
 <a name="l715"></a>        </span><span class=cB1>if</span><span class=cB0> (!tmpi_push-&gt;ic_class-&gt;ptr_stars_cnt) </span><span class=cB7>{</span><span class=cB0>
-<a name="l716"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l717"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l716"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l717"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l718"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l719"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1621"></span><span class=cB3>RT_U64</a></span><span class=cB0>];
+<a name="l719"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1663"></span><span class=cB3>RT_U64</a></span><span class=cB0>];
 <a name="l720"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l721"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l721"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l722"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l723"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l724"></a>      </span><span class=cB1>start</span><span class=cB0>:
@@ -768,16 +768,16 @@
 <a name="l727"></a>            tmpi-&gt;ic_data=tmpi1-&gt;ic_data==tmpi2-&gt;ic_data;
 <a name="l728"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l729"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l730"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l731"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l730"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l731"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l732"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l733"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l89"></span><span class=cB3>IC_NOT_EQU</a></span><span class=cB0>:
 <a name="l734"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l96"></span><span class=cBD>OptFixupBinaryOp1</a></span><span class=cB7>(</span><span class=cB0>tmpi,tmpi1,tmpi2,&amp;is_unsigned</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l735"></a>            tmpi-&gt;ic_data=tmpi1-&gt;ic_data!=tmpi2-&gt;ic_data;
 <a name="l736"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l737"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l738"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l739"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l738"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l739"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l740"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l741"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l90"></span><span class=cB3>IC_LESS</a></span><span class=cB0>:
 <a name="l742"></a>          </span><span class=cB1>if</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l96"></span><span class=cBD>OptFixupBinaryOp1</a></span><span class=cB7>(</span><span class=cB0>tmpi,tmpi1,tmpi2,&amp;is_unsigned</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
@@ -791,9 +791,9 @@
 <a name="l750"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l751"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l752"></a>            </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l753"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1656"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
-<a name="l754"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l755"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l753"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1698"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
+<a name="l754"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l755"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l756"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l757"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l758"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l91"></span><span class=cB3>IC_GREATER_EQU</a></span><span class=cB0>:
@@ -808,9 +808,9 @@
 <a name="l767"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l768"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l769"></a>            </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l770"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1656"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
-<a name="l771"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l772"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l770"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1698"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
+<a name="l771"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l772"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l773"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l774"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l775"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l92"></span><span class=cB3>IC_GREATER</a></span><span class=cB0>:
@@ -825,9 +825,9 @@
 <a name="l784"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l785"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l786"></a>            </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l787"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1656"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
-<a name="l788"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l789"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l787"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1698"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
+<a name="l788"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l789"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l790"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l791"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l792"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l93"></span><span class=cB3>IC_LESS_EQU</a></span><span class=cB0>:
@@ -842,33 +842,33 @@
 <a name="l801"></a>            tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l802"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l803"></a>            </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l804"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1656"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
-<a name="l805"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l806"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l804"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1698"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>;
+<a name="l805"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l806"></a>              tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
 <a name="l807"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l808"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l809"></a>      </span><span class=cB1>end</span><span class=cB0>:
-<a name="l810"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l810"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
 <a name="l811"></a>        </span><span class=cB1>if</span><span class=cB0> (!tmpi_push-&gt;ic_class-&gt;ptr_stars_cnt) </span><span class=cB7>{</span><span class=cB0>
-<a name="l812"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l813"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l812"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l813"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l814"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (is_unsigned)
-<a name="l815"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1621"></span><span class=cB3>RT_U64</a></span><span class=cB0>];
+<a name="l815"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1663"></span><span class=cB3>RT_U64</a></span><span class=cB0>];
 <a name="l816"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l817"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l817"></a>            tmpi_push-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l818"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l819"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1667"></span><span class=cB3>ICF_PUSH_CMP</a></span><span class=cB0>)
+<a name="l819"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi_push-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1709"></span><span class=cB3>ICF_PUSH_CMP</a></span><span class=cB0>)
 <a name="l820"></a>          tmpi-&gt;ic_class=tmpi-&gt;ic_class2;
 <a name="l821"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l822"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l822"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l823"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l824"></a>      </span><span class=cB1>start</span><span class=cB0>:
 <a name="l825"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!tmpc-&gt;size||!tmpc2-&gt;size</span><span class=cB7>)</span><span class=cB0>)
 <a name="l826"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/CExcept.html#l73"></span><span class=cB5>LexWarn</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Assign U0 &quot;</span><span class=cB0>);
 <a name="l827"></a>        </span><span class=cB1>start</span><span class=cB0>:
 <a name="l828"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l107"></span><span class=cB3>IC_MUL_EQU</a></span><span class=cB0>:
-<a name="l829"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
-<a name="l830"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l829"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l830"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l831"></a>              </span><span class=cB1>if</span><span class=cB0> (i=tmpi2-&gt;ic_data) {
 <a name="l832"></a>                </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l833"></a>                  tmpi2-&gt;ic_data=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(i);
@@ -878,16 +878,16 @@
 <a name="l837"></a>            </span><span class=cB7>}</span><span class=cB0>
 <a name="l838"></a>            </span><span class=cB1>break</span><span class=cB0>;
 <a name="l839"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l108"></span><span class=cB3>IC_DIV_EQU</a></span><span class=cB0>:
-<a name="l840"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
-<a name="l841"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l840"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l841"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
 <a name="l842"></a>                  </span><span class=cB7>(</span><span class=cB0>i=tmpi2-&gt;ic_data</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l843"></a>              tmpi2-&gt;ic_data=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(i);
 <a name="l844"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l106"></span><span class=cB3>IC_SHR_EQU</a></span><span class=cB0>;
 <a name="l845"></a>            </span><span class=cB7>}</span><span class=cB0>
 <a name="l846"></a>            </span><span class=cB1>break</span><span class=cB0>;
 <a name="l847"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l109"></span><span class=cB3>IC_MOD_EQU</a></span><span class=cB0>:
-<a name="l848"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
-<a name="l849"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l848"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0> &amp;&amp; tmpc-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
+<a name="l849"></a>                  tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0> &amp;&amp;
 <a name="l850"></a>                  </span><span class=cB7>(</span><span class=cB0>i=tmpi2-&gt;ic_data</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l851"></a>              tmpi2-&gt;ic_data=i-1;
 <a name="l852"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l110"></span><span class=cB3>IC_AND_EQU</a></span><span class=cB0>;
@@ -897,22 +897,22 @@
 <a name="l856"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l114"></span><span class=cB3>IC_SUB_EQU</a></span><span class=cB0>:
 <a name="l857"></a>            </span><span class=cB1>break</span><span class=cB0>;
 <a name="l858"></a>        </span><span class=cB1>end</span><span class=cB0>:
-<a name="l859"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l860"></a>            tmpi-&gt;ic_flags=tmpi-&gt;ic_flags|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1655"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
-<a name="l861"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l862"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l863"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l859"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpi2-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l860"></a>            tmpi-&gt;ic_flags=tmpi-&gt;ic_flags|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1697"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>;
+<a name="l861"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l862"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l863"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
 <a name="l864"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l865"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l866"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l101"></span><span class=cB3>IC_ASSIGN</a></span><span class=cB0>:
-<a name="l867"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l868"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l869"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l867"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l868"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l869"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
 <a name="l870"></a>          </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l871"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l872"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l871"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l872"></a>              tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
 <a name="l873"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l874"></a>          </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi1-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l874"></a>          </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass==2 &amp;&amp; tmpi1-&gt;ic_class-&gt;raw_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l875"></a>            </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l63"></span><span class=cB3>IC__PP</a></span><span class=cB0>) {
 <a name="l876"></a>              tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l102"></span><span class=cB3>IC_ASSIGN_PP</a></span><span class=cB0>;
 <a name="l877"></a>              tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags;
@@ -931,8 +931,8 @@
 <a name="l890"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l110"></span><span class=cB3>IC_AND_EQU</a></span><span class=cB0>:
 <a name="l891"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l111"></span><span class=cB3>IC_OR_EQU</a></span><span class=cB0>:
 <a name="l892"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l112"></span><span class=cB3>IC_XOR_EQU</a></span><span class=cB0>:
-<a name="l893"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l894"></a>            tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l893"></a>          </span><span class=cB1>if</span><span class=cB0> (tmpc2-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l894"></a>            tmpi2-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
 <a name="l895"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l896"></a>      </span><span class=cB1>end</span><span class=cB0>:
 <a name="l897"></a>        </span><span class=cB1>break</span><span class=cB0>;
@@ -975,7 +975,7 @@
 <a name="l934"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l166"></span><span class=cB3>IC_LBTS</a></span><span class=cB0>:
 <a name="l935"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l167"></span><span class=cB3>IC_LBTR</a></span><span class=cB0>:
 <a name="l936"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l168"></span><span class=cB3>IC_LBTC</a></span><span class=cB0>:
-<a name="l937"></a>        tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1673"></span><span class=cB3>ICF_LOCK</a></span><span class=cB0>;
+<a name="l937"></a>        tmpi-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1715"></span><span class=cB3>ICF_LOCK</a></span><span class=cB0>;
 <a name="l938"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l939"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l49"></span><span class=cB3>IC_TO_I64</a></span><span class=cB0>:
 <a name="l940"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
@@ -988,13 +988,13 @@
 <a name="l947"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi2-&gt;ic_code!=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l26"></span><span class=cB3>IC_CALL_END</a></span><span class=cB0>)
 <a name="l948"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l949"></a>
-<a name="l950"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
+<a name="l950"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
 <a name="l951"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l952"></a>
 <a name="l953"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l954"></a>          tmpi-&gt;ic_data=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(tmpi1-&gt;ic_data</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
-<a name="l955"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
-<a name="l956"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l955"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l956"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l957"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l958"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l959"></a>          tmpi2=tmpi1-&gt;last;
@@ -1006,16 +1006,16 @@
 <a name="l965"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi2-&gt;ic_code!=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l26"></span><span class=cB3>IC_CALL_END</a></span><span class=cB0>)
 <a name="l966"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l967"></a>
-<a name="l968"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
+<a name="l968"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
 <a name="l969"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l970"></a>
 <a name="l971"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l972"></a>          tmpi-&gt;ic_data=tmpi1-&gt;ic_data;
-<a name="l973"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
-<a name="l974"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l973"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l974"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l975"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l976"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l977"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l977"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l978"></a>          i=0;
 <a name="l979"></a>          tmpi2=tmpi1-&gt;last;
 <a name="l980"></a>          </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
@@ -1033,11 +1033,11 @@
 <a name="l992"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l993"></a>
 <a name="l994"></a>          tmpi1-&gt;ic_flags=tmpi-&gt;ic_flags|tmpi1-&gt;ic_flags&amp;
-<a name="l995"></a>                ~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1662"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>)|tmpi2-&gt;ic_flags;
+<a name="l995"></a>                ~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>)|tmpi2-&gt;ic_flags;
 <a name="l996"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l997"></a>
-<a name="l998"></a>          tmpi1-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
-<a name="l999"></a>          tmpi1-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l998"></a>          tmpi1-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l999"></a>          tmpi1-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l1000"></a>          tmpi_push=tmpi1;
 <a name="l1001"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi);
 <a name="l1002"></a>        </span><span class=cB7>}</span><span class=cB0>
@@ -1053,13 +1053,13 @@
 <a name="l1012"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi2-&gt;ic_code!=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l26"></span><span class=cB3>IC_CALL_END</a></span><span class=cB0>)
 <a name="l1013"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l1014"></a>
-<a name="l1015"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
+<a name="l1015"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
 <a name="l1016"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l1017"></a>
 <a name="l1018"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
 <a name="l1019"></a>          tmpi-&gt;ic_data(</span><span class=cB1>F64</span><span class=cB0>)=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(tmpi1-&gt;ic_data);
-<a name="l1020"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
-<a name="l1021"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1020"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1021"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l1022"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l1023"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l1024"></a>          tmpi2=tmpi1-&gt;last;
@@ -1071,16 +1071,16 @@
 <a name="l1030"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi2-&gt;ic_code!=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l26"></span><span class=cB3>IC_CALL_END</a></span><span class=cB0>)
 <a name="l1031"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l1032"></a>
-<a name="l1033"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
+<a name="l1033"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
 <a name="l1034"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l1035"></a>
 <a name="l1036"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l31"></span><span class=cB3>IC_IMM_F64</a></span><span class=cB0>;
 <a name="l1037"></a>          tmpi-&gt;ic_data=tmpi1-&gt;ic_data;
-<a name="l1038"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
-<a name="l1039"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1038"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1039"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l1040"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l1041"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l1042"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1042"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi1-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l1043"></a>          i=0;
 <a name="l1044"></a>          tmpi2=tmpi1-&gt;last;
 <a name="l1045"></a>          </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
@@ -1098,11 +1098,11 @@
 <a name="l1057"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l1058"></a>
 <a name="l1059"></a>          tmpi1-&gt;ic_flags=tmpi-&gt;ic_flags|tmpi1-&gt;ic_flags&amp;
-<a name="l1060"></a>                ~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1662"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>)|tmpi2-&gt;ic_flags;
+<a name="l1060"></a>                ~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>)|tmpi2-&gt;ic_flags;
 <a name="l1061"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l1062"></a>
-<a name="l1063"></a>          tmpi1-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
-<a name="l1064"></a>          tmpi1-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1063"></a>          tmpi1-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
+<a name="l1064"></a>          tmpi1-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>];
 <a name="l1065"></a>          tmpi_push=tmpi1;
 <a name="l1066"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi);
 <a name="l1067"></a>        </span><span class=cB7>}</span><span class=cB0>
@@ -1118,13 +1118,13 @@
 <a name="l1077"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi2-&gt;ic_code!=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l26"></span><span class=cB3>IC_CALL_END</a></span><span class=cB0>)
 <a name="l1078"></a>            tmpi2=tmpi2-&gt;next;
 <a name="l1079"></a>
-<a name="l1080"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
+<a name="l1080"></a>          tmpi-&gt;ic_flags|=tmpi1-&gt;ic_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>|tmpi2-&gt;ic_flags;
 <a name="l1081"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi2);
 <a name="l1082"></a>
 <a name="l1083"></a>          tmpi-&gt;ic_code=<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l30"></span><span class=cB3>IC_IMM_I64</a></span><span class=cB0>;
 <a name="l1084"></a>          tmpi-&gt;ic_data=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l119"></span><span class=cB5>ToBool</a></span><span class=cB0>(tmpi1-&gt;ic_data);
-<a name="l1085"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
-<a name="l1086"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1619"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l1085"></a>          tmpi-&gt;ic_class=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
+<a name="l1086"></a>          tmpi-&gt;ic_class2=<a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.internal_types[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1661"></span><span class=cB3>RT_I64</a></span><span class=cB0>];
 <a name="l1087"></a>          <a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l17"></span><span class=cBD>OptSetNOP1</a></span><span class=cB0>(tmpi1);
 <a name="l1088"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l1089"></a>        </span><span class=cB1>break</span><span class=cB0>;
@@ -1135,12 +1135,12 @@
 <a name="l1094"></a>        tmpi_push=<a href="http://tinkeros.github.io/WbGit/Compiler/OptLib.html#l357"></span><span class=cBD>OptBrNotZero</a></span><span class=cB0>(cc,tmpi);
 <a name="l1095"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l1096"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l21"></span><span class=cB3>IC_NOP1</a></span><span class=cB0>:
-<a name="l1097"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1662"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1097"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l1098"></a>          tmpi1=tmpi;
 <a name="l1099"></a>          </span><span class=cB1>do</span><span class=cB0> tmpi1=tmpi1-&gt;last;
 <a name="l1100"></a>          </span><span class=cB1>while</span><span class=cB0> (tmpi1-&gt;ic_code==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l21"></span><span class=cB3>IC_NOP1</a></span><span class=cB0>);
-<a name="l1101"></a>          tmpi1-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1662"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>;
-<a name="l1102"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1662"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>;
+<a name="l1101"></a>          tmpi1-&gt;ic_flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>;
+<a name="l1102"></a>          tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>;
 <a name="l1103"></a>        </span><span class=cB7>}</span><span class=cB0>
 <a name="l1104"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l1105"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l23"></span><span class=cB3>IC_NOP2</a></span><span class=cB0>:
@@ -1310,10 +1310,10 @@
 <a name="l1269"></a>      <a href="http://tinkeros.github.io/WbGit/Compiler/PrsLib.html#l1"></span><span class=cBD>PrsPush</a></span><span class=cB0>(ps,tmpi_push);
 <a name="l1270"></a>    }
 <a name="l1271"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class) {
-<a name="l1272"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1624"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l1273"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1649"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
+<a name="l1272"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_class-&gt;raw_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1666"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l1273"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>;
 <a name="l1274"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1275"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1650"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
+<a name="l1275"></a>        tmpi-&gt;ic_flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1692"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>;
 <a name="l1276"></a>      </span><span class=cB1>if</span><span class=cB0> (code&gt;<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l22"></span><span class=cB3>IC_END_EXP</a></span><span class=cB0>)
 <a name="l1277"></a>        last_with_class=tmpi;
 <a name="l1278"></a>    }
