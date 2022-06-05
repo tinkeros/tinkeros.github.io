@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.06">
+<meta name="generator" content="TinkerOS V5.07">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -43,7 +43,7 @@
 <a name="l4"></a></span><span class=cB2>read-modify-write stmts.</span><span class=cB0>
 <a name="l5"></a></span><span class=cB2>It will generate invalid insts</span><span class=cB0>
 <a name="l6"></a></span><span class=cB2>if you misuse it and it will crash.</span><span class=cB4>
-<a name="l7"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB2>() to see what code was generated.</span><span class=cB0>
+<a name="l7"></a></span><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l740"><span class=cB4>U</span></a><span class=cB2>() to see what code was generated.</span><span class=cB0>
 <a name="l8"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l9"></a>
 <a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> CNT     0x1000000
@@ -59,12 +59,12 @@
 <a name="l20"></a>
 <a name="l21"></a></span><span class=cB1>U0</span><span class=cB0> UnlockedInc()
 <a name="l22"></a>{
-<a name="l23"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3616"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpm0,*tmpm1;
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3620"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpm0,*tmpm1;
 <a name="l24"></a>  glbl=0;
 <a name="l25"></a>  tmpm0=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPUnlockedInc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,0,0);
 <a name="l26"></a>  tmpm1=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPUnlockedInc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,1,0);
-<a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l199"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm0);
-<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l199"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm1);
+<a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm0);
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm1);
 <a name="l29"></a>  </span><span class=cB6>&quot;Correct Cnt:%X Actual Cnt:%X\n&quot;</span><span class=cB0>,CNT*2,glbl;
 <a name="l30"></a>}
 <a name="l31"></a>
@@ -73,17 +73,17 @@
 <a name="l34"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l35"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;CNT;i++)
 <a name="l36"></a>    </span><span class=cB1>lock</span><span class=cB0>  </span><span class=cB2>//Can be used without {}</span><span class=cB0>
-<a name="l37"></a>          glbl++;
+<a name="l37"></a>            glbl++;
 <a name="l38"></a>}
 <a name="l39"></a>
 <a name="l40"></a></span><span class=cB1>U0</span><span class=cB0> LockedInc()
 <a name="l41"></a>{
-<a name="l42"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3616"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpm0,*tmpm1;
+<a name="l42"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3620"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpm0,*tmpm1;
 <a name="l43"></a>  glbl=0;
 <a name="l44"></a>  tmpm0=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPLockedInc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,0,0);
 <a name="l45"></a>  tmpm1=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l221"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPLockedInc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,1,0);
-<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l199"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm0);
-<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l199"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm1);
+<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm0);
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(tmpm1);
 <a name="l48"></a>  </span><span class=cB6>&quot;Correct Cnt:%X Actual Cnt:%X\n&quot;</span><span class=cB0>,CNT*2,glbl;
 <a name="l49"></a>}
 <a name="l50"></a>

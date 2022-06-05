@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.06">
+<meta name="generator" content="TinkerOS V5.07">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -42,189 +42,216 @@
 <a name="l1"></a><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l1"></span><span class=cB5>Tabs2Spaces</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src)
 <a name="l2"></a>{</span><span class=cB2>//MAlloc str with tabs to spaces.</span><span class=cB0>
 <a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,j,l=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(src)&lt;&lt;1+2,col=0;
-<a name="l4"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l),*tmp;
-<a name="l5"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*src++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l6"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\t'</span><span class=cB0>) {
-<a name="l7"></a>      j=(col+8) &amp; ~7;
-<a name="l8"></a>      </span><span class=cB1>for</span><span class=cB0> (i=col;i&lt;j;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l9"></a>        dst[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
-<a name="l10"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;=l-2) {
-<a name="l11"></a>          tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l&lt;&lt;1);
-<a name="l12"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmp,dst,i+1);
-<a name="l13"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
-<a name="l14"></a>          l&lt;&lt;=1;
-<a name="l15"></a>          dst=tmp;
-<a name="l16"></a>        }
-<a name="l17"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l18"></a>      col=j;
-<a name="l19"></a>    } </span><span class=cB1>else</span><span class=cB0> {
-<a name="l20"></a>      dst[col]=ch;
-<a name="l21"></a>      </span><span class=cB1>if</span><span class=cB0> (col&gt;=l-2) </span><span class=cB7>{</span><span class=cB0>
-<a name="l22"></a>        tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l&lt;&lt;1);
-<a name="l23"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmp,dst,col+1);
-<a name="l24"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
-<a name="l25"></a>        l&lt;&lt;=1;
-<a name="l26"></a>        dst=tmp;
-<a name="l27"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l28"></a>      col++;
-<a name="l29"></a>    }
-<a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l31"></a>  dst[col]=0;
-<a name="l32"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
-<a name="l33"></a>}
-<a name="l34"></a>
-<a name="l35"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l35"></span><span class=cB5>ScaleIndent</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB1>F64</span><span class=cB0> indent_scale_factor)
-<a name="l36"></a>{</span><span class=cB2>//MAlloced str.  8*0.25--&gt;2 or 8*2.0--&gt;16</span><span class=cB0>
-<a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,col=0;
-<a name="l38"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst,*dst2;
-<a name="l39"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*src++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l40"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\t'</span><span class=cB0>)
-<a name="l41"></a>      col=(col+8) &amp; -0x8;
-<a name="l42"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>)
-<a name="l43"></a>      col++;
-<a name="l44"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l45"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l47"></a>  src--;
-<a name="l48"></a>  col=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l139"></span><span class=cB5>Round</a></span><span class=cB0>(indent_scale_factor*col);
-<a name="l49"></a>  dst=dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>src</span><span class=cB7>)</span><span class=cB0>+col/8+col&amp;7+1);
-<a name="l50"></a>  </span><span class=cB1>for</span><span class=cB0> (i=col/8;i&gt;0;i--)
-<a name="l51"></a>    *dst2++=</span><span class=cB6>'\t'</span><span class=cB0>;
-<a name="l52"></a>  </span><span class=cB1>for</span><span class=cB0> (i=col&amp;7;i&gt;0;i--)
-<a name="l53"></a>    *dst2++=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
-<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(dst2,src);
-<a name="l55"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
-<a name="l56"></a>}
-<a name="l57"></a>
-<a name="l58"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB9>I64</span><span class=cB0> flags,</span><span class=cB1>F64</span><span class=cB0> indent_scale_factor=0)
-<a name="l59"></a>{</span><span class=cB2>//MAlloc </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l560"><span class=cB4>StrUtil</span></a><span class=cB2>().</span><span class=cB0>
-<a name="l60"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(src),*dst2,*tmp;
-<a name="l61"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l560"></span><span class=cB5>StrUtil</a></span><span class=cB0>(dst,flags);
-<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4207"></span><span class=cB3>SUF_T2S</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l63"></a>    tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l1"></span><span class=cB5>Tabs2Spaces</a></span><span class=cB0>(dst);
-<a name="l64"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
-<a name="l65"></a>    dst=tmp;
-<a name="l66"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l67"></a>  </span><span class=cB1>if</span><span class=cB0> (flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4208"></span><span class=cB3>SUF_SCALE_INDENT</a></span><span class=cB0>)
-<a name="l68"></a>    dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l35"></span><span class=cB5>ScaleIndent</a></span><span class=cB0>(dst,indent_scale_factor);
-<a name="l69"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l70"></a>    dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(dst); </span><span class=cB2>//Shorten to just right size.</span><span class=cB0>
-<a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
-<a name="l72"></a>  </span><span class=cB1>return</span><span class=cB0> dst2;
-<a name="l73"></a>}
-<a name="l74"></a>
-<a name="l75"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l75"></span><span class=cB5>GetOutOfDollar</a></span><span class=cB0>()
-<a name="l76"></a>{</span><span class=cB2>//If a $ has been printed, print another $ to exit mode.</span><span class=cB0>
-<a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1455"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
-<a name="l78"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l341"></span><span class=cB5>IsRaw</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l43"></span><span class=cB6>text</a></span><span class=cB0>.raw_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4007"></span><span class=cB3>RWF_IN_DOLLAR</a></span><span class=cB0>)
-<a name="l80"></a>      </span><span class=cB6>'$'</span><span class=cB0>;
-<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l82"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l47"></span><span class=cB6>fp_doc_put</a></span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>doc=(*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l47"></span><span class=cB6>fp_doc_put</a></span><span class=cB0>)(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp; doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1389"></span><span class=cB3>DOCF_IN_DOLLAR</a></span><span class=cB0>)
-<a name="l83"></a>      </span><span class=cB6>'$'</span><span class=cB0>;
-<a name="l84"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l85"></a>}
-<a name="l86"></a>
-<a name="l87"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l87"></span><span class=cB5>YorN</a></span><span class=cB0>()
-<a name="l88"></a>{</span><span class=cB2>//Wait for user to answer Y or N.</span><span class=cB0>
-<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
-<a name="l90"></a>  </span><span class=cB6>&quot;(y or n)? &quot;</span><span class=cB0>;
-<a name="l91"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l92"></a>    ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l182"></span><span class=cB5>GetChar</a></span><span class=cB7>(</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l93"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'Y'</span><span class=cB0>) {
-<a name="l94"></a>      </span><span class=cB6>&quot;$PT$YES$FG$\n&quot;</span><span class=cB0>;
-<a name="l95"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l96"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'N'</span><span class=cB0>) {
-<a name="l97"></a>      </span><span class=cB6>&quot;$PT$NO$FG$\n&quot;</span><span class=cB0>;
-<a name="l98"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l99"></a>    }
-<a name="l100"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l101"></a>}
-<a name="l102"></a>
-<a name="l103"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l103"></span><span class=cB5>PressAKey</a></span><span class=cB0>()
-<a name="l104"></a>{</span><span class=cB2>//Print &quot;Press a key&quot; and wait for non-zero </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3897"><span class=cB4>ASCII</span></a><span class=cB2> key.</span><span class=cB0>
-<a name="l105"></a>  </span><span class=cB6>&quot;$BK,1$PRESS A KEY$BK,0$\n&quot;</span><span class=cB0>;
-<a name="l106"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l182"></span><span class=cB5>GetChar</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l107"></a>}
-<a name="l108"></a>
-<a name="l109"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l109"></span><span class=cB5>AreYouSure</a></span><span class=cB0>()
-<a name="l110"></a>{</span><span class=cB2>//Print &quot;Are you sure&quot; and waits for Y or N.</span><span class=cB0>
-<a name="l111"></a>  </span><span class=cB6>&quot;ARE YOU SURE &quot;</span><span class=cB0>;
-<a name="l112"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l87"></span><span class=cB5>YorN</a></span><span class=cB0>;
-<a name="l113"></a>}
-<a name="l114"></a>
-<a name="l115"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l115"></span><span class=cB5>Help</a></span><span class=cB0>()
-<a name="l116"></a>{</span><span class=cB2>//Dbg help or master help index file.</span><span class=cB0>
-<a name="l117"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l361"></span><span class=cB5>IsDbgMode</a></span><span class=cB0>)
-<a name="l118"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l556"></span><span class=cBD>DbgHelp</a></span><span class=cB0>;
-<a name="l119"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l120"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l376"></span><span class=cB5>PopUp</a></span><span class=cB0>(</span><span class=cB6>&quot;Type(\&quot;::/Doc/HelpIndex.DD\&quot;);DocTop;View;&quot;</span><span class=cB0>);
-<a name="l121"></a>}
-<a name="l122"></a>
-<a name="l123"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l123"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *_dst_flags,</span><span class=cB1>U8</span><span class=cB0> *lst,</span><span class=cB1>U8</span><span class=cB0> *src)
-<a name="l124"></a>{</span><span class=cB2>/*More than 64 flags. Flags passed by ref.</span><span class=cB0>
-<a name="l125"></a>
-<a name="l126"></a></span><span class=cB2>Examples:</span><span class=cB4>
-<a name="l127"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Diff.html#l330"><span class=cB4>ScanFlags</span></a><span class=cB2>(&amp;fuf_flags,Define(&quot;ST_FILE_UTIL_FLAGS&quot;),fu_flags);</span><span class=cB0>
-<a name="l128"></a>
-<a name="l129"></a></span><span class=cB2>I64 flags=0;</span><span class=cB0>
-<a name="l130"></a></span><span class=cB2>ScanFlags(&amp;flags,&quot;R\0L\0Dump\0Scan\0&quot;,&quot;+Dump-R&quot;); //Sets Bit#2, Clears Bit#0.</span><span class=cB0>
-<a name="l131"></a></span><span class=cB2>*/</span><span class=cB0>
-<a name="l132"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l133"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*ptr;
-<a name="l134"></a>  </span><span class=cB1>if</span><span class=cB0> (src) </span><span class=cB7>{</span><span class=cB0>
-<a name="l135"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>src</span><span class=cB7>)</span><span class=cB0>+1);
-<a name="l136"></a>    </span><span class=cB1>while</span><span class=cB0> (*src) {
-<a name="l137"></a>      </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0>)
-<a name="l138"></a>        src++;
-<a name="l139"></a>      </span><span class=cB1>if</span><span class=cB0> (*src==</span><span class=cB6>'+'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l140"></a>        src++;
-<a name="l141"></a>        </span><span class=cB1>if</span><span class=cB0> (*src) {
-<a name="l142"></a>          ptr=buf;
-<a name="l143"></a>          </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0> &amp;&amp;
-<a name="l144"></a>                *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_SPACE</a></span><span class=cB0> &amp;&amp; *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3927"></span><span class=cB3>CH_SHIFT_SPACE</a></span><span class=cB0>)
-<a name="l145"></a>            *ptr++=*src++;
-<a name="l146"></a>          *ptr=0;
-<a name="l147"></a>          i=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB0>(buf,lst);
-<a name="l148"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=0)
-<a name="l149"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(_dst_flags,i);
-<a name="l150"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l151"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l152"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'ScanFlag'</span><span class=cB0>);
-<a name="l153"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l154"></a>        }
-<a name="l155"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (*src==</span><span class=cB6>'-'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l156"></a>        src++;
-<a name="l157"></a>        </span><span class=cB1>if</span><span class=cB0> (*src) {
-<a name="l158"></a>          ptr=buf;
-<a name="l159"></a>          </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0> &amp;&amp;
-<a name="l160"></a>                *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_SPACE</a></span><span class=cB0> &amp;&amp; *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3927"></span><span class=cB3>CH_SHIFT_SPACE</a></span><span class=cB0>)
-<a name="l161"></a>            *ptr++=*src++;
-<a name="l162"></a>          *ptr=0;
-<a name="l163"></a>          i=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB0>(buf,lst);
-<a name="l164"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=0)
-<a name="l165"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(_dst_flags,i);
-<a name="l166"></a>          </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l167"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l168"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'ScanFlag'</span><span class=cB0>);
-<a name="l169"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l170"></a>        }
-<a name="l171"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l172"></a>    }
-<a name="l173"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l174"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l175"></a>}
-<a name="l176"></a>
-<a name="l177"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst,</span><span class=cB1>U8</span><span class=cB0> *lst,</span><span class=cB9>I64</span><span class=cB0> flags)
-<a name="l178"></a>{</span><span class=cB2>//Only 64 flags. Flags passed by value.</span><span class=cB0>
-<a name="l179"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l180"></a>  *dst=0;
-<a name="l181"></a>  </span><span class=cB1>while</span><span class=cB0> (flags) </span><span class=cB7>{</span><span class=cB0>
-<a name="l182"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(flags);
-<a name="l183"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l18"></span><span class=cB5>Btr</a></span><span class=cB0>(&amp;flags,i);
-<a name="l184"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(dst,</span><span class=cB6>&quot;+%z&quot;</span><span class=cB0>,i,lst);
-<a name="l185"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l186"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
-<a name="l187"></a>}
+<a name="l4"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l),*tmp;
+<a name="l5"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*src++)
+<a name="l6"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l7"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\t'</span><span class=cB0>)
+<a name="l8"></a>    {
+<a name="l9"></a>      j=(col+8) &amp; ~7;
+<a name="l10"></a>      </span><span class=cB1>for</span><span class=cB0> (i=col; i&lt;j; i++)
+<a name="l11"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l12"></a>        dst[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3932"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l13"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;=l-2)
+<a name="l14"></a>        {
+<a name="l15"></a>          tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l&lt;&lt;1);
+<a name="l16"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmp,dst,i+1);
+<a name="l17"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
+<a name="l18"></a>          l&lt;&lt;=1;
+<a name="l19"></a>          dst=tmp;
+<a name="l20"></a>        }
+<a name="l21"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l22"></a>      col=j;
+<a name="l23"></a>    }
+<a name="l24"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l25"></a>    {
+<a name="l26"></a>      dst[col]=ch;
+<a name="l27"></a>      </span><span class=cB1>if</span><span class=cB0> (col&gt;=l-2)
+<a name="l28"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l29"></a>        tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(l&lt;&lt;1);
+<a name="l30"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmp,dst,col+1);
+<a name="l31"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
+<a name="l32"></a>        l&lt;&lt;=1;
+<a name="l33"></a>        dst=tmp;
+<a name="l34"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l35"></a>      col++;
+<a name="l36"></a>    }
+<a name="l37"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l38"></a>  dst[col]=0;
+<a name="l39"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
+<a name="l40"></a>}
+<a name="l41"></a>
+<a name="l42"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l42"></span><span class=cB5>ScaleIndent</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB1>F64</span><span class=cB0> indent_scale_factor)
+<a name="l43"></a>{</span><span class=cB2>//MAlloced str.  8*0.25--&gt;2 or 8*2.0--&gt;16</span><span class=cB0>
+<a name="l44"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,col=0;
+<a name="l45"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst,*dst2;
+<a name="l46"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*src++)
+<a name="l47"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l48"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\t'</span><span class=cB0>)
+<a name="l49"></a>      col=(col+8) &amp; -0x8;
+<a name="l50"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3932"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>)
+<a name="l51"></a>      col++;
+<a name="l52"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l53"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l54"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l55"></a>  src--;
+<a name="l56"></a>  col=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l139"></span><span class=cB5>Round</a></span><span class=cB0>(indent_scale_factor*col);
+<a name="l57"></a>  dst=dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>src</span><span class=cB7>)</span><span class=cB0>+col/8+col&amp;7+1);
+<a name="l58"></a>  </span><span class=cB1>for</span><span class=cB0> (i=col/8; i&gt;0; i--)
+<a name="l59"></a>    *dst2++=</span><span class=cB6>'\t'</span><span class=cB0>;
+<a name="l60"></a>  </span><span class=cB1>for</span><span class=cB0> (i=col&amp;7; i&gt;0; i--)
+<a name="l61"></a>    *dst2++=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3932"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(dst2,src);
+<a name="l63"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l66"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB9>I64</span><span class=cB0> flags,</span><span class=cB1>F64</span><span class=cB0> indent_scale_factor=0)
+<a name="l67"></a>{</span><span class=cB2>//MAlloc </span><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l560"><span class=cB4>StrUtil</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l68"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(src),*dst2,*tmp;
+<a name="l69"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l560"></span><span class=cB5>StrUtil</a></span><span class=cB0>(dst,flags);
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4223"></span><span class=cB3>SUF_T2S</a></span><span class=cB0>)
+<a name="l71"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l1"></span><span class=cB5>Tabs2Spaces</a></span><span class=cB0>(dst);
+<a name="l73"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
+<a name="l74"></a>    dst=tmp;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB1>if</span><span class=cB0> (flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4224"></span><span class=cB3>SUF_SCALE_INDENT</a></span><span class=cB0>)
+<a name="l77"></a>    dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l42"></span><span class=cB5>ScaleIndent</a></span><span class=cB0>(dst,indent_scale_factor);
+<a name="l78"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l79"></a>    dst2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(dst); </span><span class=cB2>//Shorten to just right size.</span><span class=cB0>
+<a name="l80"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dst);
+<a name="l81"></a>  </span><span class=cB1>return</span><span class=cB0> dst2;
+<a name="l82"></a>}
+<a name="l83"></a>
+<a name="l84"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l84"></span><span class=cB5>GetOutOfDollar</a></span><span class=cB0>()
+<a name="l85"></a>{</span><span class=cB2>//If a $ has been printed, print another $ to exit mode.</span><span class=cB0>
+<a name="l86"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1455"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l87"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l341"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l88"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l89"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l43"></span><span class=cB6>text</a></span><span class=cB0>.raw_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4023"></span><span class=cB3>RWF_IN_DOLLAR</a></span><span class=cB0>)
+<a name="l90"></a>      </span><span class=cB6>'$'</span><span class=cB0>;
+<a name="l91"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l92"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l93"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l47"></span><span class=cB6>fp_doc_put</a></span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>doc=(*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l47"></span><span class=cB6>fp_doc_put</a></span><span class=cB0>)(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp; doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1389"></span><span class=cB3>DOCF_IN_DOLLAR</a></span><span class=cB0>)
+<a name="l95"></a>      </span><span class=cB6>'$'</span><span class=cB0>;
+<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>}
+<a name="l98"></a>
+<a name="l99"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l99"></span><span class=cB5>YorN</a></span><span class=cB0>()
+<a name="l100"></a>{</span><span class=cB2>//Wait for user to answer Y or N.</span><span class=cB0>
+<a name="l101"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l102"></a>  </span><span class=cB6>&quot;(y or n)? &quot;</span><span class=cB0>;
+<a name="l103"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l104"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l105"></a>    ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l203"></span><span class=cB5>GetChar</a></span><span class=cB7>(</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l106"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'Y'</span><span class=cB0>)
+<a name="l107"></a>    {
+<a name="l108"></a>      </span><span class=cB6>&quot;$PT$YES$FG$\n&quot;</span><span class=cB0>;
+<a name="l109"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l110"></a>    }
+<a name="l111"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'N'</span><span class=cB0>)
+<a name="l112"></a>    {
+<a name="l113"></a>      </span><span class=cB6>&quot;$PT$NO$FG$\n&quot;</span><span class=cB0>;
+<a name="l114"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l115"></a>    }
+<a name="l116"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l117"></a>}
+<a name="l118"></a>
+<a name="l119"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l119"></span><span class=cB5>PressAKey</a></span><span class=cB0>()
+<a name="l120"></a>{</span><span class=cB2>//Print &quot;Press a key&quot; and wait for non-zero </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3901"><span class=cB4>ASCII</span></a><span class=cB2> key.</span><span class=cB0>
+<a name="l121"></a>  </span><span class=cB6>&quot;$BK,1$PRESS A KEY$BK,0$\n&quot;</span><span class=cB0>;
+<a name="l122"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l203"></span><span class=cB5>GetChar</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l123"></a>}
+<a name="l124"></a>
+<a name="l125"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l125"></span><span class=cB5>AreYouSure</a></span><span class=cB0>()
+<a name="l126"></a>{</span><span class=cB2>//Print &quot;Are you sure&quot; and waits for Y or N.</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB6>&quot;ARE YOU SURE &quot;</span><span class=cB0>;
+<a name="l128"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l99"></span><span class=cB5>YorN</a></span><span class=cB0>;
+<a name="l129"></a>}
+<a name="l130"></a>
+<a name="l131"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l131"></span><span class=cB5>Help</a></span><span class=cB0>()
+<a name="l132"></a>{</span><span class=cB2>//Dbg help or master help index file.</span><span class=cB0>
+<a name="l133"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l361"></span><span class=cB5>IsDbgMode</a></span><span class=cB0>)
+<a name="l134"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l556"></span><span class=cBD>DbgHelp</a></span><span class=cB0>;
+<a name="l135"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l136"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l409"></span><span class=cB5>PopUp</a></span><span class=cB0>(</span><span class=cB6>&quot;Type(\&quot;::/Doc/HelpIndex.DD\&quot;);DocTop;View;&quot;</span><span class=cB0>);
+<a name="l137"></a>}
+<a name="l138"></a>
+<a name="l139"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l139"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *_dst_flags,</span><span class=cB1>U8</span><span class=cB0> *lst,</span><span class=cB1>U8</span><span class=cB0> *src)
+<a name="l140"></a>{
+<a name="l141"></a>  </span><span class=cB2>/*More than 64 flags. Flags passed by ref.</span><span class=cB0>
+<a name="l142"></a>
+<a name="l143"></a></span><span class=cB2>  Examples:</span><span class=cB0>
+<a name="l144"></a></span><span class=cB2>  </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/Diff.html#l330"><span class=cB4>ScanFlags</span></a><span class=cB2>(&amp;fuf_flags,Define(&quot;ST_FILE_UTIL_FLAGS&quot;),fu_flags);</span><span class=cB0>
+<a name="l145"></a>
+<a name="l146"></a></span><span class=cB2>  I64 flags=0;</span><span class=cB0>
+<a name="l147"></a></span><span class=cB2>  ScanFlags(&amp;flags,&quot;R\0L\0Dump\0Scan\0&quot;,&quot;+Dump-R&quot;); //Sets Bit#2, Clears Bit#0.</span><span class=cB0>
+<a name="l148"></a></span><span class=cB2>  */</span><span class=cB0>
+<a name="l149"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l150"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*ptr;
+<a name="l151"></a>  </span><span class=cB1>if</span><span class=cB0> (src)
+<a name="l152"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l153"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>src</span><span class=cB7>)</span><span class=cB0>+1);
+<a name="l154"></a>    </span><span class=cB1>while</span><span class=cB0> (*src)
+<a name="l155"></a>    {
+<a name="l156"></a>      </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0>)
+<a name="l157"></a>        src++;
+<a name="l158"></a>      </span><span class=cB1>if</span><span class=cB0> (*src==</span><span class=cB6>'+'</span><span class=cB0>)
+<a name="l159"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l160"></a>        src++;
+<a name="l161"></a>        </span><span class=cB1>if</span><span class=cB0> (*src)
+<a name="l162"></a>        {
+<a name="l163"></a>          ptr=buf;
+<a name="l164"></a>          </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0> &amp;&amp;
+<a name="l165"></a>                 *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3932"></span><span class=cB3>CH_SPACE</a></span><span class=cB0> &amp;&amp; *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3931"></span><span class=cB3>CH_SHIFT_SPACE</a></span><span class=cB0>)
+<a name="l166"></a>            *ptr++=*src++;
+<a name="l167"></a>          *ptr=0;
+<a name="l168"></a>          i=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB0>(buf,lst);
+<a name="l169"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=0)
+<a name="l170"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(_dst_flags,i);
+<a name="l171"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l172"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l173"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l174"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'ScanFlag'</span><span class=cB0>);
+<a name="l175"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l176"></a>        }
+<a name="l177"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l178"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (*src==</span><span class=cB6>'-'</span><span class=cB0>)
+<a name="l179"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l180"></a>        src++;
+<a name="l181"></a>        </span><span class=cB1>if</span><span class=cB0> (*src)
+<a name="l182"></a>        {
+<a name="l183"></a>          ptr=buf;
+<a name="l184"></a>          </span><span class=cB1>while</span><span class=cB0> (*src &amp;&amp; *src!=</span><span class=cB6>'+'</span><span class=cB0> &amp;&amp; *src!=</span><span class=cB6>'-'</span><span class=cB0> &amp;&amp;
+<a name="l185"></a>                 *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3932"></span><span class=cB3>CH_SPACE</a></span><span class=cB0> &amp;&amp; *src!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3931"></span><span class=cB3>CH_SHIFT_SPACE</a></span><span class=cB0>)
+<a name="l186"></a>            *ptr++=*src++;
+<a name="l187"></a>          *ptr=0;
+<a name="l188"></a>          i=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB0>(buf,lst);
+<a name="l189"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=0)
+<a name="l190"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(_dst_flags,i);
+<a name="l191"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l192"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l193"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l194"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'ScanFlag'</span><span class=cB0>);
+<a name="l195"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l196"></a>        }
+<a name="l197"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l198"></a>    }
+<a name="l199"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l200"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l201"></a>}
+<a name="l202"></a>
+<a name="l203"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l203"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst,</span><span class=cB1>U8</span><span class=cB0> *lst,</span><span class=cB9>I64</span><span class=cB0> flags)
+<a name="l204"></a>{</span><span class=cB2>//Only 64 flags. Flags passed by value.</span><span class=cB0>
+<a name="l205"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l206"></a>  *dst=0;
+<a name="l207"></a>  </span><span class=cB1>while</span><span class=cB0> (flags)
+<a name="l208"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l209"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(flags);
+<a name="l210"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l18"></span><span class=cB5>Btr</a></span><span class=cB0>(&amp;flags,i);
+<a name="l211"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(dst,</span><span class=cB6>&quot;+%z&quot;</span><span class=cB0>,i,lst);
+<a name="l212"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l213"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
+<a name="l214"></a>}
 </span></div></pre></body>
 </html>

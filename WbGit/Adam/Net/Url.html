@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.07">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;::/Adam/Net/Http&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> UrlGet(</span><span class=cB1>U8</span><span class=cB0>* url, </span><span class=cB1>U8</span><span class=cB0>** data_out = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0>* size_out = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l4"></a>{
+<a name="l5"></a>  CUrl curl;
+<a name="l6"></a>  UrlInit(&amp;curl);
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> error = 0;
+<a name="l8"></a>  </span><span class=cB1>if</span><span class=cB0> (UrlParse</span><span class=cB7>(</span><span class=cB0>url, &amp;curl</span><span class=cB7>)</span><span class=cB0>)
+<a name="l9"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l10"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>curl.protocol, </span><span class=cB6>&quot;http&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l11"></a>      error = HttpGet(curl.host, curl.port, curl.path, data_out, size_out);
+<a name="l12"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l13"></a>      error = URL_EPROTOCOL;
+<a name="l14"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l15"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l16"></a>    error = URL_EPARSE;
+<a name="l17"></a>  UrlFree(&amp;curl);
+<a name="l18"></a>  </span><span class=cB1>return</span><span class=cB0> error;
+<a name="l19"></a>}
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB9>I64</span><span class=cB0> UrlGetWithProgress(</span><span class=cB1>U8</span><span class=cB0>* url, </span><span class=cB1>U8</span><span class=cB0>** data_out, </span><span class=cB9>I64</span><span class=cB0>* size_out)
+<a name="l22"></a>{
+<a name="l23"></a>  CUrl curl;
+<a name="l24"></a>  UrlInit(&amp;curl);
+<a name="l25"></a>  </span><span class=cB9>I64</span><span class=cB0> error = 0;
+<a name="l26"></a>  </span><span class=cB9>I64</span><span class=cB0> size = 0;
+<a name="l27"></a>  </span><span class=cB1>if</span><span class=cB0> (UrlParse</span><span class=cB7>(</span><span class=cB0>url, &amp;curl</span><span class=cB7>)</span><span class=cB0>)
+<a name="l28"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l29"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>curl.protocol, </span><span class=cB6>&quot;http&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l30"></a>    {
+<a name="l31"></a>      </span><span class=cB9>I64</span><span class=cB0> sock = HttpOpenGet(curl.host, curl.port, curl.path, &amp;size);
+<a name="l32"></a>      </span><span class=cB1>if</span><span class=cB0> (sock &gt; 0)
+<a name="l33"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB1>if</span><span class=cB0> (size &gt;= 0)
+<a name="l35"></a>        {
+<a name="l36"></a>          </span><span class=cB1>U8</span><span class=cB0>* data = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(1 + size);
+<a name="l37"></a>          </span><span class=cB9>I64</span><span class=cB0> total = 0;
+<a name="l38"></a>          </span><span class=cB9>I64</span><span class=cB0> progress = 0;
+<a name="l39"></a>          </span><span class=cB6>&quot;[&quot;</span><span class=cB3>;
+<a name="l40"></a>          </span><span class=cB1>while</span><span class=cB3> (total &lt; size)
+<a name="l41"></a>          </span><span class=cB7>{</span><span class=cB3>
+<a name="l42"></a>            </span><span class=cB9>I64</span><span class=cB3> step = size - total;
+<a name="l43"></a>            </span><span class=cB1>if</span><span class=cB3> (step &gt; 1024)
+<a name="l44"></a>              step = 1024;
+<a name="l45"></a>            </span><span class=cB9>I64</span><span class=cB3> got = <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l189"></span><span class=cB5>recv</a></span><span class=cB3>(sock, data + total, step, 0);
+<a name="l46"></a>            </span><span class=cB1>if</span><span class=cB3> (got &lt;= 0)
+<a name="l47"></a>            {
+<a name="l48"></a>              error = HTTP_EEOF;
+<a name="l49"></a>              </span><span class=cB1>break</span><span class=cB3>;
+<a name="l50"></a>            }
+<a name="l51"></a>            total += got;
+<a name="l52"></a>            </span><span class=cB9>I64</span><span class=cB3> new_progress = (20 * total + size - 1) / size;
+<a name="l53"></a>            </span><span class=cB1>while</span><span class=cB3> (progress &lt; new_progress)
+<a name="l54"></a>            {
+<a name="l55"></a>              </span><span class=cB6>''</span><span class=cB3> 0xfe;
+<a name="l56"></a>              progress++;
+<a name="l57"></a>            }
+<a name="l58"></a>          </span><span class=cB7>}</span><span class=cB3>
+<a name="l59"></a>        }
+<a name="l60"></a>        </span><span class=cB1>else</span><span class=cB3>
+<a name="l61"></a>          error = HTTP_ECONTENTLENGTH;
+<a name="l62"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Net/SnailLite.html#l162"></span><span class=cB5>close</a></span><span class=cB3>(sock);
+<a name="l63"></a>        </span><span class=cB1>if</span><span class=cB3> (error)
+<a name="l64"></a>        {
+<a name="l65"></a>          </span><span class=cB6>&quot;x\n&quot;</span><span class=cB0>;
+<a name="l66"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l67"></a>        }
+<a name="l68"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l69"></a>        {
+<a name="l70"></a>          </span><span class=cB6>&quot;]\n&quot;</span><span class=cB0>;
+<a name="l71"></a>          data[total] = 0;
+<a name="l72"></a>          *data_out = data;
+<a name="l73"></a>          *size_out = total;
+<a name="l74"></a>        }
+<a name="l75"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l77"></a>        error = sock;
+<a name="l78"></a>    }
+<a name="l79"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l80"></a>      error = URL_EPROTOCOL;
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l83"></a>    error = URL_EPARSE;
+<a name="l84"></a>  UrlFree(&amp;curl);
+<a name="l85"></a>  </span><span class=cB1>return</span><span class=cB0> error;
+<a name="l86"></a>}
+</span></div></pre></body>
+</html>

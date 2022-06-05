@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.07">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> SERIAL_BLKDEV_COM 1
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> SERIAL_CMD_DELAY 100
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> SERIAL_WRITE_DELAY 10
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> SERIAL_MAX_CTS_TX_BYTES 16
+<a name="l5"></a>
+<a name="l6"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'S'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3061"></span><span class=cB3>BDT_SERIAL</a></span><span class=cB0>);
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>Bool</span><span class=cB0> serial_blkdev_initialized=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>Bool</span><span class=cB0> serial_blkdev_init()
+<a name="l11"></a>{
+<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l163"></span><span class=cB5>CommInit8n1</a></span><span class=cB0>(SERIAL_BLKDEV_COM, 115200);
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l222"></span><span class=cB5>CommFlush</a></span><span class=cB0>(SERIAL_BLKDEV_COM);
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,</span><span class=cB6>'S'</span><span class=cB0>);
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l16"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l18"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l19"></a>  </span><span class=cB2>//TODO ack</span><span class=cB0>
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_CMD_DELAY);
+<a name="l21"></a>  serial_blkdev_initialized=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l22"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l23"></a>}
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>Bool</span><span class=cB0> serial_blkdev_deinit()
+<a name="l26"></a>{
+<a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l222"></span><span class=cB5>CommFlush</a></span><span class=cB0>(SERIAL_BLKDEV_COM);
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,</span><span class=cB6>'E'</span><span class=cB0>);
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l31"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l222"></span><span class=cB5>CommFlush</a></span><span class=cB0>(SERIAL_BLKDEV_COM);
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_CMD_DELAY);
+<a name="l35"></a>  serial_blkdev_initialized=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l36"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l37"></a>}
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB1>Bool</span><span class=cB0> serial_blkdev_read(</span><span class=cB1>U8</span><span class=cB0>* buf, </span><span class=cB9>I64</span><span class=cB0> blk, </span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l40"></a>{</span><span class=cB2>// returns a pointer to the block data or null if it fails</span><span class=cB0>
+<a name="l41"></a>  </span><span class=cB1>F64</span><span class=cB0> st, timeout=2.0;
+<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> i,count;
+<a name="l43"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf_ptr=buf;
+<a name="l44"></a>  </span><span class=cB1>if</span><span class=cB0> (serial_blkdev_initialized)
+<a name="l45"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l46"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l222"></span><span class=cB5>CommFlush</a></span><span class=cB0>(SERIAL_BLKDEV_COM);
+<a name="l47"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l48"></a>    {
+<a name="l49"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,</span><span class=cB6>'R'</span><span class=cB0>);
+<a name="l50"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 24 &amp; 0xff);
+<a name="l51"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 16 &amp; 0xff);
+<a name="l52"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 8 &amp; 0xff);
+<a name="l53"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &amp; 0xff);
+<a name="l54"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l55"></a>      count=0;
+<a name="l56"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-st &lt; timeout &amp;&amp; count &lt; 512)
+<a name="l57"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l212"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>SERIAL_BLKDEV_COM, buf_ptr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l59"></a>        {
+<a name="l60"></a>          count++;
+<a name="l61"></a>          buf_ptr++;
+<a name="l62"></a>        }
+<a name="l63"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l64"></a>      </span><span class=cB1>if</span><span class=cB0> (count&lt;512)
+<a name="l65"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>        </span><span class=cB6>&quot;Serial BlkDev read timeout failure\n&quot;</span><span class=cB0>;
+<a name="l67"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l68"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_CMD_DELAY);
+<a name="l70"></a>      blk++;
+<a name="l71"></a>    }
+<a name="l72"></a>    </span><span class=cB2>// TODO expect an ACK</span><span class=cB0>
+<a name="l73"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l77"></a>    </span><span class=cB6>&quot;Serial BlkDev read failure (not initialized)\n&quot;</span><span class=cB0>;
+<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l80"></a>}
+<a name="l81"></a>
+<a name="l82"></a></span><span class=cB1>Bool</span><span class=cB0> serial_blkdev_write(</span><span class=cB1>U8</span><span class=cB0>* buf, </span><span class=cB9>I64</span><span class=cB0> blk, </span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l83"></a>{</span><span class=cB2>// returns a pointer to the block data or null if it fails</span><span class=cB0>
+<a name="l84"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,count;
+<a name="l85"></a>  </span><span class=cB1>F64</span><span class=cB0> st, timeout=2.0;
+<a name="l86"></a>  </span><span class=cB1>U8</span><span class=cB0> tmpval, *buf_ptr=buf;
+<a name="l87"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l222"></span><span class=cB5>CommFlush</a></span><span class=cB0>(SERIAL_BLKDEV_COM);
+<a name="l88"></a>  </span><span class=cB1>if</span><span class=cB0> (serial_blkdev_initialized)
+<a name="l89"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l90"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l91"></a>    {
+<a name="l92"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,</span><span class=cB6>'W'</span><span class=cB0>);
+<a name="l93"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 24 &amp; 0xff);
+<a name="l94"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 16 &amp; 0xff);
+<a name="l95"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &gt;&gt; 8 &amp; 0xff);
+<a name="l96"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM, blk &amp; 0xff);
+<a name="l97"></a>      </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;512/SERIAL_MAX_CTS_TX_BYTES; j++)
+<a name="l98"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l99"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l234"></span><span class=cB5>CommPutBlk</a></span><span class=cB0>(SERIAL_BLKDEV_COM, buf_ptr, SERIAL_MAX_CTS_TX_BYTES);
+<a name="l100"></a>        buf_ptr+=SERIAL_MAX_CTS_TX_BYTES;
+<a name="l101"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_WRITE_DELAY);
+<a name="l102"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l103"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_WRITE_DELAY);
+<a name="l104"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l105"></a>      count=0;
+<a name="l106"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-st &lt; timeout &amp;&amp; count &lt; 16)
+<a name="l107"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l212"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>SERIAL_BLKDEV_COM, &amp;tmpval</span><span class=cB7>)</span><span class=cB0>)
+<a name="l109"></a>        {
+<a name="l110"></a>          count++;
+<a name="l111"></a>        }
+<a name="l112"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l113"></a>      </span><span class=cB1>if</span><span class=cB0> (count&lt;16)
+<a name="l114"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l115"></a>        </span><span class=cB6>&quot;Serial BlkDev write timeout failure\n&quot;</span><span class=cB0>;
+<a name="l116"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l117"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l118"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpval != 0xff)
+<a name="l119"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l120"></a>        </span><span class=cB6>&quot;Serial BlkDev write ack failure\n&quot;</span><span class=cB0>;
+<a name="l121"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l122"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l123"></a>      blk++;
+<a name="l124"></a>    }
+<a name="l125"></a>    </span><span class=cB2>// TODO expect an ACK</span><span class=cB0>
+<a name="l126"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l127"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l128"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l129"></a>}
+<a name="l130"></a>
+<a name="l131"></a></span><span class=cB9>I64</span><span class=cB0> serial_blkdev_get_max()
+<a name="l132"></a>{
+<a name="l133"></a>  </span><span class=cB1>U8</span><span class=cB0> tmpval;
+<a name="l134"></a>  </span><span class=cB1>F64</span><span class=cB0> st,timeout=2.0;
+<a name="l135"></a>  </span><span class=cB9>I64</span><span class=cB0> count=0;
+<a name="l136"></a>  </span><span class=cB9>U32</span><span class=cB0> size=0;
+<a name="l137"></a>  </span><span class=cB1>if</span><span class=cB0> (serial_blkdev_initialized)
+<a name="l138"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,</span><span class=cB6>'M'</span><span class=cB0>);
+<a name="l140"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l141"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l142"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l143"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l190"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(SERIAL_BLKDEV_COM,0);
+<a name="l144"></a>    st=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l145"></a>    count=0;
+<a name="l146"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-st &lt; timeout &amp;&amp; count &lt; 4)
+<a name="l147"></a>    {
+<a name="l148"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l212"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>SERIAL_BLKDEV_COM, &amp;tmpval</span><span class=cB7>)</span><span class=cB0>)
+<a name="l149"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l150"></a>        count++;
+<a name="l151"></a>        size *= 256;
+<a name="l152"></a>        size = size + tmpval;
+<a name="l153"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l154"></a>    }
+<a name="l155"></a>    </span><span class=cB1>if</span><span class=cB0> (count&lt;4)
+<a name="l156"></a>    {
+<a name="l157"></a>      </span><span class=cB6>&quot;Serial BlkDev get max timeout failure\n&quot;</span><span class=cB0>;
+<a name="l158"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l159"></a>    }
+<a name="l160"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l161"></a>  </span><span class=cB2>//TODO</span><span class=cB0>
+<a name="l162"></a>  tmpval=size.u8[0];
+<a name="l163"></a>  size.u8[0]=size.u8[3];
+<a name="l164"></a>  size.u8[3]=tmpval;
+<a name="l165"></a>  tmpval=size.u8[1];
+<a name="l166"></a>  size.u8[1]=size.u8[2];
+<a name="l167"></a>  size.u8[2]=tmpval;
+<a name="l168"></a>  </span><span class=cB6>&quot;Serial BlkDev got card size %d\n&quot;</span><span class=cB0>
+<a name="l169"></a>  ,size;
+<a name="l170"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l178"></span><span class=cB5>Sleep</a></span><span class=cB0>(SERIAL_CMD_DELAY);
+<a name="l171"></a>  </span><span class=cB1>return</span><span class=cB0> size;
+<a name="l172"></a>}
+<a name="l173"></a>
+<a name="l174"></a></span><span class=cB2>// Set kernel functoin pointers for this block device type</span><span class=cB0>
+<a name="l175"></a>
+<a name="l176"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l61"></span><span class=cB6>fp_serial_blkdev_init</a></span><span class=cB0>=&amp;serial_blkdev_init;
+<a name="l177"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l62"></span><span class=cB6>fp_serial_blkdev_deinit</a></span><span class=cB0>=&amp;serial_blkdev_deinit;
+<a name="l178"></a>
+<a name="l179"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l63"></span><span class=cB6>fp_serial_blkdev_read</a></span><span class=cB0>=&amp;serial_blkdev_read;
+<a name="l180"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l64"></span><span class=cB6>fp_serial_blkdev_write</a></span><span class=cB0>=&amp;serial_blkdev_write;
+<a name="l181"></a>
+<a name="l182"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l65"></span><span class=cB6>fp_serial_blkdev_get_max</a></span><span class=cB0>=&amp;serial_blkdev_get_max;
+</span></div></pre></body>
+</html>

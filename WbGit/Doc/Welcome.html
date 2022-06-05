@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.06">
+<meta name="generator" content="TinkerOS V5.07">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
@@ -50,7 +50,7 @@
 <a name="l13"></a>As it turns-out, simplicity makes it faster in some ways, too.  It never 
 <a name="l14"></a>switches privilege levels, never changes address maps, tends to load whole 
 <a name="l15"></a>contiguous files and other, similar things which boost speed.  It's only 
-<a name="l16"></a>130,604 lines of code including the kernel, the 64-bit compiler, the graphics 
+<a name="l16"></a>139,822 lines of code including the kernel, the 64-bit compiler, the graphics 
 <a name="l17"></a>library and all the tools.  More importantly, it's designed to keep the user's 
 <a name="l18"></a>line count down -- you can do a </span><a href="http://tinkeros.github.io/WbGit/Doc/HelloWorld.html#l1"><span class=cB4>Hello World</span></a><span class=cB0> application in one line of code and 
 <a name="l19"></a>can put graphics on the scrn with a three line program!
@@ -103,7 +103,7 @@
 <a name="l66"></a></span><a href="http://tinkeros.github.io/WbGit/Apps/Psalmody/Examples/night.html#l1"><span class=cB4>/Apps/Psalmody/Examples/night.HC</span></a><span class=cB4>
 <a name="l67"></a></span><a href="http://tinkeros.github.io/WbGit/Apps/Psalmody/Examples/prosper.html#l1"><span class=cB4>/Apps/Psalmody/Examples/prosper.HC</span></a><span class=cB0>
 <a name="l68"></a>
-<a name="l69"></a>Two things to know about TempleOS are that <u>tasks</u> have </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>/</span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"><span class=cB4>Free</span></a><span class=cB0> heap memory, 
+<a name="l69"></a>Two things to know about TempleOS are that <u>tasks</u> have </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"><span class=cB4>MAlloc</span></a><span class=cB0>/</span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"><span class=cB4>Free</span></a><span class=cB0> heap memory, 
 <a name="l70"></a>not applications, and tasks have compiler symbol tables that persist at a scope 
 <a name="l71"></a>like environment variables in other operating systems, and the symbols can 
 <a name="l72"></a>include functions.
@@ -111,7 +111,7 @@
 <a name="l74"></a>For other operating systems, I hated learning one language for command line 
 <a name="l75"></a>scripts and another for programming.  With </span><span class=cB2>TempleOS</span><span class=cB0>, the command line feeds 
 <a name="l76"></a>right into the </span><a href="http://tinkeros.github.io/WbGit/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0> compiler, line by line, and it places code into memory it </span><span class=cB4>
-<a name="l77"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>()s.  The compiler is paused at the command line, waiting for input.  
+<a name="l77"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"><span class=cB4>MAlloc</span></a><span class=cB0>()s.  The compiler is paused at the command line, waiting for input.  
 <a name="l78"></a>Naturally, you </span><span class=cB2>#include</span><span class=cB0> a program to load it into memory and, usually, start it.
 <a name="l79"></a>
 <a name="l80"></a>During the boot process, many files get </span><a href="http://tinkeros.github.io/WbGit/StartOS.html#l1"><span class=cB4>compiled</span></a><span class=cB0> before you have access to the 
@@ -140,7 +140,7 @@
 <a name="l103"></a>&gt;</span><span class=cB2>Dir;</span><span class=cB0>
 <a name="l104"></a>
 <a name="l105"></a>The syntax change created an ambiguity when specifying function addresses, like 
-<a name="l106"></a>for calling </span><a href="http://tinkeros.github.io/WbGit/Kernel/QSort.html#l85"><span class=cB4>QSort</span></a><span class=cB0>().  To resolve it, I  made a '</span><span class=cB2>&amp;</span><span class=cB0>' required in front of function 
+<a name="l106"></a>for calling </span><a href="http://tinkeros.github.io/WbGit/Kernel/QSort.html#l95"><span class=cB4>QSort</span></a><span class=cB0>().  To resolve it, I  made a '</span><span class=cB2>&amp;</span><span class=cB0>' required in front of function 
 <a name="l107"></a>names when specifying an address of a function, which is better anyway.
 <a name="l108"></a>
 <a name="l109"></a>Once I was no longer using standard C/C++ syntax, I decided to change everything 
@@ -166,8 +166,8 @@
 <a name="l129"></a>TempleOS is geared toward reading and writing whole files.  Since whole files 
 <a name="l130"></a>are processed, compression is possible.  Filenames ending in &quot;</span><span class=cB2>.Z</span><span class=cB0>&quot; are 
 <a name="l131"></a>automatically compressed or uncompressed when stored and fetched.  TempleOS does 
-<a name="l132"></a>support direct block random access into files, however -- </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l129"><span class=cB4>FBlkRead</span></a><span class=cB0>() and </span><span class=cB4>
-<a name="l133"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l181"><span class=cB4>FBlkWrite</span></a><span class=cB0>().
+<a name="l132"></a>support direct block random access into files, however -- </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l148"><span class=cB4>FBlkRead</span></a><span class=cB0>() and </span><span class=cB4>
+<a name="l133"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l205"><span class=cB4>FBlkWrite</span></a><span class=cB0>().
 <a name="l134"></a>
 <a name="l135"></a>If a file is not found, &quot;</span><span class=cB2>.Z</span><span class=cB0>&quot; is added or removed and a search is done, again.  
 <a name="l136"></a>There is no </span><span class=cB2>PATH</span><span class=cB0>, but parent directories are searched when a file is not found.  
@@ -190,8 +190,8 @@
 <a name="l153"></a>not used, so this is possible.  See </span><a href="http://tinkeros.github.io/WbGit/Doc/MultiCore.html#l1"><span class=cB4>TempleOS MultiCore</span></a><span class=cB0>.
 <a name="l154"></a>
 <a name="l155"></a>There is no distinction between the terms </span><span class=cB2>task</span><span class=cB0>, </span><span class=cB2>process</span><span class=cB0> or </span><span class=cB2>thread</span><span class=cB0>.  All have a 
-<a name="l156"></a>task record, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3740"><span class=cB4>CTask</span></a><span class=cB0>, pointed to by the </span><span class=cB2>FS</span><span class=cB0> segment reg and are accessed with </span><span class=cB4>Fs-&gt;</span><span class=cB0> 
-<a name="l157"></a>while </span><span class=cB4>Gs-&gt;</span><span class=cB0> points to a </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3862"><span class=cB4>CCPU</span></a><span class=cB0> for the current CPU core.  Each task can have just 
+<a name="l156"></a>task record, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3744"><span class=cB4>CTask</span></a><span class=cB0>, pointed to by the </span><span class=cB2>FS</span><span class=cB0> segment reg and are accessed with </span><span class=cB4>Fs-&gt;</span><span class=cB0> 
+<a name="l157"></a>while </span><span class=cB4>Gs-&gt;</span><span class=cB0> points to a </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3866"><span class=cB4>CCPU</span></a><span class=cB0> for the current CPU core.  Each task can have just 
 <a name="l158"></a>one window, but a task can have children with windows.  (The segment regs are 
 <a name="l159"></a>just used as extra regs -- there is nothing segmented about TempleOS' memory.)  
 <a name="l160"></a>It is approximately the case that </span><span class=cB2>TempleOS</span><span class=cB0> is multi-threading, 
@@ -216,7 +216,7 @@
 <a name="l179"></a>
 <a name="l180"></a>Typically, your usage pattern through the day will be repeatedly left or right 
 <a name="l181"></a>clicking on filenames in a cmd line </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"><span class=cB4>Dir</span></a><span class=cB0>() listing.  You left-click files to edit 
-<a name="l182"></a>them and right-click to </span><span class=cB2>#include</span><span class=cB0> them.  To begin a project, type </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l204"><span class=cB4>Ed</span></a><span class=cB0>(&quot;filename&quot;);
+<a name="l182"></a>them and right-click to </span><span class=cB2>#include</span><span class=cB0> them.  To begin a project, type </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l205"><span class=cB4>Ed</span></a><span class=cB0>(&quot;filename&quot;);
 <a name="l183"></a>, supplying a filename.  You can also run programs with </span><span class=cB2>&lt;F5&gt;</span><span class=cB0> when in the editor. </span><span class=cB2>
 <a name="l184"></a>&lt;ESC&gt;</span><span class=cB0> to save and exit the file.  You'll need to do a new </span><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"><span class=cB4>Dir</span></a><span class=cB0>() cmd, 
 <a name="l185"></a>periodically, so make a macro on your PersonalMenu.  Access your PersonalMenu by 
@@ -256,7 +256,7 @@
 <a name="l219"></a>
 <a name="l220"></a>Software is distributed as </span><a href="http://tinkeros.github.io/WbGit/Doc/RedSea.html#l1"><span class=cB4>RedSea</span></a><span class=cB0> ISO files.  Burn a CD/DVD, or set your CD/DVD 
 <a name="l221"></a>in </span><span class=cB2>QEMU</span><span class=cB0>, </span><span class=cB2>VMware</span><span class=cB0> or </span><span class=cB2>VirtualBox</span><span class=cB0> to the ISO file.  Then, access the </span><span class=cB2>'T'</span><span class=cB0> drive.  Or, </span><span class=cB4>
-<a name="l222"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l203"><span class=cB4>Mount</span></a><span class=cB0>() the ISO.C file and access the </span><span class=cB2>'M'</span><span class=cB0> drive in TempleOS.  It must be a 
+<a name="l222"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l202"><span class=cB4>Mount</span></a><span class=cB0>() the ISO.C file and access the </span><span class=cB2>'M'</span><span class=cB0> drive in TempleOS.  It must be a 
 <a name="l223"></a>contiguous ISO.C file, so rename it under TempleOS to ISO.C.
 <a name="l224"></a>
 <a name="l225"></a>Ideally, do not install applications such as games onto your hard drive because 

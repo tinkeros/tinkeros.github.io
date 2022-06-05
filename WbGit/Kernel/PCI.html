@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.07">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>
+<a name="l2"></a></span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg)
+<a name="l3"></a>{</span><span class=cB2>//Read U32 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> res, addr, </span><span class=cB1>offset</span><span class=cB0>;
+<a name="l5"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l6"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l211"></span><span class=cBD>PCIBIOSReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg);
+<a name="l7"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l8"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l9"></a>    addr =      bus &lt;&lt; 16       |
+<a name="l10"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0> &lt;&lt; 11   |
+<a name="l11"></a>            fun &lt;&lt; 8    |
+<a name="l12"></a>            rg &amp; 0xFC   |
+<a name="l13"></a>            0x80000000;
+<a name="l14"></a>    </span><span class=cB1>offset</span><span class=cB0> = rg - rg &amp; 0xFC;
+<a name="l15"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l330"></span><span class=cB3>PCI_ADDR</a></span><span class=cB0>, addr);
+<a name="l16"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l76"></span><span class=cB5>InU32</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l331"></span><span class=cB3>PCI_DATA</a></span><span class=cB0>) &gt;&gt; (</span><span class=cB1>offset</span><span class=cB0> * 8);
+<a name="l17"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l19"></a>}
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg)
+<a name="l22"></a>{</span><span class=cB2>//Read U8 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB9>I64</span><span class=cB0> res;
+<a name="l24"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l25"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l173"></span><span class=cBD>PCIBIOSReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg);
+<a name="l26"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l28"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg) &amp; 0xFF;
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l31"></a>}
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB9>U16</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg)
+<a name="l34"></a>{</span><span class=cB2>//Read U16 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB9>I64</span><span class=cB0> res;
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l37"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l192"></span><span class=cBD>PCIBIOSReadU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg);
+<a name="l38"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l39"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l40"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg) &amp; 0xFFFF;
+<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l43"></a>}
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l45"></span><span class=cB5>PCIWriteU32</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg, </span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l46"></a>{</span><span class=cB2>//Write U32 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l47"></a>  </span><span class=cB9>I64</span><span class=cB0> addr, </span><span class=cB1>offset</span><span class=cB0>;
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l49"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l260"></span><span class=cBD>PCIBIOSWriteU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg, val);
+<a name="l50"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l51"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l52"></a>    addr =      bus &lt;&lt; 16       |
+<a name="l53"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0> &lt;&lt; 11   |
+<a name="l54"></a>            fun &lt;&lt; 8    |
+<a name="l55"></a>            rg &amp; 0xFC   |
+<a name="l56"></a>            0x80000000;
+<a name="l57"></a>    </span><span class=cB1>offset</span><span class=cB0> = rg - rg &amp; 0xFC;
+<a name="l58"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l330"></span><span class=cB3>PCI_ADDR</a></span><span class=cB0>, addr);
+<a name="l59"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l331"></span><span class=cB3>PCI_DATA</a></span><span class=cB0>, val &lt;&lt; </span><span class=cB7>(</span><span class=cB1>offset</span><span class=cB0> * 8</span><span class=cB7>)</span><span class=cB0>);
+<a name="l60"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l61"></a>}
+<a name="l62"></a>
+<a name="l63"></a>
+<a name="l64"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l64"></span><span class=cB5>PCIWriteU8</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg, </span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l65"></a>{</span><span class=cB2>//Write U8 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l230"></span><span class=cBD>PCIBIOSWriteU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg, val);
+<a name="l68"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l45"></span><span class=cB5>PCIWriteU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg, val &amp; 0xFF);
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>}
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l74"></span><span class=cB5>PCIWriteU16</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun, </span><span class=cB9>I64</span><span class=cB0> rg, </span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l75"></a>{</span><span class=cB2>//Write U16 in PCI configspace at bus, dev, fun, reg.</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l77"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l245"></span><span class=cBD>PCIBIOSWriteU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg, val);
+<a name="l78"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l79"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l80"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l45"></span><span class=cB5>PCIWriteU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l35"></span><span class=cB6>dev</a></span><span class=cB0>, fun, rg, val &amp; 0xFFFF);
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>}
+<a name="l83"></a>
+<a name="l84"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l84"></span><span class=cB5>PCIClassFind</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> class_code, </span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l85"></a>{
+<a name="l86"></a>  </span><span class=cB2>/*Find bus, dev, fun of Nth class_code dev.</span><span class=cB0>
+<a name="l87"></a>
+<a name="l88"></a></span><span class=cB2>  class_code is low three bytes</span><span class=cB0>
+<a name="l89"></a></span><span class=cB2>  n is index starting at zero</span><span class=cB0>
+<a name="l90"></a></span><span class=cB2>  Return: -1 not found</span><span class=cB0>
+<a name="l91"></a></span><span class=cB2>  else bus, dev, fun.</span><span class=cB0>
+<a name="l92"></a></span><span class=cB2>  */</span><span class=cB0>
+<a name="l93"></a>  </span><span class=cB9>I64</span><span class=cB0> res = -1, cur = 0, b, d, f;
+<a name="l94"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l169"></span><span class=cB6>sys_pci_services</a></span><span class=cB0>)
+<a name="l95"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l96"></a>    res = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIBIOS.html#l275"></span><span class=cBD>PCIBIOSClassFind</a></span><span class=cB0>(class_code, n);
+<a name="l97"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l99"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l100"></a>    </span><span class=cB1>for</span><span class=cB0> (b = 0; b &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>; b++)
+<a name="l101"></a>      </span><span class=cB1>for</span><span class=cB0> (d = 0; d &lt; 32; d++)
+<a name="l102"></a>        </span><span class=cB1>for</span><span class=cB0> (f = 0; f &lt; 8; f++)
+<a name="l103"></a>        {
+<a name="l104"></a>          </span><span class=cB1>if</span><span class=cB0> (class_code == <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB7>(</span><span class=cB0>b, d, f, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l299"></span><span class=cB3>PCIR_PROG_IF</a></span><span class=cB7>)</span><span class=cB0> &amp; 0xFFFFFF)
+<a name="l105"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l106"></a>            </span><span class=cB1>if</span><span class=cB0> (n == cur++)
+<a name="l107"></a>            {
+<a name="l108"></a>              res = b &lt;&lt; 16 | d &lt;&lt; 8 | f;
+<a name="l109"></a>              </span><span class=cB1>goto</span><span class=cB0> pci_end;
+<a name="l110"></a>            }
+<a name="l111"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l112"></a>        }
+<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l114"></a>pci_end:
+<a name="l115"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l116"></a>}
+</span></div></pre></body>
+</html>

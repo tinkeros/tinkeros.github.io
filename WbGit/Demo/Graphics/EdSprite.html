@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.06">
+<meta name="generator" content="TinkerOS V5.07">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -98,34 +98,34 @@
 <a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> *out_img;
 <a name="l59"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc;
 <a name="l60"></a>  </span><span class=cB1>for</span><span class=cB0> (n=0;n&lt;NUM;n++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l61"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l311"></span><span class=cB5>SpriteExtents</a></span><span class=cB0>(in_img[n],&amp;minx,&amp;maxx,&amp;miny,&amp;maxy);
+<a name="l61"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l330"></span><span class=cB5>SpriteExtents</a></span><span class=cB0>(in_img[n],&amp;minx,&amp;maxx,&amp;miny,&amp;maxy);
 <a name="l62"></a>    w=maxx-minx+1+2;
 <a name="l63"></a>    h=maxy-miny+1+2;
-<a name="l64"></a>    dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l189"></span><span class=cB5>DCNew</a></span><span class=cB0>(w,h);
-<a name="l65"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3381"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
+<a name="l64"></a>    dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(w,h);
+<a name="l65"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3385"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
 <a name="l66"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc,0,0,w,h);
 <a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,-minx+1,-miny+1,0,in_img[n]);
 <a name="l68"></a>
 <a name="l69"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;h;i++)
 <a name="l70"></a>      </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;w;j++)
-<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l111"></span><span class=cB5>GrPeek</a></span><span class=cB7>(</span><span class=cB0>dc,j,i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3381"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) {
+<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l121"></span><span class=cB5>GrPeek</a></span><span class=cB7>(</span><span class=cB0>dc,j,i</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3385"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) {
 <a name="l72"></a>          </span><span class=cB1>for</span><span class=cB0> (k=0;k&lt;8;k++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l73"></a>            c=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l111"></span><span class=cB5>GrPeek</a></span><span class=cB0>(dc,j+<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l3"></span><span class=cB6>gr_x_offsets</a></span><span class=cB0>[k],i+<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l4"></span><span class=cB6>gr_y_offsets</a></span><span class=cB0>[k]);
-<a name="l74"></a>            </span><span class=cB1>if</span><span class=cB0> (c!=-1 &amp;&amp; c!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>BLACK</a></span><span class=cB0> &amp;&amp; c!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3381"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) {
-<a name="l75"></a>              dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>BLACK</a></span><span class=cB0>;
-<a name="l76"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l51"></span><span class=cB5>GrPlot</a></span><span class=cB0>(dc,j,i);
+<a name="l73"></a>            c=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l121"></span><span class=cB5>GrPeek</a></span><span class=cB0>(dc,j+<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l3"></span><span class=cB6>gr_x_offsets</a></span><span class=cB0>[k],i+<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l4"></span><span class=cB6>gr_y_offsets</a></span><span class=cB0>[k]);
+<a name="l74"></a>            </span><span class=cB1>if</span><span class=cB0> (c!=-1 &amp;&amp; c!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BLACK</a></span><span class=cB0> &amp;&amp; c!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3385"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) {
+<a name="l75"></a>              dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l76"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l55"></span><span class=cB5>GrPlot</a></span><span class=cB0>(dc,j,i);
 <a name="l77"></a>              </span><span class=cB1>break</span><span class=cB0>;
 <a name="l78"></a>            }
 <a name="l79"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l80"></a>        }
 <a name="l81"></a>
-<a name="l82"></a>    out_img=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteNew.html#l110"></span><span class=cB5>DC2Sprite</a></span><span class=cB0>(dc);
+<a name="l82"></a>    out_img=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteNew.html#l114"></span><span class=cB5>DC2Sprite</a></span><span class=cB0>(dc);
 <a name="l83"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l84"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l497"></span><span class=cB5>Sprite</a></span><span class=cB0>(out_img);
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l516"></span><span class=cB5>Sprite</a></span><span class=cB0>(out_img);
 <a name="l85"></a>    </span><span class=cB6>'\n\n\n\n'</span><span class=cB0>;
 <a name="l86"></a>
-<a name="l87"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l211"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
-<a name="l88"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(out_img);
+<a name="l87"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l88"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out_img);
 <a name="l89"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l90"></a>}
 <a name="l91"></a>
