@@ -1,0 +1,360 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.07">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// I use () for empty functions because I want syntax highlighting on GitHub and my code editor.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>// The Generate.ps1 script does a quick search and replace to remove those.</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;HolyC&quot;</span><span class=cB0>
+<a name="l5"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Palette&quot;</span><span class=cB0>
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB1>U8</span><span class=cB0> *version = </span><span class=cB6>&quot;v1.0.0&quot;</span><span class=cB0>;
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB6>&quot;Wordle by xSlendiX - %s\n&quot;</span><span class=cB0>
+<a name="l10"></a>, version;
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB6>&quot;Defines &quot;</span><span class=cB0>;
+<a name="l13"></a>
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> LT_EMP  0
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> LT_OK   1
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> LT_POS  2
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> LT_SEL  3
+<a name="l18"></a>
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> LT_SZ  (20)
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> LT_RAD (10)
+<a name="l21"></a>
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> LT_CX (</span><span class=cB7>(</span><span class=cB0>LT_SZ+(LT_RAD*2)</span><span class=cB7>)</span><span class=cB0>/2)
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> LT_CY (</span><span class=cB7>(</span><span class=cB0>LT_SZ+(LT_RAD*2)</span><span class=cB7>)</span><span class=cB0>/2)
+<a name="l24"></a>
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> LT_FSCALE (3)
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> LT_OFFX   (-1)
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> LT_OFFY   (0)
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> LT_FHALF  (LT_FSCALE/2)
+<a name="l29"></a>
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> LT_SPACING (2)
+<a name="l31"></a>
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> WDEPTH 5
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> WLEN   5
+<a name="l34"></a>
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> W_NONE 0
+<a name="l36"></a>#</span><span class=cB1>define</span><span class=cB0> W_WIN  1
+<a name="l37"></a>#</span><span class=cB1>define</span><span class=cB0> W_FAIL 2
+<a name="l38"></a>
+<a name="l39"></a>#</span><span class=cB1>define</span><span class=cB0> DIALOGW (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*30)
+<a name="l40"></a>#</span><span class=cB1>define</span><span class=cB0> DIALOGH (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*7)
+<a name="l41"></a>
+<a name="l42"></a></span><span class=cB6>&quot;Vars &quot;</span><span class=cB0>;
+<a name="l43"></a></span><span class=cB1>U8</span><span class=cB0> **wwords = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l44"></a></span><span class=cB9>I64</span><span class=cB0> wcnt = 0;
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>U8</span><span class=cB0> *gameTable = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l47"></a></span><span class=cB1>U8</span><span class=cB0> *word;
+<a name="l48"></a></span><span class=cB9>I64</span><span class=cB0> win=W_NONE;
+<a name="l49"></a></span><span class=cB9>I64</span><span class=cB0> cdepth=0;
+<a name="l50"></a></span><span class=cB9>I64</span><span class=cB0> gcheats=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>;
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB1>U8</span><span class=cB0> wdark=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>;
+<a name="l53"></a></span><span class=cB2>//#include &quot;Settings&quot;</span><span class=cB0>
+<a name="l54"></a>
+<a name="l55"></a></span><span class=cB6>&quot;Funcs &quot;</span><span class=cB0>;
+<a name="l56"></a></span><span class=cB2>// Adapted from GodInit</span><span class=cB0>
+<a name="l57"></a></span><span class=cB9>I64</span><span class=cB0> WordInit(</span><span class=cB1>U8</span><span class=cB0> *file=</span><span class=cB6>&quot;Vocab.TXT&quot;</span><span class=cB0>)
+<a name="l58"></a>{
+<a name="l59"></a>  </span><span class=cB9>I64</span><span class=cB0> i,ch,count;
+<a name="l60"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*ptr,*ptr2;
+<a name="l61"></a>  i=0;
+<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (buf=ptr=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB7>(</span><span class=cB0>file</span><span class=cB7>)</span><span class=cB0>)
+<a name="l63"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l64"></a>    </span><span class=cB1>while</span><span class=cB0> (*ptr)
+<a name="l65"></a>    {
+<a name="l66"></a>      </span><span class=cB1>while</span><span class=cB0> (*ptr &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l348"></span><span class=cB6>char_bmp_word</a></span><span class=cB0>,*ptr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l67"></a>        ptr++;
+<a name="l68"></a>      </span><span class=cB1>if</span><span class=cB0> (*ptr)
+<a name="l69"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>        </span><span class=cB1>while</span><span class=cB0> (*ptr &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l348"></span><span class=cB6>char_bmp_word</a></span><span class=cB0>,*ptr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l71"></a>          ptr++;
+<a name="l72"></a>        i++;
+<a name="l73"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l74"></a>    }
+<a name="l75"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>  count=i;
+<a name="l78"></a>  wwords=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(count*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l79"></a>  i=0;
+<a name="l80"></a>  </span><span class=cB1>if</span><span class=cB0> (buf=ptr=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB7>(</span><span class=cB0>file</span><span class=cB7>)</span><span class=cB0>)
+<a name="l81"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l82"></a>    </span><span class=cB1>while</span><span class=cB0> (*ptr)
+<a name="l83"></a>    {
+<a name="l84"></a>      </span><span class=cB1>while</span><span class=cB0> (*ptr &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l348"></span><span class=cB6>char_bmp_word</a></span><span class=cB0>,*ptr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l85"></a>        ptr++;
+<a name="l86"></a>      </span><span class=cB1>if</span><span class=cB0> (*ptr)
+<a name="l87"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l88"></a>        ptr2=ptr;
+<a name="l89"></a>        </span><span class=cB1>while</span><span class=cB0> (*ptr &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l348"></span><span class=cB6>char_bmp_word</a></span><span class=cB0>,*ptr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l90"></a>          ptr++;
+<a name="l91"></a>        ch=*ptr;
+<a name="l92"></a>        *ptr=0;
+<a name="l93"></a>        wwords[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(ptr2);
+<a name="l94"></a>        i++;
+<a name="l95"></a>        *ptr=ch;
+<a name="l96"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>    }
+<a name="l98"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l99"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l100"></a>  </span><span class=cB1>return</span><span class=cB0> count;
+<a name="l101"></a>}
+<a name="l102"></a>
+<a name="l103"></a></span><span class=cB1>U0</span><span class=cB0> DrawLetter(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l18"></span><span class=cB6>gr</a></span><span class=cB0>.dc, </span><span class=cB1>U8</span><span class=cB0> ch, </span><span class=cB9>I64</span><span class=cB0> type, </span><span class=cB9>I64</span><span class=cB0> x, </span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l104"></a>{
+<a name="l105"></a>  </span><span class=cB9>I64</span><span class=cB0> pcol=dc-&gt;color;
+<a name="l106"></a>  </span><span class=cB1>switch</span><span class=cB0>(type)
+<a name="l107"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>  </span><span class=cB1>case</span><span class=cB0> LT_OK:
+<a name="l109"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l110"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l111"></a>  </span><span class=cB1>case</span><span class=cB0> LT_POS:
+<a name="l112"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3400"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l113"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l114"></a>  </span><span class=cB1>case</span><span class=cB0> LT_SEL:
+<a name="l115"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3387"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l116"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l117"></a>  </span><span class=cB1>case</span><span class=cB0> LT_EMP:
+<a name="l118"></a>  </span><span class=cB1>default</span><span class=cB0>:
+<a name="l119"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3393"></span><span class=cB3>LTGRAY</a></span><span class=cB0>;
+<a name="l120"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l121"></a>  GrRndRect(dc, LT_RAD+x, LT_RAD+y, LT_SZ, LT_SZ, LT_RAD);
+<a name="l122"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l123"></a>  </span><span class=cB2>// FIXME: Buggy, needs better math</span><span class=cB0>
+<a name="l124"></a>  GrChar(dc, ch, x+LT_OFFX+</span><span class=cB7>(</span><span class=cB0>LT_CX-LT_FHALF</span><span class=cB7>)</span><span class=cB0>/2, y+LT_OFFY+</span><span class=cB7>(</span><span class=cB0>LT_CY-LT_FHALF</span><span class=cB7>)</span><span class=cB0>/2, LT_FSCALE);
+<a name="l125"></a>  dc-&gt;color=pcol;
+<a name="l126"></a>}
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB1>U0</span><span class=cB0> DrawWin(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l129"></a>{
+<a name="l130"></a>  </span><span class=cB1>if</span><span class=cB0> (win == W_NONE) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l131"></a>  </span><span class=cB9>I64</span><span class=cB0> pcol=dc-&gt;color;
+<a name="l132"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l133"></a>  GrRndRect(dc, dc-&gt;width/2-DIALOGW/2, dc-&gt;height/2-DIALOGH/2,
+<a name="l134"></a>            DIALOGW, DIALOGH, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>);
+<a name="l135"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3401"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l136"></a>  GrRndRect(dc, dc-&gt;width/2-DIALOGW/2, dc-&gt;height/2-DIALOGH/2,
+<a name="l137"></a>            DIALOGW, DIALOGH, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>/2);
+<a name="l138"></a>  </span><span class=cB1>switch</span><span class=cB0> (win)
+<a name="l139"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l140"></a>  </span><span class=cB1>case</span><span class=cB0> W_WIN:
+<a name="l141"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l142"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, dc-&gt;width/2-4*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>, dc-&gt;height/2-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>/2-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>, </span><span class=cB6>&quot;You win!&quot;</span><span class=cB0>);
+<a name="l143"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l144"></a>  </span><span class=cB1>case</span><span class=cB0> W_FAIL:
+<a name="l145"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l146"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, dc-&gt;width/2-4.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>, dc-&gt;height/2-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>/2-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>, </span><span class=cB6>&quot;You lose!&quot;</span><span class=cB0>);
+<a name="l147"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l148"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l149"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l150"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, dc-&gt;width/2-13*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>, dc-&gt;height/2-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>/2+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>, </span><span class=cB6>&quot;Press ENTER to play again!&quot;</span><span class=cB0>);
+<a name="l151"></a>  dc-&gt;color=pcol;
+<a name="l152"></a>}
+<a name="l153"></a>
+<a name="l154"></a></span><span class=cB1>U0</span><span class=cB0> DrawTable(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l18"></span><span class=cB6>gr</a></span><span class=cB0>.dc)
+<a name="l155"></a>{
+<a name="l156"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l157"></a>  </span><span class=cB9>I64</span><span class=cB0> type;
+<a name="l158"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
+<a name="l159"></a>  </span><span class=cB9>I64</span><span class=cB0> w=(LT_SZ+LT_RAD*2+LT_SPACING)*WLEN;
+<a name="l160"></a>  </span><span class=cB9>I64</span><span class=cB0> h=(LT_SZ+LT_RAD*2+LT_SPACING)*WDEPTH;
+<a name="l161"></a>  </span><span class=cB9>I64</span><span class=cB0> offx=dc-&gt;width/2-w/2;
+<a name="l162"></a>  </span><span class=cB9>I64</span><span class=cB0> offy=dc-&gt;height/2-h/2;
+<a name="l163"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;WDEPTH; i++)
+<a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;WLEN; j++)
+<a name="l166"></a>    {
+<a name="l167"></a>      ch=gameTable[j+WLEN*i];
+<a name="l168"></a>      type=LT_EMP;
+<a name="l169"></a>      </span><span class=cB1>if</span><span class=cB0> (cdepth &lt;= i)
+<a name="l170"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l171"></a>        type=LT_SEL;
+<a name="l172"></a>        </span><span class=cB1>goto</span><span class=cB0> draw_table_next;
+<a name="l173"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l174"></a>      </span><span class=cB1>if</span><span class=cB0> (ch == word[j])
+<a name="l175"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l176"></a>        type=LT_OK;
+<a name="l177"></a>        </span><span class=cB1>goto</span><span class=cB0> draw_table_next;
+<a name="l178"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l179"></a>      </span><span class=cB1>if</span><span class=cB0> (U8InStr</span><span class=cB7>(</span><span class=cB0>ch, word</span><span class=cB7>)</span><span class=cB0>)
+<a name="l180"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l181"></a>        type=LT_POS;
+<a name="l182"></a>        </span><span class=cB1>goto</span><span class=cB0> draw_table_next;
+<a name="l183"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l184"></a>draw_table_next:
+<a name="l185"></a>      DrawLetter(dc, ch, type, j*</span><span class=cB7>(</span><span class=cB0>LT_SZ+LT_SPACING+LT_RAD*2</span><span class=cB7>)</span><span class=cB0>+offx, i*</span><span class=cB7>(</span><span class=cB0>LT_SZ+LT_SPACING+LT_RAD*2</span><span class=cB7>)</span><span class=cB0>+offy);
+<a name="l186"></a>    }
+<a name="l187"></a>    </span><span class=cB1>if</span><span class=cB0> (cdepth == i &amp;&amp; win == W_NONE)
+<a name="l188"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l128"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc, w+LT_RAD*2+offx, LT_CY+</span><span class=cB7>(</span><span class=cB0>LT_SZ+LT_SPACING+LT_RAD*2</span><span class=cB7>)</span><span class=cB0>*i+offy, 0, w+LT_RAD+offx, LT_CY+</span><span class=cB7>(</span><span class=cB0>LT_SZ+LT_SPACING+LT_RAD*2</span><span class=cB7>)</span><span class=cB0>*i+offy, 0);
+<a name="l189"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l190"></a>}
+<a name="l191"></a>
+<a name="l192"></a></span><span class=cB9>I64</span><span class=cB0> CheckWin()
+<a name="l193"></a>{
+<a name="l194"></a>  </span><span class=cB1>if</span><span class=cB0> (cdepth == 0) </span><span class=cB1>return</span><span class=cB0> W_NONE;
+<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>gameTable+(cdepth-1)*WLEN, word</span><span class=cB7>)</span><span class=cB0> == 0) </span><span class=cB1>return</span><span class=cB0> W_WIN;
+<a name="l196"></a>  </span><span class=cB1>if</span><span class=cB0> (cdepth == WDEPTH) </span><span class=cB1>return</span><span class=cB0> W_FAIL;
+<a name="l197"></a>  </span><span class=cB1>return</span><span class=cB0> W_NONE;
+<a name="l198"></a>}
+<a name="l199"></a>
+<a name="l200"></a></span><span class=cB1>U0</span><span class=cB0> WordleDrawIt(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3744"></span><span class=cB9>CTask</a></span><span class=cB0> *, </span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l201"></a>{
+<a name="l202"></a>  DrawTable(dc);
+<a name="l203"></a>  </span><span class=cB1>if</span><span class=cB0> (gcheats==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>)
+<a name="l204"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>, </span><span class=cB6>&quot;Cheats ON!\nWord: %s&quot;</span><span class=cB0>, word);
+<a name="l206"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l207"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, dc-&gt;width-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*21, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>, </span><span class=cB6>&quot;Toggle theme: CTRL-T\n  Quit: CTRL-Q | ESC&quot;</span><span class=cB0>);
+<a name="l208"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, dc-&gt;width-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4038"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(version)+1</span><span class=cB7>)</span><span class=cB0>, dc-&gt;height-</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4039"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*3</span><span class=cB7>)</span><span class=cB0>, version);
+<a name="l209"></a>  DrawWin(dc);
+<a name="l210"></a>}
+<a name="l211"></a>
+<a name="l212"></a></span><span class=cB1>U0</span><span class=cB0> ResetGame()
+<a name="l213"></a>{
+<a name="l214"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l215"></a>  </span><span class=cB9>I64</span><span class=cB0> randomWord = RandRng(,wcnt);
+<a name="l216"></a>  word = wwords[randomWord];
+<a name="l217"></a>  </span><span class=cB1>if</span><span class=cB0> (word == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l218"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'WN'</span><span class=cB0>);
+<a name="l219"></a>  cdepth=0;
+<a name="l220"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;WDEPTH*WLEN+1; i++)
+<a name="l221"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l222"></a>    gameTable[i] = </span><span class=cB6>'\0'</span><span class=cB0>;
+<a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l224"></a>  win=W_NONE;
+<a name="l225"></a>}
+<a name="l226"></a>
+<a name="l227"></a></span><span class=cB1>U0</span><span class=cB0> Wordle()
+<a name="l228"></a>{
+<a name="l229"></a>  </span><span class=cB9>U64</span><span class=cB0> sc;
+<a name="l230"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l231"></a>  wcnt = WordInit();
+<a name="l232"></a>  </span><span class=cB1>if</span><span class=cB0> (wwords == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l233"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'WLN'</span><span class=cB0>);
+<a name="l234"></a>  gameTable = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB7>)</span><span class=cB0>*WDEPTH*WLEN+1);
+<a name="l235"></a>  ResetGame();
+<a name="l236"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>();
+<a name="l237"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>();
+<a name="l238"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l318"></span><span class=cB5>AutoComplete</a></span><span class=cB0>();
+<a name="l239"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l588"></span><span class=cB5>WinBorder</a></span><span class=cB0>();
+<a name="l240"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l574"></span><span class=cB5>WinMax</a></span><span class=cB0>();
+<a name="l241"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>();
+<a name="l242"></a>  </span><span class=cB1>if</span><span class=cB0> (wdark)
+<a name="l243"></a>    WordleDark();
+<a name="l244"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l245"></a>    WordleLight();
+<a name="l246"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it = &amp;WordleDrawIt;
+<a name="l247"></a>  </span><span class=cB9>I64</span><span class=cB0> wbase,len;
+<a name="l248"></a>  </span><span class=cB1>U8</span><span class=cB0> *cheatCode=</span><span class=cB6>&quot;elephants&quot;</span><span class=cB0>;
+<a name="l249"></a>  </span><span class=cB9>I64</span><span class=cB0> cheatIdx=0;
+<a name="l250"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l251"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l252"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l253"></a>    {
+<a name="l254"></a>      wbase=cdepth*WLEN;
+<a name="l255"></a>      len=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(gameTable+wbase);
+<a name="l256"></a>      </span><span class=cB1>U8</span><span class=cB0> key = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l155"></span><span class=cB5>GetKey</a></span><span class=cB0>(&amp;sc);
+<a name="l257"></a>      </span><span class=cB1>switch</span><span class=cB0> (key)   </span><span class=cB2>// FIXME: This can probably be optimized further</span><span class=cB0>
+<a name="l258"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l259"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'a'</span><span class=cB0>...</span><span class=cB6>'z'</span><span class=cB0>:
+<a name="l260"></a>        </span><span class=cB1>if</span><span class=cB0> (key == cheatCode[cheatIdx])
+<a name="l261"></a>          cheatIdx++;
+<a name="l262"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l263"></a>          cheatIdx=0;
+<a name="l264"></a>        </span><span class=cB1>if</span><span class=cB0> (cheatIdx == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>cheatCode</span><span class=cB7>)</span><span class=cB0>)
+<a name="l265"></a>          gcheats=!gcheats;
+<a name="l266"></a>        </span><span class=cB1>if</span><span class=cB0> (win != W_NONE) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l267"></a>        </span><span class=cB1>if</span><span class=cB0> (wbase+len &gt;= </span><span class=cB7>(</span><span class=cB0>cdepth+1</span><span class=cB7>)</span><span class=cB0>*WLEN) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l268"></a>        </span><span class=cB1>if</span><span class=cB0> (cdepth != 0)
+<a name="l269"></a>          </span><span class=cB1>if</span><span class=cB0> (wbase+len &lt;= </span><span class=cB7>(</span><span class=cB0>cdepth-1</span><span class=cB7>)</span><span class=cB0>*WLEN) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l270"></a>        </span><span class=cB1>if</span><span class=cB0> (len &lt;= WLEN)
+<a name="l271"></a>        {
+<a name="l272"></a>          gameTable[wbase+len] = key;
+<a name="l273"></a>        }
+<a name="l274"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l275"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3928"></span><span class=cB3>CH_BACKSPACE</a></span><span class=cB0>:
+<a name="l276"></a>        </span><span class=cB1>if</span><span class=cB0> (win != W_NONE) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l277"></a>        </span><span class=cB1>if</span><span class=cB0> (wbase+len &gt; </span><span class=cB7>(</span><span class=cB0>cdepth+1</span><span class=cB7>)</span><span class=cB0>*WLEN) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l278"></a>        </span><span class=cB1>if</span><span class=cB0> (cdepth != 0)
+<a name="l279"></a>          </span><span class=cB1>if</span><span class=cB0> (wbase+len &lt;= </span><span class=cB7>(</span><span class=cB0>cdepth-1</span><span class=cB7>)</span><span class=cB0>*WLEN) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l280"></a>        </span><span class=cB1>if</span><span class=cB0> (len &gt; 0)
+<a name="l281"></a>        {
+<a name="l282"></a>          gameTable[wbase+len-1] = </span><span class=cB6>'\0'</span><span class=cB0>;
+<a name="l283"></a>        }
+<a name="l284"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l285"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
+<a name="l286"></a>        </span><span class=cB1>if</span><span class=cB0> (win != W_NONE)
+<a name="l287"></a>        {
+<a name="l288"></a>          ResetGame();
+<a name="l289"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l290"></a>        }
+<a name="l291"></a>        </span><span class=cB1>if</span><span class=cB0> (len == 5)
+<a name="l292"></a>          cdepth++;
+<a name="l293"></a>        win = CheckWin();
+<a name="l294"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l295"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_CTRLT</a></span><span class=cB0>:
+<a name="l296"></a>        </span><span class=cB1>if</span><span class=cB0> (wdark)
+<a name="l297"></a>          WordleLight();
+<a name="l298"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l299"></a>          WordleDark();
+<a name="l300"></a>        wdark=!wdark;
+<a name="l301"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l302"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3917"></span><span class=cB3>CH_CTRLQ</a></span><span class=cB0>:
+<a name="l303"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3930"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l304"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3929"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l305"></a>        </span><span class=cB1>goto</span><span class=cB0> wordle_done;
+<a name="l306"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l307"></a>    }
+<a name="l308"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l309"></a>  </span><span class=cB1>catch</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l310"></a>wordle_done:
+<a name="l311"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(gameTable);
+<a name="l312"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;wcnt; i++)
+<a name="l313"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wwords[i]);
+<a name="l314"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wwords);
+<a name="l315"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>();
+<a name="l316"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>();
+<a name="l317"></a>}
+<a name="l318"></a>
+<a name="l319"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+</span></div></pre></body>
+</html>
