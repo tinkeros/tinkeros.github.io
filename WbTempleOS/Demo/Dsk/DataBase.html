@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> DB_FILENAME     </span><span class=cB6>&quot;~/DataBaseDemo.BIN&quot;</span><span class=cB0>
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> DB_ACCT_MAX     100
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> DB_ACCT_BLKS    1
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB1>class</span><span class=cB0> Acct
+<a name="l6"></a>{</span><span class=cB2>//Use &lt;CTRL-l&gt; to help generate formats.</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> name[32] format </span><span class=cB6>&quot;$DA-P,LEN=32,A=\&quot;Name:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB1>U8</span><span class=cB0> addr[64] format </span><span class=cB6>&quot;$DA-P,LEN=64,A=\&quot;Addr:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0> pad[DB_ACCT_BLKS*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2309"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-64-32];
+<a name="l10"></a>};
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>U0</span><span class=cB0> InitDatabase()
+<a name="l13"></a>{ </span><span class=cB2>//Write new contiguous file</span><span class=cB0>
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2763"></span><span class=cB9>CFile</a></span><span class=cB0> *f=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;w&quot;</span><span class=cB0>,DB_ACCT_MAX*DB_ACCT_BLKS);
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l73"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l16"></a>}
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> WriteAcct()
+<a name="l19"></a>{
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2763"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l21"></a>  Acct a;
+<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> acctnum;
+<a name="l23"></a>
+<a name="l24"></a>  acctnum=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGet.html#l172"></span><span class=cB5>GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;Acct #&quot;</span><span class=cB0>,-1);
+<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=acctnum&lt;DB_ACCT_MAX) </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;a,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2309"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
+<a name="l27"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l209"></span><span class=cB5>DocForm</a></span><span class=cB7>(</span><span class=cB0>&amp;a</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l28"></a>      f=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;w+&quot;</span><span class=cB0>);
+<a name="l29"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l181"></span><span class=cB5>FBlkWrite</a></span><span class=cB0>(f,&amp;a,acctnum*DB_ACCT_BLKS,DB_ACCT_BLKS);
+<a name="l30"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l73"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l31"></a>    }
+<a name="l32"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l33"></a>}
+<a name="l34"></a>
+<a name="l35"></a></span><span class=cB1>U0</span><span class=cB0> ReadAcct()
+<a name="l36"></a>{
+<a name="l37"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2763"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l38"></a>  Acct a;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> acctnum;
+<a name="l40"></a>
+<a name="l41"></a>  acctnum=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGet.html#l172"></span><span class=cB5>GetI64</a></span><span class=cB0>(</span><span class=cB6>&quot;Acct #&quot;</span><span class=cB0>,-1);
+<a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=acctnum&lt;DB_ACCT_MAX) </span><span class=cB7>{</span><span class=cB0>
+<a name="l43"></a>    f=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(DB_FILENAME,</span><span class=cB6>&quot;r&quot;</span><span class=cB0>);
+<a name="l44"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l129"></span><span class=cB5>FBlkRead</a></span><span class=cB0>(f,&amp;a,acctnum*DB_ACCT_BLKS,DB_ACCT_BLKS);
+<a name="l45"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l73"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l46"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/ADbg.html#l161"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;a);
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB1>U0</span><span class=cB0> DatabaseDemo()
+<a name="l51"></a>{
+<a name="l52"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l53"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l54"></span><span class=cB5>FileFind</a></span><span class=cB7>(</span><span class=cB0>DB_FILENAME</span><span class=cB7>)</span><span class=cB0>)
+<a name="l54"></a>    InitDatabase;
+<a name="l55"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l56"></a>    </span><span class=cB6>&quot;$GREEN$R$FG$ead acct, $GREEN$W$FG$rite acct or $GREEN$&lt;SHIFT-ESC&gt;$FG$:&quot;</span><span class=cB0>;
+<a name="l57"></a>    ch=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l182"></span><span class=cB5>GetChar</a></span><span class=cB0>);
+<a name="l58"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l59"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'R'</span><span class=cB0>) ReadAcct;
+<a name="l60"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'W'</span><span class=cB0>) WriteAcct;
+<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3455"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0> &amp;&amp; ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3454"></span><span class=cB3>CH_ESC</a></span><span class=cB0>);
+<a name="l62"></a>}
+<a name="l63"></a>
+<a name="l64"></a>DatabaseDemo;
+</span></div></pre></body>
+</html>

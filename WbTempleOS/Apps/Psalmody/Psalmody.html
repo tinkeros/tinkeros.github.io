@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>This uses four types of ctrls</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB2>  1) The pull-down menu.</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB2>  2) The </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"><span class=cB4>CCtrl</span></a><span class=cB2> type for the tempo/stacatto sliders.</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB2>  3) The active </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"><span class=cB4>CDoc</span></a><span class=cB2> sprite bttns with macros for left/record/play/right.</span><span class=cB0>
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB2>  4) Hand-made ctrls for the kbdgraphic, notes and staff.</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB2>This uses four types of output</span><span class=cB0>
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB2>  1) The </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"><span class=cB4>CDoc</span></a><span class=cB2> for the text and bttns and kbdgraphic.</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>  2) The Fs-&gt;draw_it() for the staff region, drawn every refresh.</span><span class=cB0>
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB2>  3) The gr.dc persistent layer for the note chooser, meter chooser.  The </span><span class=cB0>
+<a name="l19"></a></span><span class=cB2>persistent layer is used during drag-and-drop.</span><span class=cB0>
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB2>  4) The Fs-&gt;next_ctrl for the tempo/stacatto sliders.</span><span class=cB0>
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l18"><span class=cB4>GrUpdateTaskWin</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l58"><span class=cB4>GrUpdateTasks</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l398"><span class=cB4>GrUpdateScrn</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l25"></a>
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> PSMT_HEAD       0
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> PSMT_NOTE       1
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> PSMT_METER      2
+<a name="l29"></a>
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> PSMf_SEL        0
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> PSMF_SEL        1
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> PSMf_SHARP      1
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> PSMf_FLAT       2
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> PSMf_TIE        3
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>class</span><span class=cB0> PsmNote
+<a name="l37"></a>{
+<a name="l38"></a>  PsmNote *next,*last;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l40"></a>  </span><span class=cB1>U8</span><span class=cB0> *word;
+<a name="l41"></a>  </span><span class=cB9>I64</span><span class=cB0> type,flags;
+<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> ona,meter_top,meter_bottom;
+<a name="l43"></a>  </span><span class=cB9>I64</span><span class=cB0> duration,width;
+<a name="l44"></a>  </span><span class=cB1>U8</span><span class=cB0> ascii[32];
+<a name="l45"></a>};
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB2>//Tool types</span><span class=cB0>
+<a name="l48"></a>#</span><span class=cB1>define</span><span class=cB0> PSMTT_PTR_TOOL  0
+<a name="l49"></a>#</span><span class=cB1>define</span><span class=cB0> PSMTT_BOX_TOOL  1
+<a name="l50"></a>
+<a name="l51"></a></span><span class=cB1>class</span><span class=cB0> PsmCtrl
+<a name="l52"></a>{
+<a name="l53"></a>  PsmNote head;
+<a name="l54"></a>  PsmNote clip;
+<a name="l55"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3090"></span><span class=cB9>CMenuEntry</a></span><span class=cB0> *incomplete_entry,*record_entry;
+<a name="l56"></a>  </span><span class=cB9>I64</span><span class=cB0> scrn_x,tool;
+<a name="l57"></a>  PsmNote *cur_note;
+<a name="l58"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc2;
+<a name="l59"></a>  </span><span class=cB1>Bool</span><span class=cB0> playing;
+<a name="l60"></a>} psm;
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB1>U8</span><span class=cB0> *psm_note_lst=</span><span class=cB6>&quot;A\0A#\0B\0C\0C#\0D\0D#\0E\0F\0F#\0G\0G#\0&quot;</span><span class=cB0>;
+<a name="l63"></a></span><span class=cB1>U8</span><span class=cB0> psm_note_map[12]={6,6,5,4,4,3,3,2,1,1,0,0};
+<a name="l64"></a></span><span class=cB1>U8</span><span class=cB0> psm_note_inverse_map[7]={10,8,7,5,3,2,0};
+</span></div></pre></body>
+</html>

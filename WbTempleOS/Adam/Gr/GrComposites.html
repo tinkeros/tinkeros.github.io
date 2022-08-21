@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics&quot;</span><span class=cB0>
+<a name="l2"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l2"></span><span class=cB5>GrFillPoly3</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> n,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0> *poly)
+<a name="l3"></a>{</span><span class=cB2>//3D. Must be convex.</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//Returns cnt of pixs changed</span><span class=cB0>
+<a name="l5"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0> tri[3];
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,x,y,z,res=0;
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;3) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l8"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l9"></a>    </span><span class=cB1>for</span><span class=cB0> (i=1;i&lt;n-1;i++) {
+<a name="l10"></a>      j=i-1;
+<a name="l11"></a>      </span><span class=cB1>if</span><span class=cB0> (i==1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l12"></a>        x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l13"></a>        </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l14"></a>          (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l15"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;x,&amp;y,&amp;z);
+<a name="l16"></a>        tri[0].x=x; tri[0].y=y; tri[0].z=z;
+<a name="l17"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a>      j++;
+<a name="l20"></a>      </span><span class=cB1>if</span><span class=cB0> (i==1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>        x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l22"></a>        </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l23"></a>          (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l24"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;x,&amp;y,&amp;z);
+<a name="l25"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l26"></a>      tri[1].x=x; tri[1].y=y; tri[1].z=z;
+<a name="l27"></a>
+<a name="l28"></a>      j++;
+<a name="l29"></a>      x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l30"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l31"></a>        (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l32"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;x,&amp;y,&amp;z);
+<a name="l33"></a>      tri[2].x=x; tri[2].y=y; tri[2].z=z;
+<a name="l34"></a>
+<a name="l35"></a>      res+=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l1397"></span><span class=cB5>GrFillTri0</a></span><span class=cB0>(dc,&amp;tri[0],&amp;tri[1],&amp;tri[2]);
+<a name="l36"></a>    }
+<a name="l37"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l38"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3576"></span><span class=cB3>DCF_JUST_MIRROR</a></span><span class=cB0>)
+<a name="l39"></a>    </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l40"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1;i&lt;n-1;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l41"></a>    j=i-1;
+<a name="l42"></a>    </span><span class=cB1>if</span><span class=cB0> (i==1) {
+<a name="l43"></a>      x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l44"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l45"></a>        (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l46"></a>      tri[0].x=x; tri[0].y=y; tri[0].z=z;
+<a name="l47"></a>    }
+<a name="l48"></a>
+<a name="l49"></a>    j++;
+<a name="l50"></a>    </span><span class=cB1>if</span><span class=cB0> (i==1) {
+<a name="l51"></a>      x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l52"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l53"></a>        (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l54"></a>    }
+<a name="l55"></a>    tri[1].x=x; tri[1].y=y; tri[1].z=z;
+<a name="l56"></a>
+<a name="l57"></a>    j++;
+<a name="l58"></a>    x=poly[j].x; y=poly[j].y; z=poly[j].z;
+<a name="l59"></a>    </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l60"></a>      (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l61"></a>    tri[2].x=x; tri[2].y=y; tri[2].z=z;
+<a name="l62"></a>
+<a name="l63"></a>    res+=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l1397"></span><span class=cB5>GrFillTri0</a></span><span class=cB0>(dc,&amp;tri[0],&amp;tri[1],&amp;tri[2]);
+<a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l66"></a>}
+<a name="l67"></a>
+<a name="l68"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l68"></span><span class=cB5>GrRectB</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> y1,</span><span class=cB9>I64</span><span class=cB0> x2,</span><span class=cB9>I64</span><span class=cB0> y2)
+<a name="l69"></a>{</span><span class=cB2>//2D. Two point. Clipping but not transformation.</span><span class=cB0>
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (x2&lt;x1) <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l111"></span><span class=cB5>SwapI64</a></span><span class=cB0>(&amp;x1,&amp;x2);
+<a name="l71"></a>  </span><span class=cB1>if</span><span class=cB0> (y2&lt;y1) <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l111"></span><span class=cB5>SwapI64</a></span><span class=cB0>(&amp;y1,&amp;y2);
+<a name="l72"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l1008"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc,x1,y1,x2-x1+1,y2-y1+1);
+<a name="l73"></a>}
+<a name="l74"></a>
+<a name="l75"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l75"></span><span class=cB5>GrRect3</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>I64</span><span class=cB0> z,</span><span class=cB9>I64</span><span class=cB0> w,</span><span class=cB9>I64</span><span class=cB0> h)
+<a name="l76"></a>{</span><span class=cB2>//3D. Width Height. Clipping and transformation.</span><span class=cB0>
+<a name="l77"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0> poly[4];
+<a name="l78"></a>  poly[0].x=x;
+<a name="l79"></a>  poly[0].y=y;
+<a name="l80"></a>  poly[0].z=z;
+<a name="l81"></a>  poly[1].x=x+w;
+<a name="l82"></a>  poly[1].y=y;
+<a name="l83"></a>  poly[1].z=z;
+<a name="l84"></a>  poly[2].x=x+w;
+<a name="l85"></a>  poly[2].y=y+h;
+<a name="l86"></a>  poly[2].z=z;
+<a name="l87"></a>  poly[3].x=x;
+<a name="l88"></a>  poly[3].y=y+h;
+<a name="l89"></a>  poly[3].z=z;
+<a name="l90"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l2"></span><span class=cB5>GrFillPoly3</a></span><span class=cB0>(dc,4,poly);
+<a name="l91"></a>}
+<a name="l92"></a>
+<a name="l93"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l93"></span><span class=cB5>GrBorder</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> y1,</span><span class=cB9>I64</span><span class=cB0> x2,</span><span class=cB9>I64</span><span class=cB0> y2,
+<a name="l94"></a>        </span><span class=cB9>I64</span><span class=cB0> step=1,</span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>=0)
+<a name="l95"></a>{</span><span class=cB2>//2D. Transformation with thick.</span><span class=cB0>
+<a name="l96"></a></span><span class=cB2>//Can be used with ROPF_DITHER+WHITE&lt;&lt;16+BLACK for dotted rect.</span><span class=cB0>
+<a name="l97"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y1,0,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x2,y1,0,x2,y2,0,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l99"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x2,y2,0,x1,y2,0,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l100"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y2,0,x1,y1,0,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l101"></a>}
+<a name="l102"></a>
+<a name="l103"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l103"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> y1,</span><span class=cB9>I64</span><span class=cB0> z1,
+<a name="l104"></a>        </span><span class=cB9>I64</span><span class=cB0> x2,</span><span class=cB9>I64</span><span class=cB0> y2,</span><span class=cB9>I64</span><span class=cB0> z2,</span><span class=cB1>F64</span><span class=cB0> w=2.75,</span><span class=cB9>I64</span><span class=cB0> step=1,</span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>=0)
+<a name="l105"></a>{</span><span class=cB2>//3D. Transformation with thick.</span><span class=cB0>
+<a name="l106"></a>  </span><span class=cB9>I64</span><span class=cB0> _x1,_y1,_z1,_x2,_y2,_z2,dx,dy;
+<a name="l107"></a>  </span><span class=cB1>F64</span><span class=cB0> d;
+<a name="l108"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,was_transform=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,was_symmetry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l109"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l110"></a>    (*dc-&gt;transform)(dc,&amp;x1,&amp;y1,&amp;z1);
+<a name="l111"></a>    (*dc-&gt;transform)(dc,&amp;x2,&amp;y2,&amp;z2);
+<a name="l112"></a>    dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l113"></a>    was_transform=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l114"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l115"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l116"></a>    _x1=x1; _y1=y1; _z1=z1;
+<a name="l117"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;_x1,&amp;_y1,&amp;_z1);
+<a name="l118"></a>    _x2=x2; _y2=y2; _z2=z2;
+<a name="l119"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;_x2,&amp;_y2,&amp;_z2);
+<a name="l120"></a>    dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l121"></a>    res=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,_x1,_y1,_z1,_x2,_y2,_z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l122"></a>    dx=_x2-_x1; dy=_y2-_y1;
+<a name="l123"></a>    </span><span class=cB1>if</span><span class=cB0> (d=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>dx*dx+dy*dy</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l124"></a>      d=w*dc-&gt;thick/d;
+<a name="l125"></a>      res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,_x2-dx*d+dy*d+0.5,_y2-dy*d-dx*d+0.5,_z2,
+<a name="l126"></a>            _x2,_y2,_z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step);
+<a name="l127"></a>      res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,_x2-dx*d-dy*d+0.5,_y2-dy*d+dx*d+0.5,_z2,
+<a name="l128"></a>            _x2,_y2,_z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step);
+<a name="l129"></a>    }
+<a name="l130"></a>    was_symmetry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l131"></a>    </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3576"></span><span class=cB3>DCF_JUST_MIRROR</a></span><span class=cB0>)
+<a name="l132"></a>      </span><span class=cB1>goto</span><span class=cB0> gr_done;
+<a name="l133"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l134"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,x1,y1,z1,x2,y2,z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l135"></a>  dx=x2-x1; dy=y2-y1;
+<a name="l136"></a>  </span><span class=cB1>if</span><span class=cB0> (d=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>dx*dx+dy*dy</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l137"></a>    d=w*dc-&gt;thick/d;
+<a name="l138"></a>    res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,x2-dx*d+dy*d+0.5,y2-dy*d-dx*d+0.5,z2,
+<a name="l139"></a>          x2,y2,z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step);
+<a name="l140"></a>    res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l8"></span><span class=cB5>Line</a></span><span class=cB0>(dc,x2-dx*d-dy*d+0.5,y2-dy*d+dx*d+0.5,z2,
+<a name="l141"></a>          x2,y2,z2,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>,step);
+<a name="l142"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l143"></a>gr_done:
+<a name="l144"></a>  </span><span class=cB1>if</span><span class=cB0> (was_transform)
+<a name="l145"></a>    dc-&gt;flags|=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l146"></a>  </span><span class=cB1>if</span><span class=cB0> (was_symmetry)
+<a name="l147"></a>    dc-&gt;flags|=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l148"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l149"></a>}
+<a name="l150"></a>
+<a name="l151"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/Char;Char/Graphics&quot;</span><span class=cB0>
+<a name="l152"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l152"></span><span class=cB5>GrTextBox3</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> y1,</span><span class=cB9>I64</span><span class=cB0> z1,</span><span class=cB1>U8</span><span class=cB0> *s,</span><span class=cB9>I64</span><span class=cB0> border=2)
+<a name="l153"></a>{</span><span class=cB2>//3D. Transformation. DCF_SYMMETRY is silly.</span><span class=cB0>
+<a name="l154"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr;
+<a name="l155"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,res,w,w_max,h;
+<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (!s) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l157"></a>  ptr=s;
+<a name="l158"></a>  w=0;  w_max=0; h=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l159"></a>
+<a name="l160"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l161"></a>    (*dc-&gt;transform)(dc,&amp;x1,&amp;y1,&amp;z1);
+<a name="l162"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*ptr++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l163"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\t'</span><span class=cB0>)
+<a name="l164"></a>      w=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l41"></span><span class=cB5>CeilU64</a></span><span class=cB0>(w+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*8);
+<a name="l165"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\n'</span><span class=cB0>) {
+<a name="l166"></a>      </span><span class=cB1>if</span><span class=cB0> (w&gt;w_max) w_max=w;
+<a name="l167"></a>      w=0;
+<a name="l168"></a>      h+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l169"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l170"></a>      w+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l171"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l172"></a>  </span><span class=cB1>if</span><span class=cB0> (w&gt;w_max) w_max=w;
+<a name="l173"></a>  res=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,x1,y1,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,s);
+<a name="l174"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1-border         ,y1-border  ,x1+w_max+border,y1-border);
+<a name="l175"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1-border         ,y1+h+border,x1+w_max+border,y1+h+border);
+<a name="l176"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1-border         ,y1-border  ,x1-border,y1+h+border);
+<a name="l177"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1+w_max+border,y1-border  ,x1+w_max+border,y1+h+border);
+<a name="l178"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l119"></span><span class=cB5>ToBool</a></span><span class=cB0>(res);
+<a name="l179"></a>}
+<a name="l180"></a>
+<a name="l181"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>       2.75
+<a name="l182"></a>
+<a name="l183"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l183"></span><span class=cB5>GrTextDiamond3</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,
+<a name="l184"></a>        </span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> y1,</span><span class=cB9>I64</span><span class=cB0> z1,</span><span class=cB1>U8</span><span class=cB0> *_s,</span><span class=cB9>I64</span><span class=cB0> border=2)
+<a name="l185"></a>{</span><span class=cB2>//3D. Transformation. DCF_SYMMETRY is silly.</span><span class=cB0>
+<a name="l186"></a>  </span><span class=cB1>Bool</span><span class=cB0> first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l187"></a>  </span><span class=cB1>U8</span><span class=cB0> ch,*ptr,*ptr_end,*st,*s;
+<a name="l188"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0,y,dx,dy,dx_old,dy_old,w,h=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l189"></a>  </span><span class=cB1>F64</span><span class=cB0> m;
+<a name="l190"></a>  </span><span class=cB1>if</span><span class=cB0> (!_s) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l191"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l192"></a>    (*dc-&gt;transform)(dc,&amp;x1,&amp;y1,&amp;z1);
+<a name="l193"></a>
+<a name="l194"></a>  ptr=s=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(_s);
+<a name="l195"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=*ptr) </span><span class=cB7>{</span><span class=cB0>
+<a name="l196"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\r'</span><span class=cB0>||ch==</span><span class=cB6>'\t'</span><span class=cB0>)
+<a name="l197"></a>      *ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3457"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l198"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\n'</span><span class=cB0>) {
+<a name="l199"></a>      *ptr=0;
+<a name="l200"></a>      h+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l201"></a>    }
+<a name="l202"></a>    ptr++;
+<a name="l203"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l204"></a>  ptr_end=ptr+1;
+<a name="l205"></a>
+<a name="l206"></a>  y=y1-h&gt;&gt;1;
+<a name="l207"></a>  dx=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0> +border;      </span><span class=cB2>//Minimum</span><span class=cB0>
+<a name="l208"></a>  dy=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>+border+h&gt;&gt;1; </span><span class=cB2>//Minimum</span><span class=cB0>
+<a name="l209"></a>  ptr=s;
+<a name="l210"></a>  </span><span class=cB1>while</span><span class=cB0> (ptr!=ptr_end) </span><span class=cB7>{</span><span class=cB0>
+<a name="l211"></a>    st=ptr;
+<a name="l212"></a>    </span><span class=cB1>while</span><span class=cB0> (*ptr++);
+<a name="l213"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l519"></span><span class=cB5>StrUtil</a></span><span class=cB0>(st,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3731"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3732"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>);
+<a name="l214"></a>
+<a name="l215"></a>    w=(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>)&gt;&gt;1;
+<a name="l216"></a>    </span><span class=cB1>if</span><span class=cB0> (first) {
+<a name="l217"></a>      res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,x1-w,y,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,st);
+<a name="l218"></a>      first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l219"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l220"></a>      res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,x1-w,y,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,st);
+<a name="l221"></a>    </span><span class=cB1>if</span><span class=cB0> (w) {
+<a name="l222"></a>      w+=border;
+<a name="l223"></a>      </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l224"></a>        dx_old=dx; dy_old=dy;
+<a name="l225"></a>        m=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(dx)/dy;
+<a name="l226"></a>        </span><span class=cB1>if</span><span class=cB0> (m&lt;1/<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>) {
+<a name="l227"></a>          dy=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dy,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l123"></span><span class=cB5>Ceil</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>*dx</span><span class=cB7>)</span><span class=cB0>);
+<a name="l228"></a>          m=1/<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>;
+<a name="l229"></a>        } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (m&gt;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>) {
+<a name="l230"></a>          dy=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dy,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l123"></span><span class=cB5>Ceil</a></span><span class=cB7>(</span><span class=cB0>dx/<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l231"></a>          m=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l181"></span><span class=cB3>DIAMOND_SLOPE_MAX</a></span><span class=cB0>;
+<a name="l232"></a>        }
+<a name="l233"></a>        dx=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dx,w+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l123"></span><span class=cB5>Ceil</a></span><span class=cB7>(</span><span class=cB0>m*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(y-y1)</span><span class=cB7>)</span><span class=cB0>);
+<a name="l234"></a>        dx=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dx,w+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l123"></span><span class=cB5>Ceil</a></span><span class=cB7>(</span><span class=cB0>m*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(y+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>-y1)</span><span class=cB7>)</span><span class=cB0>);
+<a name="l235"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (dx!=dx_old || dy!=dy_old);
+<a name="l236"></a>    }
+<a name="l237"></a>    y+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l238"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l239"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(s);
+<a name="l240"></a>
+<a name="l241"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1,y1-dy,x1+dx,y1);
+<a name="l242"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1+dx,y1,x1,y1+dy);
+<a name="l243"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1,y1+dy,x1-dx,y1);
+<a name="l244"></a>  res|=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x1-dx,y1,x1,y1-dy);
+<a name="l245"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l119"></span><span class=cB5>ToBool</a></span><span class=cB0>(res);
+<a name="l246"></a>}
+<a name="l247"></a>
+<a name="l248"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/Mesh&quot;</span><span class=cB0>
+<a name="l249"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l249"></span><span class=cB5>Gr3Mesh</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> vertex_cnt,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0> *p,
+<a name="l250"></a>        </span><span class=cB9>I64</span><span class=cB0> tri_cnt,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB0> *tri)
+<a name="l251"></a>{</span><span class=cB2>//Returns cnt of pixs changed.</span><span class=cB0>
+<a name="l252"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> old_color=dc-&gt;color;
+<a name="l253"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,y,z,res=0;
+<a name="l254"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0> *pt,*pt_sym,*p_sym,*dst;
+<a name="l255"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB0> *tri_sym=tri;
+<a name="l256"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l257"></a>    dst=pt=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB7>)</span><span class=cB0>*vertex_cnt);
+<a name="l258"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;vertex_cnt;i++,p++,dst++) {
+<a name="l259"></a>      x=p-&gt;x; y=p-&gt;y; z=p-&gt;z;
+<a name="l260"></a>      (*dc-&gt;transform)(dc,&amp;x,&amp;y,&amp;z);
+<a name="l261"></a>      dst-&gt;x=x; dst-&gt;y=y; dst-&gt;z=z;
+<a name="l262"></a>    }
+<a name="l263"></a>    p=pt;
+<a name="l264"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l265"></a>    pt=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l266"></a>
+<a name="l267"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l268"></a>    dst=pt_sym=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB7>)</span><span class=cB0>*vertex_cnt);
+<a name="l269"></a>    p_sym=p;
+<a name="l270"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;vertex_cnt;i++,p_sym++,dst++) {
+<a name="l271"></a>      x=p_sym-&gt;x; y=p_sym-&gt;y; z=p_sym-&gt;z;
+<a name="l272"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrMath.html#l252"></span><span class=cB5>DCReflect</a></span><span class=cB0>(dc,&amp;x,&amp;y,&amp;z);
+<a name="l273"></a>      dst-&gt;x=x; dst-&gt;y=y; dst-&gt;z=z;
+<a name="l274"></a>    }
+<a name="l275"></a>    p_sym=pt_sym;
+<a name="l276"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;tri_cnt;i++,tri_sym++) {
+<a name="l277"></a>      (*dc-&gt;lighting)(dc,&amp;p_sym[tri_sym-&gt;nums[0]],&amp;p_sym[tri_sym-&gt;nums[2]],
+<a name="l278"></a>            &amp;p_sym[tri_sym-&gt;nums[1]],tri_sym-&gt;color);
+<a name="l279"></a>      res+=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l1397"></span><span class=cB5>GrFillTri0</a></span><span class=cB0>(dc,&amp;p_sym[tri_sym-&gt;nums[0]],&amp;p_sym[tri_sym-&gt;nums[2]],
+<a name="l280"></a>            &amp;p_sym[tri_sym-&gt;nums[1]]);
+<a name="l281"></a>    }
+<a name="l282"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(pt_sym);
+<a name="l283"></a>    </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3576"></span><span class=cB3>DCF_JUST_MIRROR</a></span><span class=cB0>)
+<a name="l284"></a>      </span><span class=cB1>goto</span><span class=cB0> mesh_done;
+<a name="l285"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l286"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;tri_cnt;i++,tri++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l287"></a>    (*dc-&gt;lighting)(dc,&amp;p[tri-&gt;nums[0]],&amp;p[tri-&gt;nums[1]],
+<a name="l288"></a>          &amp;p[tri-&gt;nums[2]],tri-&gt;color);
+<a name="l289"></a>    res+=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l1397"></span><span class=cB5>GrFillTri0</a></span><span class=cB0>(dc,&amp;p[tri-&gt;nums[0]],&amp;p[tri-&gt;nums[1]],&amp;p[tri-&gt;nums[2]]);
+<a name="l290"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l291"></a>mesh_done:
+<a name="l292"></a>  dc-&gt;color=old_color;
+<a name="l293"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(pt);
+<a name="l294"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l295"></a>}
+<a name="l296"></a>
+<a name="l297"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/Misc;Mouse/Ptr&quot;</span><span class=cB0>
+<a name="l298"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l298"></span><span class=cB5>DrawStdMs</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l299"></a>{</span><span class=cB2>//This is a callback. See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Graphics/Grid.html#l1"><span class=cB4>::/Demo/Graphics/Grid.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l300"></a></span><span class=cB2>//Called by </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l174"><span class=cB4>DrawMs</span></a><span class=cB2>() which is</span><span class=cB0>
+<a name="l301"></a>  </span><span class=cB2>//called by </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l202"><span class=cB4>WinFinalUpdate</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l302"></a>  dc-&gt;thick=1;
+<a name="l303"></a>  dc-&gt;flags&amp;=~(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3569"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3572"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>);
+<a name="l304"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l103"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc,x+8,y+8,0,x,y,0);
+<a name="l305"></a>}
+<a name="l306"></a>
+<a name="l307"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.fp_draw_ms=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l298"></span><span class=cB5>DrawStdMs</a></span><span class=cB0>;
+<a name="l308"></a>
+<a name="l309"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l309"></span><span class=cB5>DrawWaitMs</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l310"></a>{</span><span class=cB2>//This is a callback. See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Graphics/Grid.html#l1"><span class=cB4>::/Demo/Graphics/Grid.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l311"></a>  </span><span class=cB9>I64</span><span class=cB0> old_pen_width=dc-&gt;thick;
+<a name="l312"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> old_color=dc-&gt;color;
+<a name="l313"></a>  dc-&gt;thick=3;
+<a name="l314"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2926"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l315"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l906"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc,x,y,0,7);
+<a name="l316"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x-6,y+6,0,x+6,y-6,0);
+<a name="l317"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l318"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l583"></span><span class=cB5>GrCircle</a></span><span class=cB0>(dc,x,y,7);
+<a name="l319"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,x-6,y+6,x+6,y-6);
+<a name="l320"></a>  dc-&gt;thick=old_pen_width;
+<a name="l321"></a>  dc-&gt;color=old_color;
+<a name="l322"></a>}
+<a name="l323"></a>
+<a name="l324"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/GR Files;Graphics/Scrn&quot;</span><span class=cB0>
+<a name="l325"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l325"></span><span class=cB5>GRScrnCaptureRead</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x=0,</span><span class=cB9>I64</span><span class=cB0> y=0)
+<a name="l326"></a>{</span><span class=cB2>//GrBlot TempleOS GR File to dc,x,y.</span><span class=cB0>
+<a name="l327"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc2;
+<a name="l328"></a>  </span><span class=cB1>if</span><span class=cB0> (dc2=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l394"></span><span class=cB5>GRRead</a></span><span class=cB7>(</span><span class=cB0>filename</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l329"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2898"></span><span class=cB3>ROP_EQU</a></span><span class=cB0>;
+<a name="l330"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l71"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,x,y,dc2);
+<a name="l331"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l208"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc2);
+<a name="l332"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l333"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l334"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l335"></a>}
+<a name="l336"></a>
+<a name="l337"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrComposites.html#l337"></span><span class=cB5>GRScrnCaptureWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>Bool</span><span class=cB0> include_zoom=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l338"></a>{</span><span class=cB2>//Capture scrn to a TempleOS GR File.</span><span class=cB0>
+<a name="l339"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l340"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l417"></span><span class=cB5>DCScrnCapture</a></span><span class=cB0>(include_zoom);
+<a name="l341"></a>  size=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l383"></span><span class=cB5>GRWrite</a></span><span class=cB0>(filename,dc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3587"></span><span class=cB3>DCSF_COMPRESSED</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3588"></span><span class=cB3>DCSF_PALETTE_GET</a></span><span class=cB0>);
+<a name="l342"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l208"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l343"></a>  </span><span class=cB1>return</span><span class=cB0> size;
+<a name="l344"></a>}
+</span></div></pre></body>
+</html>

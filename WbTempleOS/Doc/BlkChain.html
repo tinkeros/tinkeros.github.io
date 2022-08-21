@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB8{color:#555555;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                  <h1><center>Block Chain</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>There was a technique on the Commodore 64 where disk blocks were chained 
+<a name="l4"></a>together with a block pointer at the end of each block.  This is far inferior to 
+<a name="l5"></a>having a file allocation table, as in FAT32.
+<a name="l6"></a>
+<a name="l7"></a>The </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/RedSea.html#l1"><span class=cB4>RedSea</span></a><span class=cB0> file system does not allow files to grow because it only has an 
+<a name="l8"></a>allocation bitmap and not a FAT table.  This &quot;flaw&quot; is by design.  I am 
+<a name="l9"></a>intentionally crippling this operating system, making it a toy with the wisdom 
+<a name="l10"></a>that this will prevent commercialization and corruption.  The toy spirit of the 
+<a name="l11"></a>operating system will be preserved going into the future.  The vision for this 
+<a name="l12"></a>operating system was a modern Commodore 64, which was a fun toy.
+<a name="l13"></a>
+<a name="l14"></a>Doing whole file operations is the TempleOS way of doing thinks.  It is the 
+<a name="l15"></a>simplest and, ironically, the fastest.  It is obnoxious in the characteristic 
+<a name="l16"></a>way that TempleOS is obnoxious, flaunting massive modern resources in a way that 
+<a name="l17"></a>makes old programmers protest.
+<a name="l18"></a>
+<a name="l19"></a>Doing whole file operations will sabotage efforts to change the 640x480 
+<a name="l20"></a>resolution and violate the ban on multimedia.  When doing large, whole-file 
+<a name="l21"></a>operations, immediately memory fragmentation is a serious problem, but not so 
+<a name="l22"></a>for allocations in the range under a Meg (with occasional larger ones).
+<a name="l23"></a>
+<a name="l24"></a>The file compression scheme in TempleOS only works on whole file operations and 
+<a name="l25"></a>the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDoc.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0> format cannot have text tacked onto the end, since binary data is at 
+<a name="l26"></a>the end.
+<a name="l27"></a>
+<a name="l28"></a>I don't want to spoil fun, so of course I offer a way to get awesome performance 
+<a name="l29"></a>that is, ironically, superior.  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l129"><span class=cB4>FBlkRead</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l181"><span class=cB4>FBlkWrite</span></a><span class=cB0>() allow you to read a 
+<a name="l30"></a>block offset from the start of a file.  Since files are all contiguous, this is 
+<a name="l31"></a>incredibly efficient.  You just have to declare the desired file size when you 
+<a name="l32"></a>create it with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskCFile.html#l9"><span class=cB4>FOpen</span></a><span class=cB0>() and cannot change it.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Dsk/DataBase.html#l1"><span class=cB4>::/Demo/Dsk/DataBase.HC</span></a><span class=cB0>.
+<a name="l33"></a>
+<a name="l34"></a>If you like, you are encouraged to to do raw </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskBlk.html#l31"><span class=cB4>BlkRead</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskBlk.html#l71"><span class=cB4>BlkWrite</span></a><span class=cB0>() directly 
+<a name="l35"></a>on a drive.  Just get a pointer to a </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2688"><span class=cB4>CDrv</span></a><span class=cB0> with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDrv.html#l188"><span class=cB4>Let2Drv</span></a><span class=cB0>() and you are on your 
+<a name="l36"></a>way!  Your computer is supposed to be a fun toy!  You can make an entire 
+<a name="l37"></a>partition used for a database, or invent a file system.
+<a name="l38"></a>
+<a name="l39"></a>On the whole, the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/RedSea.html#l1"><span class=cB4>RedSea</span></a><span class=cB0> file system with its whole-file-only limitation bring 
+<a name="l40"></a>beautiful harmony.  It beautifully captures the spirit of TempleOS with 
+<a name="l41"></a>simplicity and, ironic speed, since contiguous is fastest.
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB8>
+<a name="l44"></a>* &quot;Commodore 64&quot; is a trademark owned by Polabe Holding NV.
+</span></div></pre></body>
+</html>

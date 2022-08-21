@@ -1,0 +1,262 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l1"></span><span class=cB5>PutKey</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> ch=0,</span><span class=cB9>I64</span><span class=cB0> sc=0)
+<a name="l2"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/LiveHelp/KeyDev.html#l1"><span class=cB4>Keyboard Devices</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l3"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB0> *tmpk;
+<a name="l4"></a>  </span><span class=cB1>if</span><span class=cB0> (ch||sc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l5"></a>    tmpk=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head.next;
+<a name="l6"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3249"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB7>)</span><span class=cB0>) {
+<a name="l7"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l26"></span><span class=cB6>kbd</a></span><span class=cB0>.scan_code &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3485"></span><span class=cB3>SCF_SCROLL</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l200"></span><span class=cB6>sys_focus_task</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>)
+<a name="l8"></a>        </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l26"></span><span class=cB6>kbd</a></span><span class=cB0>.scan_code &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3485"></span><span class=cB3>SCF_SCROLL</a></span><span class=cB0>)
+<a name="l9"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>; </span><span class=cB2>//Wait on SCROLL LOCK Key</span><span class=cB0>
+<a name="l10"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpk!=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>!(sc&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3492"></span><span class=cB3>SCF_KEY_DESC</a></span><span class=cB0>) || tmpk-&gt;flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3753"></span><span class=cB3>KDF_HAS_DESCS</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l12"></a>              </span><span class=cB7>(</span><span class=cB0>*tmpk-&gt;put_key</span><span class=cB7>)(</span><span class=cB0>ch,sc</span><span class=cB7>)</span><span class=cB0>)
+<a name="l13"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l14"></a>        tmpk=tmpk-&gt;next;
+<a name="l15"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l16"></a>    }
+<a name="l17"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l18"></a>}
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l20"></span><span class=cB5>PutChars</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> ch)
+<a name="l21"></a>{</span><span class=cB2>//Output chars. Up to 8 chars in a single U64.</span><span class=cB0>
+<a name="l22"></a></span><span class=cB2>//Don't use this.  </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l48"><span class=cB4>See Print() shortcut.</span></a><span class=cB0>
+<a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (ch) </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l1"></span><span class=cB5>PutKey</a></span><span class=cB0>(ch&amp;255,0);
+<a name="l25"></a>    ch&gt;&gt;=8;
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l29"></span><span class=cB5>PutS</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l30"></a>{</span><span class=cB2>//Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l890"><span class=cB4>Print</span></a><span class=cB2>(). See </span><a href="http://tinkeros.github.io/WbTempleOS/LiveHelp/KeyDev.html#l1"><span class=cB4>Keyboard Devices</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l31"></a></span><span class=cB2>//Don't use this.  </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l48"><span class=cB4>See Print() shortcut.</span></a><span class=cB0>
+<a name="l32"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l33"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr;
+<a name="l34"></a>  </span><span class=cB1>Bool</span><span class=cB0> cont=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l35"></a>  </span><span class=cB1>if</span><span class=cB0> (!st) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l36"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB0> *tmpk=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head.next;
+<a name="l37"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3249"></span><span class=cB3>DISPLAYf_SILENT</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l26"></span><span class=cB6>kbd</a></span><span class=cB0>.scan_code &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3485"></span><span class=cB3>SCF_SCROLL</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l200"></span><span class=cB6>sys_focus_task</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>)
+<a name="l39"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l26"></span><span class=cB6>kbd</a></span><span class=cB0>.scan_code &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3485"></span><span class=cB3>SCF_SCROLL</a></span><span class=cB0>)
+<a name="l40"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l41"></a>    </span><span class=cB1>while</span><span class=cB0> (cont &amp;&amp; tmpk!=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head) {
+<a name="l42"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpk-&gt;put_s) </span><span class=cB7>{</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>*tmpk-&gt;put_s</span><span class=cB7>)(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>)
+<a name="l44"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l45"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l46"></a>        ptr=st;
+<a name="l47"></a>        </span><span class=cB1>while</span><span class=cB0> (ch=*ptr++)
+<a name="l48"></a>          </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>*tmpk-&gt;put_key</span><span class=cB7>)(</span><span class=cB0>ch,0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l49"></a>            cont=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l50"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l51"></a>      tmpk=tmpk-&gt;next;
+<a name="l52"></a>    }
+<a name="l53"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>}
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l56"></span><span class=cB5>KeyDescSet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l57"></a>{</span><span class=cB2>//Call this from key hndlr to report desc in </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Training.html#l146"><span class=cB4>KeyMap</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l208"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,fmt,argc,argv);
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.desc,buf);
+<a name="l60"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.hndlr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l60"></span><span class=cB5>Caller</a></span><span class=cB0>;
+<a name="l61"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l62"></a>}
+<a name="l63"></a>
+<a name="l64"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l64"></span><span class=cB5>KeyDevRem</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB0> *tmpk)
+<a name="l65"></a>{</span><span class=cB2>//Remove StdOut hook and free.</span><span class=cB0>
+<a name="l66"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(tmpk);
+<a name="l67"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpk);
+<a name="l68"></a>}
+<a name="l69"></a>
+<a name="l70"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l70"></span><span class=cB5>KeyDevAdd</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB7>(</span><span class=cB0>*fp_put_key</span><span class=cB7>)(</span><span class=cB9>I64</span><span class=cB0> ch,</span><span class=cB9>I64</span><span class=cB0> sc</span><span class=cB7>)</span><span class=cB0>,
+<a name="l71"></a>        </span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB7>(</span><span class=cB0>*fp_puts</span><span class=cB7>)(</span><span class=cB1>U8</span><span class=cB0> *st</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> priority,</span><span class=cB1>Bool</span><span class=cB0> key_descs=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l72"></a>{</span><span class=cB2>//Places hook in StdOut chain. See </span><a href="http://tinkeros.github.io/WbTempleOS/LiveHelp/KeyDev.html#l1"><span class=cB4>Keyboard Devices</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l73"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB0> *tmpk=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head.last,
+<a name="l74"></a>        *tmpk1=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l75"></a>  tmpk1-&gt;put_key=fp_put_key;
+<a name="l76"></a>  tmpk1-&gt;put_s=fp_puts;
+<a name="l77"></a>  tmpk1-&gt;priority=priority;
+<a name="l78"></a>  </span><span class=cB1>if</span><span class=cB0> (key_descs)
+<a name="l79"></a>    tmpk1-&gt;flags|=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3753"></span><span class=cB3>KDF_HAS_DESCS</a></span><span class=cB0>;
+<a name="l80"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpk-&gt;priority&gt;priority)
+<a name="l81"></a>    tmpk=tmpk-&gt;last;
+<a name="l82"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(tmpk1,tmpk);
+<a name="l83"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpk-&gt;priority==priority)
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l64"></span><span class=cB5>KeyDevRem</a></span><span class=cB0>(tmpk);
+<a name="l85"></a>  </span><span class=cB1>return</span><span class=cB0> tmpk1;
+<a name="l86"></a>}
+<a name="l87"></a>
+<a name="l88"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l88"></span><span class=cBD>KDRawPutKey</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> ch,</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l89"></a>{
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l91"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Display.html#l1"></span><span class=cB5>RawPutChar</a></span><span class=cB0>(ch);
+<a name="l92"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l93"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l94"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l95"></a>}
+<a name="l96"></a>
+<a name="l97"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l97"></span><span class=cBD>KDRawPutS</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l98"></a>{
+<a name="l99"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l100"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l101"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*st++)
+<a name="l102"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Display.html#l1"></span><span class=cB5>RawPutChar</a></span><span class=cB0>(ch);
+<a name="l103"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l104"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l105"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l106"></a>}
+<a name="l107"></a>
+<a name="l108"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l108"></span><span class=cBD>KDInputFilterPutKey</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> ch,</span><span class=cB9>I64</span><span class=cB0> scan_code)
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3234"></span><span class=cB3>TASKf_INPUT_FILTER_TASK</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l111"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l259"></span><span class=cB5>Msg</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>,ch,scan_code);
+<a name="l112"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l114"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l115"></a>}
+<a name="l116"></a>
+<a name="l117"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l117"></span><span class=cBD>KDInputFilterPutS</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l118"></a>{
+<a name="l119"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3234"></span><span class=cB3>TASKf_INPUT_FILTER_TASK</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l121"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*st++)
+<a name="l122"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l259"></span><span class=cB5>Msg</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>,ch,0);
+<a name="l123"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l124"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l125"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l126"></a>}
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l128"></span><span class=cBD>CtrlAltDel</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l129"></a>{
+<a name="l130"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l206"></span><span class=cB6>sys_ctrl_alt_flags</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l633"></span><span class=cB3>CTRL_ALT_DEL</a></span><span class=cB0>);
+<a name="l131"></a>}
+<a name="l132"></a>
+<a name="l133"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l133"></span><span class=cBD>CtrlAltC</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l134"></a>{
+<a name="l135"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l206"></span><span class=cB6>sys_ctrl_alt_flags</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l634"></span><span class=cB3>CTRL_ALT_C</a></span><span class=cB0>);
+<a name="l136"></a>}
+<a name="l137"></a>
+<a name="l138"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l138"></span><span class=cBD>CtrlAltD</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l139"></a>{
+<a name="l140"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l317"></span><span class=cB5>IsDbgMode</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l141"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l245"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;idle_task)
+<a name="l142"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l368"></span><span class=cB5>BptS</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;rip,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>);
+<a name="l143"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l144"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l368"></span><span class=cB5>BptS</a></span><span class=cB0>(*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_ret_addr);
+<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l146"></a>}
+<a name="l147"></a>
+<a name="l148"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l148"></span><span class=cBD>CtrlAltF</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l149"></a>{
+<a name="l150"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l111"></span><span class=cB5>SwapI64</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l30"></span><span class=cB6>text</a></span><span class=cB0>.font,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l30"></span><span class=cB6>text</a></span><span class=cB0>.aux_font);
+<a name="l151"></a>}
+<a name="l152"></a>
+<a name="l153"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l153"></span><span class=cBD>CtrlAltM</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l154"></a>{
+<a name="l155"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l251"></span><span class=cB5>Mute</a></span><span class=cB0>(!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l265"></span><span class=cB5>IsMute</a></span><span class=cB0>);
+<a name="l156"></a>}
+<a name="l157"></a>
+<a name="l158"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l158"></span><span class=cBD>CtrlAltN</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l159"></a>{
+<a name="l160"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l206"></span><span class=cB6>sys_ctrl_alt_flags</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l636"></span><span class=cB3>CTRL_ALT_TAB</a></span><span class=cB0>);
+<a name="l161"></a>}
+<a name="l162"></a>
+<a name="l163"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l163"></span><span class=cBD>CtrlAltT</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l164"></a>{
+<a name="l165"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l424"></span><span class=cB5>User</a></span><span class=cB0>;
+<a name="l166"></a>}
+<a name="l167"></a>
+<a name="l168"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l168"></span><span class=cBD>CtrlAltV</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l169"></a>{
+<a name="l170"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Display.html#l88"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l171"></a>}
+<a name="l172"></a>
+<a name="l173"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l173"></span><span class=cBD>CtrlAltX</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l174"></a>{
+<a name="l175"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l206"></span><span class=cB6>sys_ctrl_alt_flags</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l635"></span><span class=cB3>CTRL_ALT_X</a></span><span class=cB0>);
+<a name="l176"></a>}
+<a name="l177"></a>
+<a name="l178"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> ch,</span><span class=cB1>U0</span><span class=cB0> </span><span class=cB7>(</span><span class=cB0>*fp_hndlr</span><span class=cB7>)(</span><span class=cB9>I64</span><span class=cB0> sc</span><span class=cB7>)</span><span class=cB0>,
+<a name="l179"></a>        </span><span class=cB1>U8</span><span class=cB0> *no_shift_desc=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *shift_desc=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> in_irq=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l180"></a>{</span><span class=cB2>//Set callback for &lt;CTRL-ALT-letter&gt;.</span><span class=cB0>
+<a name="l181"></a>  ch=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(ch)-</span><span class=cB6>'A'</span><span class=cB0>;
+<a name="l182"></a>  </span><span class=cB1>if</span><span class=cB0> (ch&lt;26) </span><span class=cB7>{</span><span class=cB0>
+<a name="l183"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.fp_ctrl_alt_cbs[ch]=fp_hndlr;
+<a name="l184"></a>
+<a name="l185"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_no_shift_descs[ch]);
+<a name="l186"></a>    </span><span class=cB1>if</span><span class=cB0> (no_shift_desc)
+<a name="l187"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_no_shift_descs[ch]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(no_shift_desc);
+<a name="l188"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l189"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_no_shift_descs[ch]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l190"></a>
+<a name="l191"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_shift_descs[ch]);
+<a name="l192"></a>    </span><span class=cB1>if</span><span class=cB0> (shift_desc)
+<a name="l193"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_shift_descs[ch]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(shift_desc);
+<a name="l194"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l195"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_shift_descs[ch]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l196"></a>
+<a name="l197"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l28"></span><span class=cB5>BEqu</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_in_irq_flags,ch,in_irq);
+<a name="l198"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l199"></a>}
+<a name="l200"></a>
+<a name="l201"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l201"></span><span class=cBD>KeyDevInit</a></span><span class=cB0>()
+<a name="l202"></a>{
+<a name="l203"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.fp_ctrl_alt_cbs        =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(26*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l204"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_no_shift_descs=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(26*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l205"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_shift_descs   =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(26*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l206"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.ctrl_alt_in_irq_flags  =0;
+<a name="l207"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3754"></span><span class=cB9>CKeyDevEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l208"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l27"></span><span class=cB6>keydev</a></span><span class=cB0>.put_key_head);
+<a name="l209"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l70"></span><span class=cB5>KeyDevAdd</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l108"></span><span class=cBD>KDInputFilterPutKey</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l117"></span><span class=cBD>KDInputFilterPutS</a></span><span class=cB0>,0x40000000,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l210"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l70"></span><span class=cB5>KeyDevAdd</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l88"></span><span class=cBD>KDRawPutKey</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l97"></span><span class=cBD>KDRawPutS</a></span><span class=cB0>,0x60000000,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l211"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l133"></span><span class=cBD>CtrlAltC</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Break Execution&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l212"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'D'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l138"></span><span class=cBD>CtrlAltD</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Enter Debugger&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l213"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'F'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l148"></span><span class=cBD>CtrlAltF</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Toggle Aux Font&quot;</span><span class=cB0>);
+<a name="l214"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'M'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l153"></span><span class=cBD>CtrlAltM</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Toggle Mute&quot;</span><span class=cB0>);
+<a name="l215"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'N'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l158"></span><span class=cBD>CtrlAltN</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Next Focus Task&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l216"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'T'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l163"></span><span class=cBD>CtrlAltT</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Terminal Window&quot;</span><span class=cB0>);
+<a name="l217"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'V'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l168"></span><span class=cBD>CtrlAltV</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /VGA Flush&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l218"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'X'</span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l173"></span><span class=cBD>CtrlAltX</a></span><span class=cB0>,</span><span class=cB6>&quot;Cmd /Kill Focused Task&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l219"></a>}
+</span></div></pre></body>
+</html>

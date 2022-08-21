@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Windows&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>class</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l3"></span><span class=cB9>CWallPaperGlbls</a></span><span class=cB0>
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0>   last_calc_idle_cnt,last_swap_cnter[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l316"></span><span class=cB3>MP_PROCESSORS_NUM</a></span><span class=cB0>];
+<a name="l6"></a>  </span><span class=cB1>F64</span><span class=cB0>   last_calc_idle_delta_time;
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0>    top_line[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l41"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l8"></a>} *<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l3"></span><span class=cB9>CWallPaperGlbls</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l9"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_calc_idle_delta_time=1.0;
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>class</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l11"></span><span class=cB9>CTaskWallPaperData</a></span><span class=cB0>
+<a name="l12"></a>{
+<a name="l13"></a>  </span><span class=cB9>I64</span><span class=cB0>   alloced_u8s,used_u8s;
+<a name="l14"></a>  </span><span class=cB1>U8</span><span class=cB0>    caller_stk[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l41"></span><span class=cB3>STR_LEN</a></span><span class=cB0>-$];
+<a name="l15"></a>};
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l17"></span><span class=cB5>WallPaper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *_task)
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,l=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l53"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1;
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *task;
+<a name="l21"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l11"></span><span class=cB9>CTaskWallPaperData</a></span><span class=cB0> *wpd;
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l647"></span><span class=cB9>CHashTable</a></span><span class=cB0> *old_hash=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table;
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3391"></span><span class=cB9>CCPU</a></span><span class=cB0> *c;
+<a name="l24"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l193"></span><span class=cB9>CDateStruct</a></span><span class=cB0> ds;
+<a name="l25"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l26"></a>  _task-&gt;text_attr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2928"></span><span class=cB3>YELLOW</a></span><span class=cB0>,
+<a name="l29"></a>          </span><span class=cB6>&quot;%010X/%010X %010X/%010X%12td%12td%12td&quot;</span><span class=cB0>,
+<a name="l30"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>-&gt;used_u8s,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>-&gt;alloced_u8s,
+<a name="l31"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;used_u8s,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;alloced_u8s,
+<a name="l32"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.compiled_lines,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l20"></span><span class=cB6>blkdev</a></span><span class=cB0>.read_cnt,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l20"></span><span class=cB6>blkdev</a></span><span class=cB0>.write_cnt);
+<a name="l33"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,
+<a name="l34"></a>          </span><span class=cB6>&quot;______Data_Heap______ ______Code_Heap______ &quot;</span><span class=cB0>
+<a name="l35"></a>          </span><span class=cB6>&quot;___Lines___ ___Reads___ __Writes___&quot;</span><span class=cB0>);
+<a name="l36"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,
+<a name="l38"></a>          </span><span class=cB6>&quot;%010X/%010X%12td%12td%12td&quot;</span><span class=cB0>,
+<a name="l39"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;used_u8s,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;alloced_u8s,
+<a name="l40"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Compiler/Compiler.html#l16"></span><span class=cB6>cmp</a></span><span class=cB0>.compiled_lines,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l20"></span><span class=cB6>blkdev</a></span><span class=cB0>.read_cnt,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l20"></span><span class=cB6>blkdev</a></span><span class=cB0>.write_cnt);
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,
+<a name="l42"></a>          </span><span class=cB6>&quot;____CodeData_Heap____ &quot;</span><span class=cB0>
+<a name="l43"></a>          </span><span class=cB6>&quot;___Lines___ ___Reads___ ___Writes__&quot;</span><span class=cB0>);
+<a name="l44"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,</span><span class=cB6>&quot;ProgressBars:%016X %016X %016X %016X&quot;</span><span class=cB0>,
+<a name="l46"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l209"></span><span class=cB6>progress1</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l215"></span><span class=cB6>progress2</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l221"></span><span class=cB6>progress3</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l227"></span><span class=cB6>progress4</a></span><span class=cB0>);
+<a name="l47"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l48"></a>    c=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l238"></span><span class=cB6>cpu_structs</a></span><span class=cB0>[i];
+<a name="l49"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;calc_idle_cnt!=<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_calc_idle_cnt) {
+<a name="l50"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_calc_idle_delta_time=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;calc_idle_delta_time;
+<a name="l51"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_swap_cnter[i]=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;last_swap_cnter[i];
+<a name="l52"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;last_swap_cnter[i]=c-&gt;swap_cnter;
+<a name="l53"></a>    }
+<a name="l54"></a>
+<a name="l55"></a>    task=c-&gt;seth_task;
+<a name="l56"></a>    </span><span class=cB1>do</span><span class=cB0> {
+<a name="l57"></a>      wpd=&amp;task-&gt;wallpaper_data;
+<a name="l58"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l22"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l59"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.updates&amp;31</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l60"></a>        </span><span class=cB1>if</span><span class=cB0> (c==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l245"></span><span class=cB5>Gs</a></span><span class=cB0>)
+<a name="l61"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table=task-&gt;hash_table;
+<a name="l62"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>//precaution</span><span class=cB0>
+<a name="l63"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table=old_hash;
+<a name="l64"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l876"></span><span class=cB5>StrPrint</a></span><span class=cB0>(wpd-&gt;caller_stk,</span><span class=cB6>&quot;    %-18tp %-18tp %-18tp %-18tp&quot;</span><span class=cB0>,
+<a name="l65"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l75"></span><span class=cB5>TaskCaller</a></span><span class=cB7>(</span><span class=cB0>task,0</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l75"></span><span class=cB5>TaskCaller</a></span><span class=cB7>(</span><span class=cB0>task,1</span><span class=cB7>)</span><span class=cB0>,
+<a name="l66"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l75"></span><span class=cB5>TaskCaller</a></span><span class=cB7>(</span><span class=cB0>task,2</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l75"></span><span class=cB5>TaskCaller</a></span><span class=cB7>(</span><span class=cB0>task,3</span><span class=cB7>)</span><span class=cB0>);
+<a name="l67"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l68"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2928"></span><span class=cB3>YELLOW</a></span><span class=cB0>,wpd-&gt;caller_stk);
+<a name="l69"></a>      j=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l46"></span><span class=cB5>UnusedStk</a></span><span class=cB0>(task);
+<a name="l70"></a>      </span><span class=cB1>if</span><span class=cB0> (j&lt;0)
+<a name="l71"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l638"></span><span class=cB5>Panic</a></span><span class=cB0>(</span><span class=cB6>&quot;Stk Overflow&quot;</span><span class=cB0>,task);
+<a name="l72"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.updates&amp;31</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>        wpd-&gt;alloced_u8s=<a href="http://tinkeros.github.io/WbTempleOS/Adam/AMem.html#l2"></span><span class=cB5>TaskMemAlloced</a></span><span class=cB0>(task);
+<a name="l74"></a>        wpd-&gt;used_u8s   =<a href="http://tinkeros.github.io/WbTempleOS/Adam/AMem.html#l15"></span><span class=cB5>TaskMemUsed</a></span><span class=cB0>(task);
+<a name="l75"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2920"></span><span class=cB3>BROWN</a></span><span class=cB0>,
+<a name="l77"></a>            </span><span class=cB6>&quot;  %-18ts #%08X %010X %010X/%010X %04X:%02tX:%08X&quot;</span><span class=cB0>,
+<a name="l78"></a>            task-&gt;task_title,task,j,wpd-&gt;used_u8s,wpd-&gt;alloced_u8s,
+<a name="l79"></a>            task-&gt;task_flags,task-&gt;display_flags,task-&gt;win_inhibit);
+<a name="l80"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l22"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>task</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l81"></a>      task=task-&gt;next_task;
+<a name="l82"></a>    } </span><span class=cB1>while</span><span class=cB0> (task!=c-&gt;seth_task);
+<a name="l83"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,</span><span class=cB6>&quot;CPU%02X %2tf%% ContextSwaps/s:%9,d&quot;</span><span class=cB0>,i,
+<a name="l84"></a>          100.0*</span><span class=cB7>(</span><span class=cB0>1.0-c-&gt;idle_factor</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;last_swap_cnter[i]
+<a name="l85"></a>          -<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_swap_cnter[i])/<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_calc_idle_delta_time</span><span class=cB7>)</span><span class=cB0>);
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,l--,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,
+<a name="l88"></a>        </span><span class=cB6>&quot;  ___Description____ #__Task__ UnusedStk_ _UsedMem__/_AllocMem_ &quot;</span><span class=cB0>
+<a name="l89"></a>        </span><span class=cB6>&quot;______Flags_____&quot;</span><span class=cB0>);
+<a name="l90"></a>
+<a name="l91"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.updates&amp;31</span><span class=cB7>)</span><span class=cB0> || !*<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;top_line) </span><span class=cB7>{</span><span class=cB0>
+<a name="l92"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l39"></span><span class=cB5>Date2Struct</a></span><span class=cB0>(&amp;ds,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l191"></span><span class=cB5>Now</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l14"></span><span class=cB6>local_time_offset</a></span><span class=cB0>);
+<a name="l93"></a>    i=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;alloced_u8s-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l190"></span><span class=cB6>sys_code_bp</a></span><span class=cB0>-&gt;used_u8s;
+<a name="l94"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>)
+<a name="l95"></a>      i+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>-&gt;alloced_u8s-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l191"></span><span class=cB6>sys_data_bp</a></span><span class=cB0>-&gt;used_u8s;
+<a name="l96"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l876"></span><span class=cB5>StrPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;top_line,
+<a name="l97"></a>          </span><span class=cB6>&quot;%3tZ %02d/%02d %02d:%02d:%02d FPS:%2tf Mem:%010X CPU&quot;</span><span class=cB0>,
+<a name="l98"></a>          ds.day_of_week,</span><span class=cB6>&quot;ST_DAYS_OF_WEEK&quot;</span><span class=cB0>,ds.mon,ds.day_of_mon,
+<a name="l99"></a>          ds.hour,ds.min,ds.sec,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.fps,i);
+<a name="l100"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l101"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,0,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;top_line);
+<a name="l102"></a>
+<a name="l103"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l29"></span><span class=cB6>scrncast</a></span><span class=cB0>.record)
+<a name="l104"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,44-4,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>,</span><span class=cB6>&quot;*&quot;</span><span class=cB0>);
+<a name="l105"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l106"></a>    c=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l238"></span><span class=cB6>cpu_structs</a></span><span class=cB0>[i];
+<a name="l107"></a>    </span><span class=cB1>if</span><span class=cB0> (i&amp;1)
+<a name="l108"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,44+i*2,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>,</span><span class=cB6>&quot;%2tf&quot;</span><span class=cB0>,100.0*</span><span class=cB7>(</span><span class=cB0>1.0-c-&gt;idle_factor</span><span class=cB7>)</span><span class=cB0>);
+<a name="l109"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l110"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,44+i*2,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2928"></span><span class=cB3>YELLOW</a></span><span class=cB0>,</span><span class=cB6>&quot;%2tf&quot;</span><span class=cB0>,100.0*</span><span class=cB7>(</span><span class=cB0>1.0-c-&gt;idle_factor</span><span class=cB7>)</span><span class=cB0>);
+<a name="l111"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l112"></a>
+<a name="l113"></a>  st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Keyboard.html#l248"></span><span class=cB5>ScanCode2KeyName</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l26"></span><span class=cB6>kbd</a></span><span class=cB0>.last_down_scan_code);
+<a name="l114"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,80-18,0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2928"></span><span class=cB3>YELLOW</a></span><span class=cB0>,</span><span class=cB6>&quot;%18ts&quot;</span><span class=cB0>,st);
+<a name="l115"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l116"></a>
+<a name="l117"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table=old_hash;
+<a name="l118"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l8"></span><span class=cB6>wall</a></span><span class=cB0>-&gt;last_calc_idle_cnt=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l9"></span><span class=cB6>winmgr</a></span><span class=cB0>.t-&gt;calc_idle_cnt;
+<a name="l119"></a>}
+<a name="l120"></a></span><span class=cBA>
+<a name="l121"></a>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l122"></a>
+<a name="l123"></a>
+<a name="l124"></a>
+<a name="l125"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l125"></span><span class=cB5>DrawTermBttn</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"></span><span class=cB9>CCtrl</a></span><span class=cB0> *c)
+<a name="l126"></a>{
+<a name="l127"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l130"></span><span class=cB5>Blink</a></span><span class=cB0>)
+<a name="l128"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,c-&gt;left,c-&gt;top,0,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>);
+<a name="l129"></a>}
+<a name="l130"></a>
+<a name="l131"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l131"></span><span class=cB5>LeftClickTermBttn</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"></span><span class=cB9>CCtrl</a></span><span class=cB0> *,</span><span class=cB9>I64</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> down)
+<a name="l132"></a>{
+<a name="l133"></a>  </span><span class=cB1>if</span><span class=cB0> (down)
+<a name="l134"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l424"></span><span class=cB5>User</a></span><span class=cB0>;
+<a name="l135"></a>}
+<a name="l136"></a>
+<a name="l137"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"></span><span class=cB9>CCtrl</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l137"></span><span class=cB5>TermBttnNew</a></span><span class=cB0>()
+<a name="l138"></a>{
+<a name="l139"></a>  </span><span class=cB9>I64</span><span class=cB0> min_x,max_x,min_y,max_y;
+<a name="l140"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"></span><span class=cB9>CCtrl</a></span><span class=cB0> *c=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3065"></span><span class=cB9>CCtrl</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l141"></a>
+<a name="l142"></a>  c-&gt;win_task=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>;
+<a name="l143"></a>  c-&gt;flags=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3043"></span><span class=cB3>CTRLF_SHOW</a></span><span class=cB0>;
+<a name="l144"></a>  c-&gt;type=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3038"></span><span class=cB3>CTRLT_GENERIC</a></span><span class=cB0>;
+<a name="l145"></a>  c-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l125"></span><span class=cB5>DrawTermBttn</a></span><span class=cB0>;
+<a name="l146"></a>  c-&gt;left_click=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l131"></span><span class=cB5>LeftClickTermBttn</a></span><span class=cB0>;
+<a name="l147"></a>
+<a name="l148"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l293"></span><span class=cB5>SpriteExtents</a></span><span class=cB0>(</span><span class=cBA>&lt;1&gt;</span><span class=cB0>,&amp;min_x,&amp;max_x,&amp;min_y,&amp;max_y);
+<a name="l149"></a></span><span class=cB2>//min must be zero</span><span class=cB0>
+<a name="l150"></a>  c-&gt;left=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;pix_width-(max_x-min_x+1);
+<a name="l151"></a>  c-&gt;right=c-&gt;left+(max_x-min_x+1)-1;
+<a name="l152"></a>  c-&gt;top=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;pix_height-(max_y-min_y+1);
+<a name="l153"></a>  c-&gt;bottom=c-&gt;top+(max_y-min_y+1)-1;
+<a name="l154"></a>
+<a name="l155"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(c,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;last_ctrl);
+<a name="l156"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l286"></span><span class=cB5>TaskDerivedValsUpdate</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l11"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>);
+<a name="l157"></a>
+<a name="l158"></a>  </span><span class=cB1>return</span><span class=cB0> c;
+<a name="l159"></a>}
+<a name="l160"></a>
+<a name="l161"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l161"></span><span class=cB5>WallPaperInit</a></span><span class=cB0>()
+<a name="l162"></a>{
+<a name="l163"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l137"></span><span class=cB5>TermBttnNew</a></span><span class=cB0>;
+<a name="l164"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l43"></span><span class=cB6>gr</a></span><span class=cB0>.fp_wall_paper=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/WallPaper.html#l17"></span><span class=cB5>WallPaper</a></span><span class=cB0>;
+<a name="l165"></a>}
+</span></div></pre></body>
+</html>

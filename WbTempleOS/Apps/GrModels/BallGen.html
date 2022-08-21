@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Makes a mesh ball.</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> VERTICES_NUM    1024
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> TRIS_NUM        1024
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>class</span><span class=cB0> Ball
+<a name="l7"></a>{
+<a name="l8"></a>  </span><span class=cB9>I32</span><span class=cB0> vertex_cnt;
+<a name="l9"></a>  </span><span class=cB9>I32</span><span class=cB0> tri_cnt;
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0>            v[VERTICES_NUM];
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB0> t[TRIS_NUM];
+<a name="l12"></a>} *b;
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB1>class</span><span class=cB0> BallDefineStruct
+<a name="l15"></a>{
+<a name="l16"></a>  </span><span class=cB1>F64</span><span class=cB0> radius    format   </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Radius         :%8.3f\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l17"></a>  </span><span class=cB9>I64</span><span class=cB0> n_longitude format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Longitude Faces:%5d\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> n_lattitude format </span><span class=cB6>&quot;$DA-TRM,A=\&quot;Lattitude Rings:%5d\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l19"></a>};
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>U0</span><span class=cB0> BDInit(BallDefineStruct *bd)
+<a name="l22"></a>{
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(bd,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BallDefineStruct</span><span class=cB7>)</span><span class=cB0>);
+<a name="l24"></a>  bd-&gt;n_longitude=16;
+<a name="l25"></a>  bd-&gt;n_lattitude=8;
+<a name="l26"></a>  bd-&gt;radius     =20.0;
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> BDCorrect(BallDefineStruct *bd)
+<a name="l30"></a>{
+<a name="l31"></a>  bd-&gt;n_longitude=(bd-&gt;n_longitude+1)/2;
+<a name="l32"></a>  bd-&gt;n_lattitude=(bd-&gt;n_lattitude+1)/2;
+<a name="l33"></a>}
+<a name="l34"></a>
+<a name="l35"></a></span><span class=cB9>I64</span><span class=cB0> AddVertex(BallDefineStruct *,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>I64</span><span class=cB0> z)
+<a name="l36"></a>{
+<a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l38"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;b-&gt;vertex_cnt;i++)
+<a name="l39"></a>    </span><span class=cB1>if</span><span class=cB0> (b-&gt;v[i].x==x &amp;&amp; b-&gt;v[i].y==y &amp;&amp; b-&gt;v[i].z==z)
+<a name="l40"></a>      </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l41"></a>  i=b-&gt;vertex_cnt++;
+<a name="l42"></a>  b-&gt;v[i].x=x;
+<a name="l43"></a>  b-&gt;v[i].y=y;
+<a name="l44"></a>  b-&gt;v[i].z=z;
+<a name="l45"></a>  </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l46"></a>}
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB9>I64</span><span class=cB0> AddTri(BallDefineStruct *,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> n0,</span><span class=cB9>I64</span><span class=cB0> n1,</span><span class=cB9>I64</span><span class=cB0> n2)
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB9>I64</span><span class=cB0> res=b-&gt;tri_cnt++;
+<a name="l51"></a>  b-&gt;t[res].color=c;
+<a name="l52"></a>  b-&gt;t[res].nums[0]=n0;
+<a name="l53"></a>  b-&gt;t[res].nums[1]=n1;
+<a name="l54"></a>  b-&gt;t[res].nums[2]=n2;
+<a name="l55"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l56"></a>}
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB1>U8</span><span class=cB0> *Ball2CSprite()
+<a name="l59"></a>{
+<a name="l60"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l1"><span class=cB4>::/Adam/Gr/GrSpritePlot.HC</span></a><span class=cB2> for how CSprite are stored.</span><span class=cB0>
+<a name="l61"></a>  </span><span class=cB1>U8</span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l100"></span><span class=cB9>CSpriteMeshU8s</a></span><span class=cB7>)</span><span class=cB0>+
+<a name="l62"></a>        b-&gt;vertex_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB7>)</span><span class=cB0>+b-&gt;tri_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB7>)</span><span class=cB0>
+<a name="l63"></a>  +<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/SpriteNew.html#l6"></span><span class=cB6>sprite_elem_base_sizes</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l120"></span><span class=cB3>SPT_END</a></span><span class=cB0>]),
+<a name="l64"></a>        *dst=res;
+<a name="l65"></a>  *dst++ =<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l144"></span><span class=cB3>SPT_MESH</a></span><span class=cB0>;
+<a name="l66"></a>  *dst(</span><span class=cB9>I32</span><span class=cB0> *)++ =b-&gt;vertex_cnt;
+<a name="l67"></a>  *dst(</span><span class=cB9>I32</span><span class=cB0> *)++ =b-&gt;tri_cnt;
+<a name="l68"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,&amp;b-&gt;v,b-&gt;vertex_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l69"></a>  dst+=b-&gt;vertex_cnt*</span><span class=cB1>sizeof</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l128"></span><span class=cB9>CD3I32</a></span><span class=cB0>);
+<a name="l70"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,&amp;b-&gt;t,b-&gt;tri_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l71"></a>  dst+=b-&gt;tri_cnt*</span><span class=cB1>sizeof</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l3"></span><span class=cB9>CMeshTri</a></span><span class=cB0>);
+<a name="l72"></a>  *dst++ =<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l120"></span><span class=cB3>SPT_END</a></span><span class=cB0>;
+<a name="l73"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l74"></a>}
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *BallGen()
+<a name="l77"></a>{
+<a name="l78"></a>  </span><span class=cB1>U8</span><span class=cB0> *res;
+<a name="l79"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,n,m,c,p1,p2,p3,p4;
+<a name="l80"></a>  BallDefineStruct bd1,bd2;
+<a name="l81"></a>  </span><span class=cB1>F64</span><span class=cB0> r,r1,r2,z1,z2,d_a1,d_a2;
+<a name="l82"></a>
+<a name="l83"></a>  BDInit(&amp;bd1);
+<a name="l84"></a>
+<a name="l85"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l86"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l209"></span><span class=cB5>DocForm</a></span><span class=cB7>(</span><span class=cB0>&amp;bd1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l87"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l88"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;bd2,&amp;bd1,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BallDefineStruct</span><span class=cB7>)</span><span class=cB0>);
+<a name="l89"></a>    BDCorrect(&amp;bd2);
+<a name="l90"></a>
+<a name="l91"></a>    c=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l21"></span><span class=cB5>PopUpColorLighting</a></span><span class=cB0>;
+<a name="l92"></a>    </span><span class=cB1>if</span><span class=cB0> (c&lt;0)  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l93"></a>
+<a name="l94"></a>    b=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Ball</span><span class=cB7>)</span><span class=cB0>);
+<a name="l95"></a>    r=bd2.radius;
+<a name="l96"></a>    n=bd2.n_lattitude;
+<a name="l97"></a>    m=bd2.n_longitude;
+<a name="l98"></a>    d_a1=2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/n/4;
+<a name="l99"></a>    d_a2=2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/m/2;
+<a name="l100"></a>    </span><span class=cB1>for</span><span class=cB0> (j=-n;j&lt;n;j++) {
+<a name="l101"></a>      r1=r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>( j   *d_a1);
+<a name="l102"></a>      r2=r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>j+1</span><span class=cB7>)</span><span class=cB0>*d_a1);
+<a name="l103"></a>      z1=r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>( j   *d_a1);
+<a name="l104"></a>      z2=r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>j+1</span><span class=cB7>)</span><span class=cB0>*d_a1);
+<a name="l105"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;m;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l106"></a>        p1=AddVertex(&amp;bd2,r1*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>(2*i  +j)*d_a2</span><span class=cB7>)</span><span class=cB0>,r1*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>(2*i  +j)*d_a2</span><span class=cB7>)</span><span class=cB0>,z1);
+<a name="l107"></a>        p2=AddVertex(&amp;bd2,r1*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>(2*i+2+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,r1*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>(2*i+2+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,z1);
+<a name="l108"></a>        p3=AddVertex(&amp;bd2,r2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>(2*i+1+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,r2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>(2*i+1+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,z2);
+<a name="l109"></a>        p4=AddVertex(&amp;bd2,r2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>(2*i+3+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,r2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>(2*i+3+j)*d_a2</span><span class=cB7>)</span><span class=cB0>,z2);
+<a name="l110"></a>        AddTri(&amp;bd2,c,p1,p2,p3);
+<a name="l111"></a>        AddTri(&amp;bd2,c,p3,p2,p4);
+<a name="l112"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l113"></a>    }
+<a name="l114"></a>
+<a name="l115"></a>    res=Ball2CSprite;
+<a name="l116"></a>    </span><span class=cB6>&quot;%h7c&quot;</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l117"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l468"></span><span class=cB5>Sprite</a></span><span class=cB0>(res,</span><span class=cB6>&quot;\t\t$SP,\&quot;&lt;1&gt;\&quot;,BI=%d$&quot;</span><span class=cB0>);
+<a name="l118"></a>    </span><span class=cB6>&quot;%h7c&quot;</span><span class=cB0>,</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l119"></a>    </span><span class=cB6>&quot;Vertices:%d\n&quot;</span><span class=cB0>,b-&gt;vertex_cnt;
+<a name="l120"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(b);
+<a name="l121"></a>    </span><span class=cB6>&quot;Do another&quot;</span><span class=cB0>;
+<a name="l122"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrB.html#l87"></span><span class=cB5>YorN</a></span><span class=cB0>)
+<a name="l123"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(res);
+<a name="l124"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l125"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l126"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l128"></a>}
+</span></div></pre></body>
+</html>

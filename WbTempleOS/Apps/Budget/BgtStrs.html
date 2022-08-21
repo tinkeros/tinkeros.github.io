@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> SFT_GENERIC     1
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> **StrFileRead(</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> *_max_num=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,
+<a name="l4"></a>        </span><span class=cB1>U8</span><span class=cB0> **_colors=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> no_nums=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l5"></a>{
+<a name="l6"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0>          *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(name,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1274"></span><span class=cB3>DOCF_DBL_DOLLARS</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0>     *doc_e=doc-&gt;head.next;
+<a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0>           i,max_num=0;
+<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0>            *ptr,**res,*colors;
+<a name="l10"></a>
+<a name="l11"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l12"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>) {
+<a name="l13"></a>      </span><span class=cB1>if</span><span class=cB0> (no_nums)
+<a name="l14"></a>        i=++max_num;
+<a name="l15"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l16"></a>        i=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(doc_e-&gt;tag,,&amp;ptr);
+<a name="l17"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;max_num) max_num=i;
+<a name="l18"></a>        </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>','</span><span class=cB0>) ptr++;
+<a name="l19"></a>        ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(ptr);
+<a name="l20"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(doc_e-&gt;tag);
+<a name="l21"></a>        doc_e-&gt;tag=ptr;
+<a name="l22"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l23"></a>      doc_e-&gt;user_data=i;
+<a name="l24"></a>    }
+<a name="l25"></a>    doc_e=doc_e-&gt;next;
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>
+<a name="l28"></a>  res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>max_num+1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l29"></a>  colors=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB7>)</span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>max_num+1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l30"></a>  doc_e=doc-&gt;head.next;
+<a name="l31"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0> &amp;&amp; 0&lt;=doc_e-&gt;user_data&lt;=max_num) {
+<a name="l33"></a>      res[doc_e-&gt;user_data]=doc_e-&gt;tag;
+<a name="l34"></a>      doc_e-&gt;tag=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l35"></a>      colors[doc_e-&gt;user_data]=doc_e-&gt;type.u8[1]&amp;15;
+<a name="l36"></a>    }
+<a name="l37"></a>    doc_e=doc_e-&gt;next;
+<a name="l38"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l39"></a>
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l41"></a>  </span><span class=cB1>if</span><span class=cB0> (_max_num) *_max_num=max_num;
+<a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (_colors)
+<a name="l43"></a>    *_colors=colors;
+<a name="l44"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l45"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(colors);
+<a name="l46"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> StrFileArrDel(</span><span class=cB1>U8</span><span class=cB0> **a,</span><span class=cB9>I64</span><span class=cB0> max_num)
+<a name="l50"></a>{
+<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l52"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=max_num;i++)
+<a name="l53"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(a[i]);
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(a);
+<a name="l55"></a>}
+<a name="l56"></a>
+<a name="l57"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> StrFileAdd(</span><span class=cB1>U8</span><span class=cB0> *st,</span><span class=cB9>I64</span><span class=cB0> *_num,
+<a name="l58"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l647"></span><span class=cB9>CHashTable</a></span><span class=cB0> *table,</span><span class=cB9>I64</span><span class=cB0> color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2932"></span><span class=cB3>COLOR_INVALID</a></span><span class=cB0>)
+<a name="l59"></a>{
+<a name="l60"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph;
+<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (!st) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmph=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(st,table,SFT_GENERIC)</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l63"></a>    tmph=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l64"></a>    tmph-&gt;type=SFT_GENERIC;
+<a name="l65"></a>    tmph-&gt;str=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(st);
+<a name="l66"></a>    tmph-&gt;user_data0=(*_num)++;
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KHashA.html#l262"></span><span class=cB5>HashAdd</a></span><span class=cB0>(tmph,table);
+<a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB1>if</span><span class=cB0> (color!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2932"></span><span class=cB3>COLOR_INVALID</a></span><span class=cB0>)
+<a name="l70"></a>    tmph-&gt;user_data1=color;
+<a name="l71"></a>  </span><span class=cB1>return</span><span class=cB0> tmph-&gt;user_data0;
+<a name="l72"></a>}
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB9>I64</span><span class=cB0> StrEntriesCompare(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *h1,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *h2)
+<a name="l75"></a>{
+<a name="l76"></a>  </span><span class=cB1>return</span><span class=cB0> h1-&gt;user_data0-h2-&gt;user_data0;
+<a name="l77"></a>}
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> StrFileWrite(</span><span class=cB1>U8</span><span class=cB0> *name,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l647"></span><span class=cB9>CHashTable</a></span><span class=cB0> *table,</span><span class=cB1>Bool</span><span class=cB0> no_nums=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l80"></a>{
+<a name="l81"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,cnt,color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l82"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l363"></span><span class=cB5>DocNew</a></span><span class=cB0>(name);
+<a name="l83"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph,**a;
+<a name="l84"></a>  </span><span class=cB1>if</span><span class=cB0> (table) </span><span class=cB7>{</span><span class=cB0>
+<a name="l85"></a>    cnt=0;      </span><span class=cB2>//Count Strings</span><span class=cB0>
+<a name="l86"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++)
+<a name="l87"></a>      cnt+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDataTypes.html#l21"></span><span class=cB5>LinkedLstCnt</a></span><span class=cB0>(table-&gt;body[i]);
+<a name="l88"></a>    a=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l89"></a>    j=0;        </span><span class=cB2>//Load Strings</span><span class=cB0>
+<a name="l90"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) {
+<a name="l91"></a>      tmph=table-&gt;body[i];
+<a name="l92"></a>      </span><span class=cB1>while</span><span class=cB0> (tmph) </span><span class=cB7>{</span><span class=cB0>
+<a name="l93"></a>        a[j++]=tmph;
+<a name="l94"></a>        tmph=tmph-&gt;next;
+<a name="l95"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>    }
+<a name="l97"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/QSort.html#l1"></span><span class=cB5>QSortI64</a></span><span class=cB0>(a,cnt,&amp;StrEntriesCompare);
+<a name="l98"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;cnt;i++) {
+<a name="l99"></a>      tmph=a[i];
+<a name="l100"></a>      </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;user_data1&amp;15!=color) </span><span class=cB7>{</span><span class=cB0>
+<a name="l101"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$FG,%d$&quot;</span><span class=cB0>,tmph-&gt;user_data1&amp;15);
+<a name="l102"></a>        color=tmph-&gt;user_data1&amp;15;
+<a name="l103"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l104"></a>      </span><span class=cB1>if</span><span class=cB0> (no_nums)
+<a name="l105"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,tmph-&gt;str);
+<a name="l106"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l107"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%d,%s\n&quot;</span><span class=cB0>,tmph-&gt;user_data0,tmph-&gt;str);
+<a name="l108"></a>    }
+<a name="l109"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(a);
+<a name="l110"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l111"></a>  doc-&gt;flags|=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>;
+<a name="l112"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l173"></span><span class=cB5>DocWrite</a></span><span class=cB0>(doc);
+<a name="l113"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l114"></a>}
+<a name="l115"></a>
+<a name="l116"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> StrFileDel(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l647"></span><span class=cB9>CHashTable</a></span><span class=cB0> *table)
+<a name="l117"></a>{
+<a name="l118"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l119"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l737"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph,*tmph1;
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (!table) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l121"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l122"></a>    tmph=table-&gt;body[i];
+<a name="l123"></a>    </span><span class=cB1>while</span><span class=cB0> (tmph) {
+<a name="l124"></a>      tmph1=tmph-&gt;next;
+<a name="l125"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmph-&gt;str);
+<a name="l126"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmph);
+<a name="l127"></a>      tmph=tmph1;
+<a name="l128"></a>    }
+<a name="l129"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l130"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(table-&gt;body);
+<a name="l131"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(table);
+<a name="l132"></a>}
+</span></div></pre></body>
+</html>

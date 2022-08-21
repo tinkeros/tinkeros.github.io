@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                      <h1><center>Date</center></h1></span><span class=cB0>
+<a name="l2"></a>Dates are 32-bit signed ints representing the number of days since the birth of 
+<a name="l3"></a>Christ.  Negative values represent B.C.E. dates.
+<a name="l4"></a>
+<a name="l5"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l193"><span class=cB4>CDateStruct         </span></a><span class=cB0>Class </span><span class=cB2>class CDateStruct</span><span class=cB4>
+<a name="l6"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l30"><span class=cB4>DayOfWeek           </span></a><span class=cB0>Funct </span><span class=cB2>Day of week, given 32-bit day since AD 0.</span><span class=cB4>
+<a name="l7"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l71"><span class=cB4>FirstDayOfMon       </span></a><span class=cB0>Funct </span><span class=cB2>First day of month, given 32-bit day since AD 0.</span><span class=cB4>
+<a name="l8"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l98"><span class=cB4>FirstDayOfYear      </span></a><span class=cB0>Funct </span><span class=cB2>First day of year, given 32-bit day since AD 0.</span><span class=cB4>
+<a name="l9"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l82"><span class=cB4>LastDayOfMon        </span></a><span class=cB0>Funct </span><span class=cB2>Last day of month, given 32-bit day since AD 0.</span><span class=cB4>
+<a name="l10"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l110"><span class=cB4>LastDayOfYear       </span></a><span class=cB0>Funct </span><span class=cB2>Last day of year, given 32-bit day since AD 0.</span><span class=cB4>
+<a name="l11"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l8"><span class=cB4>YearStartDate       </span></a><span class=cB0>Funct </span><span class=cB2>32-bit day since AD 0, given year number.</span><span class=cB4>
+<a name="l12"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l3"><span class=cB4>mon_start_days1     </span></a><span class=cB0>GlbVar </span><span class=cB2>U16 mon_start_days1[12]={</span><span class=cB4>
+<a name="l13"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l5"><span class=cB4>mon_start_days2     </span></a><span class=cB0>GlbVar </span><span class=cB2>U16 mon_start_days2[12]={</span><span class=cB0>
+<a name="l14"></a>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB5>                                   <h1><center>Date/CDate</center></h1></span><span class=cB0>
+<a name="l17"></a>TempleOS uses a 64-bit value, </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l186"><span class=cB4>CDate</span></a><span class=cB0>, for date/time.  The upper 32-bits are the 
+<a name="l18"></a>days since Christ.  The lower 32-bits store time of day divided by 4 billion 
+<a name="l19"></a>which works out to 49710ths of a second.  You can subtract two </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l186"><span class=cB4>CDate</span></a><span class=cB0>'s to get a 
+<a name="l20"></a>time span.
+<a name="l21"></a>
+<a name="l22"></a>Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l571"><span class=cB4>CDATE_FREQ</span></a><span class=cB0> to convert.
+<a name="l23"></a>
+<a name="l24"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l186"><span class=cB4>CDate               </span></a><span class=cB0>Class </span><span class=cB2>I64 class CDate</span><span class=cB4>
+<a name="l25"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l193"><span class=cB4>CDateStruct         </span></a><span class=cB0>Class </span><span class=cB2>class CDateStruct</span><span class=cB4>
+<a name="l26"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l39"><span class=cB4>Date2Struct         </span></a><span class=cB0>Funct </span><span class=cB2>Cvt CDate to CDateStruct.</span><span class=cB4>
+<a name="l27"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l191"><span class=cB4>Now                 </span></a><span class=cB0>Funct </span><span class=cB2>Current datetime.</span><span class=cB4>
+<a name="l28"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l138"><span class=cB4>Str2Date            </span></a><span class=cB0>Funct </span><span class=cB2>&quot;*+nnnn&quot;, &quot;*-nnnn&quot;, &quot;mm/dd&quot;, &quot;mm/dd/yy&quot;</span><span class=cB4>
+<a name="l29"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l14"><span class=cB4>Struct2Date         </span></a><span class=cB0>Funct </span><span class=cB2>Cvt CDateStruct to CDate.</span><span class=cB4>
+<a name="l30"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l14"><span class=cB4>local_time_offset   </span></a><span class=cB0>GlbVar </span><span class=cB2>CDate local_time_offset;</span><span class=cB0>
+</span></div></pre></body>
+</html>

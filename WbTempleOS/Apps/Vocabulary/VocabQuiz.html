@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U8</span><span class=cB0> *RandVocabWord()
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l4"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr;
+<a name="l5"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l18"></span><span class=cB6>acd</a></span><span class=cB0>.num_words)
+<a name="l6"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l7"></a>  i=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l18"></span><span class=cB6>acd</a></span><span class=cB0>.num_words;
+<a name="l8"></a>  ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l18"></span><span class=cB6>acd</a></span><span class=cB0>.word_lst;
+<a name="l9"></a>  </span><span class=cB1>while</span><span class=cB0> (i-- &amp;&amp; *ptr==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1526"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>)
+<a name="l10"></a>    ptr+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(ptr)+3;
+<a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (*ptr++!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1526"></span><span class=cB3>ACD_WORD_CHAR</a></span><span class=cB0>)
+<a name="l12"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l13"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l14"></a>    </span><span class=cB1>return</span><span class=cB0> ptr;
+<a name="l15"></a>}
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> VocabQuiz()
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,num;
+<a name="l20"></a>  </span><span class=cB1>U8</span><span class=cB0> *right_word,*words[4];
+<a name="l21"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l54"></span><span class=cB5>FileFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1510"></span><span class=cB3>ACD_DEF_FILENAME</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l22"></a>    </span><span class=cB6>&quot;Uncompressed dictionary not present.\n&quot;</span><span class=cB0>;
+<a name="l23"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l24"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>    right_word=RandVocabWord;
+<a name="l27"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;4;i++)
+<a name="l28"></a>      words[i]=RandVocabWord;
+<a name="l29"></a>    num=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>&amp;3;
+<a name="l30"></a>    words[num]=right_word;
+<a name="l31"></a>
+<a name="l32"></a>    </span><span class=cB6>&quot;$WW,1$$CM-LE,5$$RED$$BK,1$%s$BK,0$:$FG$$LM,4$\n&quot;</span><span class=cB0>,right_word;
+<a name="l33"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;4;i++)
+<a name="l34"></a>      </span><span class=cB6>&quot;\n\n$GREEN$$BT-X,\&quot;%d\&quot;,LM=\&quot;%d\&quot;$$FG$&quot;</span><span class=cB0>
+<a name="l35"></a>            </span><span class=cB6>&quot;$LM,7$%s\n$LM,4$&quot;</span><span class=cB0>,i+1,i+1,<a href="http://tinkeros.github.io/WbTempleOS/Adam/AutoComplete/ACFill.html#l2"></span><span class=cB5>ACDDefGet</a></span><span class=cB0>(words[i]);
+<a name="l36"></a>    </span><span class=cB6>&quot;\n\n$LTBLUE$Answer:$FG$&quot;</span><span class=cB0>;
+<a name="l37"></a>    </span><span class=cB1>do</span><span class=cB0> {
+<a name="l38"></a>      ch=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l142"></span><span class=cB5>GetKey</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l39"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l107"></span><span class=cB5>DocBottom</a></span><span class=cB0>;
+<a name="l40"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'1'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'4'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l41"></a>        </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l42"></a>        </span><span class=cB1>if</span><span class=cB0> (ch-</span><span class=cB6>'1'</span><span class=cB0>==num) {
+<a name="l43"></a>          </span><span class=cB6>&quot;$LTGREEN$Correct\n$FG$&quot;</span><span class=cB0>;
+<a name="l44"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l179"></span><span class=cB5>Snd</a></span><span class=cB0>(74);
+<a name="l45"></a>        } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l46"></a>          </span><span class=cB6>&quot;$LTRED$Incorrect\n$FG$&quot;</span><span class=cB0>;
+<a name="l47"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l179"></span><span class=cB5>Snd</a></span><span class=cB0>(46);
+<a name="l48"></a>        }
+<a name="l49"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l155"></span><span class=cB5>Sleep</a></span><span class=cB0>(500);
+<a name="l50"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l179"></span><span class=cB5>Snd</a></span><span class=cB0>;
+<a name="l51"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/AutoComplete/ACFill.html#l193"></span><span class=cB5>ACDPopUpDef</a></span><span class=cB0>(right_word);
+<a name="l52"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l53"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>    } </span><span class=cB1>while</span><span class=cB0> (ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3455"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0> &amp;&amp; ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3454"></span><span class=cB3>CH_ESC</a></span><span class=cB0>);
+<a name="l55"></a>    </span><span class=cB6>&quot;$LM,0$\n&quot;</span><span class=cB0>;
+<a name="l56"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3455"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0> &amp;&amp; ch!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3454"></span><span class=cB3>CH_ESC</a></span><span class=cB0>);
+<a name="l57"></a>}
+</span></div></pre></body>
+</html>

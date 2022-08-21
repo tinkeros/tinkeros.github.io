@@ -1,0 +1,399 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc/File&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l3"></span><span class=cB5>DocLoad</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB1>U8</span><span class=cB0> *src2,</span><span class=cB9>I64</span><span class=cB0> size)
+<a name="l4"></a>{</span><span class=cB2>//Fetch doc from raw mem buf.</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> *src;
+<a name="l7"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0> *tmpb;
+<a name="l9"></a>  doc-&gt;find_replace-&gt;filter_lines=0;
+<a name="l10"></a>  </span><span class=cB1>if</span><span class=cB0> (src2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l3"></span><span class=cB5>DocPutS</a></span><span class=cB0>(doc,src2); </span><span class=cB2>//Too big </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"><span class=cB4>DocPrint</span></a><span class=cB2>() is wasteful.</span><span class=cB0>
+<a name="l12"></a>    src=src2+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(src2)+1;
+<a name="l13"></a>    i=size-(</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB7>)</span><span class=cB0>);
+<a name="l14"></a>    </span><span class=cB1>while</span><span class=cB0> (src&lt;=src2+i) {
+<a name="l15"></a>      tmpb=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB7>)</span><span class=cB0>,doc-&gt;mem_task);
+<a name="l16"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;tmpb-&gt;</span><span class=cB1>start</span><span class=cB0>,src,</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB7>)</span><span class=cB0>);
+<a name="l17"></a>      src+=</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB0>)-</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB0>);
+<a name="l18"></a>      tmpb-&gt;data=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(tmpb-&gt;size,doc-&gt;mem_task);
+<a name="l19"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;size) </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmpb-&gt;data,src,tmpb-&gt;size);
+<a name="l21"></a>        src+=tmpb-&gt;size;
+<a name="l22"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l23"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(tmpb,doc-&gt;bin_head.last);
+<a name="l24"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;num&gt;=doc-&gt;cur_bin_num)
+<a name="l25"></a>        doc-&gt;cur_bin_num=tmpb-&gt;num+1;
+<a name="l26"></a>    }
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>doc-&gt;flags &amp; (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l29"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocBin.html#l28"></span><span class=cB5>DocBinsValidate</a></span><span class=cB0>(doc);
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l73"></span><span class=cB5>DocTop</a></span><span class=cB0>(doc); </span><span class=cB2>//Calls </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalc.html#l256"><span class=cB4>DocRecalc</span></a><span class=cB2>().  DOCT_CURSOR will be set.</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l32"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l33"></a>}
+<a name="l34"></a>
+<a name="l35"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *name=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> flags=0)
+<a name="l36"></a>{</span><span class=cB2>//Fetch doc from disk. See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"><span class=cB4>flags</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l37"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l363"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l38"></a>  </span><span class=cB1>U8</span><span class=cB0> *src,*name2;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> size=0;
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2747"></span><span class=cB9>CDirContext</a></span><span class=cB0> *dirc;
+<a name="l41"></a>  </span><span class=cB1>if</span><span class=cB0> (!name) name=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l20"></span><span class=cB6>blkdev</a></span><span class=cB0>.tmp_filename;
+<a name="l42"></a>  doc-&gt;flags|=flags;
+<a name="l43"></a>  name2=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l171"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(name);
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(doc-&gt;filename.name,name2);
+<a name="l45"></a>  </span><span class=cB1>if</span><span class=cB0> (src=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB7>(</span><span class=cB0>name2,&amp;size,&amp;doc-&gt;file_attr</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l46"></a>    </span><span class=cB1>if</span><span class=cB0> (dirc=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirContext.html#l23"></span><span class=cB5>DirContextNew</a></span><span class=cB7>(</span><span class=cB0>name2</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l47"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l3"></span><span class=cB5>DocLoad</a></span><span class=cB0>(doc,src,size);
+<a name="l48"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirContext.html#l1"></span><span class=cB5>DirContextDel</a></span><span class=cB0>(dirc);
+<a name="l49"></a>    }
+<a name="l50"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(src);
+<a name="l51"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(name2);
+<a name="l53"></a>  </span><span class=cB1>return</span><span class=cB0> doc;
+<a name="l54"></a>}
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l56"></span><span class=cB5>DocSave</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB9>I64</span><span class=cB0> *_size=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l57"></a>{</span><span class=cB2>//Store doc to raw mem buf.</span><span class=cB0>
+<a name="l58"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e,*doc_e1;
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0> *b;
+<a name="l60"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l61"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,cnt=1;</span><span class=cB2>//terminator</span><span class=cB0>
+<a name="l62"></a>  </span><span class=cB1>U8</span><span class=cB0> *st,*res,*dst,*src;
+<a name="l63"></a>
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>doc-&gt;flags &amp; (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l65"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocBin.html#l28"></span><span class=cB5>DocBinsValidate</a></span><span class=cB0>(doc);
+<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>)
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalc.html#l256"></span><span class=cB5>DocRecalc</a></span><span class=cB0>(doc);
+<a name="l68"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalc.html#l256"></span><span class=cB5>DocRecalc</a></span><span class=cB0>(doc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1364"></span><span class=cB3>RECALCF_ADD_CURSOR</a></span><span class=cB0>);
+<a name="l70"></a>    </span><span class=cB1>if</span><span class=cB0> (doc-&gt;head.next-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l909"></span><span class=cB3>DOCT_CURSOR</a></span><span class=cB0>)
+<a name="l71"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l63"></span><span class=cB5>DocEntryDel</a></span><span class=cB0>(doc,doc-&gt;head.next); </span><span class=cB2>//If no cursor, </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l3"><span class=cB4>DocLoad</span></a><span class=cB2>() puts at top.</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l73"></a>  </span><span class=cB1>for</span><span class=cB0> (doc_e=doc-&gt;head.next;doc_e!=doc;doc_e=doc_e-&gt;next) </span><span class=cB7>{</span><span class=cB0>
+<a name="l74"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l31"></span><span class=cB6>doldoc</a></span><span class=cB0>.type_flags_data,doc_e-&gt;type_u8</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l75"></a>      </span><span class=cB1>switch</span><span class=cB0> (doc_e-&gt;type_u8) </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l907"></span><span class=cB3>DOCT_TAB</a></span><span class=cB0>:
+<a name="l77"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l908"></span><span class=cB3>DOCT_PAGE_BREAK</a></span><span class=cB0>:
+<a name="l78"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l909"></span><span class=cB3>DOCT_CURSOR</a></span><span class=cB0>:
+<a name="l79"></a>          cnt++;
+<a name="l80"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l81"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l905"></span><span class=cB3>DOCT_NEW_LINE</a></span><span class=cB0>:
+<a name="l82"></a>          </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1273"></span><span class=cB3>DOCF_CARRIAGE_RETURN</a></span><span class=cB0>)
+<a name="l83"></a>            cnt+=2;
+<a name="l84"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l85"></a>            cnt++;
+<a name="l86"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l87"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l906"></span><span class=cB3>DOCT_SOFT_NEW_LINE</a></span><span class=cB0>:
+<a name="l88"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l89"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>:
+<a name="l90"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>doc_e-&gt;de_flags &amp; ~(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l969"></span><span class=cB3>DOCEF_TAG</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l955"></span><span class=cB3>DOCG_BL_IV_UL</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1044"></span><span class=cB3>DOCEF_WORD_WRAP</a></span><span class=cB0>|
+<a name="l91"></a>                <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1043"></span><span class=cB3>DOCEF_HIGHLIGHT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1022"></span><span class=cB3>DOCEF_SKIP</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1025"></span><span class=cB3>DOCEF_FILTER_SKIP</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>&amp;&amp;
+<a name="l92"></a>                !</span><span class=cB7>(</span><span class=cB0>doc_e-&gt;type&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l955"></span><span class=cB3>DOCG_BL_IV_UL</a></span><span class=cB7>)</span><span class=cB0>) {
+<a name="l93"></a>            cnt+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(doc_e-&gt;tag);
+<a name="l94"></a>            </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>doc-&gt;flags &amp; (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l95"></a>                  doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1274"></span><span class=cB3>DOCF_DBL_DOLLARS</a></span><span class=cB0>)
+<a name="l96"></a>              cnt+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l462"></span><span class=cB5>StrOcc</a></span><span class=cB0>(doc_e-&gt;tag,</span><span class=cB6>'$'</span><span class=cB0>);
+<a name="l97"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l98"></a>          }
+<a name="l99"></a>        </span><span class=cB1>default</span><span class=cB0>:
+<a name="l100"></a>          st=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPlain.html#l43"></span><span class=cB5>Doc2PlainText</a></span><span class=cB0>(doc,doc_e);
+<a name="l101"></a>          cnt+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(st)+2;
+<a name="l102"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l103"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l104"></a>    }
+<a name="l105"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l106"></a>  </span><span class=cB1>for</span><span class=cB0> (b=doc-&gt;bin_head.next;b!=&amp;doc-&gt;bin_head;b=b-&gt;next)
+<a name="l107"></a>    </span><span class=cB1>if</span><span class=cB0> (b-&gt;use_cnt&gt;b-&gt;tmp_use_cnt)
+<a name="l108"></a>      cnt+=</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB0>)-</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB0>)+b-&gt;size;
+<a name="l109"></a>  res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(cnt);
+<a name="l110"></a>  dst=res;
+<a name="l111"></a>  doc_e=doc-&gt;head.next;
+<a name="l112"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l113"></a>    doc_e1=doc_e-&gt;next;
+<a name="l114"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l31"></span><span class=cB6>doldoc</a></span><span class=cB0>.type_flags_data,doc_e-&gt;type_u8</span><span class=cB7>)</span><span class=cB0>)
+<a name="l115"></a>      </span><span class=cB1>switch</span><span class=cB0> (doc_e-&gt;type_u8) {
+<a name="l116"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l909"></span><span class=cB3>DOCT_CURSOR</a></span><span class=cB0>:
+<a name="l117"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l63"></span><span class=cB5>DocEntryDel</a></span><span class=cB0>(doc,doc_e);
+<a name="l118"></a>          *dst++=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3452"></span><span class=cB3>CH_CURSOR</a></span><span class=cB0>;
+<a name="l119"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l120"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l907"></span><span class=cB3>DOCT_TAB</a></span><span class=cB0>:
+<a name="l121"></a>          *dst++=</span><span class=cB6>'\t'</span><span class=cB0>;
+<a name="l122"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l123"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l905"></span><span class=cB3>DOCT_NEW_LINE</a></span><span class=cB0>:
+<a name="l124"></a>          </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1273"></span><span class=cB3>DOCF_CARRIAGE_RETURN</a></span><span class=cB0>)
+<a name="l125"></a>            *dst++=</span><span class=cB6>'\r'</span><span class=cB0>;
+<a name="l126"></a>          *dst++=</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l127"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l128"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l906"></span><span class=cB3>DOCT_SOFT_NEW_LINE</a></span><span class=cB0>:
+<a name="l129"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l130"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>:
+<a name="l131"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>doc_e-&gt;de_flags &amp; ~(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l969"></span><span class=cB3>DOCEF_TAG</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l955"></span><span class=cB3>DOCG_BL_IV_UL</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1044"></span><span class=cB3>DOCEF_WORD_WRAP</a></span><span class=cB0>|
+<a name="l132"></a>                <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1043"></span><span class=cB3>DOCEF_HIGHLIGHT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1022"></span><span class=cB3>DOCEF_SKIP</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1025"></span><span class=cB3>DOCEF_FILTER_SKIP</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l133"></a>                !</span><span class=cB7>(</span><span class=cB0>doc_e-&gt;type&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l955"></span><span class=cB3>DOCG_BL_IV_UL</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l134"></a>            src=doc_e-&gt;tag;
+<a name="l135"></a>            </span><span class=cB1>while</span><span class=cB0> (ch=*src++) {
+<a name="l136"></a>              *dst++=ch;
+<a name="l137"></a>              </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'$'</span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!(doc-&gt;flags &amp; </span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|
+<a name="l138"></a>                    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB7>)</span><span class=cB0>) || doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1274"></span><span class=cB3>DOCF_DBL_DOLLARS</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l139"></a>                *dst++=ch;
+<a name="l140"></a>            }
+<a name="l141"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l142"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l143"></a>        </span><span class=cB1>default</span><span class=cB0>:
+<a name="l144"></a>          *dst++=</span><span class=cB6>'$'</span><span class=cB0>;
+<a name="l145"></a>          st=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPlain.html#l43"></span><span class=cB5>Doc2PlainText</a></span><span class=cB0>(doc,doc_e);
+<a name="l146"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(dst,st);
+<a name="l147"></a>          dst+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(st);
+<a name="l148"></a>          *dst++=</span><span class=cB6>'$'</span><span class=cB0>;
+<a name="l149"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l150"></a>      }
+<a name="l151"></a>    doc_e=doc_e1;
+<a name="l152"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l153"></a>  *dst++=0;
+<a name="l154"></a>  b=doc-&gt;bin_head.next;
+<a name="l155"></a>  </span><span class=cB1>if</span><span class=cB0> (b!=&amp;doc-&gt;bin_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l156"></a>    </span><span class=cB1>do</span><span class=cB0> {
+<a name="l157"></a>      </span><span class=cB1>if</span><span class=cB0> (b-&gt;use_cnt&gt;b-&gt;tmp_use_cnt) </span><span class=cB7>{</span><span class=cB0>
+<a name="l158"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,&amp;b-&gt;</span><span class=cB1>start</span><span class=cB0>,</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB7>)</span><span class=cB0>);
+<a name="l159"></a>        dst+=</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>end</span><span class=cB0>)-</span><span class=cB1>offset</span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1118"></span><span class=cB9>CDocBin</a></span><span class=cB0>.</span><span class=cB1>start</span><span class=cB0>);
+<a name="l160"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,b-&gt;data,b-&gt;size);
+<a name="l161"></a>        dst+=b-&gt;size;
+<a name="l162"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l163"></a>      b=b-&gt;next;
+<a name="l164"></a>    } </span><span class=cB1>while</span><span class=cB0> (b!=&amp;doc-&gt;bin_head);
+<a name="l165"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l166"></a>    cnt--; </span><span class=cB2>//No terminator</span><span class=cB0>
+<a name="l167"></a>  </span><span class=cB1>if</span><span class=cB0> (_size) *_size=cnt;
+<a name="l168"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l169"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l170"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l171"></a>}
+<a name="l172"></a>
+<a name="l173"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l173"></span><span class=cB5>DocWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB1>Bool</span><span class=cB0> prompt=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l174"></a>{</span><span class=cB2>//Store doc to disk.</span><span class=cB0>
+<a name="l175"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l176"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l177"></a>  </span><span class=cB1>if</span><span class=cB0> (prompt &amp;&amp; !<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l209"></span><span class=cB5>DocForm</a></span><span class=cB7>(</span><span class=cB0>&amp;doc-&gt;filename</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l178"></a>        doc-&gt;filename.name[0]==</span><span class=cB6>'A'</span><span class=cB0> &amp;&amp; doc-&gt;filename.name[2]==</span><span class=cB6>':'</span><span class=cB0>)
+<a name="l179"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;  </span><span class=cB2>//CANCEL || LK_DOC,LK_DOC_ANCHOR,LK_DOC_FIND,LK_DOC_LINE?</span><span class=cB0>
+<a name="l180"></a>  buf=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l56"></span><span class=cB5>DocSave</a></span><span class=cB0>(doc,&amp;size);
+<a name="l181"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFile.html#l79"></span><span class=cB5>FileWrite</a></span><span class=cB0>(doc-&gt;filename.name,buf,size,0,doc-&gt;file_attr);
+<a name="l182"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l183"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l184"></a>}
+<a name="l185"></a>
+<a name="l186"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc&quot;</span><span class=cB0>
+<a name="l187"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l187"></span><span class=cB5>DocInsDoc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc2)
+<a name="l188"></a>{</span><span class=cB2>//Insert copy of doc2 into doc at insert pt, cur_entry.</span><span class=cB0>
+<a name="l189"></a></span><span class=cB2>//TODO: </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l236"><span class=cB4>DocRst</span></a><span class=cB0>
+<a name="l190"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst;
+<a name="l191"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_doc,unlock_doc2=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc2);
+<a name="l192"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_ne,*doc_e=doc2-&gt;head.next,*doc_ce;
+<a name="l193"></a>  </span><span class=cB1>if</span><span class=cB0> (!doc) doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l194"></a>  unlock_doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc),
+<a name="l195"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l175"></span><span class=cB5>DocRemSoftNewLines</a></span><span class=cB0>(doc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>);
+<a name="l196"></a>  doc_ce=doc-&gt;cur_entry;
+<a name="l197"></a>  </span><span class=cB1>if</span><span class=cB0> (doc_ce-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0> &amp;&amp; doc-&gt;cur_col&gt;doc_ce-&gt;min_col) </span><span class=cB7>{</span><span class=cB0>
+<a name="l198"></a>    </span><span class=cB1>if</span><span class=cB0> (doc-&gt;cur_col&lt;doc_ce-&gt;max_col) {
+<a name="l199"></a>      dst=doc_ce-&gt;tag+doc-&gt;cur_col;
+<a name="l200"></a>      doc_ne=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l50"></span><span class=cB5>DocEntryNewTag</a></span><span class=cB0>(doc,doc_ce,dst);
+<a name="l201"></a>      *dst=0;
+<a name="l202"></a>      doc_ne-&gt;type=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0> | doc_ce-&gt;type &amp; 0xFFFFFF00;
+<a name="l203"></a>      doc_ce-&gt;max_col=doc-&gt;cur_col;
+<a name="l204"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(doc_ne,doc_ce);
+<a name="l205"></a>      doc-&gt;cur_entry=doc_ne;
+<a name="l206"></a>      doc-&gt;cur_col=doc_ne-&gt;min_col;
+<a name="l207"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l208"></a>      </span><span class=cB1>if</span><span class=cB0> (doc_ce!=doc)
+<a name="l209"></a>        doc-&gt;cur_entry=doc_ce-&gt;next;
+<a name="l210"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l212"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l906"></span><span class=cB3>DOCT_SOFT_NEW_LINE</a></span><span class=cB0>) {
+<a name="l213"></a>      doc_ne=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l136"></span><span class=cB5>DocEntryCopy</a></span><span class=cB0>(doc,doc_e);
+<a name="l214"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(doc_ne,doc-&gt;cur_entry-&gt;last);
+<a name="l215"></a>    }
+<a name="l216"></a>    doc_e=doc_e-&gt;next;
+<a name="l217"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l218"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalc.html#l256"></span><span class=cB5>DocRecalc</a></span><span class=cB0>(doc);
+<a name="l219"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_doc2)
+<a name="l220"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc2);
+<a name="l221"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_doc)
+<a name="l222"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l223"></a>}
+<a name="l224"></a>
+<a name="l225"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc/Compiler;Compiler/Directive&quot;</span><span class=cB0>
+<a name="l226"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l226"></span><span class=cB5>StreamDoc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc)
+<a name="l227"></a>{</span><span class=cB2>//Inject doc into compile stream. Use inside #exe{}.</span><span class=cB0>
+<a name="l228"></a></span><span class=cB2>//TODO: </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l236"><span class=cB4>DocRst</span></a><span class=cB0>
+<a name="l229"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l230"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e=doc-&gt;head.next;
+<a name="l231"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l232"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>)
+<a name="l233"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l68"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,doc_e-&gt;tag);
+<a name="l234"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l905"></span><span class=cB3>DOCT_NEW_LINE</a></span><span class=cB0>)
+<a name="l235"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l68"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l236"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l907"></span><span class=cB3>DOCT_TAB</a></span><span class=cB0>)
+<a name="l237"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l68"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;\t&quot;</span><span class=cB0>);
+<a name="l238"></a>    doc_e=doc_e-&gt;next;
+<a name="l239"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l240"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_doc)
+<a name="l241"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l242"></a>}
+<a name="l243"></a>
+<a name="l244"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc&quot;</span><span class=cB0>
+<a name="l245"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l245"></span><span class=cB5>DocCaptureUndo</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB1>Bool</span><span class=cB0> force=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l246"></a>{
+<a name="l247"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,unlock;
+<a name="l248"></a>  </span><span class=cB9>I64</span><span class=cB0> time_stamp,flags;
+<a name="l249"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1346"></span><span class=cB9>CDocUndo</a></span><span class=cB0> *u;
+<a name="l250"></a>  </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1283"></span><span class=cB3>DOCF_ALLOW_UNDO</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l251"></a>    unlock=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l252"></a>    time_stamp=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l292"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l253"></a>    </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1304"></span><span class=cB3>DOCF_UNDO_DIRTY</a></span><span class=cB0> &amp;&amp;
+<a name="l254"></a>          time_stamp&gt;doc-&gt;undo_head.last-&gt;time_stamp+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l21"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq&lt;&lt;4 ||
+<a name="l255"></a>          force) {
+<a name="l256"></a>      u=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1346"></span><span class=cB9>CDocUndo</a></span><span class=cB7>)</span><span class=cB0>,doc-&gt;mem_task);
+<a name="l257"></a>      u-&gt;time_stamp=time_stamp;
+<a name="l258"></a>      flags=doc-&gt;flags;
+<a name="l259"></a>      doc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>;
+<a name="l260"></a>      u-&gt;body=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l56"></span><span class=cB5>DocSave</a></span><span class=cB0>(doc,&amp;u-&gt;size);
+<a name="l261"></a>      doc-&gt;flags=flags;
+<a name="l262"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(u,doc-&gt;undo_head.last);
+<a name="l263"></a>      doc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1304"></span><span class=cB3>DOCF_UNDO_DIRTY</a></span><span class=cB0>;
+<a name="l264"></a>      doc-&gt;undo_cnt++;
+<a name="l265"></a>      u-&gt;doc_flags=doc-&gt;flags;
+<a name="l266"></a>      res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l267"></a>      </span><span class=cB1>if</span><span class=cB0> (doc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1271"></span><span class=cB3>DOCF_AUTO_SAVE</a></span><span class=cB0>)
+<a name="l268"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l173"></span><span class=cB5>DocWrite</a></span><span class=cB0>(doc);
+<a name="l269"></a>    }
+<a name="l270"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l271"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l272"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l273"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l274"></a>}
+<a name="l275"></a> 
+<a name="l276"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l276"></span><span class=cB5>DocUndoRestore</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc)
+<a name="l277"></a>{
+<a name="l278"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l279"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1346"></span><span class=cB9>CDocUndo</a></span><span class=cB0> *u=doc-&gt;undo_head.last,*u_next,*u_last;
+<a name="l280"></a>  </span><span class=cB1>if</span><span class=cB0> (u!=&amp;doc-&gt;undo_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l281"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(u);
+<a name="l282"></a>    u_next=doc-&gt;undo_head.next;
+<a name="l283"></a>    u_last=doc-&gt;undo_head.last;
+<a name="l284"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(&amp;doc-&gt;undo_head);
+<a name="l285"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l236"></span><span class=cB5>DocRst</a></span><span class=cB0>(doc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l286"></a>    doc-&gt;flags=u-&gt;doc_flags&amp;~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>;
+<a name="l287"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l3"></span><span class=cB5>DocLoad</a></span><span class=cB0>(doc,u-&gt;body,u-&gt;size);
+<a name="l288"></a>    doc-&gt;flags=u-&gt;doc_flags;
+<a name="l289"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l117"></span><span class=cB5>DocUndoDel</a></span><span class=cB0>(doc,u);
+<a name="l290"></a>    doc-&gt;undo_head.next=u_next;
+<a name="l291"></a>    doc-&gt;undo_head.last=u_last;
+<a name="l292"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l293"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l123"></span><span class=cB5>DocUndoCntSet</a></span><span class=cB0>(doc);
+<a name="l294"></a>  doc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1304"></span><span class=cB3>DOCF_UNDO_DIRTY</a></span><span class=cB0>;
+<a name="l295"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l296"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l297"></a>}
+<a name="l298"></a>
+<a name="l299"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/GR Files;DolDoc/Output;StdOut/DolDoc&quot;</span><span class=cB0>
+<a name="l300"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l300"></span><span class=cB5>DocType</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> trailing_new_lines=1)
+<a name="l301"></a>{</span><span class=cB2>//Output txt or graphic file to document.</span><span class=cB0>
+<a name="l302"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l303"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc2;
+<a name="l304"></a>  </span><span class=cB1>if</span><span class=cB0> (!doc &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB7>)</span><span class=cB0> || doc-&gt;doc_signature!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1356"></span><span class=cB3>DOC_SIGNATURE_VAL</a></span><span class=cB0>)
+<a name="l305"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l306"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l40"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>filename,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2304"></span><span class=cB3>FILEMASK_TXT</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l307"></a>    doc2=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(filename);
+<a name="l308"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l187"></span><span class=cB5>DocInsDoc</a></span><span class=cB0>(doc,doc2);
+<a name="l309"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l310"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l251"></span><span class=cB5>DocDump</a></span><span class=cB0>(doc2,100000);
+<a name="l311"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc2);
+<a name="l312"></a>    res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l313"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l40"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>filename,</span><span class=cB6>&quot;*.GR*&quot;</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l314"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l407"></span><span class=cB5>DocGR</a></span><span class=cB0>(doc,filename);
+<a name="l315"></a>    res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l316"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l317"></a>  </span><span class=cB1>if</span><span class=cB0> (res)
+<a name="l318"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%h*c&quot;</span><span class=cB0>,trailing_new_lines,</span><span class=cB6>'\n'</span><span class=cB0>);
+<a name="l319"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l320"></a>}
+<a name="l321"></a>
+<a name="l322"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/GR Files;&quot;</span><span class=cB0>\
+<a name="l323"></a>        </span><span class=cB6>&quot;File/Cmd Line (Typically);DolDoc/Cmd Line (Typically);&quot;</span><span class=cB0>\
+<a name="l324"></a>        </span><span class=cB6>&quot;StdOut;Cmd Line (Typically)&quot;</span><span class=cB0>
+<a name="l325"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l325"></span><span class=cB5>Type</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> trailing_new_lines=1)
+<a name="l326"></a>{</span><span class=cB2>//Output txt or graphic file to command line.</span><span class=cB0>
+<a name="l327"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l300"></span><span class=cB5>DocType</a></span><span class=cB0>(,filename,trailing_new_lines);
+<a name="l328"></a>}
+<a name="l329"></a>
+<a name="l330"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc/File&quot;</span><span class=cB0>
+<a name="l331"></a>
+<a name="l332"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l332"></span><span class=cB5>DocLineRead</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> line,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *mem_task=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l333"></a>{</span><span class=cB2>//Extract line from stored doc file. (Slow.)</span><span class=cB0>
+<a name="l334"></a>  </span><span class=cB1>U8</span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l335"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(filename,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l336"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFind.html#l3"></span><span class=cB5>DocGoToLine</a></span><span class=cB7>(</span><span class=cB0>doc,line</span><span class=cB7>)</span><span class=cB0> &amp;&amp; doc-&gt;cur_entry-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>)
+<a name="l337"></a>    res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(doc-&gt;cur_entry-&gt;tag,mem_task);
+<a name="l338"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l339"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l340"></a>}
+<a name="l341"></a>
+<a name="l342"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l342"></span><span class=cB5>DocLineWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> line,</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l343"></a>{</span><span class=cB2>//Write line to stored doc file. (Slow.)</span><span class=cB0>
+<a name="l344"></a>  </span><span class=cB1>U8</span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l345"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(filename,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1270"></span><span class=cB3>DOCF_PLAIN_TEXT_TABS</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l346"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFind.html#l3"></span><span class=cB5>DocGoToLine</a></span><span class=cB7>(</span><span class=cB0>doc,line</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l347"></a>    </span><span class=cB1>if</span><span class=cB0> (doc-&gt;cur_entry-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>) {
+<a name="l348"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(doc-&gt;cur_entry-&gt;tag);
+<a name="l349"></a>      doc-&gt;cur_entry-&gt;tag=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(st);
+<a name="l350"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l351"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,st);
+<a name="l352"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l73"></span><span class=cB5>DocTop</a></span><span class=cB0>(doc);
+<a name="l353"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l173"></span><span class=cB5>DocWrite</a></span><span class=cB0>(doc);
+<a name="l354"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l355"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l356"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l357"></a>}
+</span></div></pre></body>
+</html>

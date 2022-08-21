@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> Recurse(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (n)
+<a name="l4"></a>    </span><span class=cB1>return</span><span class=cB0> 1+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l110"></span><span class=cB5>CallStkGrow</a></span><span class=cB0>(0x800,0x1000000,&amp;Recurse,n-1);
+<a name="l5"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l6"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l7"></a>}
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> Recurse2(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l10"></a>{
+<a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (n)
+<a name="l12"></a>    </span><span class=cB1>return</span><span class=cB0> 1+Recurse2(n-1);
+<a name="l13"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l14"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l15"></a>}
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB9>I64</span><span class=cB0> Recurse3(</span><span class=cB9>I64</span><span class=cB0> n,</span><span class=cB9>I64</span><span class=cB0> lo,</span><span class=cB9>I64</span><span class=cB0> hi)
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (lo&lt;=n&lt;hi)
+<a name="l20"></a>    </span><span class=cB1>return</span><span class=cB0> 1+Recurse3(n-1,lo,hi);
+<a name="l21"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (n)
+<a name="l22"></a>    </span><span class=cB1>return</span><span class=cB0> Recurse3(n-1,lo,hi);
+<a name="l23"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l24"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l25"></a>}
+<a name="l26"></a>
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> DEPTH   (2*1024*1024)
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> StkGrowDemo()
+<a name="l30"></a>{
+<a name="l31"></a>  </span><span class=cB1>F64</span><span class=cB0> t0;
+<a name="l32"></a>
+<a name="l33"></a>  t0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB6>&quot;%X:%X\n&quot;</span><span class=cB0>,DEPTH,Recurse(DEPTH);
+<a name="l35"></a>  </span><span class=cB6>&quot;Time:%7.5fs\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l36"></a>
+<a name="l37"></a>  </span><span class=cB2>//If you know the max stack ahead of time...</span><span class=cB0>
+<a name="l38"></a>  </span><span class=cB2>//Recurse2's stack is 16 because you have 1 arg,</span><span class=cB0>
+<a name="l39"></a>  </span><span class=cB2>//a return addr and no local variables.</span><span class=cB0>
+<a name="l40"></a>  t0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l41"></a>  </span><span class=cB6>&quot;%X:%X\n&quot;</span><span class=cB0>,DEPTH,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l110"></span><span class=cB5>CallStkGrow</a></span><span class=cB0>(DEPTH*16+0x800,DEPTH*16+0x800,&amp;Recurse2,DEPTH);
+<a name="l42"></a>  </span><span class=cB6>&quot;Time:%7.5fs\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l43"></a>
+<a name="l44"></a>  </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l110"><span class=cB4>CallStkGrow</span></a><span class=cB2>() works with multiple args.</span><span class=cB0>
+<a name="l45"></a>  t0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l46"></a>  </span><span class=cB6>&quot;%X:%X\n&quot;</span><span class=cB0>,DEPTH,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l110"></span><span class=cB5>CallStkGrow</a></span><span class=cB0>(DEPTH*32+0x800,DEPTH*32+0x800,
+<a name="l47"></a>        &amp;Recurse3,DEPTH,1000,2000);
+<a name="l48"></a>  </span><span class=cB6>&quot;Time:%7.5fs\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l49"></a>}
+<a name="l50"></a>
+<a name="l51"></a>StkGrowDemo;
+<a name="l52"></a>
+<a name="l53"></a></span><span class=cB2>//Be careful because you can fragment memory.</span><span class=cB0>
+</span></div></pre></body>
+</html>

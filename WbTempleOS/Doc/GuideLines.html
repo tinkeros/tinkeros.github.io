@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB8{color:#555555;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                              <h1><center>Directory Structure</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>/Home</span><span class=cB0> All your user data should be placed in here to ease backing-up your data.  
+<a name="l4"></a>When you install an application it will create a subdirectory of your </span><span class=cB2>/Home</span><span class=cB0> 
+<a name="l5"></a>directory for storage.
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB2>/Apps</span><span class=cB0> Applications are placed in subdirectories of </span><span class=cB2>/Apps</span><span class=cB0>.  Applications should 
+<a name="l8"></a>have a file called </span><span class=cB2>Install.HC.Z</span><span class=cB0> which will install the app, possibly making 
+<a name="l9"></a>files or directories in </span><span class=cB2>/Home</span><span class=cB0>.  The file, </span><span class=cB2>Load.HC.Z</span><span class=cB0> will load the application 
+<a name="l10"></a>into mem.  The file, </span><span class=cB2>Run.HC.Z</span><span class=cB0>, will usually load and execute the app.  To add an 
+<a name="l11"></a>app to your PersonalMenu, use </span><span class=cB2>&lt;CTRL-l&gt;</span><span class=cB0>, insert a macro with the PopUp option 
+<a name="l12"></a>checked and invoke the </span><span class=cB2>Run.HC.Z</span><span class=cB0> file.
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB2>/Demo</span><span class=cB0> Here you can find lots of sample code to do various things.
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>/Doc</span><span class=cB0> Here you can find documentation.
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB2>/Kernel</span><span class=cB0> The core of the operating system is found here.  Since priviledge levels 
+<a name="l19"></a>are not used, calling it a </span><span class=cB2>kernel</span><span class=cB0> is deceptive.  It is </span><span class=cB2>AOT</span><span class=cB0> compiled by </span><span class=cB4>
+<a name="l20"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB0>().  It is loaded by the boot loader and must fit in 640K.
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB2>/Compiler</span><span class=cB0> The compiler module src code is found here.  The compiler is </span><span class=cB2>AOT</span><span class=cB0> 
+<a name="l23"></a>compiled to produce a binary file which is loaded at boot.  It, too, is </span><span class=cB2>AOT</span><span class=cB0> 
+<a name="l24"></a>compiled by </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB0>().
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB2>/Adam</span><span class=cB0> The non-kernel part of the operating system is found here.  It is </span><span class=cB2>JIT</span><span class=cB0> 
+<a name="l27"></a>compiled during boot.  The </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> is the father of all tasks, like Adam and 
+<a name="l28"></a>Eve.
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB2>/0000Boot</span><span class=cB0> Boot files go here.  Stage 2 of the TempleOS hard drive master boot 
+<a name="l31"></a>loader, the old hard drive master boot record which is just blk#0, and the 
+<a name="l32"></a>CD/DVD </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Kernel.html#l1"><span class=cB4>0000Kernel.BIN.C</span></a><span class=cB0> file go here.  ASCII </span><span class=cB2>0000</span><span class=cB0> is near the top, 
+<a name="l33"></a>alphabetically, in case you use </span><a href="http://www.magiciso.com"><span class=cB0>MagicISO</span></a><span class=cB0>.
+<a name="l34"></a>
+<a name="l35"></a>
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB5>                                 <h1><center>::/Home Files</center></h1></span><span class=cB0>
+<a name="l38"></a>
+<a name="l39"></a>The home dir is specified with </span><span class=cB2>'~'</span><span class=cB0>.  The home dir is </span><span class=cB2>::/Home</span><span class=cB0> unless you change 
+<a name="l40"></a>it with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirB.html#l1"><span class=cB4>HomeSet</span></a><span class=cB0>() or compile the kernel with a cfg option.  An empty </span><span class=cB2>/Home</span><span class=cB0> dir 
+<a name="l41"></a>should be valid because it will get default files from the root dir. 
+<a name="l42"></a></span><span class=cB4>
+<a name="l43"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Home/PersonalMenu.html#l1"><span class=cB4>~/PersonalMenu.DD</span></a><span class=cB0> a menu viewed with the </span><span class=cB2>&lt;CTRL-m&gt;</span><span class=cB0> key or by clicking &quot;</span><span class=cB2>MENU</span><span class=cB0>&quot; in 
+<a name="l44"></a>the upper left border area of a window.
+<a name="l45"></a></span><span class=cB4>
+<a name="l46"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Home/PersonalNotes.html#l1"><span class=cB4>~/PersonalNotes.DD</span></a><span class=cB0> a personal note file viewed with the </span><span class=cB2>&lt;CTRL-SHIFT-M&gt;</span><span class=cB0> key.
+<a name="l47"></a></span><span class=cB4>
+<a name="l48"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Home/MakeHome.html#l1"><span class=cB4>~/MakeHome.HC</span></a><span class=cB0> a file compiled by the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> during </span><a href="http://tinkeros.github.io/WbTempleOS/StartOS.html#l44"><span class=cB4>StartOS</span></a><span class=cB0>.
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB4>~/Home*</span><span class=cB0> Copy </span><span class=cB2>Home*</span><span class=cB0> files from the root into </span><span class=cB2>~</span><span class=cB0> and customize them.  These files 
+<a name="l51"></a>are invoked when the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> starts-up.
+<a name="l52"></a></span><span class=cB4>
+<a name="l53"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Home/Once.html#l1"><span class=cB4>~/Once.HC</span></a><span class=cB0> a file invoked at the start-up of the first user.  Customize this!
+<a name="l54"></a></span><span class=cB4>
+<a name="l55"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Home/Registry.html#l1"><span class=cB4>~/Registry.HC</span></a><span class=cB0> can be edited by hand or deleted to reset to defaults.  Takes 
+<a name="l56"></a>affect next boot.
+<a name="l57"></a>
+<a name="l58"></a>
+<a name="l59"></a>
+<a name="l60"></a></span><span class=cB5>                              <h1><center>Application Policies</center></h1></span><span class=cB0>
+<a name="l61"></a>
+<a name="l62"></a>* Place applications in their own </span><span class=cB2>/Apps</span><span class=cB0> subdirectory.
+<a name="l63"></a>
+<a name="l64"></a>* Make a file called </span><span class=cB2>Load.HC.Z</span><span class=cB0> to load the application.
+<a name="l65"></a>
+<a name="l66"></a>* Make a file called </span><span class=cB2>Run.HC.Z</span><span class=cB0> to load and run the application, preferable by </span><span class=cB2>#in
+<a name="l67"></a>clude</span><span class=cB0>ing the </span><span class=cB2>Load.HC.Z</span><span class=cB0> file.
+<a name="l68"></a>
+<a name="l69"></a>* Place user data in a subdirectory of </span><span class=cB2>/Home</span><span class=cB0>, preferably naming the subdirectory 
+<a name="l70"></a>the same as the </span><span class=cB2>/Apps</span><span class=cB0> subdirectory.  Or, place data in the </span><span class=cB2>Registry.HC.Z</span><span class=cB0> file.  
+<a name="l71"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/RegistryDemo.html#l1"><span class=cB4>::/Demo/RegistryDemo.HC</span></a><span class=cB0>.
+<a name="l72"></a>
+<a name="l73"></a>* If the app needs files in the </span><span class=cB2>/Home</span><span class=cB0> directory, make an </span><span class=cB2>/Apps</span><span class=cB0> file called </span><span class=cB2>Insta
+<a name="l74"></a>ll.HC.Z</span><span class=cB0> or </span><span class=cB2>Install.IN.Z</span><span class=cB0> to create the </span><span class=cB2>/Home</span><span class=cB0> subdirectory.
+<a name="l75"></a>
+<a name="l76"></a> 
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB5>                             <h1><center>Programming Guidelines</center></h1></span><span class=cB0>
+<a name="l79"></a>
+<a name="l80"></a>* Virtual mem/Paging is not used -- it is identity mapped in </span><span class=cB2>x86_64</span><span class=cB0> mode.  The 
+<a name="l81"></a>stk does not grow, so alloc enough when the task (process) is </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l242"><span class=cB4>Spawn</span></a><span class=cB0>ed and use 
+<a name="l82"></a>the heap for most things.  (The </span><span class=cB2>heap</span><span class=cB0> refers to </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"><span class=cB4>Free</span></a><span class=cB0>().)
+<a name="l83"></a>
+<a name="l84"></a>* You can </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"><span class=cB4>Free</span></a><span class=cB0>(</span><span class=cB2>NULL</span><span class=cB0>).
+<a name="l85"></a>
+<a name="l86"></a>* See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l305"><span class=cB4>Naming Convention</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l3"><span class=cB4>Abbreviations</span></a><span class=cB0>.
+<a name="l87"></a>
+<a name="l88"></a>* There are two modes of compiling, </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l208"><span class=cB4>AOT Compile Mode</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l221"><span class=cB4>JIT Compile Mode</span></a><span class=cB0>.  
+<a name="l89"></a>Compilation is done in both -- neither is &quot;interpreted&quot;.  Use </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l221"><span class=cB4>JIT Mode</span></a><span class=cB0>.
+<a name="l90"></a>
+<a name="l91"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0>
+<a name="l92"></a>
+<a name="l93"></a>* Use </span><span class=cB2>I64</span><span class=cB0> instead of smaller int sizes because the compiler converts everything 
+<a name="l94"></a>to 64-bit.  Don't use unsigned unless it actually breaks.  A policy of signed 
+<a name="l95"></a>keeps it simple so you don't have to agonize over choices.
+<a name="l96"></a>
+<a name="l97"></a>     </span><span class=cB9>U32</span><span class=cB0> DistDist(</span><span class=cB9>U16</span><span class=cB0> x1, </span><span class=cB9>U16</span><span class=cB0> y1, </span><span class=cB9>U16</span><span class=cB0> x2, </span><span class=cB9>U16</span><span class=cB0> y2)
+<a name="l98"></a>     {</span><span class=cB2>//This requires zero-extend when fetching args.</span><span class=cB0>
+<a name="l99"></a>       </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l107"></span><span class=cB5>SqrI64</a></span><span class=cB0>(x1-x2)+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l107"></span><span class=cB5>SqrI64</a></span><span class=cB0>(y1-y2);
+<a name="l100"></a>     }
+<a name="l101"></a>     
+<a name="l102"></a>     </span><span class=cB9>I64</span><span class=cB0> DistDist(</span><span class=cB9>I64</span><span class=cB0> x1, </span><span class=cB9>I64</span><span class=cB0> y1, </span><span class=cB9>I64</span><span class=cB0> x2, </span><span class=cB9>I64</span><span class=cB0> y2)
+<a name="l103"></a>     {
+<a name="l104"></a>       </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l107"></span><span class=cB5>SqrI64</a></span><span class=cB0>(x1-x2)+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l107"></span><span class=cB5>SqrI64</a></span><span class=cB0>(y1-y2);
+<a name="l105"></a>     }
+<a name="l106"></a>
+<a name="l107"></a>* In-order, short circuit logic is assumed.
+<a name="l108"></a>
+<a name="l109"></a>* Avoid boolean expression assignments.  Boolean assignments don't have short 
+<a name="l110"></a>circuit logic and are not compiled efficiently.  The </span><span class=cB2>Bool</span><span class=cB0> type is just an alias 
+<a name="l111"></a>for a 1 byte signed int -- nothing forces it to </span><span class=cB2>1</span><span class=cB0> or </span><span class=cB2>0</span><span class=cB0>.  There is a </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l119"><span class=cB4>ToBool</span></a><span class=cB0>() 
+<a name="l112"></a>function that will for to </span><span class=cB2>1</span><span class=cB0> ot </span><span class=cB2>0</span><span class=cB0>, however.
+<a name="l113"></a>
+<a name="l114"></a>* Glbl vars in </span><span class=cB2>AOT</span><span class=cB0> BIN modules are initialized to zero.  They occupy space in 
+<a name="l115"></a>BIN files.
+<a name="l116"></a>
+<a name="l117"></a>* Bracketing code with </span><span class=cB2>PUSHFD CLI</span><span class=cB0> and </span><span class=cB2>POPFD</span><span class=cB0> will protect against simultaneous 
+<a name="l118"></a>accesses from tasks on <u>one</u> core.  To protect against multiple cores, you need a 
+<a name="l119"></a>locked semaphore.  I think semiphores need to be in their own cache line, but 
+<a name="l120"></a>I'm not sure.  I use lock bits in a lot of places not aligned.
+<a name="l121"></a>
+<a name="l122"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l280"><span class=cB4>SysDbg</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l285"><span class=cB4>IsSysDbg</span></a><span class=cB0>() are really handy when working on the compiler or 
+<a name="l123"></a>kernel.  It's just a bit you can set and test.
+<a name="l124"></a>
+<a name="l125"></a>* I don't use </span><span class=cB2>U0 *</span><span class=cB0> because the size is zero for ptr arithmetic.
+<a name="l126"></a>
+<a name="l127"></a>* Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3456"><span class=cB4>CH_SHIFT_SPACE</span></a><span class=cB0> for spaces in quotes in source code because I run </span><span class=cB4>
+<a name="l128"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/StrUtils.html#l201"><span class=cB4>Spaces-to-Tabs</span></a><span class=cB0> on source code.
+<a name="l129"></a>
+<a name="l130"></a>* Do not use </span><span class=cB2>#if</span><span class=cB0> or </span><span class=cB2>#ifdef</span><span class=cB0>
+<a name="l131"></a>
+<a name="l132"></a>
+<a name="l133"></a>
+<a name="l134"></a></span><span class=cB5>                                <h1><center>Hash Sym Tables</center></h1></span><span class=cB0>
+<a name="l135"></a>
+<a name="l136"></a>* See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/AHash.html#l1"><span class=cB4>::/Adam/AHash.HC</span></a><span class=cB0> for examples of how the hash tables are set-up.  
+<a name="l137"></a>Basically, syms are placed into hash tables and child process hash tables are 
+<a name="l138"></a>chained to parents.  This provides scopes for vars and functions.
+<a name="l139"></a>
+<a name="l140"></a>* </span><span class=cB2>adam_task-&gt;hash_table</span><span class=cB0> holds the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0> syms loaded in on start-up.
+<a name="l141"></a>
+<a name="l142"></a>* </span><span class=cB2>Fs-&gt;hash_table</span><span class=cB0> holds user HolyC syms and if a sym is not found, it checks 
+<a name="l143"></a>parents.  When a duplicate sym is added to the table, it overshadows the prev 
+<a name="l144"></a>sym.  When developing software, typically you include the file at the cmd 
+<a name="l145"></a>prompt, make changes and reinclude it.  Old syms are overshadowed but they are 
+<a name="l146"></a>still there.  Periodically, kill the TASK and start fresh when mem is low.  If 
+<a name="l147"></a>you wish your applications to free themselves instead of staying in mem, spawn 
+<a name="l148"></a>or </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l376"><span class=cB4>PopUp</span></a><span class=cB0>() a task to run the application and kill it when it's done.
+<a name="l149"></a>
+<a name="l150"></a>* To display the contents of a hash table, use the </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/AHash.html#l149"><span class=cB4>Who</span></a><span class=cB0>() routine or the 
+<a name="l151"></a>varients.  </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/AHash.html#l328"><span class=cB4>HashDepthRep</span></a><span class=cB0>() gives a histogram  of how long the chains are, in case 
+<a name="l152"></a>you wish to make hash table sizes bigger.
+<a name="l153"></a>
+<a name="l154"></a>
+<a name="l155"></a>
+<a name="l156"></a></span><span class=cB5>                               <h1><center>Assembly Language</center></h1></span><span class=cB0>
+<a name="l157"></a>
+<a name="l158"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Asm.html#l1"><span class=cB4>::/Doc/Asm.DD</span></a><span class=cB0>.
+<a name="l159"></a>
+<a name="l160"></a>* </span><span class=cB2>FS</span><span class=cB0> must always point to the cur </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"><span class=cB4>CTask</span></a><span class=cB0>.
+<a name="l161"></a>
+<a name="l162"></a>* </span><span class=cB2>GS</span><span class=cB0> must always point to the cur </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3391"><span class=cB4>CCPU</span></a><span class=cB0>.
+<a name="l163"></a>
+<a name="l164"></a>* Don't change the segment regs unless interrupts are off.  It's hard to do, 
+<a name="l165"></a>anyway.  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KUtils.html#l445"><span class=cB4>SET_FS_BASE</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KUtils.html#l433"><span class=cB4>SET_GS_BASE</span></a><span class=cB0>.
+<a name="l166"></a>
+<a name="l167"></a>* When interacting with </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0> compiled code, preserve </span><span class=cB2>RBP, RSI, RDI, R10-R15</span><span class=cB0> 
+<a name="l168"></a>because the compiler uses these for reg vars.  You are free to clobber </span><span class=cB2>RAX, RBX, 
+<a name="l169"></a>RCX, RDX</span><span class=cB0>, </span><span class=cB2>R8</span><span class=cB0> and </span><span class=cB2>R9</span><span class=cB0>.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1804"><span class=cB4>Compiler Reg Masks</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1776"><span class=cB4>PUSH_C_REGS</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1777"><span class=cB4>POP_C_REGS</span></a><span class=cB0>
+<a name="l170"></a>
+<a name="l171"></a>* I recommend using the standard stk frame for functions because </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l60"><span class=cB4>Caller</span></a><span class=cB0>() is 
+<a name="l172"></a>used to display the call stk, such as for the wallpaper.
+<a name="l173"></a></span><span class=cB2>        PUSH    RBP
+<a name="l174"></a>        MOV     RBP,RSP
+<a name="l175"></a>        SUB     RSP,nnnn
+<a name="l176"></a>...
+<a name="l177"></a>        LEAVE
+<a name="l178"></a>        RET
+<a name="l179"></a></span><span class=cB0>
+<a name="l180"></a>* The args are removed from the stack with </span><span class=cB2>RET1</span><span class=cB0> stmts.
+<a name="l181"></a>
+<a name="l182"></a>        </span><span class=cB2>RET1    16      //remove two args</span><span class=cB0>
+<a name="l183"></a>
+<a name="l184"></a>* No args are passed in regs.
+<a name="l185"></a>
+<a name="l186"></a>* RAX holds function return values, of course.
+<a name="l187"></a></span><span class=cB8>
+<a name="l188"></a>* &quot;MagicISO&quot; is a trademark owned by MagicISO Corp.
+</span></div></pre></body>
+</html>

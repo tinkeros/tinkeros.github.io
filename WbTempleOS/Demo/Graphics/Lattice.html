@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> TURTLE_SIZE             4
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> TURTLE_SPEED_STEP       2
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> ANGLES  35
+<a name="l5"></a></span><span class=cB1>F64</span><span class=cB0> angles[ANGLES]={
+<a name="l6"></a>-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/1,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/3,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/4,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/5,
+<a name="l7"></a>-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/6,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/8,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/9,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/10,
+<a name="l8"></a>-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/12,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/15,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/18,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/20,
+<a name="l9"></a>-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/24,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/30,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/36,-2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/40,
+<a name="l10"></a>0,
+<a name="l11"></a>2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/40,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/36,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/30,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/24,
+<a name="l12"></a>2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/20,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/18,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/15,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/12,
+<a name="l13"></a>2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/10,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/9,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/8,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/6,
+<a name="l14"></a>2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/5,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/4,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/3,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2,2*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/1
+<a name="l15"></a>};
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>class</span><span class=cB0> Turtle
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y,z,speed,theta,w;
+<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> dtheta_idx;
+<a name="l21"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> edge,middle;
+<a name="l22"></a>  </span><span class=cB1>Bool</span><span class=cB0> ends,first;
+<a name="l23"></a>} tt;
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> TurtlePlot(</span><span class=cB9>CDC</span><span class=cB0> *dc,Turtle *t,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> edge,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> middle)
+<a name="l26"></a>{
+<a name="l27"></a>  </span><span class=cB1>F64</span><span class=cB0> w=t-&gt;w/2.0-1;
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (w&lt;0) w=0;
+<a name="l29"></a>  dc-&gt;color=middle;
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,t-&gt;x+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;y+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;z,
+<a name="l31"></a>        t-&gt;x+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;y+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;z);
+<a name="l32"></a>  w=t-&gt;w/2.0;
+<a name="l33"></a>  dc-&gt;color=edge;
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>(dc,t-&gt;x+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;y+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;z);
+<a name="l35"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l441"></span><span class=cB5>GrPlot3</a></span><span class=cB0>(dc,t-&gt;x+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;y+w*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t-&gt;theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t-&gt;z);
+<a name="l36"></a>}
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB1>U0</span><span class=cB0> TurtleMicroMove(Turtle *t,</span><span class=cB1>F64</span><span class=cB0> dt)
+<a name="l39"></a>{
+<a name="l40"></a>  t-&gt;x+=dt*t-&gt;speed*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(t-&gt;theta);
+<a name="l41"></a>  t-&gt;y+=dt*t-&gt;speed*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(t-&gt;theta);
+<a name="l42"></a>  t-&gt;theta=<a href="http://tinkeros.github.io/WbTempleOS/Adam/AMath.html#l19"></span><span class=cB5>Wrap</a></span><span class=cB0>(t-&gt;theta+dt*angles[t-&gt;dtheta_idx]);
+<a name="l43"></a>}
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB1>U0</span><span class=cB0> TurtleEnd(</span><span class=cB9>CDC</span><span class=cB0> *dc,Turtle *t,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> edge,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> middle,</span><span class=cB1>F64</span><span class=cB0> theta)
+<a name="l46"></a>{
+<a name="l47"></a>  </span><span class=cB1>F64</span><span class=cB0> r,x,y2;
+<a name="l48"></a>  Turtle t2;
+<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (r=t-&gt;w) </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;t2,t,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Turtle</span><span class=cB7>)</span><span class=cB0>);  </span><span class=cB2>//Save</span><span class=cB0>
+<a name="l51"></a>    x=0;
+<a name="l52"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l53"></a>      t-&gt;x+=1/r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(theta);
+<a name="l54"></a>      t-&gt;y+=1/r*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(theta);
+<a name="l55"></a>      x+=1/r;
+<a name="l56"></a>      y2=r*r-4*x*x;
+<a name="l57"></a>      </span><span class=cB1>if</span><span class=cB0> (y2&gt;=0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>        t-&gt;w=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(y2);
+<a name="l59"></a>        TurtlePlot(dc,t,edge,middle);
+<a name="l60"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l61"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l62"></a>    }
+<a name="l63"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(t,&amp;t2,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Turtle</span><span class=cB7>)</span><span class=cB0>);
+<a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l65"></a>}
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> TurtleMove(</span><span class=cB9>CDC</span><span class=cB0> *dc,Turtle *t,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> edge,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2935"></span><span class=cB9>CColorROPU16</a></span><span class=cB0> middle)
+<a name="l68"></a>{
+<a name="l69"></a>  </span><span class=cB9>I64</span><span class=cB0> i,l=16*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(t-&gt;w+1)*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(t-&gt;speed+1);
+<a name="l70"></a>
+<a name="l71"></a>  </span><span class=cB1>if</span><span class=cB0> (t-&gt;ends &amp;&amp; t-&gt;first)
+<a name="l72"></a>    TurtleEnd(dc,t,edge,middle,t-&gt;theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>);
+<a name="l73"></a>  t-&gt;first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l74"></a>
+<a name="l75"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;l;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>    TurtleMicroMove(t,1.0/l);
+<a name="l77"></a>    TurtlePlot(dc,t,edge,middle);
+<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>  </span><span class=cB1>if</span><span class=cB0> (t-&gt;ends)
+<a name="l80"></a>    TurtleEnd(dc,t,edge,middle,t-&gt;theta);
+<a name="l81"></a>}
+<a name="l82"></a>
+<a name="l83"></a></span><span class=cB1>U0</span><span class=cB0> TurtleInit(Turtle *t)
+<a name="l84"></a>{
+<a name="l85"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(t,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Turtle</span><span class=cB7>)</span><span class=cB0>);
+<a name="l86"></a>  t-&gt;x=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width&gt;&gt;1;
+<a name="l87"></a>  t-&gt;y=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_height&gt;&gt;1;
+<a name="l88"></a>  t-&gt;z=5;
+<a name="l89"></a>  t-&gt;edge=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l90"></a>  t-&gt;middle=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2928"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l91"></a>  t-&gt;dtheta_idx=ANGLES/2;
+<a name="l92"></a>  t-&gt;first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l93"></a>  t-&gt;ends=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l94"></a>}
+<a name="l95"></a>
+<a name="l96"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l97"></a>{
+<a name="l98"></a>  Turtle t2;
+<a name="l99"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;t2,&amp;tt,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Turtle</span><span class=cB7>)</span><span class=cB0>);
+<a name="l100"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,0,0,</span><span class=cB6>&quot;Layer:%f Speed:%f theta:%5.1f dtheta:%5.1f Width:%f&quot;</span><span class=cB0>,
+<a name="l101"></a>        tt.z,tt.speed,tt.theta*180/<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>,angles[tt.dtheta_idx]*180/<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>,tt.w);
+<a name="l102"></a>
+<a name="l103"></a>  TurtleMove(dc,&amp;t2,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2926"></span><span class=cB3>LTRED</a></span><span class=cB0>);
+<a name="l104"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2926"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l105"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,
+<a name="l106"></a>        t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>);
+<a name="l107"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,
+<a name="l108"></a>        t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta</span><span class=cB7>)</span><span class=cB0>,    t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta</span><span class=cB7>)</span><span class=cB0>);
+<a name="l109"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l51"></span><span class=cB3>pi</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>,
+<a name="l110"></a>        t2.x+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB7>(</span><span class=cB0>t2.theta</span><span class=cB7>)</span><span class=cB0>,    t2.y+TURTLE_SIZE*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>t2.theta</span><span class=cB7>)</span><span class=cB0>);
+<a name="l111"></a>}
+<a name="l112"></a>
+<a name="l113"></a></span><span class=cB1>U0</span><span class=cB0> SetMenu()
+<a name="l114"></a>{
+<a name="l115"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l116"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l41"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l117"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3090"></span><span class=cB9>CMenuEntry</a></span><span class=cB0> *tmpse;
+<a name="l118"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=9;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l119"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l876"></span><span class=cB5>StrPrint</a></span><span class=cB0>(buf,</span><span class=cB6>&quot;Settings/Layer%d&quot;</span><span class=cB0>,i);
+<a name="l120"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpse=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l25"></span><span class=cB5>MenuEntryFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_menu,buf</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l121"></a>      </span><span class=cB1>if</span><span class=cB0> (i==tt.z)
+<a name="l122"></a>        tmpse-&gt;checked=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l123"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l124"></a>        tmpse-&gt;checked=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l125"></a>    }
+<a name="l126"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpse=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l25"></span><span class=cB5>MenuEntryFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_menu,</span><span class=cB6>&quot;Settings/Ends&quot;</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l128"></a>    </span><span class=cB1>if</span><span class=cB0> (tt.ends)
+<a name="l129"></a>      tmpse-&gt;checked=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l130"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l131"></a>      tmpse-&gt;checked=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l132"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l133"></a>}
+<a name="l134"></a>
+<a name="l135"></a></span><span class=cB1>U0</span><span class=cB0> Lattice()
+<a name="l136"></a>{
+<a name="l137"></a>  </span><span class=cB1>Bool</span><span class=cB0> aim=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l138"></a>  </span><span class=cB9>I64</span><span class=cB0> arg1,arg2;
+<a name="l139"></a>  </span><span class=cB9>CDC</span><span class=cB0>  *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l168"></span><span class=cB5>DCAlias</a></span><span class=cB0>;
+<a name="l140"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l236"></span><span class=cB5>DCDepthBufAlloc</a></span><span class=cB0>(dc);
+<a name="l141"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l150"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
+<a name="l142"></a>        </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
+<a name="l143"></a>        </span><span class=cB6>&quot;  Abort(,CH_SHIFT_ESC);&quot;</span><span class=cB0>
+<a name="l144"></a>        </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
+<a name="l145"></a>        </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l146"></a>        </span><span class=cB6>&quot;Play {&quot;</span><span class=cB0>
+<a name="l147"></a>        </span><span class=cB6>&quot;  Restart(,'\n');&quot;</span><span class=cB0>
+<a name="l148"></a>        </span><span class=cB6>&quot;  Step(,CH_SPACE);&quot;</span><span class=cB0>
+<a name="l149"></a>        </span><span class=cB6>&quot;  Accelerator(,,SC_CURSOR_UP);&quot;</span><span class=cB0>
+<a name="l150"></a>        </span><span class=cB6>&quot;  Break(,,SC_CURSOR_DOWN);&quot;</span><span class=cB0>
+<a name="l151"></a>        </span><span class=cB6>&quot;  Left(,,SC_CURSOR_LEFT);&quot;</span><span class=cB0>
+<a name="l152"></a>        </span><span class=cB6>&quot;  Right(,,SC_CURSOR_RIGHT);&quot;</span><span class=cB0>
+<a name="l153"></a>        </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l154"></a>        </span><span class=cB6>&quot;Settings {&quot;</span><span class=cB0>
+<a name="l155"></a>        </span><span class=cB6>&quot;  Color(,'c');&quot;</span><span class=cB0>
+<a name="l156"></a>        </span><span class=cB6>&quot;  Wider(,'+');&quot;</span><span class=cB0>
+<a name="l157"></a>        </span><span class=cB6>&quot;  Narrower(,'-');&quot;</span><span class=cB0>
+<a name="l158"></a>        </span><span class=cB6>&quot;  Ends(,'e');&quot;</span><span class=cB0>
+<a name="l159"></a>        </span><span class=cB6>&quot;  Layer0(,'0');&quot;</span><span class=cB0>
+<a name="l160"></a>        </span><span class=cB6>&quot;  Layer1(,'1');&quot;</span><span class=cB0>
+<a name="l161"></a>        </span><span class=cB6>&quot;  Layer2(,'2');&quot;</span><span class=cB0>
+<a name="l162"></a>        </span><span class=cB6>&quot;  Layer3(,'3');&quot;</span><span class=cB0>
+<a name="l163"></a>        </span><span class=cB6>&quot;  Layer4(,'4');&quot;</span><span class=cB0>
+<a name="l164"></a>        </span><span class=cB6>&quot;  Layer5(,'5');&quot;</span><span class=cB0>
+<a name="l165"></a>        </span><span class=cB6>&quot;  Layer6(,'6');&quot;</span><span class=cB0>
+<a name="l166"></a>        </span><span class=cB6>&quot;  Layer7(,'7');&quot;</span><span class=cB0>
+<a name="l167"></a>        </span><span class=cB6>&quot;  Layer8(,'8');&quot;</span><span class=cB0>
+<a name="l168"></a>        </span><span class=cB6>&quot;  Layer9(,'9');&quot;</span><span class=cB0>
+<a name="l169"></a>        </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l170"></a>        );
+<a name="l171"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l172"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/AutoComplete/ACTask.html#l259"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l173"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l517"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
+<a name="l174"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l503"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l175"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l136"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l176"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l120"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l177"></a>  TurtleInit(&amp;tt);
+<a name="l178"></a>  SetMenu;
+<a name="l179"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1443"></span><span class=cB3>WIG_TASK_DFT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1432"></span><span class=cB3>WIF_FOCUS_TASK_MENU</a></span><span class=cB0>
+<a name="l180"></a>        -<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1418"></span><span class=cB3>WIF_SELF_FOCUS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1427"></span><span class=cB3>WIF_SELF_GRAB_SCROLL</a></span><span class=cB0>;
+<a name="l181"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l182"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l183"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l184"></a>      </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l95"></span><span class=cB5>GetMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3179"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>|
+<a name="l185"></a>            1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3183"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3184"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3178"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l186"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3179"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>:
+<a name="l187"></a>          tt.first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l188"></a>          tt.x=arg1;
+<a name="l189"></a>          tt.y=arg2;
+<a name="l190"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l191"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3183"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>:
+<a name="l192"></a>          aim=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l193"></a>          tt.theta=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l122"></span><span class=cB5>Arg</a></span><span class=cB0>(arg1-tt.x,arg2-tt.y);
+<a name="l194"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l195"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3178"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>:
+<a name="l196"></a>          </span><span class=cB1>if</span><span class=cB0> (aim)
+<a name="l197"></a>            tt.theta=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l122"></span><span class=cB5>Arg</a></span><span class=cB0>(arg1-tt.x,arg2-tt.y);
+<a name="l198"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l199"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3184"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>:
+<a name="l200"></a>          tt.theta=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l122"></span><span class=cB5>Arg</a></span><span class=cB0>(arg1-tt.x,arg2-tt.y);
+<a name="l201"></a>          aim=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l202"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l203"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>:
+<a name="l204"></a>          </span><span class=cB1>switch</span><span class=cB0> (arg1) {
+<a name="l205"></a>            </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l206"></a>              </span><span class=cB1>switch</span><span class=cB0> (arg2.u8[0]) </span><span class=cB7>{</span><span class=cB0>
+<a name="l207"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3509"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
+<a name="l208"></a>                  </span><span class=cB1>if</span><span class=cB0> (tt.dtheta_idx)
+<a name="l209"></a>                    tt.dtheta_idx--;
+<a name="l210"></a>                  </span><span class=cB1>break</span><span class=cB0>;
+<a name="l211"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3510"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
+<a name="l212"></a>                  </span><span class=cB1>if</span><span class=cB0> (tt.dtheta_idx&lt;ANGLES-1)
+<a name="l213"></a>                    tt.dtheta_idx++;
+<a name="l214"></a>                  </span><span class=cB1>break</span><span class=cB0>;
+<a name="l215"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3507"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l216"></a>                  tt.speed+=TURTLE_SPEED_STEP;
+<a name="l217"></a>                  </span><span class=cB1>break</span><span class=cB0>;
+<a name="l218"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3508"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l219"></a>                  </span><span class=cB1>if</span><span class=cB0> (tt.speed&gt;=TURTLE_SPEED_STEP)
+<a name="l220"></a>                    tt.speed-=TURTLE_SPEED_STEP;
+<a name="l221"></a>                  </span><span class=cB1>break</span><span class=cB0>;
+<a name="l222"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l223"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l224"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'0'</span><span class=cB0>...</span><span class=cB6>'9'</span><span class=cB0>:
+<a name="l225"></a>              tt.z=arg1-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l226"></a>              SetMenu;
+<a name="l227"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l228"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'c'</span><span class=cB0>:
+<a name="l229"></a>              tt.middle=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l3"></span><span class=cB5>PopUpColor</a></span><span class=cB0>(</span><span class=cB6>&quot;Mid Color\n\n&quot;</span><span class=cB0>);
+<a name="l230"></a>              tt.edge  =<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l3"></span><span class=cB5>PopUpColor</a></span><span class=cB0>(</span><span class=cB6>&quot;Edge Color\n\n&quot;</span><span class=cB0>);
+<a name="l231"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l232"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'e'</span><span class=cB0>:
+<a name="l233"></a>              tt.ends=!tt.ends;
+<a name="l234"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l235"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'+'</span><span class=cB0>:
+<a name="l236"></a>              tt.w++;
+<a name="l237"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l238"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'-'</span><span class=cB0>:
+<a name="l239"></a>              </span><span class=cB1>if</span><span class=cB0> (tt.w)
+<a name="l240"></a>                tt.w--;
+<a name="l241"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l242"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
+<a name="l243"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l122"></span><span class=cB5>DCFill</a></span><span class=cB0>(dc);
+<a name="l244"></a>              TurtleInit(&amp;tt);
+<a name="l245"></a>              SetMenu;
+<a name="l246"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l247"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3454"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l248"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3455"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l249"></a>              </span><span class=cB1>goto</span><span class=cB0> lt_done;
+<a name="l250"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3457"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>:
+<a name="l251"></a>              TurtleMove(dc,&amp;tt,tt.edge,tt.middle);
+<a name="l252"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l253"></a>          }
+<a name="l254"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l255"></a>    }
+<a name="l256"></a>lt_done:
+<a name="l257"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l95"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3177"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
+<a name="l258"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l259"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l260"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l89"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l261"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l122"></span><span class=cB5>DCFill</a></span><span class=cB0>(dc);
+<a name="l262"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l208"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l263"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l166"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l264"></a>}
+<a name="l265"></a>
+<a name="l266"></a>Lattice;
+</span></div></pre></body>
+</html>

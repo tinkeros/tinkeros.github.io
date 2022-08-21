@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                 <h1><center>Char Overview</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>A </span><span class=cB2>Char</span><span class=cB0>acter is a single byte holding an ASCII code for a letter, num or sym.  
+<a name="l4"></a>The </span><span class=cB2>TempleOS</span><span class=cB0> term is a </span><span class=cB2>U8</span><span class=cB0>.
+<a name="l5"></a>
+<a name="l6"></a>Standard ASCII values range from 0 to 127.  Values below 32 are ctrl key's.  So, 
+<a name="l7"></a>an ASCII #3 is a </span><span class=cB2>&lt;CTRL-c&gt;</span><span class=cB0>.  TempleOS uses a few nonstandard values below 32.  
+<a name="l8"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3456"><span class=cB4>Char Definitions</span></a><span class=cB0>.
+<a name="l9"></a>
+<a name="l10"></a>ASCII #5  is the cursor location in a saved file.
+<a name="l11"></a>ASCII #28 is </span><span class=cB2>&lt;SHIFT-ESC&gt;</span><span class=cB0>.
+<a name="l12"></a>ASCII #31 is a </span><span class=cB2>&lt;SHIFT-SPACE&gt;</span><span class=cB0>.
+<a name="l13"></a>
+<a name="l14"></a>TempleOS ASCII is 8-bit instead of 7-bit, so it also uses the range from 
+<a name="l15"></a>128-255.  Press </span><span class=cB2>&lt;CTRL-ALT-a&gt;</span><span class=cB0> to see shapes for 128-255.  Technically, </span><span class=cB2>&lt;CTRL-ALT-
+<a name="l16"></a>a&gt;</span><span class=cB0> are </span><a href="http://tinkeros.github.io/WbTempleOS/LiveHelp/TextBase.html#l1"><span class=cB4>scrn codes</span></a><span class=cB0>.
+<a name="l17"></a>
+<a name="l18"></a>A </span><span class=cB2>Key</span><span class=cB0> is typically specified with a scan code.  TempleOS scan codes contain the 
+<a name="l19"></a>key value in the lowest </span><span class=cB2>U8</span><span class=cB0>, and flags in the upper 3 bytes.  See </span><span class=cB4>
+<a name="l20"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3481"><span class=cB4>Scan Code Flags</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3515"><span class=cB4>Scan Codes</span></a><span class=cB0>.
+<a name="l21"></a>
+<a name="l22"></a>TempleOS stores scan codes in 8 bytes.
+<a name="l23"></a>  </span><span class=cB2>Byte 0</span><span class=cB0>   is the code.  NumPad keys, SHIFT, ALT, CTRL and GUI keys combined.
+<a name="l24"></a>  </span><span class=cB2>Byte 1-3</span><span class=cB0> are </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3464"><span class=cB4>flags</span></a><span class=cB0>
+<a name="l25"></a>
+<a name="l26"></a>The upper 4-bytes are copied from lower 4-bytes.
+<a name="l27"></a>  </span><span class=cB2>Byte 4</span><span class=cB0>   is the code.  Left, Right and NumPad keys distinct.
+<a name="l28"></a>  </span><span class=cB2>Byte 5-7</span><span class=cB0> are </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3464"><span class=cB4>flags</span></a><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>Run the program </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/MsgLoop.html#l1"><span class=cB4>::/Demo/MsgLoop.HC</span></a><span class=cB0> to examine scan code.  Press </span><span class=cB2>&lt;CTRL-SHIFT-l&gt;</span><span class=cB0> 
+<a name="l31"></a>and &quot;Insert ASCII/ScanCode&quot;.
+<a name="l32"></a>
+<a name="l33"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/KeyAlloc.html#l1"><span class=cB4>Key Allocations</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2958"><span class=cB4>CKbdStateGlbls</span></a><span class=cB0>.
+<a name="l34"></a>
+<a name="l35"></a>A </span><span class=cB2>String</span><span class=cB0> is a bunch of ASCII characters terminated with a zero.
+</span></div></pre></body>
+</html>

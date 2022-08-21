@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*&quot;Fixed point&quot; means you use ints</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>that are scaled by a value.  A common</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>example would be using number of pennies</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>instead of dollars with a float.</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB2>Fixed-point used to be much </span><a href="http://en.wikipedia.org/wiki/X87"><span class=cB2>faster</span></a><span class=cB2>,</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>but modern processors do well with</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>floats.  It also depends on the compiler</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>and my compiler is poor with floats.</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB2>I often use 64-bit ints with upper 32-bits</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>as int and lower 32-bits as fraction.</span><span class=cB0>
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/SubIntAccess.html#l1"><span class=cB4>::/Demo/SubIntAccess.HC</span></a><span class=cB2> for how</span><span class=cB0>
+<a name="l15"></a></span><span class=cB2>to access upper or lower 32-bits.</span><span class=cB0>
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB2>For a complete lst of nonstandard compiler</span><span class=cB0>
+<a name="l18"></a></span><span class=cB2>features, see </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>::/Doc/HolyC.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l19"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>U0</span><span class=cB0> Main()
+<a name="l22"></a>{
+<a name="l23"></a>  </span><span class=cB1>F64</span><span class=cB0> t0,f_sum=0,f_val;
+<a name="l24"></a>  </span><span class=cB9>I64</span><span class=cB0> i ,i_sum=0,i_val;
+<a name="l25"></a>
+<a name="l26"></a>  i_val= 2.0000002 *0x100000000;
+<a name="l27"></a>  t0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1000000000;i;i--)
+<a name="l29"></a>    i_sum+=i_val;
+<a name="l30"></a>  </span><span class=cB6>&quot;Int Sum\t\t:%.9f Time:%7.3fs\n&quot;</span><span class=cB0>,i_sum/<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(0x100000000),<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l31"></a>
+<a name="l32"></a>  f_val= 2.0000002;
+<a name="l33"></a>  t0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1000000000;i;i--)
+<a name="l35"></a>    f_sum+=f_val;
+<a name="l36"></a>  </span><span class=cB6>&quot;Float Sum\t:%.9f Time:%7.3fs\n&quot;</span><span class=cB0>,f_sum,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l122"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l37"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l38"></a>}
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB1>U0</span><span class=cB0> DoIt2()
+<a name="l41"></a>{
+<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0x123456789ABCDEF0;
+<a name="l43"></a>  </span><span class=cB6>&quot;i\t\t=%X\n&quot;</span><span class=cB0>,i;
+<a name="l44"></a>
+<a name="l45"></a>  </span><span class=cB6>&quot;i&amp;0xFFFFFFFF\t=%X\n&quot;</span><span class=cB0>,i&amp;0xFFFFFFFF;
+<a name="l46"></a>  </span><span class=cB6>&quot;i&gt;&gt;32\t\t=%X\n&quot;</span><span class=cB0>,i&gt;&gt;32;
+<a name="l47"></a>
+<a name="l48"></a>  </span><span class=cB2>/*  Standard int types are declared</span><span class=cB0>
+<a name="l49"></a></span><span class=cB2>with a special compiler feature which</span><span class=cB0>
+<a name="l50"></a></span><span class=cB2>allows a structure to be accessed as a</span><span class=cB0>
+<a name="l51"></a></span><span class=cB2>whole.  That's why the i variable can</span><span class=cB0>
+<a name="l52"></a></span><span class=cB2>be accessed normally in addition to</span><span class=cB0>
+<a name="l53"></a></span><span class=cB2>structure member access </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l105"><span class=cB4>I64</span></a><span class=cB2>.  The actual</span><span class=cB0>
+<a name="l54"></a></span><span class=cB2>intrinsic compiler type is U64i.</span><span class=cB0>
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB2>public U64i union I64</span><span class=cB0>
+<a name="l57"></a></span><span class=cB2>{</span><span class=cB0>
+<a name="l58"></a></span><span class=cB2>  I8i i8[8];</span><span class=cB0>
+<a name="l59"></a></span><span class=cB2>  U8i u8[8];</span><span class=cB0>
+<a name="l60"></a></span><span class=cB2>  I16 i16[4];</span><span class=cB0>
+<a name="l61"></a></span><span class=cB2>  U16 u16[4];</span><span class=cB0>
+<a name="l62"></a></span><span class=cB2>  I32 i32[2];</span><span class=cB0>
+<a name="l63"></a></span><span class=cB2>  U32 u32[2];</span><span class=cB0>
+<a name="l64"></a></span><span class=cB2>};</span><span class=cB0>
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB2>It's not quite as great as it seems</span><span class=cB0>
+<a name="l67"></a></span><span class=cB2>because the compiler decides it cannot</span><span class=cB0>
+<a name="l68"></a></span><span class=cB2>place i into a reg, so there is a</span><span class=cB0>
+<a name="l69"></a></span><span class=cB2>penalty.</span><span class=cB0>
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB2>For a complete lst of nonstandard compiler</span><span class=cB0>
+<a name="l72"></a></span><span class=cB2>features, see </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>::/Doc/HolyC.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l73"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l74"></a>
+<a name="l75"></a>  </span><span class=cB6>&quot;i.u32[0]\t=%X\n&quot;</span><span class=cB0>,i.u32[0];
+<a name="l76"></a>  </span><span class=cB6>&quot;i.u32[1]\t=%X\n&quot;</span><span class=cB0>,i.u32[1];
+<a name="l77"></a>}
+<a name="l78"></a>
+<a name="l79"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/CPURep.html#l26"></span><span class=cB5>CPURep</a></span><span class=cB0>;
+<a name="l80"></a>Main;
+<a name="l81"></a>DoIt2;
+<a name="l82"></a>
+<a name="l83"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Lectures/FixedPointAdvanced.html#l1"><span class=cB4>::/Demo/Lectures/FixedPointAdvanced.HC</span></a><span class=cB0>
+<a name="l84"></a>
+<a name="l85"></a></span><span class=cB2>/*Program Output</span><span class=cB1>
+<a name="l86"></a>
+<a name="l87"></a>16 Cores 3.500GHz
+<a name="l88"></a>Int Sum         :2000000199.768690240 Time:  0.803s
+<a name="l89"></a>Float Sum       :2000000225.656127040 Time:  3.615s
+<a name="l90"></a>
+<a name="l91"></a>i               =123456789ABCDEF0
+<a name="l92"></a>i&amp;0xFFFFFFFF    =9ABCDEF0
+<a name="l93"></a>i&gt;&gt;32           =12345678
+<a name="l94"></a>i.u32[0]        =9ABCDEF0
+<a name="l95"></a>i.u32[1]        =12345678
+<a name="l96"></a></span><span class=cB2>*/</span><span class=cB1>
+</span></div></pre></body>
+</html>

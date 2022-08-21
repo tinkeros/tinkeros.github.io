@@ -1,0 +1,457 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*I got tricky by not defining a color</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>right away in these </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/Gr.html#l157"><span class=cB4>CSprite</span></a><span class=cB2>s so they can</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>work for both players by setting dc-&gt;color</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>before drawing them.  I actually made these</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>graphics by defining a color in the &lt;CTRL-r&gt;</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>menu, drawing the unit and deleting the color.</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB2>I had to leave a gap between the tank tread</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>and body because of how it is rendered when rotated.</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l11"></a></span><span class=cBA>
+<a name="l12"></a>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l13"></a></span><span class=cBA>
+<a name="l14"></a>&lt;2&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>//This is an infantry.</span><span class=cB0>
+<a name="l17"></a></span><span class=cBA>
+<a name="l18"></a>&lt;3&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l19"></a></span><span class=cBA>
+<a name="l20"></a>&lt;4&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l21"></a>
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> DrawHexes()
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB1>F64</span><span class=cB0> dx=2*HEX_SIDE+2*DCOS,dy=2*DSIN,
+<a name="l26"></a>        x,y,x1,y1,x2,y2;
+<a name="l27"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l28"></a>  map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2929"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l1008"></span><span class=cB5>GrRect</a></span><span class=cB0>(map_dc,0,0,map_dc-&gt;width,map_dc-&gt;height);
+<a name="l30"></a>  map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l31"></a>  y=0;
+<a name="l32"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j+=2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    x=DCOS;
+<a name="l34"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x,y,x-DCOS,y+DSIN);
+<a name="l35"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x-DCOS,y+DSIN,x,y+2*DSIN);
+<a name="l36"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) {
+<a name="l37"></a>      x1=x; y1=y;
+<a name="l38"></a>      x2=x1+HEX_SIDE; y2=y1;
+<a name="l39"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l40"></a>      x1=x2; y1=y2;
+<a name="l41"></a>      x2+=DCOS; y2+=DSIN;
+<a name="l42"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l43"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x2,y2,x2-DCOS,y2+DSIN);
+<a name="l44"></a>      x1=x2; y1=y2;
+<a name="l45"></a>      x2+=HEX_SIDE;
+<a name="l46"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l47"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x2,y2,x2+DCOS,y2+DSIN);
+<a name="l48"></a>      x1=x2; y1=y2;
+<a name="l49"></a>      x2+=DCOS; y2-=DSIN;
+<a name="l50"></a>      </span><span class=cB1>if</span><span class=cB0> (j || i&lt;map_cols-1)
+<a name="l51"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l52"></a>      x+=dx;
+<a name="l53"></a>    }
+<a name="l54"></a>    y+=dy;
+<a name="l55"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l56"></a>  x=DCOS;
+<a name="l57"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>    x1=x; y1=y;
+<a name="l59"></a>    x2=x1+HEX_SIDE; y2=y1;
+<a name="l60"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l61"></a>    x1=x2; y1=y2;
+<a name="l62"></a>    x2+=DCOS; y2+=DSIN;
+<a name="l63"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l64"></a>    x1=x2; y1=y2;
+<a name="l65"></a>    x2+=HEX_SIDE;
+<a name="l66"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l67"></a>    x1=x2; y1=y2;
+<a name="l68"></a>    x2+=DCOS; y2-=DSIN;
+<a name="l69"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(map_dc,x1,y1,x2,y2);
+<a name="l70"></a>    x+=dx;
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>}
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB1>U0</span><span class=cB0> MakeTerrain(</span><span class=cB1>U8</span><span class=cB0> color,</span><span class=cB9>I64</span><span class=cB0> cnt,</span><span class=cB9>I64</span><span class=cB0> clus_lo,</span><span class=cB9>I64</span><span class=cB0> clus_hi)
+<a name="l75"></a>{
+<a name="l76"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,l,row,col;
+<a name="l77"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;cnt;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l78"></a>    col=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_cols;
+<a name="l79"></a>    row=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_rows;
+<a name="l80"></a>    l=clus_lo+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%(clus_hi-clus_lo+1);
+<a name="l81"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;l;j++) {
+<a name="l82"></a>      terrain[row][col]=color;
+<a name="l83"></a>      Toward(&amp;row,&amp;col,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%6);
+<a name="l84"></a>      col=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(col,0,map_cols-1);
+<a name="l85"></a>      row=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(row,0,map_rows-1);
+<a name="l86"></a>    }
+<a name="l87"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l88"></a>}
+<a name="l89"></a>
+<a name="l90"></a></span><span class=cB1>U0</span><span class=cB0> MakeRivers()
+<a name="l91"></a>{
+<a name="l92"></a>  </span><span class=cB9>I64</span><span class=cB0> i,row,col,direction;
+<a name="l93"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;4;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>    row=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_rows;
+<a name="l95"></a>    col=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_cols;
+<a name="l96"></a>    direction=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%6;
+<a name="l97"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l98"></a>      rivers[row][col]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l99"></a>      Toward(&amp;row,&amp;col,direction);
+<a name="l100"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;=row&lt;map_rows &amp;&amp; 0&lt;=col&lt;map_cols</span><span class=cB7>)</span><span class=cB0>)
+<a name="l101"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l102"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>&amp;3</span><span class=cB7>)</span><span class=cB0>)
+<a name="l103"></a>        direction=(direction+</span><span class=cB7>(</span><span class=cB0>7-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%3</span><span class=cB7>)</span><span class=cB0>)%6;
+<a name="l104"></a>    }
+<a name="l105"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l106"></a>}
+<a name="l107"></a>
+<a name="l108"></a></span><span class=cB1>U0</span><span class=cB0> MakeRoads()
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB9>I64</span><span class=cB0> i,row,col,direction;
+<a name="l111"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;5;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l112"></a>    row=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_rows;
+<a name="l113"></a>    col=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_cols;
+<a name="l114"></a>    direction=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%6;
+<a name="l115"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l116"></a>      roads[row][col]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l117"></a>      Toward(&amp;row,&amp;col,direction);
+<a name="l118"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;=row&lt;map_rows &amp;&amp; 0&lt;=col&lt;map_cols</span><span class=cB7>)</span><span class=cB0>)
+<a name="l119"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l120"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%3</span><span class=cB7>)</span><span class=cB0>)
+<a name="l121"></a>        direction=(direction+</span><span class=cB7>(</span><span class=cB0>7-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%3</span><span class=cB7>)</span><span class=cB0>)%6;
+<a name="l122"></a>    }
+<a name="l123"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l124"></a>}
+<a name="l125"></a>
+<a name="l126"></a></span><span class=cB1>U0</span><span class=cB0> DrawTerrain()
+<a name="l127"></a>{
+<a name="l128"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l129"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y;
+<a name="l130"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j++)
+<a name="l131"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>      map_dc-&gt;color=terrain[j][i];
+<a name="l133"></a>      RowCol2XY(&amp;x,&amp;y,j,i);
+<a name="l134"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l239"></span><span class=cB5>GrFloodFill</a></span><span class=cB0>(map_dc,x,y);
+<a name="l135"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l136"></a>}
+<a name="l137"></a>
+<a name="l138"></a></span><span class=cB1>U0</span><span class=cB0> DrawRivers()
+<a name="l139"></a>{
+<a name="l140"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,r,c;
+<a name="l141"></a>  </span><span class=cB1>F64</span><span class=cB0> x1,y1,x2,y2;
+<a name="l142"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j++)
+<a name="l143"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l144"></a>      </span><span class=cB1>if</span><span class=cB0> (rivers[j][i]) {
+<a name="l145"></a>        RowCol2XY(&amp;x1,&amp;y1,j,i);
+<a name="l146"></a>        </span><span class=cB1>for</span><span class=cB0> (k=0;k&lt;6;k++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l147"></a>          r=j;c=i;
+<a name="l148"></a>          Toward(&amp;r,&amp;c,k);
+<a name="l149"></a>          </span><span class=cB1>if</span><span class=cB0> (0&lt;=r&lt;map_rows &amp;&amp; 0&lt;=c&lt;map_cols &amp;&amp;
+<a name="l150"></a>                rivers[r][c]) {
+<a name="l151"></a>            RowCol2XY(&amp;x2,&amp;y2,r,c);
+<a name="l152"></a>            map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2923"></span><span class=cB3>LTBLUE</a></span><span class=cB0>;
+<a name="l153"></a>            map_dc-&gt;thick=4;
+<a name="l154"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(map_dc,x1,y1,0,x2,y2,0);
+<a name="l155"></a>            map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2915"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l156"></a>            map_dc-&gt;thick=2;
+<a name="l157"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(map_dc,x1,y1,0,x2,y2,0);
+<a name="l158"></a>          }
+<a name="l159"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l160"></a>      }
+<a name="l161"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l162"></a>}
+<a name="l163"></a>
+<a name="l164"></a></span><span class=cB1>U0</span><span class=cB0> DrawRoads()
+<a name="l165"></a>{
+<a name="l166"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,r,c;
+<a name="l167"></a>  </span><span class=cB1>F64</span><span class=cB0> x1,y1,x2,y2;
+<a name="l168"></a>  map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l169"></a>  map_dc-&gt;thick=3;
+<a name="l170"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j++)
+<a name="l171"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l172"></a>      </span><span class=cB1>if</span><span class=cB0> (roads[j][i]) {
+<a name="l173"></a>        RowCol2XY(&amp;x1,&amp;y1,j,i);
+<a name="l174"></a>        </span><span class=cB1>for</span><span class=cB0> (k=0;k&lt;6;k++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l175"></a>          r=j;c=i;
+<a name="l176"></a>          Toward(&amp;r,&amp;c,k);
+<a name="l177"></a>          </span><span class=cB1>if</span><span class=cB0> (0&lt;=r&lt;map_rows &amp;&amp; 0&lt;=c&lt;map_cols &amp;&amp;
+<a name="l178"></a>                roads[r][c]) {
+<a name="l179"></a>            RowCol2XY(&amp;x2,&amp;y2,r,c);
+<a name="l180"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(map_dc,x1,y1,0,x2,y2,0);
+<a name="l181"></a>          }
+<a name="l182"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l183"></a>      }
+<a name="l184"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l185"></a>}
+<a name="l186"></a>
+<a name="l187"></a></span><span class=cB1>U0</span><span class=cB0> DrawDots()
+<a name="l188"></a>{
+<a name="l189"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l190"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y;
+<a name="l191"></a>  map_dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l192"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j++)
+<a name="l193"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l194"></a>      RowCol2XY(&amp;x,&amp;y,j,i);
+<a name="l195"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l51"></span><span class=cB5>GrPlot</a></span><span class=cB0>(map_dc,x,y);
+<a name="l196"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l197"></a>}
+<a name="l198"></a>
+<a name="l199"></a></span><span class=cB1>U0</span><span class=cB0> HexCentersCalc()
+<a name="l200"></a>{
+<a name="l201"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l202"></a>  </span><span class=cB1>F64</span><span class=cB0> x,y;
+<a name="l203"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;map_rows;j++)
+<a name="l204"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;map_cols;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>      x=(2*HEX_SIDE+2*DCOS)*i+HEX_SIDE/2+DCOS;
+<a name="l206"></a>      </span><span class=cB1>if</span><span class=cB0> (j&amp;1)
+<a name="l207"></a>        x+=HEX_SIDE+DCOS;
+<a name="l208"></a>      y=DSIN*(j+1);
+<a name="l209"></a>      hex_centers[j][i].x=x;
+<a name="l210"></a>      hex_centers[j][i].y=y;
+<a name="l211"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l212"></a>}
+<a name="l213"></a>
+<a name="l214"></a></span><span class=cB1>U0</span><span class=cB0> InitMap()
+<a name="l215"></a>{
+<a name="l216"></a>  HexCentersCalc;
+<a name="l217"></a>  DrawHexes;
+<a name="l218"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(terrain,PLAINS,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>terrain</span><span class=cB7>)</span><span class=cB0>);
+<a name="l219"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(roads,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>roads</span><span class=cB7>)</span><span class=cB0>);
+<a name="l220"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(rivers,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>rivers</span><span class=cB7>)</span><span class=cB0>);
+<a name="l221"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(vis_map,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>vis_map</span><span class=cB7>)</span><span class=cB0>);
+<a name="l222"></a>  MakeTerrain(MOUNTAINS,0.03*map_cols*map_cols,5,35);
+<a name="l223"></a>  MakeTerrain(TREES,0.03*map_cols*map_cols,5,35);
+<a name="l224"></a>  DrawTerrain;
+<a name="l225"></a>  MakeRivers;
+<a name="l226"></a>  DrawRivers;
+<a name="l227"></a>  MakeRoads;
+<a name="l228"></a>  DrawRoads;
+<a name="l229"></a>  DrawDots;
+<a name="l230"></a>}
+<a name="l231"></a>
+<a name="l232"></a></span><span class=cB1>U0</span><span class=cB0> InitUnits()
+<a name="l233"></a>{
+<a name="l234"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,row,col,type;
+<a name="l235"></a>  Unit *tmpu;
+<a name="l236"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(units,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>units</span><span class=cB7>)</span><span class=cB0>);
+<a name="l237"></a>  alive_cnt[0]=alive_cnt[1]=UNITS_NUM;
+<a name="l238"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;2;j++)
+<a name="l239"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;alive_cnt[j];i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l240"></a>      tmpu=&amp;units[j][i];
+<a name="l241"></a>      tmpu-&gt;player=j;
+<a name="l242"></a>      tmpu-&gt;num=i;
+<a name="l243"></a>      tmpu-&gt;life=100;
+<a name="l244"></a>      tmpu-&gt;facing=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%6;
+<a name="l245"></a>      </span><span class=cB1>if</span><span class=cB0> (!j) {
+<a name="l246"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;=UNITS_NUM/2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l247"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=15*UNITS_NUM/16)
+<a name="l248"></a>            type=UT_ARTILLERY;
+<a name="l249"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l250"></a>            type=UT_INFANTRY;
+<a name="l251"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l252"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=UNITS_NUM/4)
+<a name="l253"></a>            type=UT_MD_TANK;
+<a name="l254"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l255"></a>            type=UT_LT_TANK;
+<a name="l256"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l257"></a>      } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l258"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;=UNITS_NUM/2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l259"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=15*UNITS_NUM/16)
+<a name="l260"></a>            type=UT_ARTILLERY;
+<a name="l261"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l262"></a>            type=UT_INFANTRY;
+<a name="l263"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l264"></a>          </span><span class=cB1>if</span><span class=cB0> (i&gt;=UNITS_NUM/4)
+<a name="l265"></a>            type=UT_MD_TANK;
+<a name="l266"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l267"></a>            type=UT_LT_TANK;
+<a name="l268"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l269"></a>      }
+<a name="l270"></a>      tmpu-&gt;type=type;
+<a name="l271"></a>      </span><span class=cB1>switch</span><span class=cB0> (type) {
+<a name="l272"></a>        </span><span class=cB1>case</span><span class=cB0> UT_INFANTRY:
+<a name="l273"></a>          tmpu-&gt;infantry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l274"></a>          tmpu-&gt;indirect_fire=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l275"></a>          tmpu-&gt;armor    =0;
+<a name="l276"></a>          tmpu-&gt;armored_attack  =15;
+<a name="l277"></a>          tmpu-&gt;unarmored_attack=180;
+<a name="l278"></a>          tmpu-&gt;accuracy=45;
+<a name="l279"></a>          tmpu-&gt;range    =5;
+<a name="l280"></a>          tmpu-&gt;movement=4;
+<a name="l281"></a>          tmpu-&gt;img      =</span><span class=cBA>&lt;1&gt;</span><span class=cB0>;
+<a name="l282"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l283"></a>        </span><span class=cB1>case</span><span class=cB0> UT_ARTILLERY:
+<a name="l284"></a>          tmpu-&gt;infantry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l285"></a>          tmpu-&gt;indirect_fire=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l286"></a>          tmpu-&gt;armor    =0;
+<a name="l287"></a>          tmpu-&gt;armored_attack  =60;
+<a name="l288"></a>          tmpu-&gt;unarmored_attack=180;
+<a name="l289"></a>          tmpu-&gt;accuracy=25;
+<a name="l290"></a>          tmpu-&gt;range    =20;
+<a name="l291"></a>          tmpu-&gt;movement=2;
+<a name="l292"></a>          tmpu-&gt;img      =</span><span class=cBA>&lt;2&gt;</span><span class=cB0>;
+<a name="l293"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l294"></a>        </span><span class=cB1>case</span><span class=cB0> UT_LT_TANK:
+<a name="l295"></a>          tmpu-&gt;infantry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l296"></a>          tmpu-&gt;indirect_fire=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l297"></a>          tmpu-&gt;armor    =30;
+<a name="l298"></a>          tmpu-&gt;armored_attack  =40;
+<a name="l299"></a>          tmpu-&gt;unarmored_attack=60;
+<a name="l300"></a>          tmpu-&gt;accuracy=25;
+<a name="l301"></a>          tmpu-&gt;range    =8;
+<a name="l302"></a>          tmpu-&gt;movement=24;
+<a name="l303"></a>          tmpu-&gt;img      =</span><span class=cBA>&lt;3&gt;</span><span class=cB0>;
+<a name="l304"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l305"></a>        </span><span class=cB1>case</span><span class=cB0> UT_MD_TANK:
+<a name="l306"></a>          tmpu-&gt;infantry=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l307"></a>          tmpu-&gt;indirect_fire=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l308"></a>          tmpu-&gt;armor    =60;
+<a name="l309"></a>          tmpu-&gt;armored_attack  =60;
+<a name="l310"></a>          tmpu-&gt;unarmored_attack=80;
+<a name="l311"></a>          tmpu-&gt;accuracy=25;
+<a name="l312"></a>          tmpu-&gt;range    =12;
+<a name="l313"></a>          tmpu-&gt;movement=16;
+<a name="l314"></a>          tmpu-&gt;img      =</span><span class=cBA>&lt;4&gt;</span><span class=cB0>;
+<a name="l315"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l316"></a>      }
+<a name="l317"></a>      </span><span class=cB1>do</span><span class=cB0> {
+<a name="l318"></a>        row=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%map_rows;
+<a name="l319"></a>        col=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l107"></span><span class=cB5>RandU32</a></span><span class=cB0>%(map_cols/3);
+<a name="l320"></a>        </span><span class=cB1>if</span><span class=cB0> (j)
+<a name="l321"></a>          col+=2*map_cols/3;
+<a name="l322"></a>      } </span><span class=cB1>while</span><span class=cB0> (UnitFind</span><span class=cB7>(</span><span class=cB0>row,col</span><span class=cB7>)</span><span class=cB0>);
+<a name="l323"></a>      tmpu-&gt;row=row;
+<a name="l324"></a>      tmpu-&gt;col=col;
+<a name="l325"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;tmpu-&gt;vis[cur_player],0);
+<a name="l326"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l327"></a>}
+<a name="l328"></a>
+<a name="l329"></a></span><span class=cB1>U0</span><span class=cB0> ViewPlayerSet(</span><span class=cB1>I8</span><span class=cB0> p)
+<a name="l330"></a>{
+<a name="l331"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3090"></span><span class=cB9>CMenuEntry</a></span><span class=cB0> *tmpse;
+<a name="l332"></a>  view_player=p;
+<a name="l333"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpse=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l25"></span><span class=cB5>MenuEntryFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_menu,</span><span class=cB6>&quot;View/Player1&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l334"></a>    tmpse-&gt;checked= view_player==0;
+<a name="l335"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpse=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Menu.html#l25"></span><span class=cB5>MenuEntryFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_menu,</span><span class=cB6>&quot;View/Player2&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l336"></a>    tmpse-&gt;checked= view_player==1;
+<a name="l337"></a>}
+<a name="l338"></a>
+<a name="l339"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l340"></a>{
+<a name="l341"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l120"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l342"></a>  </span><span class=cB6>&quot;GameSeed(0x%X)\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l147"></span><span class=cB5>Seed</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPopUp.html#l181"></span><span class=cB5>PopUpGetI64</a></span><span class=cB7>(</span><span class=cB6>&quot;GameSeed(0x%X):&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l147"></span><span class=cB5>Seed</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l343"></a>  moving_unit=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l344"></a>  InitMap;
+<a name="l345"></a>  ViewPlayerSet(cur_player=0);
+<a name="l346"></a>  enemy_player=1;
+<a name="l347"></a>  </span><span class=cB1>if</span><span class=cB0> (map_width&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3555"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l348"></a>    x0=(MAP_WIDTH-map_width)&gt;&gt;1;
+<a name="l349"></a>    y0=(MAP_HEIGHT-map_height)&gt;&gt;1+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l350"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l351"></a>    x0=0;
+<a name="l352"></a>    y0=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l353"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l354"></a>  InitUnits;
+<a name="l355"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(&amp;indirect_head);
+<a name="l356"></a>  turn=0;
+<a name="l357"></a>  fire_radius=0;
+<a name="l358"></a>  show_vis_row=-1;
+<a name="l359"></a>  show_vis_col=-1;
+<a name="l360"></a>  *msg_buf=0;
+<a name="l361"></a>  msg_off_timeout=0;
+<a name="l362"></a>  phase=PHASE_END;
+<a name="l363"></a>}
+<a name="l364"></a>
+<a name="l365"></a></span><span class=cB1>U0</span><span class=cB0> CleanUp()
+<a name="l366"></a>{
+<a name="l367"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDataTypes.html#l41"></span><span class=cB5>QueDel</a></span><span class=cB0>(&amp;indirect_head,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l368"></a>}
+<a name="l369"></a>
+<a name="l370"></a></span><span class=cB1>U0</span><span class=cB0> PlayerPick(</span><span class=cB1>U8</span><span class=cB0> *dirname,</span><span class=cB9>I64</span><span class=cB0> player)
+<a name="l371"></a>{
+<a name="l372"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0;
+<a name="l373"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l374"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1,*tmpde2;
+<a name="l375"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l363"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l376"></a>  </span><span class=cB1>Bool</span><span class=cB0> *old_silent=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l270"></span><span class=cB5>Silent</a></span><span class=cB0>;
+<a name="l377"></a>  st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l898"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s/*.HC*&quot;</span><span class=cB0>,dirname);
+<a name="l378"></a>  tmpde=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"></span><span class=cB5>FilesFind</a></span><span class=cB0>(st);
+<a name="l379"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l380"></a>  tmpde2=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"></span><span class=cB5>FilesFind</a></span><span class=cB0>(</span><span class=cB6>&quot;~/ToTheFront/*.HC*&quot;</span><span class=cB0>);
+<a name="l381"></a>  tmpde1=tmpde;
+<a name="l382"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l270"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
+<a name="l383"></a>
+<a name="l384"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;Player %d Type\n\n$LTBLUE$&quot;</span><span class=cB0>,player+1);
+<a name="l385"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l386"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>i++&amp;3</span><span class=cB7>)</span><span class=cB0>)
+<a name="l387"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l388"></a>    st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpde1-&gt;name);
+<a name="l389"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l10"></span><span class=cB5>FileExtRem</a></span><span class=cB0>(st);
+<a name="l390"></a>    tmpde1-&gt;user_data=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU-UL,\&quot;%-10ts\&quot;,LE=%d$ &quot;</span><span class=cB0>,st,tmpde1);
+<a name="l391"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l392"></a>    tmpde1=tmpde1-&gt;next;
+<a name="l393"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l394"></a>  tmpde1=tmpde2;
+<a name="l395"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l396"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>i++&amp;3</span><span class=cB7>)</span><span class=cB0>)
+<a name="l397"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l398"></a>    st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpde1-&gt;name);
+<a name="l399"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l10"></span><span class=cB5>FileExtRem</a></span><span class=cB0>(st);
+<a name="l400"></a>    tmpde1-&gt;user_data=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU-UL,\&quot;%-10ts\&quot;,LE=%d$ &quot;</span><span class=cB0>,st,tmpde1);
+<a name="l401"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l402"></a>    tmpde1=tmpde1-&gt;next;
+<a name="l403"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l404"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l148"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n\n\n$FG$Create your own AI in ~/ToTheFront.&quot;</span><span class=cB0>);
+<a name="l405"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>tmpde1=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l333"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc)</span><span class=cB7>)</span><span class=cB0>&lt;=0);
+<a name="l406"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMain.html#l614"></span><span class=cB5>ExeFile</a></span><span class=cB0>(tmpde1-&gt;full_name);
+<a name="l407"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l408"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l33"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde);
+<a name="l409"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l33"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde2);
+<a name="l410"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMain.html#l605"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;player_indirect[%d]=&amp;PlayerIndirect;&quot;</span><span class=cB0>
+<a name="l411"></a>        </span><span class=cB6>&quot;player_move[%d]=&amp;PlayerMove;&quot;</span><span class=cB0>
+<a name="l412"></a>        </span><span class=cB6>&quot;player_direct[%d]=&amp;PlayerDirect;&quot;</span><span class=cB0>,
+<a name="l413"></a>        player,player,player);
+<a name="l414"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *st,</span><span class=cB9>I64</span><span class=cB0> radix=10,</span><span class=cB1>U8</span><span class=cB0> **_end_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l2"></a>{</span><span class=cB2>//String to I64. Similar to strtoul().</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//Allows radix change with &quot;0x20&quot; &quot;0b1010&quot; &quot;0d123&quot; &quot;0o18&quot;.</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB2>//Be careful of Str2I64(&quot;0b101&quot;,16)--&gt;0xB101.</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB1>Bool</span><span class=cB0> neg=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,res=0;
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (!st || !</span><span class=cB7>(</span><span class=cB0>2&lt;=radix&lt;=36</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    </span><span class=cB1>if</span><span class=cB0> (_end_ptr) *_end_ptr=st;
+<a name="l9"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l10"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l356"></span><span class=cB6>char_bmp_white_space</a></span><span class=cB0>,*st</span><span class=cB7>)</span><span class=cB0>)
+<a name="l12"></a>    st++;
+<a name="l13"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l14"></a>    </span><span class=cB1>switch</span><span class=cB0> (*st) </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'-'</span><span class=cB0>:
+<a name="l16"></a>        st++;
+<a name="l17"></a>        neg=!neg;
+<a name="l18"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l19"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'+'</span><span class=cB0>:
+<a name="l20"></a>        st++;
+<a name="l21"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l22"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'0'</span><span class=cB0>:
+<a name="l23"></a>        st++;
+<a name="l24"></a>        ch=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(*st);
+<a name="l25"></a>        </span><span class=cB1>if</span><span class=cB0> (ch&gt;=</span><span class=cB6>'B'</span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>radix&lt;=10 || ch&gt;</span><span class=cB6>'A'</span><span class=cB0>+radix-11</span><span class=cB7>)</span><span class=cB0>)
+<a name="l26"></a>          </span><span class=cB1>switch</span><span class=cB0> (ch) {
+<a name="l27"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'B'</span><span class=cB0>: radix=2;  st++; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l28"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'D'</span><span class=cB0>: radix=10; st++; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l29"></a>            </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'X'</span><span class=cB0>: radix=16; st++; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l30"></a>          }
+<a name="l31"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l32"></a>        </span><span class=cB1>goto</span><span class=cB0> ai_cont;
+<a name="l33"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>ai_cont:
+<a name="l35"></a>  </span><span class=cB1>while</span><span class=cB0> (ch=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB7>(</span><span class=cB0>*st++</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    </span><span class=cB1>if</span><span class=cB0> (radix&gt;10) {
+<a name="l37"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'9'</span><span class=cB0>)
+<a name="l38"></a>        res=res*radix+ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l39"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'A'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'A'</span><span class=cB0>+radix-11)
+<a name="l40"></a>        res=res*radix+ch-</span><span class=cB6>'A'</span><span class=cB0>+10;
+<a name="l41"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l43"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'0'</span><span class=cB0>+radix-1)
+<a name="l44"></a>      res=res*radix+ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l45"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l46"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (_end_ptr) *_end_ptr=st-1;
+<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (neg)
+<a name="l50"></a>    </span><span class=cB1>return</span><span class=cB0> -res;
+<a name="l51"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l52"></a>    </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l53"></a>}
+<a name="l54"></a>
+<a name="l55"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l55"></span><span class=cB5>Str2F64</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB1>U8</span><span class=cB0> **_end_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l56"></a>{</span><span class=cB2>/*String to F64.</span><span class=cB0>
+<a name="l57"></a></span><span class=cB2>Does not allow more than 18-digits</span><span class=cB0>
+<a name="l58"></a></span><span class=cB2>before or after the decimal point</span><span class=cB0>
+<a name="l59"></a></span><span class=cB2>because the numbers before and after</span><span class=cB0>
+<a name="l60"></a></span><span class=cB2>the decimal point are stored</span><span class=cB0>
+<a name="l61"></a></span><span class=cB2>in 64-bits.  Use exponentiated forms</span><span class=cB0>
+<a name="l62"></a></span><span class=cB2>to avoid this.</span><span class=cB0>
+<a name="l63"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l64"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,ch;
+<a name="l65"></a>  </span><span class=cB1>F64</span><span class=cB0> d;
+<a name="l66"></a>  </span><span class=cB1>Bool</span><span class=cB0> neg=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,neg_e=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l67"></a>
+<a name="l68"></a>  ch=*src++;
+<a name="l69"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l356"></span><span class=cB6>char_bmp_white_space</a></span><span class=cB0>,ch</span><span class=cB7>)</span><span class=cB0>)
+<a name="l70"></a>    ch=*src++;
+<a name="l71"></a>  </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'-'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    neg=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l73"></a>    ch=*src++;
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l313"></span><span class=cB5>StrNCmp</a></span><span class=cB7>(</span><span class=cB0>src-1,</span><span class=cB6>&quot;inf&quot;</span><span class=cB0>,3</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>    d=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l49"></span><span class=cB3>inf</a></span><span class=cB0>;
+<a name="l77"></a>    src+=3;
+<a name="l78"></a>    </span><span class=cB1>goto</span><span class=cB0> a2f_end;
+<a name="l79"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l80"></a>  </span><span class=cB1>if</span><span class=cB0> (*src==</span><span class=cB6>'inf'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l81"></a>    d=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l49"></span><span class=cB3>inf</a></span><span class=cB0>;
+<a name="l82"></a>    src++;
+<a name="l83"></a>    </span><span class=cB1>goto</span><span class=cB0> a2f_end;
+<a name="l84"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l85"></a>  i=0;
+<a name="l86"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l87"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l350"></span><span class=cB6>char_bmp_dec_numeric</a></span><span class=cB0>,ch</span><span class=cB7>)</span><span class=cB0>)
+<a name="l88"></a>      i=i*10+ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l89"></a>    </span><span class=cB1>else</span><span class=cB0> {
+<a name="l90"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'.'</span><span class=cB0> || ch==</span><span class=cB6>'e'</span><span class=cB0> || ch==</span><span class=cB6>'E'</span><span class=cB0>)
+<a name="l91"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l92"></a>      d=i;
+<a name="l93"></a>      </span><span class=cB1>goto</span><span class=cB0> a2f_end;
+<a name="l94"></a>    }
+<a name="l95"></a>    ch=*src++;
+<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>  </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'.'</span><span class=cB0>)
+<a name="l98"></a>    ch=*src++;
+<a name="l99"></a>  k=0;
+<a name="l100"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l101"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l350"></span><span class=cB6>char_bmp_dec_numeric</a></span><span class=cB0>,ch</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l102"></a>      i=i*10+ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l103"></a>      k++;
+<a name="l104"></a>    } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l105"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'e'</span><span class=cB0> || ch==</span><span class=cB6>'E'</span><span class=cB0>)
+<a name="l106"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l107"></a>      d=i*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l26"></span><span class=cB5>Pow10I64</a></span><span class=cB0>(-k);
+<a name="l108"></a>      </span><span class=cB1>goto</span><span class=cB0> a2f_end;
+<a name="l109"></a>    }
+<a name="l110"></a>    ch=*src++;
+<a name="l111"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l112"></a>  ch=*src++;
+<a name="l113"></a>  </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'-'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l114"></a>    neg_e=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l115"></a>    ch=*src++;
+<a name="l116"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l117"></a>  j=0;
+<a name="l118"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l119"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l350"></span><span class=cB6>char_bmp_dec_numeric</a></span><span class=cB0>,ch</span><span class=cB7>)</span><span class=cB0>)
+<a name="l120"></a>      j=j*10+ch-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l121"></a>    </span><span class=cB1>else</span><span class=cB0> {
+<a name="l122"></a>      </span><span class=cB1>if</span><span class=cB0> (neg_e)
+<a name="l123"></a>        d=i*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l26"></span><span class=cB5>Pow10I64</a></span><span class=cB0>(-j-k);
+<a name="l124"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l125"></a>        d=i*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l26"></span><span class=cB5>Pow10I64</a></span><span class=cB0>(j-k);
+<a name="l126"></a>      </span><span class=cB1>goto</span><span class=cB0> a2f_end;
+<a name="l127"></a>    }
+<a name="l128"></a>    ch=*src++;
+<a name="l129"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l130"></a>a2f_end:
+<a name="l131"></a>  </span><span class=cB1>if</span><span class=cB0> (_end_ptr) *_end_ptr=src-1;
+<a name="l132"></a>  </span><span class=cB1>if</span><span class=cB0> (neg)
+<a name="l133"></a>    </span><span class=cB1>return</span><span class=cB0> -d;
+<a name="l134"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l135"></a>    </span><span class=cB1>return</span><span class=cB0> d;
+<a name="l136"></a>}
+<a name="l137"></a>
+<a name="l138"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l186"></span><span class=cB9>CDate</a></span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l138"></span><span class=cB5>Str2Date</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *_src)
+<a name="l139"></a>{</span><span class=cB2>/*&quot;*+nnnn&quot;, &quot;*-nnnn&quot;, &quot;mm/dd&quot;, &quot;mm/dd/yy&quot;</span><span class=cB0>
+<a name="l140"></a></span><span class=cB2>It also supports some funs</span><span class=cB0>
+<a name="l141"></a></span><span class=cB2>SM() start of mon</span><span class=cB0>
+<a name="l142"></a></span><span class=cB2>EM() end of mon</span><span class=cB0>
+<a name="l143"></a></span><span class=cB2>SY() start of year</span><span class=cB0>
+<a name="l144"></a></span><span class=cB2>EY() end of year</span><span class=cB0>
+<a name="l145"></a></span><span class=cB2>Full expressions are not implimented</span><span class=cB0>
+<a name="l146"></a></span><span class=cB2>but you can do stuff like SM(*-7)+3</span><span class=cB0>
+<a name="l147"></a></span><span class=cB2>and it will return the 3rd day after</span><span class=cB0>
+<a name="l148"></a></span><span class=cB2>the start of mon for seven days before</span><span class=cB0>
+<a name="l149"></a></span><span class=cB2>today.</span><span class=cB0>
+<a name="l150"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l151"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l186"></span><span class=cB9>CDate</a></span><span class=cB0> res=0;
+<a name="l152"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l193"></span><span class=cB9>CDateStruct</a></span><span class=cB0> ds,ds_now;
+<a name="l153"></a>  </span><span class=cB1>U8</span><span class=cB0> *src=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrB.html#l58"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(_src,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3733"></span><span class=cB3>SUF_REM_SPACES</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3735"></span><span class=cB3>SUF_TO_UPPER</a></span><span class=cB0>),
+<a name="l154"></a>        *v=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(src),
+<a name="l155"></a>        *ptr=src;
+<a name="l156"></a>  </span><span class=cB1>Bool</span><span class=cB0> start_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,end_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,
+<a name="l157"></a>        start_year=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>,end_year=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l158"></a>
+<a name="l159"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;ds,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l193"></span><span class=cB9>CDateStruct</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l160"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l313"></span><span class=cB5>StrNCmp</a></span><span class=cB7>(</span><span class=cB0>ptr,</span><span class=cB6>&quot;SM(&quot;</span><span class=cB0>,3</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l161"></a>    ptr+=3;
+<a name="l162"></a>    start_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l163"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l313"></span><span class=cB5>StrNCmp</a></span><span class=cB7>(</span><span class=cB0>ptr,</span><span class=cB6>&quot;EM(&quot;</span><span class=cB0>,3</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l164"></a>    ptr+=3;
+<a name="l165"></a>    end_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l166"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l313"></span><span class=cB5>StrNCmp</a></span><span class=cB7>(</span><span class=cB0>ptr,</span><span class=cB6>&quot;SY(&quot;</span><span class=cB0>,3</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l167"></a>    ptr+=3;
+<a name="l168"></a>    start_year=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l169"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l313"></span><span class=cB5>StrNCmp</a></span><span class=cB7>(</span><span class=cB0>ptr,</span><span class=cB6>&quot;EY(&quot;</span><span class=cB0>,3</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l170"></a>    ptr+=3;
+<a name="l171"></a>    end_year=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l172"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>'*'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l174"></a>    ptr++;
+<a name="l175"></a>    </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>'+'</span><span class=cB0> || *ptr==</span><span class=cB6>'-'</span><span class=cB0>)
+<a name="l176"></a>      res.date=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(ptr,,&amp;ptr);
+<a name="l177"></a>    res+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l191"></span><span class=cB5>Now</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l14"></span><span class=cB6>local_time_offset</a></span><span class=cB0>;
+<a name="l178"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l179"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l577"></span><span class=cB5>StrFirstRem</a></span><span class=cB0>(ptr,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>,v); </span><span class=cB2>//Put mon into v</span><span class=cB0>
+<a name="l180"></a>    ds.mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(v);
+<a name="l181"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l462"></span><span class=cB5>StrOcc</a></span><span class=cB7>(</span><span class=cB0>ptr,</span><span class=cB6>'/'</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l182"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l577"></span><span class=cB5>StrFirstRem</a></span><span class=cB0>(ptr,</span><span class=cB6>&quot;/&quot;</span><span class=cB0>,v); </span><span class=cB2>//Put day into v leaving year in ptr</span><span class=cB0>
+<a name="l183"></a>      ds.day_of_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(v);
+<a name="l184"></a>      ds.year=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(ptr,,&amp;ptr);
+<a name="l185"></a>      </span><span class=cB1>if</span><span class=cB0> (ds.year&lt;100) </span><span class=cB2>//if not 4 digit year</span><span class=cB0>
+<a name="l186"></a>        ds.year+=2000;
+<a name="l187"></a>    } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l188"></a>      ds.day_of_mon=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(ptr,,&amp;ptr);
+<a name="l189"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l39"></span><span class=cB5>Date2Struct</a></span><span class=cB0>(&amp;ds_now,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l191"></span><span class=cB5>Now</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l14"></span><span class=cB6>local_time_offset</a></span><span class=cB0>);
+<a name="l190"></a>      ds.year=ds_now.year;
+<a name="l191"></a>    }
+<a name="l192"></a>    res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l14"></span><span class=cB5>Struct2Date</a></span><span class=cB0>(&amp;ds);
+<a name="l193"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l194"></a>  </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>')'</span><span class=cB0>) ptr++;
+<a name="l195"></a>
+<a name="l196"></a>  </span><span class=cB1>if</span><span class=cB0> (start_mon)
+<a name="l197"></a>    res.date=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l71"></span><span class=cB5>FirstDayOfMon</a></span><span class=cB0>(res.date);
+<a name="l198"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (end_mon)
+<a name="l199"></a>    res.date=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l82"></span><span class=cB5>LastDayOfMon</a></span><span class=cB0>(res.date);
+<a name="l200"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (start_year)
+<a name="l201"></a>    res.date=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l98"></span><span class=cB5>FirstDayOfYear</a></span><span class=cB0>(res.date);
+<a name="l202"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (end_year)
+<a name="l203"></a>    res.date=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDate.html#l110"></span><span class=cB5>LastDayOfYear</a></span><span class=cB0>(res.date);
+<a name="l204"></a>
+<a name="l205"></a>  </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>'+'</span><span class=cB0> || *ptr==</span><span class=cB6>'-'</span><span class=cB0>)
+<a name="l206"></a>    res.date+=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(ptr);
+<a name="l207"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(src);
+<a name="l208"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(v);
+<a name="l209"></a>  </span><span class=cB1>return</span><span class=cB0> res-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l14"></span><span class=cB6>local_time_offset</a></span><span class=cB0>;
+<a name="l210"></a>}
+<a name="l211"></a>
+<a name="l212"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l212"></span><span class=cB5>StrScan</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l213"></a>{</span><span class=cB2>/*Opposite of sprintf().  Pass ptrs to data to be scanned-in.</span><span class=cB0>
+<a name="l214"></a></span><span class=cB2>For &quot;%s&quot;, pass ptr to ptr (be careful because addr</span><span class=cB0>
+<a name="l215"></a></span><span class=cB2>of array is the same as array--create ptr to array</span><span class=cB0>
+<a name="l216"></a></span><span class=cB2>and take addr.</span><span class=cB0>
+<a name="l217"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l218"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*ptr,**pptr;
+<a name="l219"></a>  </span><span class=cB1>Bool</span><span class=cB0> left_justify=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l220"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,cur_arg=0,i,len,*i_ptr,dec_len;
+<a name="l221"></a>  </span><span class=cB1>F64</span><span class=cB0> *d_ptr;
+<a name="l222"></a>  </span><span class=cB1>if</span><span class=cB0> (!fmt)
+<a name="l223"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l224"></a>  </span><span class=cB1>while</span><span class=cB0> (ch = *fmt++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l225"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'%'</span><span class=cB0>) {
+<a name="l226"></a>      </span><span class=cB1>if</span><span class=cB0> (*fmt==</span><span class=cB6>'%'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l227"></a>        src++;
+<a name="l228"></a>        fmt++;
+<a name="l229"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l230"></a>        </span><span class=cB1>if</span><span class=cB0> (*fmt==</span><span class=cB6>'-'</span><span class=cB0>) {
+<a name="l231"></a>          left_justify=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l232"></a>          fmt++;
+<a name="l233"></a>        } </span><span class=cB1>else</span><span class=cB0>
+<a name="l234"></a>          left_justify=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l235"></a>        len=0;
+<a name="l236"></a>        </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=*fmt&lt;=</span><span class=cB6>'9'</span><span class=cB0>)
+<a name="l237"></a>          len=len*10+ (*fmt++ -</span><span class=cB6>'0'</span><span class=cB0>);
+<a name="l238"></a>        </span><span class=cB1>if</span><span class=cB0> (*fmt==</span><span class=cB6>'*'</span><span class=cB0>) {
+<a name="l239"></a>          fmt++;
+<a name="l240"></a>          </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l241"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l242"></a>          len=argv[cur_arg++];
+<a name="l243"></a>        }
+<a name="l244"></a>        ch=*fmt++;
+<a name="l245"></a>        </span><span class=cB1>if</span><span class=cB0> (ch &amp;&amp; !len) {
+<a name="l246"></a>          ptr=src;
+<a name="l247"></a>          </span><span class=cB1>while</span><span class=cB0> (*ptr &amp;&amp; *ptr!=*fmt)
+<a name="l248"></a>            ptr++;
+<a name="l249"></a>          len=ptr-src;
+<a name="l250"></a>        } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l251"></a>          </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'.'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l252"></a>            dec_len=0;
+<a name="l253"></a>            </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=*fmt&lt;=</span><span class=cB6>'9'</span><span class=cB0>)
+<a name="l254"></a>              dec_len=dec_len*10+ (*fmt++-</span><span class=cB6>'0'</span><span class=cB0>);
+<a name="l255"></a>            </span><span class=cB1>if</span><span class=cB0> (*fmt==</span><span class=cB6>'*'</span><span class=cB0>) {
+<a name="l256"></a>              fmt++;
+<a name="l257"></a>              </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l258"></a>                <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l259"></a>              dec_len=argv[cur_arg++];
+<a name="l260"></a>            }
+<a name="l261"></a>            ch=*fmt++;
+<a name="l262"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l263"></a>        }
+<a name="l264"></a>        buf=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(len+1);
+<a name="l265"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;len;i++)
+<a name="l266"></a>          buf[i]=*src++;
+<a name="l267"></a>        buf[i]=0;
+<a name="l268"></a>        </span><span class=cB1>switch</span><span class=cB0> (ch) {
+<a name="l269"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'s'</span><span class=cB0>:
+<a name="l270"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l271"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l272"></a>            pptr=argv[cur_arg++];
+<a name="l273"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(*pptr,buf);
+<a name="l274"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l275"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'c'</span><span class=cB0>:
+<a name="l276"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l277"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l278"></a>            ptr=argv[cur_arg++];
+<a name="l279"></a>            *ptr=*buf;
+<a name="l280"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l281"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'C'</span><span class=cB0>:
+<a name="l282"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l283"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l284"></a>            ptr=argv[cur_arg++];
+<a name="l285"></a>            *ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(*buf);
+<a name="l286"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l287"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'z'</span><span class=cB0>:
+<a name="l288"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg+1&gt;=argc)
+<a name="l289"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l290"></a>            i_ptr=argv[cur_arg++];
+<a name="l291"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l416"></span><span class=cB5>LstMatch</a></span><span class=cB0>(buf,argv[cur_arg++]);
+<a name="l292"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l293"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'Z'</span><span class=cB0>:
+<a name="l294"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg+1&gt;=argc)
+<a name="l295"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l296"></a>            i_ptr=argv[cur_arg++];
+<a name="l297"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l85"></span><span class=cB5>DefineMatch</a></span><span class=cB0>(buf,argv[cur_arg++]);
+<a name="l298"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l299"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'d'</span><span class=cB0>:
+<a name="l300"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l301"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l302"></a>            i_ptr=argv[cur_arg++];
+<a name="l303"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(buf);
+<a name="l304"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l305"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'X'</span><span class=cB0>:
+<a name="l306"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l307"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l308"></a>            i_ptr=argv[cur_arg++];
+<a name="l309"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(buf,16);
+<a name="l310"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l311"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'b'</span><span class=cB0>:
+<a name="l312"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l313"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l314"></a>            i_ptr=argv[cur_arg++];
+<a name="l315"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(buf,2);
+<a name="l316"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l317"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'e'</span><span class=cB0>:
+<a name="l318"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'f'</span><span class=cB0>:
+<a name="l319"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'g'</span><span class=cB0>:
+<a name="l320"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'n'</span><span class=cB0>:
+<a name="l321"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l322"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l323"></a>            d_ptr=argv[cur_arg++];
+<a name="l324"></a>            *d_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l55"></span><span class=cB5>Str2F64</a></span><span class=cB0>(buf);
+<a name="l325"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l326"></a>          </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'D'</span><span class=cB0>:
+<a name="l327"></a>            </span><span class=cB1>if</span><span class=cB0> (cur_arg&gt;=argc)
+<a name="l328"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Scan'</span><span class=cB0>);
+<a name="l329"></a>            i_ptr=argv[cur_arg++];
+<a name="l330"></a>            *i_ptr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l138"></span><span class=cB5>Str2Date</a></span><span class=cB0>(buf);
+<a name="l331"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l332"></a>        }
+<a name="l333"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l334"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l335"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l336"></a>      src++;
+<a name="l337"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l338"></a>  </span><span class=cB1>return</span><span class=cB0> src;
+<a name="l339"></a>}
+</span></div></pre></body>
+</html>

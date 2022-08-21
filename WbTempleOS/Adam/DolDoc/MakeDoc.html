@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2043"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc&quot;</span><span class=cB0>
+<a name="l4"></a>#</span><span class=cB1>help_file</span><span class=cB0> </span><span class=cB6>&quot;::/Doc/DolDoc&quot;</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB2>/*</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>TempleOS DolDoc's can have &quot;cursor movement&quot; cmds which can move the cursor up</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>the scrn and layer on existing text.  It can also have callback funs which</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>supply live, changing text.  For these reasons, you can't assume you know</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>where the vis portion of the document is and must process much</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>of the document each time it is placed on the scrn, becoming CPU</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>intensive on big documents.</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>::/Doc/DolDocOverview.DD</span></a><span class=cB0>
+<a name="l14"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>//Hash Types</span><span class=cB0>
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l17"></span><span class=cB3>DHT_DOC_CMD</a></span><span class=cB0>     1
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l18"></span><span class=cB3>DHT_DOC_FLAG</a></span><span class=cB0>    2
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l19"></span><span class=cB3>DHT_COLOR</a></span><span class=cB0>       4
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>class</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l21"></span><span class=cB9>CDolDocGlbls</a></span><span class=cB0>
+<a name="l22"></a>{
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l647"></span><span class=cB9>CHashTable</a></span><span class=cB0> *hash;
+<a name="l24"></a>  </span><span class=cB9>I64</span><span class=cB0>   dft_de_flags            [<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>],
+<a name="l25"></a>        type_flags_nontag_invis [(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>+63)/64],
+<a name="l26"></a>        type_flags_form         [(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>+63)/64],
+<a name="l27"></a>        type_flags_data         [(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>+63)/64],
+<a name="l28"></a>        type_flags_chk_dup      [(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>+63)/64],
+<a name="l29"></a>        clean_scan_codes        [4];
+<a name="l30"></a>  </span><span class=cB9>I32</span><span class=cB0>   dft_type_flags          [<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l948"></span><span class=cB3>DOCT_TYPES_NUM</a></span><span class=cB0>];
+<a name="l31"></a>} <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l31"></span><span class=cB6>doldoc</a></span><span class=cB0>;
+<a name="l32"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l31"></span><span class=cB6>doldoc</a></span><span class=cB0>,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l21"></span><span class=cB9>CDolDocGlbls</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l33"></a>
+<a name="l34"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;God&quot;</span><span class=cB0>
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/MakeDoc.html#l35"></span><span class=cB3>BIBLE_FILENAME</a></span><span class=cB0>  </span><span class=cB6>&quot;::/Misc/Bible.TXT.Z&quot;</span><span class=cB0>
+<a name="l36"></a>
+<a name="l37"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocExt&quot;</span><span class=cB0>
+<a name="l38"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocBin&quot;</span><span class=cB0>
+<a name="l39"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocNew&quot;</span><span class=cB0>
+<a name="l40"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocForm&quot;</span><span class=cB0>
+<a name="l41"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocDblBuf&quot;</span><span class=cB0>
+<a name="l42"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocPlain&quot;</span><span class=cB0>
+<a name="l43"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocInit&quot;</span><span class=cB0>
+<a name="l44"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocHighlight&quot;</span><span class=cB0>
+<a name="l45"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocRecalcLib&quot;</span><span class=cB0>
+<a name="l46"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocRecalc&quot;</span><span class=cB0>
+<a name="l47"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocFile&quot;</span><span class=cB0>
+<a name="l48"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocClipBoard&quot;</span><span class=cB0>
+<a name="l49"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocRun&quot;</span><span class=cB0>
+<a name="l50"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocGet&quot;</span><span class=cB0>
+<a name="l51"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocChar&quot;</span><span class=cB0>
+<a name="l52"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocFind&quot;</span><span class=cB0>
+<a name="l53"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocLink&quot;</span><span class=cB0>
+<a name="l54"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocEd&quot;</span><span class=cB0>
+<a name="l55"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocPopUp&quot;</span><span class=cB0>
+<a name="l56"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocGr&quot;</span><span class=cB0>
+<a name="l57"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocMacro&quot;</span><span class=cB0>
+<a name="l58"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocWidgetWiz&quot;</span><span class=cB0>
+<a name="l59"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocPutKey&quot;</span><span class=cB0>
+<a name="l60"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocPutS&quot;</span><span class=cB0>
+<a name="l61"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocCodeTools&quot;</span><span class=cB0>
+<a name="l62"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocTree&quot;</span><span class=cB0>
+<a name="l63"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;DocTerm&quot;</span><span class=cB0>
+<a name="l64"></a>
+<a name="l65"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l70"></span><span class=cB5>KeyDevAdd</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutKey.html#l723"></span><span class=cB5>KDDocPutKey</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l224"></span><span class=cB5>KDDocPutS</a></span><span class=cB0>,0x80000000,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l66"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l32"></span><span class=cB6>fp_getstr2</a></span><span class=cB0>=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGet.html#l98"></span><span class=cB5>DocGetStr2</a></span><span class=cB0>;
+<a name="l67"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l34"></span><span class=cB6>fp_doc_put</a></span><span class=cB0>=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l68"></a>
+<a name="l69"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);;
+</span></div></pre></body>
+</html>

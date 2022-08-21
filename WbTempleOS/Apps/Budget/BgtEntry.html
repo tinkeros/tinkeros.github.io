@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> BgtEntryDel2(CBgtEntry *tmpb)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;type!=BE_TEMPLATE_COPY) </span><span class=cB7>{</span><span class=cB0>
+<a name="l4"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpb-&gt;credit);
+<a name="l5"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpb-&gt;debit);
+<a name="l6"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpb-&gt;desc);
+<a name="l7"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l8"></a>}
+<a name="l9"></a>
+<a name="l10"></a>CBgtEntry *BgtEntryCopy(CBgtEntry *tmpb,</span><span class=cB1>Bool</span><span class=cB0> periodic_copy)
+<a name="l11"></a>{
+<a name="l12"></a>  CBgtEntry *res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtEntry</span><span class=cB7>)</span><span class=cB0>);
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(res,tmpb,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtEntry</span><span class=cB7>)</span><span class=cB0>);
+<a name="l14"></a>  </span><span class=cB1>if</span><span class=cB0> (periodic_copy) </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>    res-&gt;credit=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpb-&gt;credit);
+<a name="l16"></a>    res-&gt;debit =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpb-&gt;debit);
+<a name="l17"></a>    res-&gt;desc  =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpb-&gt;desc);
+<a name="l18"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l20"></a>}
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>U0</span><span class=cB0> BgtEntryDel(CBgtEntry *tmpb)
+<a name="l23"></a>{
+<a name="l24"></a>  BgtEntryDel2(tmpb);
+<a name="l25"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpb);
+<a name="l26"></a>}
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB1>U0</span><span class=cB0> BgtIns(CBgtEntry *tmpb)
+<a name="l29"></a>{
+<a name="l30"></a>  CBgtEntry     *tmpb1=b_head.next;
+<a name="l31"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb1!=&amp;b_head &amp;&amp; tmpb1-&gt;date&lt;tmpb-&gt;date)
+<a name="l32"></a>    tmpb1=tmpb1-&gt;next;
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(tmpb,tmpb1-&gt;last);
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>class</span><span class=cB0> CBgtEntryForm
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB1>U8</span><span class=cB0>    date[512]       format </span><span class=cB6>&quot;$DA-P,A=\&quot;Date              :%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l39"></a>  </span><span class=cB1>F64</span><span class=cB0>   amount          format </span><span class=cB6>&quot;Amount            $$$DA,A=\&quot;%10.2f\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l40"></a>  </span><span class=cB1>U8</span><span class=cB0>    credit[512]     format </span><span class=cB6>&quot;$DA-P,A=\&quot;Credit (from) Acct:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l41"></a>  </span><span class=cB1>U8</span><span class=cB0>    debit [512]     format </span><span class=cB6>&quot;$DA-P,A=\&quot;Debit  (to)   Acct:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l42"></a>  </span><span class=cB1>U8</span><span class=cB0>    desc  [512]     format </span><span class=cB6>&quot;$DA-P,A=\&quot;Desc              :%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l43"></a>};
+<a name="l44"></a>
+<a name="l45"></a>CBgtEntry *BgtEntryPmt(CBgtEntry *dft=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l46"></a>{
+<a name="l47"></a>  CBgtEntryForm b;
+<a name="l48"></a>  CBgtEntry *tmpb;
+<a name="l49"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;b,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtEntryForm</span><span class=cB7>)</span><span class=cB0>);
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(&amp;b.date,</span><span class=cB6>&quot;*&quot;</span><span class=cB0>);
+<a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (dft) </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l876"></span><span class=cB5>StrPrint</a></span><span class=cB0>(b.date,</span><span class=cB6>&quot;%D&quot;</span><span class=cB0>,dft-&gt;date);
+<a name="l54"></a>    b.amount=dft-&gt;amount;
+<a name="l55"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(b.credit,dft-&gt;credit);
+<a name="l56"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(b.debit ,dft-&gt;debit);
+<a name="l57"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(b.desc  ,dft-&gt;desc);
+<a name="l58"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l59"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l60"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l339"></span><span class=cB5>PopUpForm</a></span><span class=cB7>(</span><span class=cB0>&amp;b</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l61"></a>      </span><span class=cB1>if</span><span class=cB0> (!*b.credit) {
+<a name="l62"></a>        st=BgtPopUpAcct(</span><span class=cB6>&quot;Credit Acct\n\n&quot;</span><span class=cB0>);
+<a name="l63"></a>        </span><span class=cB1>if</span><span class=cB0> (st!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1354"></span><span class=cB3>DOCM_CANCEL</a></span><span class=cB0>)
+<a name="l64"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(b.credit,st);
+<a name="l65"></a>      } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!*b.debit) {
+<a name="l66"></a>        st=BgtPopUpAcct(</span><span class=cB6>&quot;Debit Acct\n\n&quot;</span><span class=cB0>);
+<a name="l67"></a>        </span><span class=cB1>if</span><span class=cB0> (st!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1354"></span><span class=cB3>DOCM_CANCEL</a></span><span class=cB0>)
+<a name="l68"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(b.debit,st);
+<a name="l69"></a>      } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l70"></a>        tmpb=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CBgtEntry</span><span class=cB7>)</span><span class=cB0>);
+<a name="l71"></a>        tmpb-&gt;date  =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l138"></span><span class=cB5>Str2Date</a></span><span class=cB0>(b.date);
+<a name="l72"></a>        tmpb-&gt;amount=b.amount;
+<a name="l73"></a>        tmpb-&gt;credit=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(b.credit);
+<a name="l74"></a>        tmpb-&gt;debit =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(b.debit);
+<a name="l75"></a>        tmpb-&gt;desc  =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l446"></span><span class=cB5>StrNew</a></span><span class=cB0>(b.desc);
+<a name="l76"></a>        tmpb-&gt;type  =BE_NORMAL;
+<a name="l77"></a>        StrFileAdd(tmpb-&gt;credit,&amp;accts_table_strs,accts_table);
+<a name="l78"></a>        StrFileAdd(tmpb-&gt;debit,&amp;accts_table_strs,accts_table);
+<a name="l79"></a>        </span><span class=cB1>return</span><span class=cB0> tmpb;
+<a name="l80"></a>      }
+<a name="l81"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l82"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l83"></a>}
+</span></div></pre></body>
+</html>

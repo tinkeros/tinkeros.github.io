@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> MyDerivative(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l251"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode,</span><span class=cB1>F64</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l201"></span><span class=cB9>COrder2D3</a></span><span class=cB0> *,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l201"></span><span class=cB9>COrder2D3</a></span><span class=cB0> *)
+<a name="l2"></a>{
+<a name="l3"></a></span><span class=cB2>//The forces due to springs and drag are</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB2>//automatically handled by the</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB2>//ode code.  We can add new forces</span><span class=cB0>
+<a name="l6"></a>  </span><span class=cB2>//here.</span><span class=cB0>
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *task=ode-&gt;win_task;
+<a name="l8"></a>  </span><span class=cB1>F64</span><span class=cB0> d,dd;
+<a name="l9"></a>  </span><span class=cB9>CD3</span><span class=cB0> p,p2;
+<a name="l10"></a>  MyMass *tmpm1,*tmpm2;
+<a name="l11"></a>
+<a name="l12"></a>  </span><span class=cB2>//Collisions</span><span class=cB0>
+<a name="l13"></a>  tmpm1=ode-&gt;next_mass;
+<a name="l14"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm1!=&amp;ode-&gt;next_mass) </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>    tmpm2=tmpm1-&gt;next;
+<a name="l16"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpm2!=&amp;ode-&gt;next_mass) {
+<a name="l17"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l160"></span><span class=cB5>D3Sub</a></span><span class=cB0>(&amp;p,&amp;tmpm2-&gt;state-&gt;x,&amp;tmpm1-&gt;state-&gt;x);
+<a name="l18"></a>      dd=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l159"></span><span class=cB5>D3NormSqr</a></span><span class=cB0>(&amp;p);
+<a name="l19"></a>      </span><span class=cB1>if</span><span class=cB0> (dd&lt;=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB7>(</span><span class=cB0>tmpm1-&gt;radius+tmpm2-&gt;radius</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>        d=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(dd)+0.0001;
+<a name="l21"></a>        dd=10.0*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm1-&gt;radius+tmpm2-&gt;radius)-dd</span><span class=cB7>)</span><span class=cB0>);
+<a name="l22"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l157"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;p,dd/d);
+<a name="l23"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l146"></span><span class=cB5>D3AddEqu</a></span><span class=cB0>(&amp;tmpm2-&gt;DstateDt-&gt;DxDt,&amp;p);
+<a name="l24"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l161"></span><span class=cB5>D3SubEqu</a></span><span class=cB0>(&amp;tmpm1-&gt;DstateDt-&gt;DxDt,&amp;p);
+<a name="l25"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l26"></a>      tmpm2=tmpm2-&gt;next;
+<a name="l27"></a>    }
+<a name="l28"></a>    tmpm1=tmpm1-&gt;next;
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l30"></a>
+<a name="l31"></a>  tmpm1=ode-&gt;next_mass;
+<a name="l32"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm1!=&amp;ode-&gt;next_mass) </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpm1-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l208"></span><span class=cB3>MSF_FIXED</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l34"></a>      tmpm1-&gt;DstateDt-&gt;DyDt+=10.0*tmpm1-&gt;mass; </span><span class=cB2>//Gravity</span><span class=cB0>
+<a name="l35"></a>    tmpm1=tmpm1-&gt;next;
+<a name="l36"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l37"></a>
+<a name="l38"></a>  </span><span class=cB1>if</span><span class=cB0> (cursor_mass) </span><span class=cB7>{</span><span class=cB0>
+<a name="l39"></a>    p2.x=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x-task-&gt;pix_left-task-&gt;scroll_x;
+<a name="l40"></a>    p2.y=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y-task-&gt;pix_top-task-&gt;scroll_y;
+<a name="l41"></a>    p2.z=0;
+<a name="l42"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l160"></span><span class=cB5>D3Sub</a></span><span class=cB0>(&amp;p,&amp;p2,&amp;cursor_mass-&gt;state-&gt;x);
+<a name="l43"></a>    d=10.0*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l159"></span><span class=cB5>D3NormSqr</a></span><span class=cB0>(&amp;p);
+<a name="l44"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l157"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;p,d);
+<a name="l45"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l146"></span><span class=cB5>D3AddEqu</a></span><span class=cB0>(&amp;cursor_mass-&gt;DstateDt-&gt;DxDt,&amp;p);
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>}
+</span></div></pre></body>
+</html>

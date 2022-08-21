@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> SPAN_VERSION    1.0
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>class</span><span class=cB0> SpanHeader
+<a name="l4"></a>{
+<a name="l5"></a></span><span class=cB1>F64</span><span class=cB0> version;
+<a name="l6"></a></span><span class=cB9>I32</span><span class=cB0> num_masses,num_springs;
+<a name="l7"></a>};
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB1>class</span><span class=cB0> MyMass:<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l209"></span><span class=cB9>CMass</a></span><span class=cB0>
+<a name="l10"></a>{
+<a name="l11"></a></span><span class=cB1>F64</span><span class=cB0> radius,cost,load_t;
+<a name="l12"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> color;
+<a name="l13"></a>} *cursor_mass;
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>class</span><span class=cB0> MySpring:<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l227"></span><span class=cB9>CSpring</a></span><span class=cB0>
+<a name="l16"></a>{
+<a name="l17"></a></span><span class=cB1>F64</span><span class=cB0> compression_strength,tensile_strength,cost;
+<a name="l18"></a></span><span class=cB1>F64</span><span class=cB0> base_compression_strength,base_tensile_strength,
+<a name="l19"></a>base_const,base_cost;
+<a name="l20"></a>
+<a name="l21"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> color;
+<a name="l22"></a></span><span class=cB9>I32</span><span class=cB0> thick;
+<a name="l23"></a>};
+<a name="l24"></a>
+<a name="l25"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l251"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l26"></a>
+<a name="l27"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Ctrls/CtrlsBttn.html#l5"></span><span class=cB9>CCtrlBttnState</a></span><span class=cB0> run_bttn,mode_bttn;
+<a name="l28"></a>
+<a name="l29"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> run_colors[2]={<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2916"></span><span class=cB3>GREEN</a></span><span class=cB0>};
+<a name="l30"></a>
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> MD_MASS         0
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> MD_CONCRETE     1
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> MD_STEEL        2
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> MD_WIRE         3
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> MD_MOVE         4
+<a name="l36"></a>#</span><span class=cB1>define</span><span class=cB0> MD_DELETE       5
+<a name="l37"></a>#</span><span class=cB1>define</span><span class=cB0> MD_MODES_NUM    6
+<a name="l38"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2939"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> mode_colors[MD_MODES_NUM]=
+<a name="l39"></a>{<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2920"></span><span class=cB3>BROWN</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2921"></span><span class=cB3>LTGRAY</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2922"></span><span class=cB3>DKGRAY</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2919"></span><span class=cB3>PURPLE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2918"></span><span class=cB3>RED</a></span><span class=cB0>};
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_SPAN_MODES&quot;</span><span class=cB0>,</span><span class=cB6>&quot;Mass\0Concrete\0Steel\0Wire\0Move\0Delete\0&quot;</span><span class=cB0>);
+<a name="l41"></a>
+<a name="l42"></a>  </span><span class=cB1>class</span><span class=cB0> SpanAnimateStruct
+<a name="l43"></a>          {
+<a name="l44"></a>    </span><span class=cB1>U8</span><span class=cB0> *saved_ode;
+<a name="l45"></a>  </span><span class=cB1>F64</span><span class=cB0> elapsed_t,start_wall_t;
+<a name="l46"></a>} a;
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>extern</span><span class=cB0> MyMass *PlaceMass(</span><span class=cB9>I64</span><span class=cB0> x, </span><span class=cB9>I64</span><span class=cB0> y);
+<a name="l49"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> SpanTime();
+</span></div></pre></body>
+</html>

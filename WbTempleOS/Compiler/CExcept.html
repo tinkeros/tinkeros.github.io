@@ -1,0 +1,296 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l1"></span><span class=cB5>LexPutToken</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc)
+<a name="l2"></a>{</span><span class=cB2>//Print cur token to StdOut. (Crude)</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB6>'&quot;'</span><span class=cB0>;
+<a name="l4"></a>  </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2083"></span><span class=cB3>TK_IDENT</a></span><span class=cB0> || cc-&gt;token==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2084"></span><span class=cB3>TK_STR</a></span><span class=cB0>)
+<a name="l5"></a>    </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,cc-&gt;cur_str;
+<a name="l6"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2085"></span><span class=cB3>TK_I64</a></span><span class=cB0>)
+<a name="l7"></a>    </span><span class=cB6>&quot;INT:%X&quot;</span><span class=cB0>,cc-&gt;cur_i64;
+<a name="l8"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2086"></span><span class=cB3>TK_CHAR_CONST</a></span><span class=cB0>)
+<a name="l9"></a>    </span><span class=cB6>&quot;U8:%X&quot;</span><span class=cB0>,cc-&gt;cur_i64;
+<a name="l10"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2087"></span><span class=cB3>TK_F64</a></span><span class=cB0>)
+<a name="l11"></a>    </span><span class=cB6>&quot;FLOAT:%e&quot;</span><span class=cB0>,cc-&gt;cur_f64;
+<a name="l12"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cc-&gt;token==</span><span class=cB6>'\n'</span><span class=cB0>)
+<a name="l13"></a>    </span><span class=cB6>&quot;&lt;NEW_LINE&gt;&quot;</span><span class=cB0>;
+<a name="l14"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l381"></span><span class=cB6>char_bmp_displayable</a></span><span class=cB0>,cc-&gt;token</span><span class=cB7>)</span><span class=cB0>)
+<a name="l15"></a>    </span><span class=cB6>''</span><span class=cB0> cc-&gt;token;
+<a name="l16"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>    </span><span class=cB6>&quot;T:%X&quot;</span><span class=cB0>,cc-&gt;token;
+<a name="l18"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB6>&quot;\&quot; &quot;</span><span class=cB0>;
+<a name="l20"></a>}
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l22"></span><span class=cB5>LexPutLine</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc,</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB1>start</span><span class=cB0>)
+<a name="l23"></a>{</span><span class=cB2>//Print cur pos to end of line to StdOut.</span><span class=cB0>
+<a name="l24"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l25"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr;
+<a name="l26"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB1>start</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB1>if</span><span class=cB0> (cc-&gt;lex_include_stk-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2045"></span><span class=cB3>LFSF_DOC</a></span><span class=cB0>)
+<a name="l28"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l272"></span><span class=cB5>DocPutLine</a></span><span class=cB0>(cc-&gt;lex_include_stk-&gt;doc,</span><span class=cB1>start</span><span class=cB0>);
+<a name="l29"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l30"></a>    ptr=</span><span class=cB1>start</span><span class=cB0>;
+<a name="l31"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*ptr++) {
+<a name="l32"></a>      </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\n'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>'\r'</span><span class=cB0>)
+<a name="l34"></a>          ptr++;
+<a name="l35"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l36"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'\r'</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>        </span><span class=cB1>if</span><span class=cB0> (*ptr==</span><span class=cB6>'\n'</span><span class=cB0>)
+<a name="l38"></a>          ptr++;
+<a name="l39"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l40"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a>      </span><span class=cB6>''</span><span class=cB0> ch;
+<a name="l42"></a>    }
+<a name="l43"></a>    </span><span class=cB1>if</span><span class=cB0> (!ch) ptr--;
+<a name="l44"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l45"></a>    </span><span class=cB1>return</span><span class=cB0> ptr;
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l50"></span><span class=cB5>LexPutPos</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc)
+<a name="l51"></a>{</span><span class=cB2>//Print token, line link and, then, </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l22"><span class=cB4>LexPutLine</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l1"></span><span class=cB5>LexPutToken</a></span><span class=cB0>(cc);
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/EdLite.html#l327"></span><span class=cB5>FixSet</a></span><span class=cB0>(cc-&gt;lex_include_stk-&gt;full_name,cc-&gt;lex_include_stk-&gt;line_num);
+<a name="l54"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l55"></a>    </span><span class=cB6>&quot;%s,%d &quot;</span><span class=cB0>,cc-&gt;lex_include_stk-&gt;full_name,cc-&gt;lex_include_stk-&gt;line_num;
+<a name="l56"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l57"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l160"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(cc-&gt;lex_include_stk-&gt;full_name,,cc-&gt;lex_include_stk-&gt;line_num);
+<a name="l58"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l433"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;%s,%d\n&quot;</span><span class=cB0>,
+<a name="l59"></a>          cc-&gt;lex_include_stk-&gt;full_name,cc-&gt;lex_include_stk-&gt;line_num);
+<a name="l60"></a>    </span><span class=cB6>''</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3457"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l22"></span><span class=cB5>LexPutLine</a></span><span class=cB0>(cc,cc-&gt;lex_include_stk-&gt;line_start);
+<a name="l63"></a>}
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l65"></span><span class=cB5>LexWarn</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc,</span><span class=cB1>U8</span><span class=cB0> *str=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l66"></a>{</span><span class=cB2>//Print warn msg, then, </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l50"><span class=cB4>LexPutPos</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l67"></a>  </span><span class=cB1>if</span><span class=cB0> (str) <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l914"></span><span class=cB5>PrintWarn</a></span><span class=cB0>(str);
+<a name="l68"></a>  </span><span class=cB1>if</span><span class=cB0> (cc-&gt;htc.fun) </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>    </span><span class=cB6>&quot;in fun '%s'.\n&quot;</span><span class=cB0>,cc-&gt;htc.fun-&gt;str;
+<a name="l70"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l71"></a>      </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,cc-&gt;htc.fun-&gt;src_link;
+<a name="l72"></a>    </span><span class=cB1>else</span><span class=cB0> {
+<a name="l73"></a>      </span><span class=cB6>&quot;$LK,\&quot;%s\&quot;$\n&quot;</span><span class=cB0>,cc-&gt;htc.fun-&gt;src_link;
+<a name="l74"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l433"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,cc-&gt;htc.fun-&gt;src_link);
+<a name="l75"></a>    }
+<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l77"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l50"></span><span class=cB5>LexPutPos</a></span><span class=cB0>(cc);
+<a name="l78"></a>  cc-&gt;warning_cnt++;
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l81"></span><span class=cB5>LexExcept</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc,</span><span class=cB1>U8</span><span class=cB0> *str=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l82"></a>{</span><span class=cB2>//Print err msg, </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l50"><span class=cB4>LexPutPos</span></a><span class=cB2>() and throw exception.</span><span class=cB0>
+<a name="l83"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l470"></span><span class=cB3>RLf_ADAM_SERVER</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l290"></span><span class=cB5>Raw</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l22"></span><span class=cB3>ON</a></span><span class=cB0>);
+<a name="l85"></a>    </span><span class=cB6>&quot;Note: Still in boot phase.\n&quot;</span><span class=cB0>;
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB1>if</span><span class=cB0> (str) <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l906"></span><span class=cB5>PrintErr</a></span><span class=cB0>(str);
+<a name="l88"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l89"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l433"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Task:%08X %s\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,str);
+<a name="l90"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l50"></span><span class=cB5>LexPutPos</a></span><span class=cB0>(cc);
+<a name="l91"></a>  cc-&gt;error_cnt++;
+<a name="l92"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l87"></span><span class=cB5>FlushMsgs</a></span><span class=cB0>;
+<a name="l93"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l470"></span><span class=cB3>RLf_ADAM_SERVER</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l94"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l649"></span><span class=cB5>Dbg</a></span><span class=cB0>(</span><span class=cB6>&quot;Type \&quot;Fix;\&quot;&quot;</span><span class=cB0>);
+<a name="l95"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Compiler'</span><span class=cB0>);
+<a name="l96"></a>}
+<a name="l97"></a>
+<a name="l98"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l98"></span><span class=cBD>UndefinedExtern</a></span><span class=cB0>()
+<a name="l99"></a>{
+<a name="l100"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l906"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Undefined Extern\nat %P\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l60"></span><span class=cB5>Caller</a></span><span class=cB0>);
+<a name="l101"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l84"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'UndefExt'</span><span class=cB0>);
+<a name="l102"></a>}
+<a name="l103"></a>
+<a name="l104"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l104"></span><span class=cBD>UnusedExternWarning</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l837"></span><span class=cB9>CHashClass</a></span><span class=cB0> *tmpc)
+<a name="l105"></a>{
+<a name="l106"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l914"></span><span class=cB5>PrintWarn</a></span><span class=cB0>(</span><span class=cB6>&quot;Unused extern '%s'\n&quot;</span><span class=cB0>,tmpc-&gt;str);
+<a name="l107"></a>  cc-&gt;warning_cnt++;
+<a name="l108"></a>}
+<a name="l109"></a>
+<a name="l110"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l110"></span><span class=cBD>ParenWarning</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc)
+<a name="l111"></a>{
+<a name="l112"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;cc-&gt;opts,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1549"></span><span class=cB3>OPTf_WARN_PAREN</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l113"></a>        !</span><span class=cB7>(</span><span class=cB0>cc-&gt;lex_include_stk-&gt;flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2046"></span><span class=cB3>LFSF_DEFINE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l114"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l65"></span><span class=cB5>LexWarn</a></span><span class=cB0>(cc,</span><span class=cB6>&quot;Unnecessary parenthesis &quot;</span><span class=cB0>);
+<a name="l115"></a>}
+<a name="l116"></a>
+<a name="l117"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l117"></span><span class=cBD>ICClassPut</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l837"></span><span class=cB9>CHashClass</a></span><span class=cB0> *c)
+<a name="l118"></a>{
+<a name="l119"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (!c) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l121"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;ptr_stars_cnt&gt;4) </span><span class=cB7>{</span><span class=cB0>
+<a name="l122"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l906"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;put_class ptrcnt=%d\n&quot;</span><span class=cB0>,c-&gt;ptr_stars_cnt);
+<a name="l123"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l124"></a></span><span class=cB2>//TODO:</span><span class=cB0>
+<a name="l125"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l126"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;c-&gt;ptr_stars_cnt;i++)
+<a name="l128"></a>    </span><span class=cB6>'*'</span><span class=cB0>;
+<a name="l129"></a>  c-=c-&gt;ptr_stars_cnt;
+<a name="l130"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;str)
+<a name="l131"></a>    </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,c-&gt;str;
+<a name="l132"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l133"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l906"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;put_class str=NULL\n&quot;</span><span class=cB0>);
+<a name="l134"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l135"></a></span><span class=cB2>//TODO:</span><span class=cB0>
+<a name="l136"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l137"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l138"></a>  </span><span class=cB6>''</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3457"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l139"></a>}
+<a name="l140"></a>
+<a name="l141"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l141"></span><span class=cBD>ICArgPut</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1643"></span><span class=cB9>CICArg</a></span><span class=cB0> *a,</span><span class=cB9>I64</span><span class=cB0> type_pointed_to)
+<a name="l142"></a>{
+<a name="l143"></a>  </span><span class=cB1>if</span><span class=cB0> (type_pointed_to)
+<a name="l144"></a>    </span><span class=cB6>&quot;[%Z](%Z) %Z &quot;</span><span class=cB0>,a-&gt;type.raw_type,</span><span class=cB6>&quot;ST_RAW_TYPES&quot;</span><span class=cB0>,
+<a name="l145"></a>          type_pointed_to,</span><span class=cB6>&quot;ST_RAW_TYPES&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(a-&gt;type&gt;&gt;8)+1,</span><span class=cB6>&quot;ST_TY_TYPES&quot;</span><span class=cB0>;
+<a name="l146"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l147"></a>    </span><span class=cB6>&quot;%Z %Z &quot;</span><span class=cB0>,a-&gt;type.raw_type,</span><span class=cB6>&quot;ST_RAW_TYPES&quot;</span><span class=cB0>,
+<a name="l148"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB0>(a-&gt;type&gt;&gt;8)+1,</span><span class=cB6>&quot;ST_TY_TYPES&quot;</span><span class=cB0>;
+<a name="l149"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l12"></span><span class=cB5>Bsr</a></span><span class=cB7>(</span><span class=cB0>a-&gt;type</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l150"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1583"></span><span class=cB3>MDf_STK</a></span><span class=cB0>:
+<a name="l151"></a>      </span><span class=cB6>&quot;STK&quot;</span><span class=cB0>;
+<a name="l152"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l153"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1584"></span><span class=cB3>MDf_IMM</a></span><span class=cB0>:
+<a name="l154"></a>      </span><span class=cB6>&quot;#%X&quot;</span><span class=cB0>,a-&gt;disp;
+<a name="l155"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l156"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1585"></span><span class=cB3>MDf_REG</a></span><span class=cB0>:
+<a name="l157"></a>      </span><span class=cB6>&quot;%Z&quot;</span><span class=cB0>,a-&gt;</span><span class=cB1>reg</span><span class=cB0>,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>;
+<a name="l158"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l159"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1586"></span><span class=cB3>MDf_DISP</a></span><span class=cB0>:
+<a name="l160"></a>      </span><span class=cB6>&quot;%X[%Z]&quot;</span><span class=cB0>,a-&gt;disp,a-&gt;</span><span class=cB1>reg</span><span class=cB0>,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>;
+<a name="l161"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l162"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1588"></span><span class=cB3>MDf_RIP_DISP32</a></span><span class=cB0>:
+<a name="l163"></a>      </span><span class=cB6>&quot;[%X]&quot;</span><span class=cB0>,a-&gt;disp;
+<a name="l164"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l165"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1587"></span><span class=cB3>MDf_SIB</a></span><span class=cB0>:
+<a name="l166"></a>      </span><span class=cB1>if</span><span class=cB0> (a-&gt;disp)
+<a name="l167"></a>        </span><span class=cB6>&quot;%X&quot;</span><span class=cB0>,a-&gt;disp;
+<a name="l168"></a>      </span><span class=cB1>if</span><span class=cB0> (a-&gt;</span><span class=cB1>reg</span><span class=cB0>==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1795"></span><span class=cB3>REG_RIP</a></span><span class=cB0>)
+<a name="l169"></a>        </span><span class=cB6>'['</span><span class=cB0>;
+<a name="l170"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l171"></a>        </span><span class=cB6>&quot;[%Z+&quot;</span><span class=cB0>,a-&gt;</span><span class=cB1>reg</span><span class=cB0>&amp;15,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>;
+<a name="l172"></a>      </span><span class=cB6>&quot;%Z&quot;</span><span class=cB0>,a-&gt;</span><span class=cB1>reg</span><span class=cB0>&gt;&gt;8&amp;15,</span><span class=cB6>&quot;ST_U64_REGS&quot;</span><span class=cB0>;
+<a name="l173"></a>      </span><span class=cB1>switch</span><span class=cB0> (a-&gt;</span><span class=cB1>reg</span><span class=cB0>&gt;&gt;14) {
+<a name="l174"></a>        </span><span class=cB1>case</span><span class=cB0> 0: </span><span class=cB6>&quot;]&quot;</span><span class=cB0>;   </span><span class=cB1>break</span><span class=cB0>;
+<a name="l175"></a>        </span><span class=cB1>case</span><span class=cB0> 1: </span><span class=cB6>&quot;*2]&quot;</span><span class=cB0>; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l176"></a>        </span><span class=cB1>case</span><span class=cB0> 2: </span><span class=cB6>&quot;*4]&quot;</span><span class=cB0>; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l177"></a>        </span><span class=cB1>case</span><span class=cB0> 3: </span><span class=cB6>&quot;*8]&quot;</span><span class=cB0>; </span><span class=cB1>break</span><span class=cB0>;
+<a name="l178"></a>      }
+<a name="l179"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l180"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l181"></a>  </span><span class=cB6>''</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3457"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l182"></a>}
+<a name="l183"></a>
+<a name="l184"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l184"></span><span class=cBD>ICPut</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2179"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1666"></span><span class=cB9>CIntermediateCode</a></span><span class=cB0> *tmpi)
+<a name="l185"></a>{
+<a name="l186"></a>  </span><span class=cB9>I64</span><span class=cB0> opcode=tmpi-&gt;ic_code,i;
+<a name="l187"></a>  </span><span class=cB1>if</span><span class=cB0> (opcode&gt;=<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CompilerA.html#l22"></span><span class=cB3>IC_END_EXP</a></span><span class=cB0> &amp;&amp; opcode!=<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CompilerA.html#l23"></span><span class=cB3>IC_NOP2</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l188"></a>    </span><span class=cB6>&quot;%15ts %016X &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CInit.html#l16"></span><span class=cBD>intermediate_code_table</a></span><span class=cB0>[opcode].name,tmpi-&gt;ic_data;
+<a name="l189"></a>    </span><span class=cB1>if</span><span class=cB0> (cc-&gt;pass) {
+<a name="l190"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;res.type.mode) </span><span class=cB7>{</span><span class=cB0>
+<a name="l191"></a>        </span><span class=cB6>&quot;$PURPLE$RES:$FG$&quot;</span><span class=cB0>;
+<a name="l192"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l141"></span><span class=cBD>ICArgPut</a></span><span class=cB0>(&amp;tmpi-&gt;res,0);
+<a name="l193"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l194"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;arg1.type.mode) </span><span class=cB7>{</span><span class=cB0>
+<a name="l195"></a>        </span><span class=cB6>&quot;$PURPLE$ARG1:$FG$&quot;</span><span class=cB0>;
+<a name="l196"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CInit.html#l16"></span><span class=cBD>intermediate_code_table</a></span><span class=cB0>[tmpi-&gt;ic_code].type==<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CompilerA.html#l9"></span><span class=cB3>IST_DEREF</a></span><span class=cB0> ||
+<a name="l197"></a>              <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CInit.html#l16"></span><span class=cBD>intermediate_code_table</a></span><span class=cB0>[tmpi-&gt;ic_code].type==<a href="http://tinkeros.github.io/WbTempleOS/Compiler/CompilerA.html#l10"></span><span class=cB3>IST_ASSIGN</a></span><span class=cB0>)
+<a name="l198"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l141"></span><span class=cBD>ICArgPut</a></span><span class=cB0>(&amp;tmpi-&gt;arg1,tmpi-&gt;arg1_type_pointed_to);
+<a name="l199"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l200"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l141"></span><span class=cBD>ICArgPut</a></span><span class=cB0>(&amp;tmpi-&gt;arg1,0);
+<a name="l201"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l202"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;arg2.type.mode) </span><span class=cB7>{</span><span class=cB0>
+<a name="l203"></a>        </span><span class=cB6>&quot;$PURPLE$ARG2:$FG$&quot;</span><span class=cB0>;
+<a name="l204"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l141"></span><span class=cBD>ICArgPut</a></span><span class=cB0>(&amp;tmpi-&gt;arg2,0);
+<a name="l205"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l206"></a>      </span><span class=cB6>&quot;$PURPLE$:$FG$&quot;</span><span class=cB0>;
+<a name="l207"></a>    }
+<a name="l208"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Compiler/CExcept.html#l117"></span><span class=cBD>ICClassPut</a></span><span class=cB0>(tmpi-&gt;ic_class);
+<a name="l209"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1626"></span><span class=cB3>ICF_LOCK</a></span><span class=cB0>)
+<a name="l210"></a>      </span><span class=cB6>&quot;$BROWN$lock$FG$ &quot;</span><span class=cB0>;
+<a name="l211"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1606"></span><span class=cB3>ICF_ARG2_TO_F64</a></span><span class=cB0>)
+<a name="l212"></a>      </span><span class=cB6>&quot;$LTBLUE$a2d$FG$ &quot;</span><span class=cB0>;
+<a name="l213"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1607"></span><span class=cB3>ICF_ARG2_TO_INT</a></span><span class=cB0>)
+<a name="l214"></a>      </span><span class=cB6>&quot;$GREEN$a2i$FG$ &quot;</span><span class=cB0>;
+<a name="l215"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1604"></span><span class=cB3>ICF_ARG1_TO_F64</a></span><span class=cB0>)
+<a name="l216"></a>      </span><span class=cB6>&quot;$LTBLUE$a1d$FG$ &quot;</span><span class=cB0>;
+<a name="l217"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1605"></span><span class=cB3>ICF_ARG1_TO_INT</a></span><span class=cB0>)
+<a name="l218"></a>      </span><span class=cB6>&quot;$GREEN$a1i$FG$ &quot;</span><span class=cB0>;
+<a name="l219"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1602"></span><span class=cB3>ICF_RES_TO_F64</a></span><span class=cB0>)
+<a name="l220"></a>      </span><span class=cB6>&quot;$LTBLUE$rd$FG$ &quot;</span><span class=cB0>;
+<a name="l221"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1603"></span><span class=cB3>ICF_RES_TO_INT</a></span><span class=cB0>)
+<a name="l222"></a>      </span><span class=cB6>&quot;$GREEN$ri$FG$ &quot;</span><span class=cB0>;
+<a name="l223"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1608"></span><span class=cB3>ICF_USE_F64</a></span><span class=cB0>)
+<a name="l224"></a>      </span><span class=cB6>&quot;[F64] &quot;</span><span class=cB0>;
+<a name="l225"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1609"></span><span class=cB3>ICF_USE_UNSIGNED</a></span><span class=cB0>)
+<a name="l226"></a>      </span><span class=cB6>&quot;[unsigned] &quot;</span><span class=cB0>;
+<a name="l227"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1610"></span><span class=cB3>ICF_USE_INT</a></span><span class=cB0>)
+<a name="l228"></a>      </span><span class=cB6>&quot;[int] &quot;</span><span class=cB0>;
+<a name="l229"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1611"></span><span class=cB3>ICF_RES_NOT_USED</a></span><span class=cB0>)
+<a name="l230"></a>      </span><span class=cB6>&quot;NO_RES &quot;</span><span class=cB0>;
+<a name="l231"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1613"></span><span class=cB3>ICF_BY_VAL</a></span><span class=cB0>)
+<a name="l232"></a>      </span><span class=cB6>&quot;BY_VAL &quot;</span><span class=cB0>;
+<a name="l233"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1615"></span><span class=cB3>ICF_PUSH_RES</a></span><span class=cB0>)
+<a name="l234"></a>      </span><span class=cB6>&quot;PUSH &quot;</span><span class=cB0>;
+<a name="l235"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1620"></span><span class=cB3>ICF_PUSH_CMP</a></span><span class=cB0>)
+<a name="l236"></a>      </span><span class=cB6>&quot;PUSH_CMP &quot;</span><span class=cB0>;
+<a name="l237"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1621"></span><span class=cB3>ICF_POP_CMP</a></span><span class=cB0>)
+<a name="l238"></a>      </span><span class=cB6>&quot;POP_CMP &quot;</span><span class=cB0>;
+<a name="l239"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1629"></span><span class=cB3>ICF_DEL_PREV_INS</a></span><span class=cB0>)
+<a name="l240"></a>      </span><span class=cB6>&quot;DEL_PREV &quot;</span><span class=cB0>;
+<a name="l241"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1630"></span><span class=cB3>ICF_PREV_DELETED</a></span><span class=cB0>)
+<a name="l242"></a>      </span><span class=cB6>&quot;PREV_DEL &quot;</span><span class=cB0>;
+<a name="l243"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;3;i++) {
+<a name="l244"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;tmpi-&gt;ic_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1623"></span><span class=cB3>ICf_DONT_PUSH_FLOAT0</a></span><span class=cB0>+i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l245"></a>        </span><span class=cB6>&quot;DONT_PUSH#%d &quot;</span><span class=cB0>,i;
+<a name="l246"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;tmpi-&gt;ic_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1624"></span><span class=cB3>ICf_DONT_POP_FLOAT0</a></span><span class=cB0>+i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l247"></a>        </span><span class=cB6>&quot;DONT_POP#%d &quot;</span><span class=cB0>,i;
+<a name="l248"></a>    }
+<a name="l249"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpi-&gt;ic_flags &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1625"></span><span class=cB3>ICF_ALT_TEMPLATE</a></span><span class=cB0>)
+<a name="l250"></a>      </span><span class=cB6>&quot;ALT_TMP &quot;</span><span class=cB0>;
+<a name="l251"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l252"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l253"></a>}
+</span></div></pre></body>
+</html>

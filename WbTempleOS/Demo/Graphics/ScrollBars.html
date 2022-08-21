@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>
+<a name="l4"></a>
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cBA>
+<a name="l7"></a>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l8"></a>
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> MAP_HEIGHT      2048
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> MAP_WIDTH       2048
+<a name="l11"></a>
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> TREES_NUM       256
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB9>I64</span><span class=cB0> tree_x[TREES_NUM],tree_y[TREES_NUM];
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> i,h,v;
+<a name="l19"></a>
+<a name="l20"></a>  task-&gt;horz_scroll.min=0;
+<a name="l21"></a>  task-&gt;horz_scroll.max=MAP_WIDTH-task-&gt;pix_width;
+<a name="l22"></a>  task-&gt;vert_scroll.min=0;
+<a name="l23"></a>  task-&gt;vert_scroll.max=MAP_HEIGHT-task-&gt;pix_height;
+<a name="l24"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l286"></span><span class=cB5>TaskDerivedValsUpdate</a></span><span class=cB0>(task);
+<a name="l25"></a>
+<a name="l26"></a>  h=task-&gt;horz_scroll.pos;
+<a name="l27"></a>  v=task-&gt;vert_scroll.pos;
+<a name="l28"></a>
+<a name="l29"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2920"></span><span class=cB3>BROWN</a></span><span class=cB0>;
+<a name="l30"></a>  dc-&gt;thick=4;
+<a name="l31"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,2-h,2-v,0,MAP_WIDTH-3-h,2-v,0);
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,2-h,MAP_HEIGHT-3-v,0,MAP_WIDTH-3-h,MAP_HEIGHT-3-v,0);
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,2-h,2-v,0,2-h,MAP_HEIGHT-3-v,0);
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l770"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,MAP_WIDTH-3-h,2-v,0,MAP_WIDTH-3-h,MAP_HEIGHT-3-v,0);
+<a name="l35"></a>
+<a name="l36"></a>  </span><span class=cB2>//Check bounds if you wish better performance.</span><span class=cB0>
+<a name="l37"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;TREES_NUM;i++)
+<a name="l38"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,tree_x[i]-h,tree_y[i]-v,0,</span><span class=cBA>&lt;Tree&gt;</span><span class=cB0>);
+<a name="l39"></a>}
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l42"></a>{
+<a name="l43"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l44"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;TREES_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    tree_x[i]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%MAP_WIDTH;
+<a name="l46"></a>    tree_y[i]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%MAP_HEIGHT;
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a></span><span class=cB1>U0</span><span class=cB0> ScrollBars()
+<a name="l51"></a>{
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l53"></a>  Init;
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l55"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l517"></span><span class=cB5>WinBorder</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l22"></span><span class=cB3>ON</a></span><span class=cB0>);
+<a name="l56"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l136"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l57"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l120"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l58"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l150"></span><span class=cB5>DocScroll</a></span><span class=cB0>;
+<a name="l59"></a>
+<a name="l60"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;horz_scroll.pos=0;
+<a name="l61"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;vert_scroll.pos=0;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l182"></span><span class=cB5>GetChar</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l63"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l89"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l64"></a></span><span class=cB2>//If you care, you might want to</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB2>//save the original state of the</span><span class=cB0>
+<a name="l66"></a>  </span><span class=cB2>//scroll bars.</span><span class=cB0>
+<a name="l67"></a>}
+<a name="l68"></a>
+<a name="l69"></a>ScrollBars;
+</span></div></pre></body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;PCI;Processor;Devices;Info&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>//The file was downloaded from</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//http://www.pcidatabase.com/reports.php?type=tab-delimeted</span><span class=cB0>
+<a name="l5"></a>
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB0> </span><span class=cB6>&quot;::/Misc/PCIDevices.DD.Z&quot;</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB2>/****</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>//1) Download http://www.pcidatabase.com/reports.php?type=tab-delimeted</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>//2) Rename to ::/Misc/PCIDevices.DD.Z</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>//3) ToDolDoc(&quot;::/Misc/PCIDevices.DD.Z&quot;);</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>//4) Edit and remove file header and tail</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>//5) Text find-and-replace &quot;=0A=&quot; with &quot;&quot;. (Doesn't seem necessary anmore.)</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>//6) Run PCIDevFileGen(). (Doesn't seem necessary anmore.)</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB2>public U0 PCIDevFileGen()</span><span class=cB0>
+<a name="l17"></a></span><span class=cB2>{</span><span class=cB0>
+<a name="l18"></a></span><span class=cB2>  Bool first=TRUE,del=FALSE,del2=FALSE,cont=FALSE;</span><span class=cB0>
+<a name="l19"></a></span><span class=cB2>  CDoc *doc=DocRead(PCI_DEV_FILE,</span><span class=cB0>
+<a name="l20"></a>        </span><span class=cB2>DOCF_PLAIN_TEXT|DOCF_DBL_DOLLARS|DOCF_NO_CURSOR);</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>  CDocEntry *doc_e=doc-&gt;head.next,*doc_e2;</span><span class=cB0>
+<a name="l22"></a></span><span class=cB2>  while (doc_e!=doc) {</span><span class=cB0>
+<a name="l23"></a></span><span class=cB2>    doc_e2=doc_e-&gt;next;</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>    if (first) {</span><span class=cB0>
+<a name="l25"></a></span><span class=cB2>      if (doc_e-&gt;type_u8==DOCT_TEXT) {</span><span class=cB0>
+<a name="l26"></a>        </span><span class=cB2>if (doc_e-&gt;tag[0]==';')</span><span class=cB0>
+<a name="l27"></a>        </span><span class=cB2>  del=TRUE;</span><span class=cB0>
+<a name="l28"></a></span><span class=cB2>      }</span><span class=cB0>
+<a name="l29"></a></span><span class=cB2>      first=FALSE;</span><span class=cB0>
+<a name="l30"></a></span><span class=cB2>    }</span><span class=cB0>
+<a name="l31"></a></span><span class=cB2>    if (doc_e-&gt;type_u8==DOCT_TEXT &amp;&amp; doc_e-&gt;tag[StrLen(doc_e-&gt;tag)-1]=='=' &amp;&amp;</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB2>  doc_e2-&gt;type_u8==DOCT_NEW_LINE) {</span><span class=cB0>
+<a name="l33"></a></span><span class=cB2>      doc_e-&gt;tag[StrLen(doc_e-&gt;tag)-1]=CH_SPACE;</span><span class=cB0>
+<a name="l34"></a></span><span class=cB2>      cont=TRUE;</span><span class=cB0>
+<a name="l35"></a></span><span class=cB2>    }</span><span class=cB0>
+<a name="l36"></a></span><span class=cB2>    del2=del;</span><span class=cB0>
+<a name="l37"></a></span><span class=cB2>    if (doc_e-&gt;type_u8==DOCT_NEW_LINE) {</span><span class=cB0>
+<a name="l38"></a></span><span class=cB2>      first=TRUE;</span><span class=cB0>
+<a name="l39"></a></span><span class=cB2>      del2=FALSE;</span><span class=cB0>
+<a name="l40"></a></span><span class=cB2>      if (cont) {</span><span class=cB0>
+<a name="l41"></a>        </span><span class=cB2>del=TRUE;</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB2>cont=FALSE;</span><span class=cB0>
+<a name="l43"></a></span><span class=cB2>      }</span><span class=cB0>
+<a name="l44"></a></span><span class=cB2>    }</span><span class=cB0>
+<a name="l45"></a></span><span class=cB2>    if (del)</span><span class=cB0>
+<a name="l46"></a></span><span class=cB2>      DocEntryDel(doc,doc_e);</span><span class=cB0>
+<a name="l47"></a></span><span class=cB2>    del=del2;</span><span class=cB0>
+<a name="l48"></a></span><span class=cB2>    doc_e=doc_e2;</span><span class=cB0>
+<a name="l49"></a></span><span class=cB2>  }</span><span class=cB0>
+<a name="l50"></a></span><span class=cB2>  DocWrite(doc);</span><span class=cB0>
+<a name="l51"></a></span><span class=cB2>}</span><span class=cB0>
+<a name="l52"></a></span><span class=cB2>****/</span><span class=cB0>
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Misc/PCIDevices.html#l1"><span class=cB4>::/Misc/PCIDevices.DD</span></a><span class=cB0>
+<a name="l55"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l55"></span><span class=cB5>PCILookUpSingle</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB9>I64</span><span class=cB0> m,</span><span class=cB9>I64</span><span class=cB0> d,</span><span class=cB1>U8</span><span class=cB0> **_vendor,</span><span class=cB1>U8</span><span class=cB0> **_dev)
+<a name="l56"></a>{
+<a name="l57"></a>  </span><span class=cB1>Bool</span><span class=cB0> first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[8],*vendor=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e=doc-&gt;head.next;
+<a name="l60"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l61"></a>    </span><span class=cB1>if</span><span class=cB0> (first) {
+<a name="l62"></a>      </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0> &amp;&amp; doc_e-&gt;tag[0]!=</span><span class=cB6>';'</span><span class=cB0> &amp;&amp;
+<a name="l63"></a>            <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>doc_e-&gt;tag</span><span class=cB7>)</span><span class=cB0>&gt;=4) </span><span class=cB7>{</span><span class=cB0>
+<a name="l64"></a>        buf[0](</span><span class=cB9>U16</span><span class=cB0>)=</span><span class=cB6>'0x'</span><span class=cB0>;
+<a name="l65"></a>        buf[2](</span><span class=cB9>U32</span><span class=cB0>)=doc_e-&gt;tag(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l66"></a>        buf[6]=0;
+<a name="l67"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB7>(</span><span class=cB0>buf</span><span class=cB7>)</span><span class=cB0>==m) {
+<a name="l68"></a>          doc_e=doc_e-&gt;next-&gt;next;
+<a name="l69"></a>          </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>            vendor=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(doc_e-&gt;tag);
+<a name="l71"></a>            first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l72"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l73"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l74"></a>        }
+<a name="l75"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>      first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l77"></a>    }
+<a name="l78"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l905"></span><span class=cB3>DOCT_NEW_LINE</a></span><span class=cB0>)
+<a name="l79"></a>      first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l80"></a>    doc_e=doc_e-&gt;next;
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>
+<a name="l83"></a>  </span><span class=cB1>if</span><span class=cB0> (vendor) </span><span class=cB7>{</span><span class=cB0>
+<a name="l84"></a>    </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) {
+<a name="l85"></a>      </span><span class=cB1>if</span><span class=cB0> (first) </span><span class=cB7>{</span><span class=cB0>
+<a name="l86"></a>        </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l907"></span><span class=cB3>DOCT_TAB</a></span><span class=cB0>) {
+<a name="l87"></a>          doc_e=doc_e-&gt;next;
+<a name="l88"></a>          </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>doc_e-&gt;tag</span><span class=cB7>)</span><span class=cB0>&gt;=4) </span><span class=cB7>{</span><span class=cB0>
+<a name="l89"></a>            buf[0](</span><span class=cB9>U16</span><span class=cB0>)=</span><span class=cB6>'0x'</span><span class=cB0>;
+<a name="l90"></a>            buf[2](</span><span class=cB9>U32</span><span class=cB0>)=doc_e-&gt;tag(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l91"></a>            buf[6]=0;
+<a name="l92"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB7>(</span><span class=cB0>buf</span><span class=cB7>)</span><span class=cB0>==d) {
+<a name="l93"></a>              doc_e=doc_e-&gt;next-&gt;next;
+<a name="l94"></a>              </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l904"></span><span class=cB3>DOCT_TEXT</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l95"></a>                <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(doc_e-&gt;tag);
+<a name="l96"></a>                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l97"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>            }
+<a name="l99"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l100"></a>        } </span><span class=cB1>else</span><span class=cB0>
+<a name="l101"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l102"></a>        first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l103"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l104"></a>      </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l905"></span><span class=cB3>DOCT_NEW_LINE</a></span><span class=cB0>)
+<a name="l105"></a>        first=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l106"></a>      doc_e=doc_e-&gt;next;
+<a name="l107"></a>    }
+<a name="l108"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l109"></a>
+<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (vendor)
+<a name="l111"></a>    *_vendor=vendor;
+<a name="l112"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l113"></a>    *_vendor=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;Unknown&quot;</span><span class=cB0>);
+<a name="l114"></a>
+<a name="l115"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>)
+<a name="l116"></a>    *_dev=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>;
+<a name="l117"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l118"></a>    *_dev=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l461"></span><span class=cB5>AStrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;Unknown&quot;</span><span class=cB0>);
+<a name="l119"></a>}
+<a name="l120"></a>
+<a name="l121"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l121"></span><span class=cB5>PCILookUpDevs</a></span><span class=cB0>()
+<a name="l122"></a>{
+<a name="l123"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2252"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *tmppci;
+<a name="l124"></a>  </span><span class=cB9>I64</span><span class=cB0> w1,w2,b,d,f,timeout=32*8*2;
+<a name="l125"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l126"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.next!=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head)
+<a name="l127"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l128"></a>  doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1269"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l129"></a>  </span><span class=cB1>for</span><span class=cB0> (b=0;b&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l248"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>;b++)
+<a name="l130"></a>    </span><span class=cB1>for</span><span class=cB0> (d=0;d&lt;32;d++)
+<a name="l131"></a>      </span><span class=cB1>for</span><span class=cB0> (f=0;f&lt;8;f++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>        w1=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/PCIBIOS.html#l182"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(b,d,f,0);
+<a name="l133"></a>        </span><span class=cB1>if</span><span class=cB0> (w1!=0xFFFF) {
+<a name="l134"></a>          tmppci=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l402"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2252"></span><span class=cB9>CPCIDev</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l135"></a>          tmppci-&gt;bus=b;
+<a name="l136"></a>          tmppci-&gt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>=d;
+<a name="l137"></a>          tmppci-&gt;fun=f;
+<a name="l138"></a>          tmppci-&gt;vendor=w1;
+<a name="l139"></a>          tmppci-&gt;dev_id=w2=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/PCIBIOS.html#l182"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(b,d,f,2);
+<a name="l140"></a>          tmppci-&gt;sub_code=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/PCIBIOS.html#l163"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(b,d,f,0xA);
+<a name="l141"></a>          tmppci-&gt;base_code=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/PCIBIOS.html#l163"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(b,d,f,0xB);
+<a name="l142"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l55"></span><span class=cB5>PCILookUpSingle</a></span><span class=cB0>(doc,w1,w2,&amp;tmppci-&gt;vendor_str,&amp;tmppci-&gt;dev_id_str);
+<a name="l143"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(tmppci,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.last);
+<a name="l144"></a>          timeout=32*8*2;
+<a name="l145"></a>        } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l248"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>==256 &amp;&amp; --timeout&lt;=0)
+<a name="l146"></a>          </span><span class=cB1>goto</span><span class=cB0> lud_done;
+<a name="l147"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l148"></a>lud_done:
+<a name="l149"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l150"></a>}
+<a name="l151"></a>
+<a name="l152"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l152"></span><span class=cB5>PCIRep</a></span><span class=cB0>()
+<a name="l153"></a>{</span><span class=cB2>//Report description of PCI devices.</span><span class=cB0>
+<a name="l154"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2252"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *tmppci;
+<a name="l155"></a>  </span><span class=cB6>&quot;PCI Busses:%d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l248"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>;
+<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l54"></span><span class=cB5>FileFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l157"></a>    </span><span class=cB6>&quot;You don't have the PCI device file.\n&quot;</span><span class=cB0>;
+<a name="l158"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l159"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l160"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l121"></span><span class=cB5>PCILookUpDevs</a></span><span class=cB0>;
+<a name="l161"></a>  tmppci=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.next;
+<a name="l162"></a>  </span><span class=cB1>while</span><span class=cB0> (tmppci!=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l163"></a>    </span><span class=cB6>&quot;%02X:%02X:%01X %02X%02X $GREEN$%s $CYAN$%s$FG$\n&quot;</span><span class=cB0>,
+<a name="l164"></a>          tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,
+<a name="l165"></a>          tmppci-&gt;base_code,tmppci-&gt;sub_code,
+<a name="l166"></a>          tmppci-&gt;vendor_str,tmppci-&gt;dev_id_str;
+<a name="l167"></a>    tmppci=tmppci-&gt;next;
+<a name="l168"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l169"></a>}
+<a name="l170"></a>
+<a name="l171"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Info;Memory/Info&quot;</span><span class=cB0>
+<a name="l172"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l172"></span><span class=cB5>MemBIOSRep</a></span><span class=cB0>()
+<a name="l173"></a>{</span><span class=cB2>//Report the memory ranges reported by the BIOS at boot.</span><span class=cB0>
+<a name="l174"></a>  </span><span class=cB9>U16</span><span class=cB0>           *m01=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart16.html#l31"></span><span class=cBD>MEM_E801</a></span><span class=cB0>;
+<a name="l175"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l370"></span><span class=cB9>CMemE820</a></span><span class=cB0>      *m20=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart16.html#l32"></span><span class=cBD>MEM_E820</a></span><span class=cB0>;
+<a name="l176"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2824"></span><span class=cB9>CMemRange</a></span><span class=cB0>     *tmpmr;
+<a name="l177"></a>  </span><span class=cB6>&quot;Standard Addresses\n&quot;</span><span class=cB0>
+<a name="l178"></a>        </span><span class=cB6>&quot;000A0000-000BFFFF VGA\n&quot;</span><span class=cB0>
+<a name="l179"></a>        </span><span class=cB6>&quot;FEE00000-FEE00FFF See $LK,\&quot;APIC\&quot;,A=\&quot;MN:LAPIC_BASE\&quot;$\n\n&quot;</span><span class=cB0>
+<a name="l180"></a>        </span><span class=cB6>&quot;32 Bit Device Mem\n&quot;</span><span class=cB0>;
+<a name="l181"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l623"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l182"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l183"></a>  tmpmr=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head.next;
+<a name="l184"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpmr!=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l23"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head) </span><span class=cB7>{</span><span class=cB0>
+<a name="l185"></a>    </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,
+<a name="l186"></a>          tmpmr-&gt;type,tmpmr-&gt;base,tmpmr-&gt;base+tmpmr-&gt;size-1;
+<a name="l187"></a>    tmpmr=tmpmr-&gt;next;
+<a name="l188"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l189"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l242"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l623"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0);
+<a name="l190"></a>
+<a name="l191"></a>  </span><span class=cB6>&quot;\nBIOS Memory Report 15:E801\n&quot;</span><span class=cB0>
+<a name="l192"></a>        </span><span class=cB6>&quot;01:0000000000000000-%016X\n&quot;</span><span class=cB0>,0x100000+m01[0]&lt;&lt;10-1;
+<a name="l193"></a>  </span><span class=cB6>&quot;01:0000000001000000-%016X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3414"></span><span class=cB3>SYS_16MEG_AREA_LIMIT</a></span><span class=cB0>+m01[1]&lt;&lt;16-1;
+<a name="l194"></a>
+<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (m20-&gt;type) </span><span class=cB7>{</span><span class=cB0>
+<a name="l196"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l197"></a>    </span><span class=cB6>&quot;BIOS Memory Report 15:E820\n&quot;</span><span class=cB0>;
+<a name="l198"></a>    </span><span class=cB1>while</span><span class=cB0> (m20-&gt;type) {
+<a name="l199"></a>      </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,m20-&gt;type,m20-&gt;base,m20-&gt;base+m20-&gt;len-1;
+<a name="l200"></a>      m20++;
+<a name="l201"></a>    }
+<a name="l202"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l203"></a>}
+<a name="l204"></a>
+<a name="l205"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DevInfo.html#l205"></span><span class=cB5>MemPageRep</a></span><span class=cB0>()
+<a name="l206"></a>{</span><span class=cB2>//Page Table Report.</span><span class=cB0>
+<a name="l207"></a>  </span><span class=cB6>&quot;MAPPED\t  :%010X with &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l196"></span><span class=cB6>mem_mapped_space</a></span><span class=cB0>;
+<a name="l208"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l285"></span><span class=cB6>mem_page_size</a></span><span class=cB0>,30</span><span class=cB7>)</span><span class=cB0>)
+<a name="l209"></a>    </span><span class=cB6>&quot;$RED$1GIG$FG$ pages\n&quot;</span><span class=cB0>;
+<a name="l210"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l211"></a>    </span><span class=cB6>&quot;$RED$2MEG$FG$ pages\n&quot;</span><span class=cB0>;
+<a name="l212"></a>  </span><span class=cB6>&quot;PML2\t  :%010X 2MEG  :%08X\n&quot;</span><span class=cB0>,
+<a name="l213"></a>        *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l13"></span><span class=cBD>MEM_PML2</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l10"></span><span class=cBD>MEM_2MEG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l214"></a>  </span><span class=cB6>&quot;PML3\t  :%010X 1GIG  :%08X\n&quot;</span><span class=cB0>,
+<a name="l215"></a>        *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l14"></span><span class=cBD>MEM_PML3</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l11"></span><span class=cBD>MEM_1GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l216"></a>  </span><span class=cB6>&quot;PML4\t  :%010X 512GIG:%08X\n&quot;</span><span class=cB0>,
+<a name="l217"></a>        *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l15"></span><span class=cBD>MEM_PML4</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart32.html#l12"></span><span class=cBD>MEM_512GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l218"></a>  </span><span class=cB6>&quot;FIXED_AREA:%010X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3413"></span><span class=cB3>SYS_FIXED_AREA</a></span><span class=cB0>;
+<a name="l219"></a>  </span><span class=cB6>&quot;HEAP_BASE :%010X\nHEAP_LIMIT:%010X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l194"></span><span class=cB6>mem_heap_base</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l195"></span><span class=cB6>mem_heap_limit</a></span><span class=cB0>;
+<a name="l220"></a>}
+</span></div></pre></body>
+</html>

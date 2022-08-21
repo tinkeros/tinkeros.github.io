@@ -1,0 +1,360 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                     <h1><center>HolyC</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>* See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/CompilerOverview.html#l1"><span class=cB4>::/Doc/CompilerOverview.DD</span></a><span class=cB0>.
+<a name="l4"></a>
+<a name="l5"></a>* See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/ScopingLinkage.html#l1"><span class=cB4>Scoping and Linkage</span></a><span class=cB0> for details on </span><span class=cB2>extern</span><span class=cB0>, </span><span class=cB2>import</span><span class=cB0>, </span><span class=cB2>_extern</span><span class=cB0>, </span><span class=cB2>_import</span><span class=cB0>, etc.
+<a name="l6"></a>
+<a name="l7"></a>* Built-in types include </span><span class=cB2>I0,I8,I16,I32,I64</span><span class=cB0> for signed 0-8 byte ints and </span><span class=cB2>U0,U8,U1
+<a name="l8"></a>6,U32,U64</span><span class=cB0> for unsigned 0-8 byte ints and </span><span class=cB2>F64</span><span class=cB0> for 8 byte floats.
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB2>        U0      void, but ZERO size!
+<a name="l11"></a>        I8      char
+<a name="l12"></a>        U8      unsigned char
+<a name="l13"></a>        I16     short
+<a name="l14"></a>        U16     unsigned short
+<a name="l15"></a>        I32     int
+<a name="l16"></a>        U32     unsigned int
+<a name="l17"></a>        I64     long (64-bit)
+<a name="l18"></a>        U64     unsigned long (64-bit)
+<a name="l19"></a>        F64     double</span><span class=cB0>
+<a name="l20"></a>        </span><span class=cB4>no F32 float.</span><span class=cB0>
+<a name="l21"></a>
+<a name="l22"></a>* Function with no args, or just default args can be called without parentheses. 
+<a name="l23"></a>
+<a name="l24"></a>  &gt;</span><span class=cB2>Dir(&quot;*&quot;);</span><span class=cB0>
+<a name="l25"></a>  &gt;</span><span class=cB2>Dir();</span><span class=cB0>
+<a name="l26"></a>  &gt;</span><span class=cB2>Dir;</span><span class=cB0>
+<a name="l27"></a>
+<a name="l28"></a>* Default args don't have to be on the end.  This code is valid:
+<a name="l29"></a>  </span><span class=cB2>U0 Test(I64 i=4,I64 j,I64 k=5)
+<a name="l30"></a>  {
+<a name="l31"></a>    Print(&quot;%X %X %X\n&quot;,i,j,k);
+<a name="l32"></a>  }
+<a name="l33"></a>  
+<a name="l34"></a>  Test(,3);</span><span class=cB0>
+<a name="l35"></a>
+<a name="l36"></a>* A char const all alone is sent to </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l20"><span class=cB4>PutChars</span></a><span class=cB0>().  A string with or without args 
+<a name="l37"></a>is sent to </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l890"><span class=cB4>Print</span></a><span class=cB0>().  An empty string literal signals a variable fmt_str follows.
+<a name="l38"></a>
+<a name="l39"></a>  </span><span class=cB2>void DemoC(char drv,char *fmt,char *name,int age)
+<a name="l40"></a>  {
+<a name="l41"></a>    printf(&quot;Hello World!\n&quot;);
+<a name="l42"></a>    printf(&quot;%s age %d\n&quot;,name,age);
+<a name="l43"></a>    printf(fmt,name,age);
+<a name="l44"></a>    putchar(drv);
+<a name="l45"></a>    putchar('*');
+<a name="l46"></a>  }
+<a name="l47"></a>  
+<a name="l48"></a>  U0 DemoHolyC(U8 drv,U8 *fmt,U8 *name,I64 age)
+<a name="l49"></a>  {
+<a name="l50"></a>    &quot;Hello World!\n&quot;;
+<a name="l51"></a>    &quot;%s age %d\n&quot;,name,age;
+<a name="l52"></a>    &quot;&quot; fmt,name,age;
+<a name="l53"></a>    '' drv;
+<a name="l54"></a>    '*';
+<a name="l55"></a>  }
+<a name="l56"></a></span><span class=cB0>
+<a name="l57"></a>* When dealing with function addresses such as for callbacks, precede the name 
+<a name="l58"></a>with &quot;</span><span class=cB2>&amp;</span><span class=cB0>&quot;.
+<a name="l59"></a>
+<a name="l60"></a>* Type casting is postfix.  To typecast int or F64, use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l121"><span class=cB4>ToI64</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l119"><span class=cB4>ToBool</span></a><span class=cB0>() or </span><span class=cB4>
+<a name="l61"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l120"><span class=cB4>ToF64</span></a><span class=cB0>(). (TempleOS follows normal C float&lt;--&gt;int conversion, but sometimes you 
+<a name="l62"></a>want to override.  These functions are better than multiplying by &quot;1.0&quot; to 
+<a name="l63"></a>convert to float.) 
+<a name="l64"></a>
+<a name="l65"></a>* There is no </span><span class=cB2>main()</span><span class=cB0> function.  Any code outside of functions gets executed upon 
+<a name="l66"></a>start-up, in order.
+<a name="l67"></a>
+<a name="l68"></a>* There are no bit fields, but there are </span><a href="http://tinkeros.github.io/WbTempleOS/LiveHelp/Bit.html#l1"><span class=cB4>bit access</span></a><span class=cB0> routines and you can access 
+<a name="l69"></a>bytes or words within any int.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l105"><span class=cB4>I64 declaration</span></a><span class=cB0>.  A class can be accessed as 
+<a name="l70"></a>a whole are subints, if you put a type in front of the </span><span class=cB2>class</span><span class=cB0> declaration.
+<a name="l71"></a>  
+<a name="l72"></a>  </span><span class=cB2>public I64i union I64         //&quot;I64i&quot; is intrinsic.  We are defining &quot;I64&quot;.
+<a name="l73"></a>  {
+<a name="l74"></a>    I8i i8[8];
+<a name="l75"></a>    U8i u8[8];
+<a name="l76"></a>    I16 i16[4];
+<a name="l77"></a>    U16 u16[4];
+<a name="l78"></a>    I32 i32[2];
+<a name="l79"></a>    U32 u32[2];
+<a name="l80"></a>  };
+<a name="l81"></a>  
+<a name="l82"></a>  I64 i=0x123456780000DEF0;
+<a name="l83"></a>  i.u16[1]=0x9ABC;
+<a name="l84"></a></span><span class=cB0>
+<a name="l85"></a>* Variable arg count functions (</span><span class=cB2>...</span><span class=cB0>) can access their args with built-in 
+<a name="l86"></a>variables similar to '</span><span class=cB2>this</span><span class=cB0>' in C++.  They are '</span><span class=cB2>I64 argc</span><span class=cB0>' and '</span><span class=cB2>I64 argv[]</span><span class=cB0>'.  
+<a name="l87"></a>  
+<a name="l88"></a>  </span><span class=cB2>I64 AddNums(...)
+<a name="l89"></a>  {
+<a name="l90"></a>    I64 i,res=0;
+<a name="l91"></a>    for (i=0;i&lt;argc;i++)
+<a name="l92"></a>      res+=argv[i];
+<a name="l93"></a>    return res;
+<a name="l94"></a>  }
+<a name="l95"></a>  
+<a name="l96"></a>  </span><span class=cB0>&gt;</span><span class=cB2>AddNums(1,2,3);</span><span class=cB0>
+<a name="l97"></a>  ans=6
+<a name="l98"></a>  </span><span class=cB2>
+<a name="l99"></a>  
+<a name="l100"></a>  public U0 GrPrint(CDC *dc,I64 x,I64 y,U8 *fmt,...)
+<a name="l101"></a>  {
+<a name="l102"></a>    U8 *buf=</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l208"><span class=cB4>StrPrintJoin</span></a><span class=cB2>(NULL,fmt,argc,argv);//SPrintF() with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB2>()ed string.
+<a name="l103"></a>    </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l913"><span class=cB4>GrPutS</span></a><span class=cB2>(dc,x,y,buf); //Plot string at x,y pixels. GrPutS is not public.
+<a name="l104"></a>    Free(buf);
+<a name="l105"></a>  }
+<a name="l106"></a>  
+<a name="l107"></a>    ...
+<a name="l108"></a>  
+<a name="l109"></a>    GrPrint(gr.dc,(GR_WIDTH-10*FONT_WIDTH)&gt;&gt;1,(GR_HEIGHT-FONT_HEIGHT)&gt;&gt;1,
+<a name="l110"></a>        &quot;Score:%4d&quot;,score);  //Print score in the center of the scrn.
+<a name="l111"></a>    ...
+<a name="l112"></a>  
+<a name="l113"></a></span><span class=cB0>
+<a name="l114"></a>* Allows &quot;</span><span class=cB2>5&lt;i&lt;j+1&lt;20</span><span class=cB0>&quot; instead of &quot;</span><span class=cB2>5&lt;i &amp;&amp; i&lt;j+1 &amp;&amp; j+1&lt;20</span><span class=cB0>&quot;.
+<a name="l115"></a>  
+<a name="l116"></a>  </span><span class=cB2>if (13&lt;=age&lt;20)
+<a name="l117"></a>    &quot;Teen-ager&quot;;
+<a name="l118"></a></span><span class=cB0>
+<a name="l119"></a>* if you know a switch stmt will not exceed the lowest or highest case values.  </span><span class=cB2>
+<a name="l120"></a>switch []</span><span class=cB0> is a little faster because it doesn't check.
+<a name="l121"></a>
+<a name="l122"></a>* </span><span class=cB2>switch</span><span class=cB0> stmts always use a jump table.  Don't use them with cases with really 
+<a name="l123"></a>big, sparse ranges.
+<a name="l124"></a>
+<a name="l125"></a>* Allows ranges like &quot;</span><span class=cB2>case 4...7:</span><span class=cB0>&quot; in </span><span class=cB2>switch</span><span class=cB0> stmts.
+<a name="l126"></a>
+<a name="l127"></a>* A no case number causes next higher int case in </span><span class=cB2>switch</span><span class=cB0> stmts.  See </span><span class=cB4>
+<a name="l128"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Demo/NullCase.html#l1"><span class=cB4>::/Demo/NullCase.HC</span></a><span class=cB0>.
+<a name="l129"></a>
+<a name="l130"></a>  </span><span class=cB2>I64 i;
+<a name="l131"></a>  for (i=0;i&lt;20;i++) 
+<a name="l132"></a>    switch (i) {
+<a name="l133"></a>      case: &quot;Zero\n&quot;;   break; //Starts at zero
+<a name="l134"></a>      case: &quot;One\n&quot;;    break; //One plus prev case.
+<a name="l135"></a>      case: &quot;Two\n&quot;;    break;
+<a name="l136"></a>      case: &quot;Three\n&quot;;  break;
+<a name="l137"></a>      case 10: &quot;Ten\n&quot;; break;
+<a name="l138"></a>      case: &quot;Eleven\n&quot;; break; //One plus prev case.
+<a name="l139"></a>  }</span><span class=cB0>
+<a name="l140"></a>
+<a name="l141"></a>* Switch statements can be nestled with a single switch expression!  This is 
+<a name="l142"></a>known as a &quot;sub_switch&quot; statement.  </span><span class=cB2>start</span><span class=cB0>/</span><span class=cB2>end</span><span class=cB0> are used to group cases.  Don't 
+<a name="l143"></a>goto out of, throw an exception out of, or return out of the </span><span class=cB2>start</span><span class=cB0> front porch 
+<a name="l144"></a>area.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/SubSwitch.html#l1"><span class=cB4>::/Demo/SubSwitch.HC</span></a><span class=cB0>.
+<a name="l145"></a>
+<a name="l146"></a>  </span><span class=cB2>I64 i;
+<a name="l147"></a>  for (i=0;i&lt;10;i++)
+<a name="l148"></a>    switch (i) {
+<a name="l149"></a>      case 0: &quot;Zero &quot;;  break;
+<a name="l150"></a>      case 2: &quot;Two &quot;;   break;
+<a name="l151"></a>      case 4: &quot;Four &quot;;  break;
+<a name="l152"></a>      start:
+<a name="l153"></a>        &quot;[&quot;;
+<a name="l154"></a>        case 1: &quot;One&quot;;  break;
+<a name="l155"></a>        case 3: &quot;Three&quot;;break;
+<a name="l156"></a>        case 5: &quot;Five&quot;; break;
+<a name="l157"></a>      end:
+<a name="l158"></a>        &quot;] &quot;;
+<a name="l159"></a>        break;
+<a name="l160"></a>    }</span><span class=cB0>
+<a name="l161"></a>  OutPut:
+<a name="l162"></a>  &gt;</span><span class=cB2>Zero [One] Two [Three] Four [Five]</span><span class=cB0>
+<a name="l163"></a>
+<a name="l164"></a>* A </span><span class=cB2>no_warn</span><span class=cB0> stmt will suppress an unused var warning.
+<a name="l165"></a>
+<a name="l166"></a>* You can have multiple member vars of a class named &quot;</span><span class=cB2>pad</span><span class=cB0>&quot; or &quot;</span><span class=cB2>reserved</span><span class=cB0>&quot;, and it 
+<a name="l167"></a>won't issue warnings. 
+<a name="l168"></a>
+<a name="l169"></a>* </span><span class=cB2>noreg</span><span class=cB0> or </span><span class=cB2>reg</span><span class=cB0> can be placed before a function local var name.  You can, 
+<a name="l170"></a>optionally, specify a reg after the </span><span class=cB2>reg</span><span class=cB0> keyword.
+<a name="l171"></a>
+<a name="l172"></a>  </span><span class=cB2>U0 Main()
+<a name="l173"></a>  {
+<a name="l174"></a>    //Only use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1804"><span class=cB4>REGG_LOCAL_VARS</span></a><span class=cB2> or </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1805"><span class=cB4>REGG_LOCAL_NON_PTR_VARS</span></a><span class=cB2> for reg vars or else 
+<a name="l175"></a>  clobbered.
+<a name="l176"></a>    I64 reg R15 i=5, noreg j=4;
+<a name="l177"></a>    no_warn i;
+<a name="l178"></a>    asm {
+<a name="l179"></a>        MOV     RAX,R15
+<a name="l180"></a>        CALL    &amp;PUT_HEX_U64
+<a name="l181"></a>        MOV     RAX,'\n'
+<a name="l182"></a>        CALL    &amp;PUT_CHARS
+<a name="l183"></a>        MOV     RAX,U64 &amp;j[RBP]
+<a name="l184"></a>        CALL    &amp;PUT_HEX_U64
+<a name="l185"></a>        MOV     RAX,'\n'
+<a name="l186"></a>        CALL    &amp;PUT_CHARS
+<a name="l187"></a>    }
+<a name="l188"></a>  }
+<a name="l189"></a></span><span class=cB0>
+<a name="l190"></a>* </span><span class=cB2>interrupt</span><span class=cB0>, </span><span class=cB2>haserrcode</span><span class=cB0>, </span><span class=cB2>public</span><span class=cB0>, </span><span class=cB2>argpop</span><span class=cB0> or </span><span class=cB2>noargpop</span><span class=cB0> are function flags. See </span><span class=cB4>
+<a name="l191"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Keyboard.html#l411"><span class=cB4>IRQKbd</span></a><span class=cB0>().
+<a name="l192"></a>
+<a name="l193"></a>* A single quote can encompass multiple characters.  </span><span class=cB2>'ABC'</span><span class=cB0> is equ to </span><span class=cB2>0x434241</span><span class=cB0>.  </span><span class=cB4>
+<a name="l194"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l20"><span class=cB4>PutChars</span></a><span class=cB0>() takes multiple characters.
+<a name="l195"></a>
+<a name="l196"></a>  </span><span class=cB2>asm {
+<a name="l197"></a>  HELLO_WORLD::
+<a name="l198"></a>        PUSH    RBP
+<a name="l199"></a>        MOV     RBP,RSP
+<a name="l200"></a>        MOV     RAX,'Hello '
+<a name="l201"></a>        CALL    &amp;PUT_CHARS
+<a name="l202"></a>        MOV     RAX,'World\n'
+<a name="l203"></a>        CALL    &amp;PUT_CHARS
+<a name="l204"></a>        LEAVE
+<a name="l205"></a>        RET
+<a name="l206"></a>  }
+<a name="l207"></a>  Call(HELLO_WORLD);
+<a name="l208"></a>  PutChars('Hello ');
+<a name="l209"></a>  PutChars('World\n');
+<a name="l210"></a></span><span class=cB0>
+<a name="l211"></a>* The &quot;</span><span class=cB2>`</span><span class=cB0>&quot; operator raises a base to a power.
+<a name="l212"></a>
+<a name="l213"></a>* There is no question-colon operator.
+<a name="l214"></a>
+<a name="l215"></a>* TempleOS </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CInit.html#l287"><span class=cB4>operator precedence</span></a><span class=cB0>
+<a name="l216"></a>  </span><span class=cB2>`</span><span class=cB0>,</span><span class=cB2>&gt;&gt;</span><span class=cB0>,</span><span class=cB2>&lt;&lt;</span><span class=cB0>
+<a name="l217"></a>  </span><span class=cB2>*</span><span class=cB0>,</span><span class=cB2>/</span><span class=cB0>,</span><span class=cB2>%</span><span class=cB0>
+<a name="l218"></a>  </span><span class=cB2>&amp;</span><span class=cB0>
+<a name="l219"></a>  </span><span class=cB2>^</span><span class=cB0>
+<a name="l220"></a>  </span><span class=cB2>|</span><span class=cB0>
+<a name="l221"></a>  </span><span class=cB2>+</span><span class=cB0>,</span><span class=cB2>-</span><span class=cB0>
+<a name="l222"></a>  </span><span class=cB2>&lt;</span><span class=cB0>,</span><span class=cB2>&gt;</span><span class=cB0>,</span><span class=cB2>&lt;=</span><span class=cB0>,</span><span class=cB2>&gt;=</span><span class=cB0>
+<a name="l223"></a>  </span><span class=cB2>==</span><span class=cB0>,</span><span class=cB2>!=</span><span class=cB0>
+<a name="l224"></a>  </span><span class=cB2>&amp;&amp;</span><span class=cB0>
+<a name="l225"></a>  </span><span class=cB2>^^</span><span class=cB0>
+<a name="l226"></a>  </span><span class=cB2>||</span><span class=cB0>
+<a name="l227"></a>  </span><span class=cB2>=</span><span class=cB0>,</span><span class=cB2>&lt;&lt;=</span><span class=cB0>,</span><span class=cB2>&gt;&gt;=</span><span class=cB0>,</span><span class=cB2>*=</span><span class=cB0>,</span><span class=cB2>/=</span><span class=cB0>,</span><span class=cB2>&amp;=</span><span class=cB0>,</span><span class=cB2>|=</span><span class=cB0>,</span><span class=cB2>^=</span><span class=cB0>,</span><span class=cB2>+=</span><span class=cB0>,</span><span class=cB2>-=</span><span class=cB0>
+<a name="l228"></a>
+<a name="l229"></a>* You can use </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l1"><span class=cB4>Option</span></a><span class=cB0>(</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1549"><span class=cB4>OPTf_WARN_PAREN</span></a><span class=cB0>,ON) to find unnecessary parentheses in 
+<a name="l230"></a>code.
+<a name="l231"></a>
+<a name="l232"></a>* You can use </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l1"><span class=cB4>Option</span></a><span class=cB0>(</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1550"><span class=cB4>OPTf_WARN_DUP_TYPES</span></a><span class=cB0>,ON) to find dup local var type stmts.
+<a name="l233"></a>
+<a name="l234"></a>* With the </span><span class=cB2>#exe{}</span><span class=cB0> feature in your src code, you can place programs that insert 
+<a name="l235"></a>text into the stream of code being compiled.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMain.html#l16"><span class=cB4>#exe {}</span></a><span class=cB0> for an example where 
+<a name="l236"></a>the date/time and compile-time prompting for cfguration data is placed into a 
+<a name="l237"></a>program.  </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l68"><span class=cB4>StreamPrint</span></a><span class=cB0>() places text into a src program stream following the 
+<a name="l238"></a>conclusion of the </span><span class=cB2>#exe{}</span><span class=cB0> blk.
+<a name="l239"></a>
+<a name="l240"></a>* No </span><span class=cB2>#define</span><span class=cB0> functions exist (I'm not a fan)
+<a name="l241"></a>
+<a name="l242"></a>* No </span><span class=cB2>typedef</span><span class=cB0>, use </span><span class=cB2>class</span><span class=cB0>.
+<a name="l243"></a>
+<a name="l244"></a>* No type-checking
+<a name="l245"></a>
+<a name="l246"></a>* Can't use </span><span class=cB2>&lt;&gt;</span><span class=cB0> with </span><span class=cB2>#include</span><span class=cB0>, use </span><span class=cB2>&quot;&quot;</span><span class=cB0>.
+<a name="l247"></a>
+<a name="l248"></a>* &quot;</span><span class=cB2>$</span><span class=cB0>&quot; is an escape character.  Two dollar signs signify an ordinary $.  See </span><span class=cB4>
+<a name="l249"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0>.  In </span><span class=cB2>asm</span><span class=cB0> or </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0> code, it also refers to the inst's address or the 
+<a name="l250"></a>offset in a </span><span class=cB2>class</span><span class=cB0> definition. 
+<a name="l251"></a>
+<a name="l252"></a>* </span><span class=cB2>union</span><span class=cB0> is more like a class, so you don't reference it with a </span><span class=cB2>union</span><span class=cB0> label after 
+<a name="l253"></a>you define it.  Some common unions are declared in </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l67"><span class=cB4>KernelA.HH</span></a><span class=cB0> for 1,2,4 and 8 
+<a name="l254"></a>byte objects.  If you place a type in front of a union declaration, that is the 
+<a name="l255"></a>type when used by itself.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/SubIntAccess.html#l1"><span class=cB4>::/Demo/SubIntAccess.HC</span></a><span class=cB0>. 
+<a name="l256"></a>
+<a name="l257"></a>* </span><span class=cB2>class</span><span class=cB0> member vars can have meta data. </span><span class=cB2>format</span><span class=cB0> and </span><span class=cB2>data</span><span class=cB0> are two meta data types 
+<a name="l258"></a>now used.  All compiler structures are saved and you can access the compiler's 
+<a name="l259"></a>info about classes and vars.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/ClassMeta.html#l1"><span class=cB4>::/Demo/ClassMeta.HC</span></a><span class=cB0> and  </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l209"><span class=cB4>DocForm</span></a><span class=cB0>().
+<a name="l260"></a>
+<a name="l261"></a>* There is a keyword </span><span class=cB2>lastclass</span><span class=cB0> you use as a dft arg.  It is set to the class 
+<a name="l262"></a>name of the prev arg.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/LastClass.html#l1"><span class=cB4>::/Demo/LastClass.HC</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/ADbg.html#l161"><span class=cB4>ClassRep</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocForm.html#l209"><span class=cB4>DocForm</span></a><span class=cB0>()  and </span><span class=cB4>
+<a name="l263"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Dsk/BlkDevRep.html#l1"><span class=cB4>::/Demo/Dsk/BlkDevRep.HC</span></a><span class=cB0>.
+<a name="l264"></a>
+<a name="l265"></a>* See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Exceptions.html#l1"><span class=cB4>::/Demo/Exceptions.HC</span></a><span class=cB0>.  </span><span class=cB2>try{} catch{}</span><span class=cB0> and </span><span class=cB2>throw</span><span class=cB0> are different from C++. </span><span class=cB2>th
+<a name="l266"></a>row</span><span class=cB0> is a function with an 8-byte or less char arg.  The char string passed in </span><span class=cB2>th
+<a name="l267"></a>row()</span><span class=cB0> can be accessed from within a </span><span class=cB2>catch{}</span><span class=cB0> using the </span><span class=cB2>Fs-&gt;except_ch</span><span class=cB0>.  Within a </span><span class=cB2>c
+<a name="l268"></a>atch {}</span><span class=cB0> blk, set the var </span><span class=cB2>Fs-&gt;catch_except</span><span class=cB0> to </span><span class=cB2>TRUE</span><span class=cB0> if you want to terminate the 
+<a name="l269"></a>search for a hndlr.  Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l45"><span class=cB4>PutExcept</span></a><span class=cB0>() as a hndlr, if you like.
+<a name="l270"></a>
+<a name="l271"></a>* A function is available similar to </span><span class=cB2>sizeof</span><span class=cB0> which provides the offset of a 
+<a name="l272"></a>member of a class.  It's called </span><span class=cB2>offset</span><span class=cB0>.  You place the class name and member 
+<a name="l273"></a>inside as in </span><span class=cB2>offset(classname.membername)</span><span class=cB0>.  It has nothing to do with 16-bit 
+<a name="l274"></a>code.  Both </span><span class=cB2>sizeof</span><span class=cB0> and </span><span class=cB2>offset</span><span class=cB0> only accept one level of member vars.  That is, 
+<a name="l275"></a>you can't do </span><span class=cB2>sizeof(classname.membername.submembername)</span><span class=cB0>.
+<a name="l276"></a>
+<a name="l277"></a>* There is no </span><span class=cB2>continue</span><span class=cB0> stmt.  Use </span><span class=cB2>goto</span><span class=cB0>.
+<a name="l278"></a>
+<a name="l279"></a>* </span><span class=cB2>lock{}</span><span class=cB0> can be used to apply asm </span><span class=cB2>LOCK</span><span class=cB0> prefixes to code for safe multicore 
+<a name="l280"></a>read-modify-write accesses.  The code bracked with have </span><span class=cB2>LOCK</span><span class=cB0> asm prefix's 
+<a name="l281"></a>applied to relevant insts within.  It's a little shoddy.  See </span><span class=cB4>
+<a name="l282"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Demo/MultiCore/Lock.html#l1"><span class=cB4>::/Demo/MultiCore/Lock.HC</span></a><span class=cB0>.
+<a name="l283"></a>
+<a name="l284"></a>* There is a function called </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l384"><span class=cB4>MSize</span></a><span class=cB0>() which gives the size of an object alloced 
+<a name="l285"></a>off the heap.  For larger size allocations, the system rounds-up to a power of 
+<a name="l286"></a>two, so </span><span class=cB2>MSize()</span><span class=cB0> lets you know the real size and you can take full advantage of 
+<a name="l287"></a>it.
+<a name="l288"></a>
+<a name="l289"></a>* You CAN </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"><span class=cB4>Free</span></a><span class=cB0>() a </span><span class=cB2>NULL</span><span class=cB0> ptr.  Useful variants of </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>() can be found </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l395"><span class=cB4>Here</span></a><span class=cB0>.  
+<a name="l290"></a>Each task has a heap and you can </span><span class=cB2>MAlloc</span><span class=cB0> and </span><span class=cB2>Free</span><span class=cB0> off-of other task's heaps, or 
+<a name="l291"></a>make an independent heap with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/HeapCtrl.html#l1"><span class=cB4>HeapCtrlInit</span></a><span class=cB0>().  See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/HeapLog.html#l73"><span class=cB4>HeapLog</span></a><span class=cB0>() for an example.
+<a name="l292"></a>
+<a name="l293"></a>* The stk does not grow because virtual mem is not used.  I recommend allocating 
+<a name="l294"></a>large local vars from the heap.  You can change </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2843"><span class=cB4>MEM_DFT_STK</span></a><span class=cB0> and recompile </span><span class=cB2>Kernel</span><span class=cB0> 
+<a name="l295"></a>or request more when doing a </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l242"><span class=cB4>Spawn</span></a><span class=cB0>().  You can use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KTask.html#l110"><span class=cB4>CallStkGrow</span></a><span class=cB0>(), but it's odd.  
+<a name="l296"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/StkGrow.html#l1"><span class=cB4>::/Demo/StkGrow.HC</span></a><span class=cB0>. 
+<a name="l297"></a>
+<a name="l298"></a>* Only one base class is allowed.
+<a name="l299"></a>
+<a name="l300"></a>* </span><span class=cB2>printf()</span><span class=cB0> has new codes.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Print.html#l1"><span class=cB4>Print(&quot;&quot;) Fmt Strings</span></a><span class=cB0>.
+<a name="l301"></a>
+<a name="l302"></a>* All values are extended to 64-bit when accessed.  Intermediate calculations 
+<a name="l303"></a>are done with 64-bit values.
+<a name="l304"></a>
+<a name="l305"></a>  </span><span class=cB2>U0 Main()
+<a name="l306"></a>  {
+<a name="l307"></a>    I16 i1;
+<a name="l308"></a>    I32 j1;
+<a name="l309"></a>    j1=i1=0x12345678;           //Resulting i1 is 0x5678 but j1 is 0x12345678
+<a name="l310"></a>  
+<a name="l311"></a>    I64 i2=0x8000000000000000;
+<a name="l312"></a>    Print(&quot;%X\n&quot;,i2&gt;&gt;1);        //Res is 0xC000000000000000 as expected
+<a name="l313"></a>  
+<a name="l314"></a>    U64 u3=0x8000000000000000;
+<a name="l315"></a>    Print(&quot;%X\n&quot;,u3&gt;&gt;1);        //Res is 0x4000000000000000 as expected
+<a name="l316"></a>  
+<a name="l317"></a>    I32 i4=0x80000000;          //const is loaded into a 64-bit reg var.
+<a name="l318"></a>    Print(&quot;%X\n&quot;,i4&gt;&gt;1);        //Res is 0x40000000
+<a name="l319"></a>  
+<a name="l320"></a>    I32 i5=-0x80000000;
+<a name="l321"></a>    Print(&quot;%X\n&quot;,i5&gt;&gt;1);        //Res is 0xFFFFFFFFC0000000
+<a name="l322"></a>  }
+<a name="l323"></a></span><span class=cB0>
+</span></div></pre></body>
+</html>

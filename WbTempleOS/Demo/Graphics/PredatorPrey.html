@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//Classic 2nd order nonlinear ordinary differential equation</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> mp_not_done_flags;
+<a name="l4"></a>
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> OX      10
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> OY      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3556"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>/2-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> MICRO_STEP      0.000001
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>class</span><span class=cB0> State
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB1>F64</span><span class=cB0> wabbits,hawks,
+<a name="l13"></a>        d_wabbits,d_hawks; </span><span class=cB2>//Technically, these are not part of the state.</span><span class=cB0>
+<a name="l14"></a>};
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> Steps(State *s)
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l19"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10000;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    s-&gt;d_wabbits=s-&gt;wabbits*(1.0-0.10*s-&gt;hawks);
+<a name="l21"></a>    s-&gt;d_hawks  =-s-&gt;hawks *(1.0-0.01*s-&gt;wabbits);
+<a name="l22"></a>    s-&gt;hawks  +=s-&gt;d_hawks  *MICRO_STEP;
+<a name="l23"></a>    s-&gt;wabbits+=s-&gt;d_wabbits*MICRO_STEP;
+<a name="l24"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>}
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB1>U0</span><span class=cB0> PlotTrajectory(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *parent)
+<a name="l28"></a>{
+<a name="l29"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l30"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l168"></span><span class=cB5>DCAlias</a></span><span class=cB0>(,parent);
+<a name="l31"></a>  State s;
+<a name="l32"></a>
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l171"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;s,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>State</span><span class=cB7>)</span><span class=cB0>);
+<a name="l34"></a>  s.wabbits=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%100 +10;
+<a name="l35"></a>  s.hawks  =<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%10  +1;
+<a name="l36"></a>
+<a name="l37"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;1000;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2924"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l39"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l51"></span><span class=cB5>GrPlot</a></span><span class=cB0>(dc,s.wabbits+OX,OY-s.d_wabbits);
+<a name="l40"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2926"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l51"></span><span class=cB5>GrPlot</a></span><span class=cB0>(dc,s.hawks  +OX,OY-s.d_hawks);
+<a name="l42"></a>    Steps(&amp;s);
+<a name="l43"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l208"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;mp_not_done_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l245"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num);
+<a name="l46"></a>}
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>U0</span><span class=cB0> PredatorPrey()
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l51"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l168"></span><span class=cB5>DCAlias</a></span><span class=cB0>;
+<a name="l52"></a>
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPopUp.html#l147"></span><span class=cB5>PopUpOk</a></span><span class=cB0>(</span><span class=cB6>&quot;This will plot multiple predator-prey\n&quot;</span><span class=cB0>
+<a name="l54"></a>        </span><span class=cB6>&quot;trajectories.  It restarts many times\n&quot;</span><span class=cB0>
+<a name="l55"></a>        </span><span class=cB6>&quot;with different, random, initial populations.\n&quot;</span><span class=cB0>);
+<a name="l56"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l57"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l58"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/AutoComplete/ACTask.html#l259"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l59"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l517"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
+<a name="l60"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Win.html#l503"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l61"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l120"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l62"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l63"></a>
+<a name="l64"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l65"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,OX,0,OX,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3556"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>-1);
+<a name="l66"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrPrimatives.html#l568"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,0,OY,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3555"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>-1,OY);
+<a name="l67"></a>    </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l110"></span><span class=cB5>ScanChar</a></span><span class=cB0>) {
+<a name="l68"></a>      mp_not_done_flags=1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1;
+<a name="l69"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l239"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++)
+<a name="l70"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/MultiProc.html#l213"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;PlotTrajectory,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>,i);
+<a name="l71"></a>      </span><span class=cB1>do</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l72"></a>      </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags);
+<a name="l73"></a>    }
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l75"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l76"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l89"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l77"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l122"></span><span class=cB5>DCFill</a></span><span class=cB0>(dc);
+<a name="l78"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrDC.html#l208"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a>PredatorPrey;
+</span></div></pre></body>
+</html>

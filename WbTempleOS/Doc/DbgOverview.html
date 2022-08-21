@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                               <h1><center>Debugging Overview</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>* You can enter the debugger with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l649"><span class=cB4>Dbg</span></a><span class=cB0>() or </span><span class=cB2>&lt;CTRL-ALT-d&gt;</span><span class=cB0>.  You might enter the 
+<a name="l4"></a>debugger through a fault.  Enter </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l444"><span class=cB4>G</span></a><span class=cB0>() or </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l469"><span class=cB4>G2</span></a><span class=cB0>() to continue execution.  Place a 
+<a name="l5"></a>call to </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l649"><span class=cB4>Dbg</span></a><span class=cB0>() in your code at fatal error points to enter the debugger.  If you 
+<a name="l6"></a>see a stk dump, record the label+offset and unassemble, </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB0>(). </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB0>(</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3377"><span class=cB4>_RIP</span></a><span class=cB0>); 
+<a name="l7"></a>
+<a name="l8"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB0>(&amp;FunName+offset) to unassemble mem or </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/ADbg.html#l254"><span class=cB4>Uf</span></a><span class=cB0>(&quot;FunName&quot;) to unassemble a 
+<a name="l9"></a>function. </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/UAsm.html#l653"><span class=cB4>U</span></a><span class=cB0>(</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3377"><span class=cB4>_RIP</span></a><span class=cB0>-16);
+<a name="l10"></a>
+<a name="l11"></a>* While debugging, you specify addresses of assembly routines with just the 
+<a name="l12"></a>label, as in </span><span class=cB2>_MALLOC+0x20</span><span class=cB0>.  You specify </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/HolyC.html#l1"><span class=cB4>HolyC</span></a><span class=cB0> function names with </span><span class=cB2>&amp;</span><span class=cB0> before 
+<a name="l13"></a>functions as in </span><span class=cB2>&amp;Print+0x10</span><span class=cB0>.
+<a name="l14"></a>
+<a name="l15"></a>* I use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l209"><span class=cB4>progress1</span></a><span class=cB0>-</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l227"><span class=cB4>progress4</span></a><span class=cB0> for debugging because they show on the wallpaper.  
+<a name="l16"></a>They're just global int vars.
+<a name="l17"></a>
+<a name="l18"></a>* You can use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Job.html#l423"><span class=cB4>AdamLog</span></a><span class=cB0>() to send text to the </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0> window.  It works like </span><span class=cB4>
+<a name="l19"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l890"><span class=cB4>Print</span></a><span class=cB0>().  I never use that.  Instead, I use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l217"><span class=cB4>RawPrint</span></a><span class=cB0>().
+<a name="l20"></a>
+<a name="l21"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l172"><span class=cB4>D</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l325"><span class=cB4>DocD</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l234"><span class=cB4>RawD</span></a><span class=cB0>() to do 16 column hex dump mem with numbering from zero.  
+<a name="l22"></a>With </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l325"><span class=cB4>DocD</span></a><span class=cB0> the values are updated continually and you can alter mem by editing.
+<a name="l23"></a>
+<a name="l24"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l204"><span class=cB4>Dm</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocPutS.html#l312"><span class=cB4>DocDm</span></a><span class=cB0>(), </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l250"><span class=cB4>RawDm</span></a><span class=cB0>() to do 16 column hex dump mem with addresses showing.
+<a name="l25"></a>
+<a name="l26"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l209"><span class=cB4>Da</span></a><span class=cB0>() to do one column address dump (for stk, etc.) with symbolic addresses.
+<a name="l27"></a>
+<a name="l28"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l328"><span class=cB4>Dr</span></a><span class=cB0>() dumps regs.  You can display and modify regs in the debugger with 
+<a name="l29"></a>var-like labels, </span><span class=cB4>_RAX</span><span class=cB0>, </span><span class=cB4>_RBX</span><span class=cB0>, etc.
+<a name="l30"></a>
+<a name="l31"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/ADbg.html#l161"><span class=cB4>ClassRep</span></a><span class=cB0>() and the dynamic version </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/ADbg.html#l183"><span class=cB4>ClassRepD</span></a><span class=cB0>() can be used to dump structures.
+<a name="l32"></a>
+<a name="l33"></a>* </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/Profiler.html#l27"><span class=cB4>Prof</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/Profiler.html#l57"><span class=cB4>ProfRep</span></a><span class=cB0>() provide code profiling.  See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/InFile/InProfile.html#l1"><span class=cB4>::/Demo/InFile/InProfile.IN</span></a><span class=cB0> 
+<a name="l34"></a>(This is an </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/Glossary.html#l260"><span class=cB4>InFile</span></a><span class=cB0>.)
+<a name="l35"></a>
+<a name="l36"></a>* Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDbg.html#l217"><span class=cB4>RawPrint</span></a><span class=cB0>() to print debug info bypassing the window framework.  You pass 
+<a name="l37"></a>these routines a count in milliseconds for how long it should be displayed.  You 
+<a name="l38"></a>can use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l290"><span class=cB4>Raw</span></a><span class=cB0>(</span><span class=cB2>TRUE</span><span class=cB0>) to make all output bypass the window framework.  The </span><span class=cB2>WinMgr</span><span class=cB0> 
+<a name="l39"></a>runs on </span><span class=cB2>Core0</span><span class=cB0> and will overwrite raw text from other cores when it updates the 
+<a name="l40"></a>scrn.
+<a name="l41"></a>
+<a name="l42"></a>* Use </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l280"><span class=cB4>SysDbg</span></a><span class=cB0>() to set a flag which you can read with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l285"><span class=cB4>IsSysDbg</span></a><span class=cB0>() when you wish to 
+<a name="l43"></a>trigger some debug activity.  It's just a handy simple flag, nothing fancy.
+<a name="l44"></a>
+<a name="l45"></a>* There are flags for various trace options that can help debugging when there 
+<a name="l46"></a>are compiler bugs.  Often, you place them in </span><span class=cB2>#exe{}</span><span class=cB0> blocks.
+<a name="l47"></a>  </span><span class=cB4>
+<a name="l48"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l63"><span class=cB4>Echo</span></a><span class=cB0>() turns on or off raw data going into the lexical analyzer.
+<a name="l49"></a>  </span><span class=cB4>
+<a name="l50"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l58"><span class=cB4>Trace</span></a><span class=cB0>() unassembles code generated from the HolyC compiler.
+<a name="l51"></a>  </span><span class=cB4>
+<a name="l52"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/CMisc.html#l50"><span class=cB4>PassTrace</span></a><span class=cB0>() shows intermediate code coming-out after optimization.  The bits 
+<a name="l53"></a>  ctrl which passes are displayed.
+<a name="l54"></a>
+<a name="l55"></a>
+<a name="l56"></a>* There is a heap check utility which can find leaks.  Use </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/HeapLog.html#l73"><span class=cB4>HeapLog</span></a><span class=cB0>(), </span><span class=cB4>
+<a name="l57"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/HeapLog.html#l115"><span class=cB4>HeapLogAddrRep</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/HeapLog.html#l146"><span class=cB4>HeapLogSizeRep</span></a><span class=cB0>().  It's a really simple program which 
+<a name="l58"></a>intercepts </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"><span class=cB4>MAlloc</span></a><span class=cB0>() and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"><span class=cB4>Free</span></a><span class=cB0>().  You can customize the code to find other heap 
+<a name="l59"></a>issues.
+<a name="l60"></a>
+<a name="l61"></a>* You can define hndlr functions for </span><span class=cB2>&lt;CTRL-ALT-letter&gt;</span><span class=cB0> keys with </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KeyDev.html#l178"><span class=cB4>CtrlAltCBSet</span></a><span class=cB0>(). 
+<a name="l62"></a> They operate either in a interrupt environment or in the window mgr when it 
+<a name="l63"></a>queues kbd msgs.  You can do </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l290"><span class=cB4>Raw</span></a><span class=cB0>() output.  </span><span class=cB2>&lt;CTRL-ALT-letter&gt;</span><span class=cB0> hndlrs take a 
+<a name="l64"></a>scan_code as an arg.
+<a name="l65"></a>
+<a name="l66"></a>* If you recompile </span><span class=cB2>Kernel</span><span class=cB0> with </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB0>(), you can set the </span><span class=cB4>MemInit</span><span class=cB0>, option to 
+<a name="l67"></a>initialize memory to a value at boot, the </span><span class=cB4>HeapInit</span><span class=cB0> option to cause mem alloced 
+<a name="l68"></a>off the heap to be initialized or </span><span class=cB4>VarInit</span><span class=cB0> option so both global and local vars 
+<a name="l69"></a>will be initialized to a value, but global AOT variables are always zero if not 
+<a name="l70"></a>initialized.  Pick a non-zero value to discover uninitialized var bugs.  You can 
+<a name="l71"></a>set </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l186"><span class=cB4>sys_var_init_flag</span></a><span class=cB0>, and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l181"><span class=cB4>sys_heap_init_flag</span></a><span class=cB0> directly after booting.
+</span></div></pre></body>
+</html>

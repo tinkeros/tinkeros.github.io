@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*When I was a kid with a Commodore 64,</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>the 6502 chip had no multiply inst</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>and this is how we had to do it, except,</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>I used more regs in this example.</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l6"></a></span><span class=cB1>asm</span><span class=cB0> {
+<a name="l7"></a></span><span class=cB2>//Opcodes are slightly different to make writing my x86_64 assembler easier.</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Compiler/OpCodes.html#l1"><span class=cB4>::/Compiler/OpCodes.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB2>//You can clobber RAX,RBX,RCX,RDX,R8,R9.  The compiler expects that.</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a>MUL_BY_HAND_U8_U8_TO_U16: </span><span class=cB2>//This is only for fun.</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>//8bit * 8bit--&gt;16bit</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>//AL*BL--&gt;AX</span><span class=cB0>
+<a name="l15"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CL</span><span class=cB0>,8
+<a name="l16"></a>        </span><span class=cB1>SHL</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,8
+<a name="l17"></a>@@05:   </span><span class=cB1>SHL1</span><span class=cB0>    </span><span class=cBC>AX</span><span class=cB0>
+<a name="l18"></a>        </span><span class=cB1>JNC</span><span class=cB0>     @@10
+<a name="l19"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>AL</span><span class=cB0>,</span><span class=cBC>BL</span><span class=cB0>
+<a name="l20"></a>@@10:   </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>CL</span><span class=cB0>
+<a name="l21"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@05
+<a name="l22"></a>        </span><span class=cB1>RET</span><span class=cB0>
+<a name="l23"></a>
+<a name="l24"></a>_MUL_BY_HAND_U8_U8_TO_U16::     </span><span class=cB2>//C callable</span><span class=cB0>
+<a name="l25"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l26"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l27"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AL</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l579"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>] </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l579"><span class=cB4>SF_ARG1</span></a><span class=cB0>
+<a name="l28"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>BL</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l580"></span><span class=cB3>SF_ARG2</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
+<a name="l29"></a>        </span><span class=cB1>CALL</span><span class=cB0>    MUL_BY_HAND_U8_U8_TO_U16
+<a name="l30"></a>        </span><span class=cB1>MOVZX</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB1>RET1</span><span class=cB0>    16
+<a name="l33"></a>
+<a name="l34"></a>_MUL_U64_U64_TO_U128::
+<a name="l35"></a></span><span class=cB2>//64bit * 64bit--&gt;128bit</span><span class=cB0>
+<a name="l36"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l37"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l38"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l581"></span><span class=cB3>SF_ARG3</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
+<a name="l39"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l579"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>] </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l579"><span class=cB4>SF_ARG1</span></a><span class=cB0>
+<a name="l40"></a>        </span><span class=cB1>MUL</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l580"></span><span class=cB3>SF_ARG2</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]        </span><span class=cB2>//Res RDX:RAX 128bit</span><span class=cB0>
+<a name="l41"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RBX</span><span class=cB0>],</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> 8[</span><span class=cBC>RBX</span><span class=cB0>],</span><span class=cBC>RDX</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l44"></a>        </span><span class=cB1>RET1</span><span class=cB0>    24
+<a name="l45"></a>};
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB2>//My convention is to put an underscore</span><span class=cB0>
+<a name="l48"></a></span><span class=cB2>//on C callable asm routines.</span><span class=cB0>
+<a name="l49"></a></span><span class=cB1>_extern</span><span class=cB0> _MUL_BY_HAND_U8_U8_TO_U16 </span><span class=cB9>U16</span><span class=cB0> MulU8(</span><span class=cB1>U8</span><span class=cB0> n1,</span><span class=cB1>U8</span><span class=cB0> n2);
+<a name="l50"></a>
+<a name="l51"></a></span><span class=cB1>class</span><span class=cB0> U128
+<a name="l52"></a>{
+<a name="l53"></a>  </span><span class=cB9>U64</span><span class=cB0> lo,hi;
+<a name="l54"></a>};
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB1>_extern</span><span class=cB0> _MUL_U64_U64_TO_U128 </span><span class=cB1>U0</span><span class=cB0> MulU64(</span><span class=cB9>I64</span><span class=cB0> n1,</span><span class=cB9>I64</span><span class=cB0> n2,U128 *_prod);
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB1>U0</span><span class=cB0> MulByHand()
+<a name="l59"></a>{
+<a name="l60"></a>  U128 p;
+<a name="l61"></a>  </span><span class=cB6>&quot;2*7   =0x%X\n&quot;</span><span class=cB0>,MulU8(2,7);
+<a name="l62"></a>  </span><span class=cB6>&quot;100*10=0x%X\n&quot;</span><span class=cB0>,MulU8(100,10);
+<a name="l63"></a>
+<a name="l64"></a>  MulU64(0x0123456789ABCDEF,0x1000001,&amp;p);
+<a name="l65"></a>  </span><span class=cB6>&quot;0x0123466789ABCDEF*0x1000001=0x%016X%016X\n&quot;</span><span class=cB0>,p.hi,p.lo;
+<a name="l66"></a>}
+<a name="l67"></a>
+<a name="l68"></a>MulByHand;
+<a name="l69"></a>
+</span></div></pre></body>
+</html>

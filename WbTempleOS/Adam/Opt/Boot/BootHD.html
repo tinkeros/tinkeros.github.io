@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBC{color:#ff5555;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootMHD2.html#l1"></span><span class=cB3>MODULE_SIZE</a></span><span class=cB0>             1*<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2309"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l2"></span><span class=cB3>BOOT_HIGH_LOC_HD</a></span><span class=cB0>        (</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3836"></span><span class=cB3>BOOT_RAM_LIMIT</a></span><span class=cB0>-\
+<a name="l3"></a>                                (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3837"></span><span class=cB3>BOOT_STK_SIZE</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootMHD2.html#l1"></span><span class=cB3>MODULE_SIZE</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>&gt;&gt;4)
+<a name="l4"></a>
+<a name="l5"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l90"></span><span class=cB5>DefinePrint</a></span><span class=cB0>(
+<a name="l6"></a>  </span><span class=cB6>&quot;DD_BOOT_HIGH_LOC_HD&quot;</span><span class=cB0>,</span><span class=cB6>&quot;%08X&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l2"></span><span class=cB3>BOOT_HIGH_LOC_HD</a></span><span class=cB0>&lt;&lt;4);
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>asm</span><span class=cB0> {
+<a name="l9"></a></span><span class=cB1>USE16</span><span class=cB0>
+<a name="l10"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l11"></span><span class=cBD>BHD_CODE</a></span><span class=cB0>::
+<a name="l11"></a>
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l11"></span><span class=cBD>BHD_CODE</a></span><span class=cB0>-</span><span class=cB1>offset</span><span class=cB7>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2348"></span><span class=cB9>CFAT32Boot</a></span><span class=cB0>.code</span><span class=cB7>)</span><span class=cB0>)
+<a name="l13"></a>
+<a name="l14"></a>        </span><span class=cB1>CLD</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l2"></span><span class=cB3>BOOT_HIGH_LOC_HD</a></span><span class=cB0>
+<a name="l17"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a>        </span><span class=cB1>CLI</span><span class=cB0>
+<a name="l20"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>SS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l21"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>SP</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3837"></span><span class=cB3>BOOT_STK_SIZE</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootMHD2.html#l1"></span><span class=cB3>MODULE_SIZE</a></span><span class=cB0>
+<a name="l22"></a>        </span><span class=cB1>STI</span><span class=cB0>
+<a name="l23"></a>
+<a name="l24"></a>        </span><span class=cB1>CALL</span><span class=cB0>    BHD_GET_RIP
+<a name="l25"></a>BHD_GET_RIP:
+<a name="l26"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>BX</span><span class=cB0>
+<a name="l27"></a>        </span><span class=cB1>SUB</span><span class=cB0>     </span><span class=cBC>BX</span><span class=cB0>,BHD_GET_RIP-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>
+<a name="l28"></a>        </span><span class=cB1>SHR</span><span class=cB0>     </span><span class=cBC>BX</span><span class=cB0>,4
+<a name="l29"></a></span><span class=cB2>//This copies this bootloader's code to 0x00096C00</span><span class=cB0>
+<a name="l30"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cBC>CS</span><span class=cB0>
+<a name="l31"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cBC>BX</span><span class=cB0>
+<a name="l32"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l33"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootMHD2.html#l1"></span><span class=cB3>MODULE_SIZE</a></span><span class=cB0>
+<a name="l34"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>SI</span><span class=cB0>,</span><span class=cBC>SI</span><span class=cB0>
+<a name="l35"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>DI</span><span class=cB0>,</span><span class=cBC>DI</span><span class=cB0>
+<a name="l36"></a>        </span><span class=cB1>REP_MOVSB</span><span class=cB0>
+<a name="l37"></a>
+<a name="l38"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l2"></span><span class=cB3>BOOT_HIGH_LOC_HD</a></span><span class=cB0>
+<a name="l39"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB2>//My assembler doesn't support 16-bit very well.</span><span class=cB0>
+<a name="l42"></a>        </span><span class=cB1>DU8</span><span class=cB0>     0xEA;   </span><span class=cB2>//JMP BOOT_HIGH_LOC_HD:BHD_HISTART</span><span class=cB0>
+<a name="l43"></a>        </span><span class=cB1>DU16</span><span class=cB0>    BHD_HISTART-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l2"></span><span class=cB3>BOOT_HIGH_LOC_HD</a></span><span class=cB0>;
+<a name="l44"></a>
+<a name="l45"></a>BHD_BIOS_DRV_NUM: </span><span class=cB1>DU8</span><span class=cB0>   0;
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB2>//Gets patched by </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l48"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l48"></span><span class=cBD>BHD_BLK_CNT</a></span><span class=cB0>::   </span><span class=cB1>DU16</span><span class=cB0>    0;
+<a name="l49"></a>
+<a name="l50"></a>BHD_DAP:        </span><span class=cB1>DU8</span><span class=cB0>     16,0,1,0; </span><span class=cB2>//One blk at a time</span><span class=cB0>
+<a name="l51"></a>BHD_DAP_BUF:    </span><span class=cB1>DU16</span><span class=cB0>    0,0;
+<a name="l52"></a></span><span class=cB2>//Gets patched by </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l53"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l53"></span><span class=cBD>BHD_DAP_BLK</a></span><span class=cB0>::   </span><span class=cB2>//64-bit</span><span class=cB0>
+<a name="l54"></a>BHD_DAP_BLK_LO: </span><span class=cB1>DU32</span><span class=cB0>    0;
+<a name="l55"></a>BHD_DAP_BLK_HI: </span><span class=cB1>DU32</span><span class=cB0>    0;
+<a name="l56"></a>
+<a name="l57"></a>BHD_HISTART:
+<a name="l58"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB1>U8</span><span class=cB0> [BHD_BIOS_DRV_NUM-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>],</span><span class=cBC>DL</span><span class=cB0> </span><span class=cB2>//Passed in by BIOS</span><span class=cB0>
+<a name="l59"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3835"></span><span class=cB3>BOOT_RAM_BASE</a></span><span class=cB0>/16
+<a name="l60"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l61"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>ECX</span><span class=cB0>,</span><span class=cBC>ECX</span><span class=cB0>
+<a name="l62"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>CX</span><span class=cB0>,</span><span class=cB9>U16</span><span class=cB0> [<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l48"></span><span class=cBD>BHD_BLK_CNT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>]
+<a name="l63"></a>
+<a name="l64"></a>@@05:   </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>CX</span><span class=cB0>      </span><span class=cB2>//Blk cnt</span><span class=cB0>
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB2>//READ BLK</span><span class=cB0>
+<a name="l67"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>ES</span><span class=cB0>      </span><span class=cB2>//Buf seg</span><span class=cB0>
+<a name="l68"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,</span><span class=cBC>ES</span><span class=cB0>
+<a name="l69"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cB9>U16</span><span class=cB0> [BHD_DAP_BUF+2-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>],</span><span class=cBC>AX</span><span class=cB0> </span><span class=cB2>//ES:0000</span><span class=cB0>
+<a name="l70"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>SI</span><span class=cB0>,BHD_DAP-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0> </span><span class=cB2>//DS:SI=DAP</span><span class=cB0>
+<a name="l71"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>AH</span><span class=cB0>,0x42
+<a name="l72"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>DL</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> [BHD_BIOS_DRV_NUM-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>]
+<a name="l73"></a>        </span><span class=cB1>INT</span><span class=cB0>     0x13
+<a name="l74"></a>
+<a name="l75"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>      </span><span class=cB2>//ES</span><span class=cB0>
+<a name="l76"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2309"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/16
+<a name="l77"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
+<a name="l78"></a>        </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [BHD_DAP_BLK_LO-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>]
+<a name="l79"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@10
+<a name="l80"></a>        </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cB9>U32</span><span class=cB0> [BHD_DAP_BLK_HI-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>]
+<a name="l81"></a>
+<a name="l82"></a>@@10:   </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>CX</span><span class=cB0>
+<a name="l83"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@05
+<a name="l84"></a>
+<a name="l85"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>EBX</span><span class=cB0>,</span><span class=cBC>EBX</span><span class=cB0>
+<a name="l86"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>EAX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3842"></span><span class=cB3>BOOT_SRC_HARDDRV</a></span><span class=cB0> </span><span class=cB2>//</span><span class=cB9><u>See sys_boot_src</span><span class=cB0>
+<a name="l87"></a></u></span><span class=cB2>//My assembler doesn't support 16-bit very well.</span><span class=cB0>
+<a name="l88"></a>        </span><span class=cB1>DU8</span><span class=cB0>     0xEA;   </span><span class=cB2>//JMP BOOT_RAM_BASE:0000</span><span class=cB0>
+<a name="l89"></a>        </span><span class=cB1>DU16</span><span class=cB0>    0,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3835"></span><span class=cB3>BOOT_RAM_BASE</a></span><span class=cB0>/16;
+<a name="l90"></a></span><span class=cB2>//Continues here </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KStart16.html#l1"><span class=cB4>::/Kernel/KStart16.HC</span></a><span class=cB0>
+<a name="l91"></a><a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l92"></span><span class=cBD>BHD_END</a></span><span class=cB0>::
+<a name="l92"></a>#</span><span class=cB1>assert</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l92"></span><span class=cBD>BHD_END</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootHD.html#l12"></span><span class=cB3>BHD_START</a></span><span class=cB0>&lt;<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Boot/BootMHD2.html#l1"></span><span class=cB3>MODULE_SIZE</a></span><span class=cB0>-2
+<a name="l93"></a>}
+</span></div></pre></body>
+</html>

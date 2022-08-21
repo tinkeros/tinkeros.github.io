@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBA{color:#55ff55;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cBA>
+<a name="l2"></a>&lt;1&gt;/* Graphics Not Rendered in HTML */</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> APPLES_NUM 128
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB9>I64</span><span class=cB0>     x[APPLES_NUM],y[APPLES_NUM],
+<a name="l7"></a>        cur_apple,cur_dist;
+<a name="l8"></a></span><span class=cB1>Bool</span><span class=cB0>    trigger;
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3271"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> i,best_dist=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l37"></span><span class=cB3>I64_MAX</a></span><span class=cB0>,best_apple=0;
+<a name="l13"></a>
+<a name="l14"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3578"></span><span class=cB3>DCF_LOCATE_NEAREST</a></span><span class=cB0>;
+<a name="l15"></a>  dc-&gt;cur_x=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x;
+<a name="l16"></a>  dc-&gt;cur_y=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y;
+<a name="l17"></a>  dc-&gt;cur_z=0;
+<a name="l18"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;APPLES_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,x[i],y[i],0,</span><span class=cBA>&lt;1&gt;</span><span class=cB0>);
+<a name="l20"></a>    </span><span class=cB1>if</span><span class=cB0> (dc-&gt;nearest_dist&lt;=best_dist) {
+<a name="l21"></a></span><span class=cB2>//Distance to nearest pix, squared</span><span class=cB0>
+<a name="l22"></a>      </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l109"><span class=cB4>Sqrt</span></a><span class=cB2>() is expensive so we work with distance squared.</span><span class=cB0>
+<a name="l23"></a>      best_dist=dc-&gt;nearest_dist;
+<a name="l24"></a>      best_apple=i;
+<a name="l25"></a>    }
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB1>if</span><span class=cB0> (trigger) </span><span class=cB7>{</span><span class=cB0>
+<a name="l28"></a>    cur_apple=best_apple;
+<a name="l29"></a>    cur_dist=best_dist;
+<a name="l30"></a>    trigger=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3551"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>,</span><span class=cB6>&quot;Dist Squared:%d&quot;</span><span class=cB0>,cur_dist);
+<a name="l33"></a>}
+<a name="l34"></a>
+<a name="l35"></a></span><span class=cB1>U0</span><span class=cB0> Pick()
+<a name="l36"></a>{
+<a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> i,msg_code,arg1,arg2,delta_x,delta_y;
+<a name="l38"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;APPLES_NUM;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l39"></a>    x[i]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3555"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>;
+<a name="l40"></a>    y[i]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMathB.html#l87"></span><span class=cB5>RandU16</a></span><span class=cB0>%(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3556"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*3)+<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3552"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*3;
+<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l43"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/AutoComplete/ACTask.html#l259"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l136"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l120"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l46"></a>
+<a name="l47"></a>  trigger=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l48"></a>  cur_apple=cur_dist=0;
+<a name="l49"></a>
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocGr.html#l102"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1443"></span><span class=cB3>WIG_TASK_DFT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1418"></span><span class=cB3>WIF_SELF_FOCUS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1426"></span><span class=cB3>WIF_SELF_BORDER</a></span><span class=cB0>;
+<a name="l52"></a>
+<a name="l53"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l54"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
+<a name="l55"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l95"></span><span class=cB5>GetMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3179"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>)
+<a name="l56"></a>        </span><span class=cB1>goto</span><span class=cB0> pi_done;
+<a name="l57"></a>
+<a name="l58"></a>        </span><span class=cB2>//Wait for window mgr to call DrawIt()</span><span class=cB0>
+<a name="l59"></a>      trigger=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l60"></a>      </span><span class=cB1>do</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l61"></a>      </span><span class=cB1>while</span><span class=cB0> (trigger);
+<a name="l62"></a>
+<a name="l63"></a>      </span><span class=cB2>//Use scrn coordinates, not window (arg1,arg2)</span><span class=cB0>
+<a name="l64"></a>      </span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"><span class=cB4>ms.pos.x</span></a><span class=cB2> and </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"><span class=cB4>ms.pos.y</span></a><span class=cB2> are global vars updated</span><span class=cB0>
+<a name="l65"></a>      </span><span class=cB2>//updated by the window mgr to hold the</span><span class=cB0>
+<a name="l66"></a>      </span><span class=cB2>//scrn coordinates of the mouse.</span><span class=cB0>
+<a name="l67"></a>      delta_x=x[cur_apple]-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x;
+<a name="l68"></a>      delta_y=y[cur_apple]-<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y;
+<a name="l69"></a>
+<a name="l70"></a>      </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l71"></a>        msg_code=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l95"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
+<a name="l72"></a>              1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3178"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3180"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>);
+<a name="l73"></a>        </span><span class=cB1>if</span><span class=cB0> (msg_code==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3176"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>)
+<a name="l74"></a>          </span><span class=cB1>goto</span><span class=cB0> pi_done;
+<a name="l75"></a>        x[cur_apple]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x+delta_x;
+<a name="l76"></a>        y[cur_apple]=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l25"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y+delta_y;
+<a name="l77"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3180"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>);
+<a name="l78"></a>    }
+<a name="l79"></a>pi_done:
+<a name="l80"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l95"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3177"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l82"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l83"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/TaskSettings.html#l89"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l84"></a>}
+<a name="l85"></a>
+<a name="l86"></a>Pick;
+</span></div></pre></body>
+</html>

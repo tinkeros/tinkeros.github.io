@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                   <h1><center>File Utils</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>File util </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"><span class=cB4>FilesFind</span></a><span class=cB0>() wildcard mask consists of a single base dir with multiple 
+<a name="l4"></a>file masks separated by </span><span class=cB2>';'</span><span class=cB0>.  The </span><span class=cB2>'*'</span><span class=cB0> and </span><span class=cB2>'?'</span><span class=cB0> wildcard chars are accepted.  The </span><span class=cB2>
+<a name="l5"></a>'~'</span><span class=cB0> is your home directory and </span><span class=cB2>'!'</span><span class=cB0> indicates an exclusion mask.
+<a name="l6"></a>
+<a name="l7"></a> 
+<a name="l8"></a></span><span class=cB2>&quot;/Kernel/*&quot;</span><span class=cB0>             BaseDir: </span><span class=cB2>/Kernel</span><span class=cB0>        Mask: </span><span class=cB2>*</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>&quot;/Demo/*.BMP*;*.GR*&quot;</span><span class=cB0>    BaseDir: </span><span class=cB2>/Demo</span><span class=cB0>          Mask: </span><span class=cB2>*.BMP*</span><span class=cB0> | </span><span class=cB2>*.GR*</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>&quot;/*.DD*;!*/Bible*&quot;</span><span class=cB0>      BaseDir: </span><span class=cB2>Root</span><span class=cB0>           Mask: </span><span class=cB2>*.DD*</span><span class=cB0> but not </span><span class=cB2>*/Bible*</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l40"><span class=cB4>FilesFindMatch</span></a><span class=cB0>().
+<a name="l13"></a>
+<a name="l14"></a>Flags are either text or int values.
+<a name="l15"></a>
+<a name="l16"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2565"><span class=cB4>FUF_RECURSE</span></a><span class=cB0>           </span><span class=cB2>+r</span><span class=cB0> Recurse
+<a name="l17"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2576"><span class=cB4>FUF_SINGLE</span></a><span class=cB0>            </span><span class=cB2>+s</span><span class=cB0> Single File (Optimization for one file in mask.)
+<a name="l18"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2588"><span class=cB4>FUF_FLATTEN_TREE</span></a><span class=cB0>      </span><span class=cB2>+f</span><span class=cB0> use with '</span><span class=cB2>+F</span><span class=cB0>'.  Just use </span><span class=cB2>+F</span><span class=cB0>, probably.
+<a name="l19"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2577"><span class=cB4>FUF_JUST_DIRS</span></a><span class=cB0>         </span><span class=cB2>+D</span><span class=cB0> just directories
+<a name="l20"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2578"><span class=cB4>FUF_JUST_FILES</span></a><span class=cB0>        </span><span class=cB2>+F</span><span class=cB0> just files (Flattens trees)
+<a name="l21"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2586"><span class=cB4>FUF_CLUS_ORDER</span></a><span class=cB0>        </span><span class=cB2>+O</span><span class=cB0> sort by clus (move head one direction)
+<a name="l22"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2579"><span class=cB4>FUF_JUST_TXT</span></a><span class=cB0>          </span><span class=cB2>+T</span><span class=cB0> just text files      : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2304"><span class=cB4>FILEMASK_TXT</span></a><span class=cB0>
+<a name="l23"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2580"><span class=cB4>FUF_JUST_DD</span></a><span class=cB0>           </span><span class=cB2>+$</span><span class=cB0> just </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0> files    : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2303"><span class=cB4>FILEMASK_DD</span></a><span class=cB0>
+<a name="l24"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2581"><span class=cB4>FUF_JUST_SRC</span></a><span class=cB0>          </span><span class=cB2>+S</span><span class=cB0> just src files       : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2302"><span class=cB4>FILEMASK_SRC</span></a><span class=cB0>
+<a name="l25"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2582"><span class=cB4>FUF_JUST_AOT</span></a><span class=cB0>          </span><span class=cB2>+A</span><span class=cB0> just aot files       : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2301"><span class=cB4>FILEMASK_AOT</span></a><span class=cB0>
+<a name="l26"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2583"><span class=cB4>FUF_JUST_JIT</span></a><span class=cB0>          </span><span class=cB2>+J</span><span class=cB0> just jit files       : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2300"><span class=cB4>FILEMASK_JIT</span></a><span class=cB0>
+<a name="l27"></a>  </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2584"><span class=cB4>FUF_JUST_GR</span></a><span class=cB0>           </span><span class=cB2>+G</span><span class=cB0> just graphic files   : </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2305"><span class=cB4>FILEMASK_GR</span></a><span class=cB0>
+<a name="l28"></a>
+<a name="l29"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l111"><span class=cB4>ST_FILE_UTIL_FLAGS</span></a><span class=cB0> when used in calling program taking text flags.
+</span></div></pre></body>
+</html>

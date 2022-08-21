@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Debugging;Cmd Line (Typically)&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/LinkChk.html#l3"></span><span class=cB5>LinkChkDoc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc,</span><span class=cB9>I64</span><span class=cB0> *_fuf_flags)
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l6"></a>  </span><span class=cB1>Bool</span><span class=cB0> found,unlock=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *old_doc;
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1191"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e=doc-&gt;head.next;
+<a name="l9"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
+<a name="l10"></a>  </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/SerialDev/Message.html#l123"></span><span class=cB5>ScanKey</a></span><span class=cB0>) {
+<a name="l12"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(_fuf_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2542"></span><span class=cB3>FUf_CANCEL</a></span><span class=cB0>);
+<a name="l13"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l14"></a>    }
+<a name="l15"></a>    </span><span class=cB1>if</span><span class=cB0> (st=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocLink.html#l47"></span><span class=cB5>DocEntryLink</a></span><span class=cB7>(</span><span class=cB0>doc,doc_e</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l16"></a>      old_doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l17"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(old_doc);
+<a name="l18"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=doc;
+<a name="l19"></a>      found=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocLink.html#l298"></span><span class=cB5>DocLinkChk</a></span><span class=cB0>(doc,st);
+<a name="l20"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l288"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=old_doc;
+<a name="l21"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(old_doc);
+<a name="l22"></a>      </span><span class=cB1>if</span><span class=cB0> (!found) </span><span class=cB7>{</span><span class=cB0>
+<a name="l23"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l160"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(doc-&gt;filename.name,,doc_e-&gt;y);
+<a name="l24"></a>        </span><span class=cB6>&quot;$RED$ %04d:%s\n$FG$&quot;</span><span class=cB0>,doc_e-&gt;y,st;
+<a name="l25"></a>        res++;
+<a name="l26"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l28"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l946"></span><span class=cB3>DOCT_ERROR</a></span><span class=cB0>) {
+<a name="l29"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l160"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(doc-&gt;filename.name,,doc_e-&gt;y);
+<a name="l30"></a>      </span><span class=cB6>&quot;$RED$ Doc Error\n$FG$&quot;</span><span class=cB0>;
+<a name="l31"></a>      res++;
+<a name="l32"></a>    }
+<a name="l33"></a>    doc_e=doc_e-&gt;next;
+<a name="l34"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock) <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l16"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l36"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l37"></a>}
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/LinkChk.html#l39"></span><span class=cB5>LinkChkFile</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> *_fuf_flags)
+<a name="l40"></a>{
+<a name="l41"></a>  </span><span class=cB9>I64</span><span class=cB0> res;
+<a name="l42"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1367"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocFile.html#l35"></span><span class=cB5>DocRead</a></span><span class=cB0>(filename,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l1272"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l43"></a>  res=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/LinkChk.html#l3"></span><span class=cB5>LinkChkDoc</a></span><span class=cB0>(doc,_fuf_flags);
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocNew.html#l311"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l45"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l46"></a>}
+<a name="l47"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/LinkChk.html#l47"></span><span class=cB5>LinkChk</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask=</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *fu_flags=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l48"></a>{</span><span class=cB2>//Check documents for broken file links.</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB9>I64</span><span class=cB0> fuf_flags=0,res=0;
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1;
+<a name="l51"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l218"></span><span class=cB6>progress2_max</a></span><span class=cB0>=1;
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrB.html#l123"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;+r+$+f+F+O&quot;</span><span class=cB0>);
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrB.html#l123"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,fu_flags);
+<a name="l55"></a>  tmpde=tmpde1=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags);
+<a name="l56"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde &amp;&amp; !<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;fuf_flags,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2542"></span><span class=cB3>FUf_CANCEL</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l57"></a>
+<a name="l58"></a>    st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l898"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Before %s Broke:%d&quot;</span><span class=cB0>,tmpde-&gt;full_name,res);
+<a name="l59"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>&gt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3860"></span><span class=cB3>PROGRESS_DESC_LEN</a></span><span class=cB0>-1)
+<a name="l60"></a>      st[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3860"></span><span class=cB3>PROGRESS_DESC_LEN</a></span><span class=cB0>-1]=0;
+<a name="l61"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l217"></span><span class=cB6>progress2_desc</a></span><span class=cB0>,st);
+<a name="l62"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l63"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l64"></a>
+<a name="l65"></a>    res+=<a href="http://tinkeros.github.io/WbTempleOS/Adam/Opt/Utils/LinkChk.html#l39"></span><span class=cB5>LinkChkFile</a></span><span class=cB0>(tmpde-&gt;full_name,&amp;fuf_flags);
+<a name="l66"></a>
+<a name="l67"></a>    st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l898"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;After %s Broke:%d&quot;</span><span class=cB0>,tmpde-&gt;full_name,res);
+<a name="l68"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>&gt;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3860"></span><span class=cB3>PROGRESS_DESC_LEN</a></span><span class=cB0>-1)
+<a name="l69"></a>      st[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3860"></span><span class=cB3>PROGRESS_DESC_LEN</a></span><span class=cB0>-1]=0;
+<a name="l70"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l217"></span><span class=cB6>progress2_desc</a></span><span class=cB0>,st);
+<a name="l71"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l72"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Sched.html#l284"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l73"></a>
+<a name="l74"></a>    tmpde=tmpde-&gt;next;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l33"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde1);
+<a name="l77"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelB.html#l218"></span><span class=cB6>progress2_max</a></span><span class=cB0>=0;
+<a name="l78"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l79"></a>}
+</span></div></pre></body>
+</html>

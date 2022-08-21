@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l1"></span><span class=cB5>DirNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2688"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,</span><span class=cB1>Bool</span><span class=cB0> free_old_chain=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l2"></a>{</span><span class=cB2>//Makes a directory entry in the directory from a </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"><span class=cB4>CDirEntry</span></a><span class=cB2> node.</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type) </span><span class=cB7>{</span><span class=cB0>
+<a name="l4"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2659"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l5"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/FileSysRedSea.html#l350"></span><span class=cBD>RedSeaDirNew</a></span><span class=cB0>(dv,cur_dir,tmpde,free_old_chain);
+<a name="l6"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2660"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l7"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/FileSysFAT.html#l562"></span><span class=cBD>FAT32DirNew</a></span><span class=cB0>(dv,cur_dir,tmpde,free_old_chain);
+<a name="l8"></a>    </span><span class=cB1>default</span><span class=cB0>:
+<a name="l9"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l906"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
+<a name="l10"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l11"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l12"></a>}
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l14"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde)
+<a name="l15"></a>{</span><span class=cB2>//Free node returned from </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"><span class=cB4>FilesFind</span></a><span class=cB2>().  Doesn't Free user_data.</span><span class=cB0>
+<a name="l16"></a></span><span class=cB2>//Does not change the directory on disk.</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpde-&gt;full_name);
+<a name="l19"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpde);
+<a name="l20"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l23"></span><span class=cB5>DirEntryDel2</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde)
+<a name="l24"></a>{</span><span class=cB2>//Free node returned from </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"><span class=cB4>FilesFind</span></a><span class=cB2>().  Frees user_data</span><span class=cB0>
+<a name="l25"></a></span><span class=cB2>//Does not change the directory on disk.</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpde-&gt;full_name);
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpde-&gt;user_data);
+<a name="l29"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(tmpde);
+<a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l31"></a>}
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l33"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde)
+<a name="l34"></a>{</span><span class=cB2>//Free tree returned from </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"><span class=cB4>FilesFind</span></a><span class=cB2>().  Doesn't Free user_data.</span><span class=cB0>
+<a name="l35"></a></span><span class=cB2>//Does not change the directory on disk.</span><span class=cB0>
+<a name="l36"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde2;
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    tmpde2=tmpde-&gt;next;
+<a name="l39"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpde-&gt;sub)
+<a name="l40"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l33"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde-&gt;sub);
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l14"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
+<a name="l42"></a>    tmpde=tmpde2;
+<a name="l43"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l44"></a>}
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l46"></span><span class=cB5>DirTreeDel2</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde)
+<a name="l47"></a>{</span><span class=cB2>//Free tree returned from </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskFind.html#l27"><span class=cB4>FilesFind</span></a><span class=cB2>().  Frees user_data</span><span class=cB0>
+<a name="l48"></a></span><span class=cB2>//Does not change the directory on disk.</span><span class=cB0>
+<a name="l49"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde2;
+<a name="l50"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    tmpde2=tmpde-&gt;next;
+<a name="l52"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpde-&gt;sub)
+<a name="l53"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l46"></span><span class=cB5>DirTreeDel2</a></span><span class=cB0>(tmpde-&gt;sub);
+<a name="l54"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l23"></span><span class=cB5>DirEntryDel2</a></span><span class=cB0>(tmpde);
+<a name="l55"></a>    tmpde=tmpde2;
+<a name="l56"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l57"></a>}
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l59"></span><span class=cBD>DirEntryCompareName</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *e1,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *e2)
+<a name="l60"></a>{
+<a name="l61"></a>  </span><span class=cB1>U8</span><span class=cB0> buf1[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2519"></span><span class=cB3>CDIR_FILENAME_LEN</a></span><span class=cB0>],buf2[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2519"></span><span class=cB3>CDIR_FILENAME_LEN</a></span><span class=cB0>],
+<a name="l62"></a>        buf3[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2519"></span><span class=cB3>CDIR_FILENAME_LEN</a></span><span class=cB0>],buf4[<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2519"></span><span class=cB3>CDIR_FILENAME_LEN</a></span><span class=cB0>];
+<a name="l63"></a>  </span><span class=cB9>I64</span><span class=cB0> d1=0,d2=0;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (e1-&gt;attr &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2501"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)
+<a name="l65"></a>    d1=1;
+<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (e2-&gt;attr &amp; <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2501"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)
+<a name="l67"></a>    d2=1;
+<a name="l68"></a>  </span><span class=cB1>if</span><span class=cB0> (d1!=d2)
+<a name="l69"></a>    </span><span class=cB1>return</span><span class=cB0> d2-d1;
+<a name="l70"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l71"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(buf1,e1-&gt;name);
+<a name="l72"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l321"></span><span class=cB5>StrCpy</a></span><span class=cB0>(buf2,e2-&gt;name);
+<a name="l73"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l10"></span><span class=cB5>FileExtRem</a></span><span class=cB0>(buf1,buf3);
+<a name="l74"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l10"></span><span class=cB5>FileExtRem</a></span><span class=cB0>(buf2,buf4);
+<a name="l75"></a>    </span><span class=cB1>if</span><span class=cB0> (d1=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>buf3,buf4</span><span class=cB7>)</span><span class=cB0>)
+<a name="l76"></a>      </span><span class=cB1>return</span><span class=cB0> d1;
+<a name="l77"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrA.html#l309"></span><span class=cB5>StrCmp</a></span><span class=cB0>(buf1,buf2);
+<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l81"></span><span class=cBD>DirEntryCompareClus</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *e1,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *e2)
+<a name="l82"></a>{
+<a name="l83"></a>  </span><span class=cB1>return</span><span class=cB0> e1-&gt;clus-e2-&gt;clus;
+<a name="l84"></a>}
+<a name="l85"></a>
+<a name="l86"></a>#</span><span class=cB1>define</span><span class=cB0> SK_NAME         0
+<a name="l87"></a>#</span><span class=cB1>define</span><span class=cB0> SK_CLUS 1
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l89"></span><span class=cBD>DirFilesSort</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> **_tmpde,</span><span class=cB9>I64</span><span class=cB0> key)
+<a name="l90"></a>{
+<a name="l91"></a>  </span><span class=cB9>I64</span><span class=cB0> i,cnt;
+<a name="l92"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde=*_tmpde,*tmpde1,**sort_buf;
+<a name="l93"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>    cnt=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KDataTypes.html#l21"></span><span class=cB5>LinkedLstCnt</a></span><span class=cB0>(tmpde);
+<a name="l95"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;1) {
+<a name="l96"></a>      sort_buf=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l387"></span><span class=cB5>MAlloc</a></span><span class=cB0>(cnt*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l97"></a>      i=0;
+<a name="l98"></a>      tmpde1=tmpde;
+<a name="l99"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l100"></a>        sort_buf[i++]=tmpde1;
+<a name="l101"></a>        tmpde1=tmpde1-&gt;next;
+<a name="l102"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l103"></a>      </span><span class=cB1>switch</span><span class=cB0> [key] </span><span class=cB7>{</span><span class=cB0>
+<a name="l104"></a>        </span><span class=cB1>case</span><span class=cB0> SK_NAME:
+<a name="l105"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/QSort.html#l1"></span><span class=cB5>QSortI64</a></span><span class=cB0>(sort_buf,cnt,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l59"></span><span class=cBD>DirEntryCompareName</a></span><span class=cB0>);
+<a name="l106"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l107"></a>        </span><span class=cB1>case</span><span class=cB0> SK_CLUS:
+<a name="l108"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/QSort.html#l1"></span><span class=cB5>QSortI64</a></span><span class=cB0>(sort_buf,cnt,&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l81"></span><span class=cBD>DirEntryCompareClus</a></span><span class=cB0>);
+<a name="l109"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l110"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l111"></a>      tmpde=sort_buf[0];
+<a name="l112"></a>      *_tmpde=tmpde;
+<a name="l113"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;cnt-1;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l114"></a>        tmpde1=sort_buf[i];
+<a name="l115"></a>        tmpde1-&gt;next=sort_buf[i+1];
+<a name="l116"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l117"></a>      tmpde1=sort_buf[i];
+<a name="l118"></a>      tmpde1-&gt;next=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l119"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(sort_buf);
+<a name="l120"></a>
+<a name="l121"></a>      tmpde1=tmpde;
+<a name="l122"></a>      </span><span class=cB1>while</span><span class=cB0> (tmpde1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l123"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpde1-&gt;sub)
+<a name="l124"></a>          <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l89"></span><span class=cBD>DirFilesSort</a></span><span class=cB0>(&amp;tmpde1-&gt;sub,key);
+<a name="l125"></a>        tmpde1=tmpde1-&gt;next;
+<a name="l126"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l127"></a>    } </span><span class=cB1>else</span><span class=cB0>
+<a name="l128"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpde-&gt;sub)
+<a name="l129"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l89"></span><span class=cBD>DirFilesSort</a></span><span class=cB0>(&amp;tmpde-&gt;sub,key);
+<a name="l130"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l131"></a>}
+<a name="l132"></a>
+<a name="l133"></a><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l133"></span><span class=cBD>DirFilesFlatten</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> **_res,</span><span class=cB9>I64</span><span class=cB0> fuf_flags)
+<a name="l134"></a>{</span><span class=cB2>//Returns last node</span><span class=cB0>
+<a name="l135"></a>  <a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2520"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde1;
+<a name="l136"></a>  </span><span class=cB1>Bool</span><span class=cB0> del;
+<a name="l137"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpde)
+<a name="l138"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>      tmpde1=tmpde-&gt;next;
+<a name="l140"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;attr&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2501"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB7>)</span><span class=cB0>||!</span><span class=cB7>(</span><span class=cB0>fuf_flags&amp;<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2578"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB7>)</span><span class=cB0>) {
+<a name="l141"></a>        _res=*_res=tmpde;
+<a name="l142"></a>        del=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l143"></a>      } </span><span class=cB1>else</span><span class=cB0>
+<a name="l144"></a>        del=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l20"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l145"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpde-&gt;sub) {
+<a name="l146"></a>        _res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l133"></span><span class=cBD>DirFilesFlatten</a></span><span class=cB0>(tmpde-&gt;sub,_res,fuf_flags);
+<a name="l147"></a>        tmpde-&gt;sub=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l148"></a>      }
+<a name="l149"></a>      </span><span class=cB1>if</span><span class=cB0> (del)
+<a name="l150"></a>        <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l14"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
+<a name="l151"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpde1)
+<a name="l152"></a>        tmpde=tmpde1;
+<a name="l153"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l154"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l155"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l156"></a>  *_res=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l157"></a>  </span><span class=cB1>return</span><span class=cB0> _res;
+<a name="l158"></a>}
+<a name="l159"></a>
+<a name="l160"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l160"></span><span class=cB5>PutFileLink</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>U8</span><span class=cB0> *full_name=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> line=0,</span><span class=cB1>Bool</span><span class=cB0> plain_text=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l21"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l161"></a>{</span><span class=cB2>//Put </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB2> file,line link to StdOut, </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"><span class=cB4>DocPut</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l162"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l163"></a>  </span><span class=cB1>if</span><span class=cB0> (!filename) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l164"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    </span><span class=cB1>if</span><span class=cB0> (line)
+<a name="l166"></a>      </span><span class=cB6>&quot;%s,%04d&quot;</span><span class=cB0>,filename,line;
+<a name="l167"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l168"></a>      </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,filename;
+<a name="l169"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l170"></a></span><span class=cB2>//LK_DOC,LK_DOC_ANCHOR,LK_DOC_FIND,LK_DOC_LINE</span><span class=cB0>
+<a name="l171"></a>    </span><span class=cB1>if</span><span class=cB0> (filename[0]==</span><span class=cB6>'A'</span><span class=cB0>&amp;&amp;filename[2]==</span><span class=cB6>':'</span><span class=cB0>) {
+<a name="l172"></a>      </span><span class=cB1>if</span><span class=cB0> (line) </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/SpriteEd.html#l573"><span class=cB4>SpriteEdText</span></a><span class=cB2>()</span><span class=cB0>
+<a name="l173"></a>        </span><span class=cB6>&quot;$LK,\&quot;%s,%04d\&quot;,A=\&quot;AL:%s,%d\&quot;$&quot;</span><span class=cB0>,filename+3,line,filename+3,line;
+<a name="l174"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l175"></a>        </span><span class=cB6>&quot;$LK,\&quot;%s\&quot;,A=\&quot;AI:%s\&quot;$&quot;</span><span class=cB0>,filename+3,filename+3;
+<a name="l176"></a>    } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l177"></a>      </span><span class=cB1>if</span><span class=cB0> (!full_name)
+<a name="l178"></a>        full_name=st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l171"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(filename);
+<a name="l179"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l180"></a>        st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l181"></a>      </span><span class=cB1>if</span><span class=cB0> (plain_text) </span><span class=cB7>{</span><span class=cB0>
+<a name="l182"></a>        </span><span class=cB1>if</span><span class=cB0> (line)
+<a name="l183"></a>          </span><span class=cB6>&quot;$LK,\&quot;%s,%04d\&quot;,A=\&quot;PL:%s,%d\&quot;$&quot;</span><span class=cB0>,filename,line,full_name,line;
+<a name="l184"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l185"></a>          </span><span class=cB6>&quot;$LK,\&quot;%s\&quot;,A=\&quot;PI:%s\&quot;$&quot;</span><span class=cB0>,filename,full_name;
+<a name="l186"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l187"></a>        </span><span class=cB1>if</span><span class=cB0> (line)
+<a name="l188"></a>          </span><span class=cB6>&quot;$LK,\&quot;%s,%04d\&quot;,A=\&quot;FL:%s,%d\&quot;$&quot;</span><span class=cB0>,filename,line,full_name,line;
+<a name="l189"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l190"></a>          </span><span class=cB6>&quot;$LK,\&quot;%s\&quot;,A=\&quot;FI:%s\&quot;$&quot;</span><span class=cB0>,filename,full_name;
+<a name="l191"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l192"></a>      <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l193"></a>    }
+<a name="l194"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>}
+<a name="l196"></a>
+<a name="l197"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskDirA.html#l197"></span><span class=cB5>PutDirLink</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dirname,</span><span class=cB1>U8</span><span class=cB0> *full_name=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l198"></a>{</span><span class=cB2>//Put </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB2> dir macro to StdOut, </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocDblBuf.html#l2"><span class=cB4>DocPut</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l199"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l200"></a>  </span><span class=cB1>if</span><span class=cB0> (!dirname) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l201"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KMisc.html#l297"></span><span class=cB5>IsRaw</a></span><span class=cB0>)
+<a name="l202"></a>    </span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,dirname;
+<a name="l203"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l204"></a>    </span><span class=cB1>if</span><span class=cB0> (!full_name)
+<a name="l205"></a>      full_name=st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/BlkDev/DskStrA.html#l108"></span><span class=cB5>DirNameAbs</a></span><span class=cB0>(dirname);
+<a name="l206"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l207"></a>      st=<a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l19"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l208"></a>    </span><span class=cB6>&quot;$MA,T=\&quot;%s\&quot;,LM=\&quot;Cd(\\\&quot;%s\\\&quot;);Dir;\n\&quot;$&quot;</span><span class=cB0>,dirname,full_name;
+<a name="l209"></a>    <a href="http://tinkeros.github.io/WbTempleOS/Kernel/Mem/MAllocFree.html#l383"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l210"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l211"></a>}
+</span></div></pre></body>
+</html>

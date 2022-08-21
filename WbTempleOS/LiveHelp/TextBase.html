@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TempleOS V5.03">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                 <h1><center>TextBase Layer</center></h1></span><span class=cB0>
+<a name="l2"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l3"><span class=cB4>gr.text_base</span></a><span class=cB0> must be updated 30fps in your Fs-&gt;draw_it() callback.  You probably 
+<a name="l3"></a>want </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrBitMap.html#l989"><span class=cB4>GrPrint</span></a><span class=cB0>() or just </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/StrPrint.html#l890"><span class=cB4>Print</span></a><span class=cB0>().  The </span><a href="http://tinkeros.github.io/WbTempleOS/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB0> code takes care of plotting text to </span><span class=cB4>
+<a name="l4"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l3"><span class=cB4>gr.text_base</span></a><span class=cB0>.
+<a name="l5"></a>
+<a name="l6"></a>Bits 0-7        8-Bit ASCII Scrn Code
+<a name="l7"></a>Bits 8-11       Foreground </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"><span class=cB4>color</span></a><span class=cB0>
+<a name="l8"></a>Bits 12-15      Background </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l2914"><span class=cB4>color</span></a><span class=cB0>
+<a name="l9"></a>Bits 16-20      Signed X pos shift val
+<a name="l10"></a>Bits 21-25      Signed Y pos shift val
+<a name="l11"></a>Bit  28         </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l893"><span class=cB4>Blink</span></a><span class=cB0>
+<a name="l12"></a>Bit  29         </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l894"><span class=cB4>Invert</span></a><span class=cB0>ed (Swap foreground and background)
+<a name="l13"></a>Bit  30         </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l895"><span class=cB4>Sel</span></a><span class=cB0> (XOR colors with FF)
+<a name="l14"></a>Bit  31         </span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l896"><span class=cB4>Underline</span></a><span class=cB0>
+<a name="l15"></a></span><span class=cB4>
+<a name="l16"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l18"><span class=cB4>GrUpdateTaskWin</span></a><span class=cB0>() calls </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalcLib.html#l193"><span class=cB4>DocUpdateTaskDocs</span></a><span class=cB0>() which calls </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/DolDoc/DocRecalc.html#l256"><span class=cB4>DocRecalc</span></a><span class=cB0>() where the 
+<a name="l17"></a>document text is plotted into </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l3"><span class=cB4>gr.text_base</span></a><span class=cB0>.  Then, </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l166"><span class=cB4>GrUpdateTextBG</span></a><span class=cB0>() and </span><span class=cB4>
+<a name="l18"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrScrn.html#l255"><span class=cB4>GrUpdateTextFG</span></a><span class=cB0>() render the </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l3"><span class=cB4>gr.text_base</span></a><span class=cB0> onto </span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l3"><span class=cB4>gr.dc2</span></a><span class=cB0>, a raw graphic bitmap.
+<a name="l19"></a>
+<a name="l20"></a>See </span><a href="http://tinkeros.github.io/WbTempleOS/Demo/Games/Maze.html#l1"><span class=cB4>::/Demo/Games/Maze.HC</span></a><span class=cB0>.
+<a name="l21"></a>
+<a name="l22"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l329"><span class=cB4>TextBorder          </span></a><span class=cB0>Funct </span><span class=cB2>Plot border square. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l23"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l312"><span class=cB4>TextChar            </span></a><span class=cB0>Funct </span><span class=cB2>Plot char. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l24"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l318"><span class=cB4>TextLenAttr         </span></a><span class=cB0>Funct </span><span class=cB2>Plot attrs with len. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l25"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l316"><span class=cB4>TextLenAttrStr      </span></a><span class=cB0>Funct </span><span class=cB2>Plot attr str with len. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l26"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l314"><span class=cB4>TextLenStr          </span></a><span class=cB0>Funct </span><span class=cB2>Plot str with len. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l27"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l321"><span class=cB4>TextPrint           </span></a><span class=cB0>Funct </span><span class=cB2>Plot chars. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB4>
+<a name="l28"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrTextBase.html#l351"><span class=cB4>TextRect            </span></a><span class=cB0>Funct </span><span class=cB2>Fill text rect. 30fps in Fs-&gt;draw_it() callback.</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB5>                              <h1><center>TextBase Layer/Char</center></h1></span><span class=cB4>
+<a name="l32"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KernelA.html#l3541"><span class=cB4>CTextGlbls          </span></a><span class=cB0>Class </span><span class=cB2>class CTextGlbls</span><span class=cB4>
+<a name="l33"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l55"><span class=cB4>TEXT_COLS           </span></a><span class=cB0>DefineStr </span><span class=cB2>HashPublic(&quot;TEXT_COLS&quot;,HTT_DEFINE_STR);;;</span><span class=cB4>
+<a name="l34"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Adam/Gr/GrGlbls.html#l53"><span class=cB4>TEXT_ROWS           </span></a><span class=cB0>DefineStr </span><span class=cB2>HashPublic(&quot;TEXT_ROWS&quot;,HTT_DEFINE_STR);;;</span><span class=cB4>
+<a name="l35"></a></span><a href="http://tinkeros.github.io/WbTempleOS/Kernel/KGlbls.html#l30"><span class=cB4>text                </span></a><span class=cB0>GlbVar </span><span class=cB2>CTextGlbls text;</span><span class=cB0>
+</span></div></pre></body>
+</html>
