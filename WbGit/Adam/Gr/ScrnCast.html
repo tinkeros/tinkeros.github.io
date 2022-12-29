@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.07">
+<meta name="generator" content="TinkerOS V5.08">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -48,15 +48,15 @@
 <a name="l9"></a></span><span class=cB2>  &quot;+d&quot; will delete GR list files.</span><span class=cB0>
 <a name="l10"></a></span><span class=cB2>  */</span><span class=cB0>
 <a name="l11"></a>  </span><span class=cB9>I64</span><span class=cB0> fuf_flags=0,file_num=0,size;
-<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2685"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1;
+<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2930"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1;
 <a name="l13"></a>  </span><span class=cB1>U8</span><span class=cB0> *base,*dst,*src,*st;
 <a name="l14"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc,*dc_base=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>);
 <a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l188"></span><span class=cB9>CDate</a></span><span class=cB0> cdt;
 <a name="l16"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_silent;
 <a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l139"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;+f+F&quot;</span><span class=cB0>);
 <a name="l18"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l139"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,fu_flags);
-<a name="l19"></a>  tmpde=tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2758"></span><span class=cB3>FUG_FILES_FIND</a></span><span class=cB0>);
-<a name="l20"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1_max</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l23"></span><span class=cB5>LinkedLstCnt</a></span><span class=cB7>(</span><span class=cB0>tmpde1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l19"></a>  tmpde=tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3003"></span><span class=cB3>FUG_FILES_FIND</a></span><span class=cB0>);
+<a name="l20"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l23"></span><span class=cB5>LinkedLstCnt</a></span><span class=cB7>(</span><span class=cB0>tmpde1</span><span class=cB7>)</span><span class=cB0>)
 <a name="l21"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l22"></a>    dst=base=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l3"></span><span class=cB3>MV_FILE_MAX</a></span><span class=cB0>);
 <a name="l23"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpde)
@@ -75,16 +75,16 @@
 <a name="l36"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l37"></a>      src=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l303"></span><span class=cB5>DCSave</a></span><span class=cB0>(dc,&amp;size);
 <a name="l38"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
-<a name="l39"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,src,size);
+<a name="l39"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,src,size);
 <a name="l40"></a>      dst+=size;
 <a name="l41"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
-<a name="l42"></a>      </span><span class=cB1>if</span><span class=cB0> (fuf_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2732"></span><span class=cB3>FUF_DEL</a></span><span class=cB0>)
+<a name="l42"></a>      </span><span class=cB1>if</span><span class=cB0> (fuf_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2977"></span><span class=cB3>FUF_DEL</a></span><span class=cB0>)
 <a name="l43"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l44"></a>        old_silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314"></span><span class=cB5>Silent</a></span><span class=cB0>;
 <a name="l45"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l95"></span><span class=cB5>Del</a></span><span class=cB0>(tmpde-&gt;full_name);
 <a name="l46"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l314"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
 <a name="l47"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l48"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l211"></span><span class=cB6>progress1</a></span><span class=cB0>++;
+<a name="l48"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>++;
 <a name="l49"></a>      tmpde=tmpde-&gt;next;
 <a name="l50"></a>    }
 <a name="l51"></a>    </span><span class=cB1>if</span><span class=cB0> (dst&gt;base)
@@ -95,16 +95,16 @@
 <a name="l56"></a>    }
 <a name="l57"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(base);
 <a name="l58"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l211"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
 <a name="l60"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde1);
 <a name="l61"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc_base);
 <a name="l62"></a>  </span><span class=cB1>return</span><span class=cB0> file_num;
 <a name="l63"></a>}
 <a name="l64"></a>
 <a name="l65"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;ScrnCast;Snd/AU Files&quot;</span><span class=cB0>
-<a name="l66"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l66"></span><span class=cB5>SndShift</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4267"></span><span class=cB9>CSndData</a></span><span class=cB0> *head,</span><span class=cB1>F64</span><span class=cB0> dt=0)
+<a name="l66"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l66"></span><span class=cB5>SndShift</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4510"></span><span class=cB9>CSndData</a></span><span class=cB0> *head,</span><span class=cB1>F64</span><span class=cB0> dt=0)
 <a name="l67"></a>{</span><span class=cB2>//Shift CSndData in time.</span><span class=cB0>
-<a name="l68"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4267"></span><span class=cB9>CSndData</a></span><span class=cB0> *tmpsd,*tmpsd1;
+<a name="l68"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4510"></span><span class=cB9>CSndData</a></span><span class=cB0> *tmpsd,*tmpsd1;
 <a name="l69"></a>  </span><span class=cB1>if</span><span class=cB0> (dt)
 <a name="l70"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l71"></a>    tmpsd=head-&gt;next;
@@ -122,17 +122,17 @@
 <a name="l83"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l84"></a>}
 <a name="l85"></a>
-<a name="l86"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l86"></span><span class=cB5>AUWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4267"></span><span class=cB9>CSndData</a></span><span class=cB0> *head,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l188"></span><span class=cB9>CDate</a></span><span class=cB0> *t0_now,</span><span class=cB1>F64</span><span class=cB0> t0_tS)
+<a name="l86"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnCast.html#l86"></span><span class=cB5>AUWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4510"></span><span class=cB9>CSndData</a></span><span class=cB0> *head,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l188"></span><span class=cB9>CDate</a></span><span class=cB0> *t0_now,</span><span class=cB1>F64</span><span class=cB0> t0_tS)
 <a name="l87"></a>{</span><span class=cB2>//Write AU file.</span><span class=cB0>
-<a name="l88"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4267"></span><span class=cB9>CSndData</a></span><span class=cB0> *tmpsd;
-<a name="l89"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4259"></span><span class=cB9>CAUData</a></span><span class=cB0> *base,*dst;
-<a name="l90"></a>  </span><span class=cB9>I64</span><span class=cB0> size=(1+<a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l71"></span><span class=cB5>QueCnt</a></span><span class=cB7>(</span><span class=cB0>head</span><span class=cB7>)</span><span class=cB0>)*</span><span class=cB1>sizeof</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4259"></span><span class=cB9>CAUData</a></span><span class=cB0>);
+<a name="l88"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4510"></span><span class=cB9>CSndData</a></span><span class=cB0> *tmpsd;
+<a name="l89"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4502"></span><span class=cB9>CAUData</a></span><span class=cB0> *base,*dst;
+<a name="l90"></a>  </span><span class=cB9>I64</span><span class=cB0> size=(1+<a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l71"></span><span class=cB5>QueCnt</a></span><span class=cB7>(</span><span class=cB0>head</span><span class=cB7>)</span><span class=cB0>)*</span><span class=cB1>sizeof</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4502"></span><span class=cB9>CAUData</a></span><span class=cB0>);
 <a name="l91"></a>  </span><span class=cB1>U8</span><span class=cB0> *st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(filename,</span><span class=cB6>&quot;AU&quot;</span><span class=cB0>);
 <a name="l92"></a>  base=dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(size);
 <a name="l93"></a>  tmpsd=head;
 <a name="l94"></a>  </span><span class=cB1>do</span><span class=cB0>
 <a name="l95"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l96"></a>    dst-&gt;cdt=t0_now(</span><span class=cB9>I64</span><span class=cB0>)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l659"></span><span class=cB3>CDATE_FREQ</a></span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>tmpsd-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-t0_tS</span><span class=cB7>)</span><span class=cB0>);
+<a name="l96"></a>    dst-&gt;cdt=t0_now(</span><span class=cB9>I64</span><span class=cB0>)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l124"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l660"></span><span class=cB3>CDATE_FREQ</a></span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>tmpsd-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-t0_tS</span><span class=cB7>)</span><span class=cB0>);
 <a name="l97"></a>    dst-&gt;ona=tmpsd-&gt;ona;
 <a name="l98"></a>    dst++;
 <a name="l99"></a>    tmpsd=tmpsd-&gt;next;

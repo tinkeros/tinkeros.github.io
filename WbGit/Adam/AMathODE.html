@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.07">
+<meta name="generator" content="TinkerOS V5.08">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -45,7 +45,7 @@
 <a name="l5"></a>
 <a name="l6"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> a,</span><span class=cB1>F64</span><span class=cB0> y0,</span><span class=cB1>F64</span><span class=cB0> y,</span><span class=cB1>F64</span><span class=cB0> dt=1.0)
 <a name="l7"></a>{</span><span class=cB2>//First order low pass filter</span><span class=cB0>
-<a name="l8"></a>  dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>Exp</a></span><span class=cB0>(-a*dt);
+<a name="l8"></a>  dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Exp</a></span><span class=cB0>(-a*dt);
 <a name="l9"></a>  </span><span class=cB1>return</span><span class=cB0> y0*dt+y*(1.0-dt);
 <a name="l10"></a>}
 <a name="l11"></a>
@@ -93,7 +93,7 @@
 <a name="l53"></a>  ode-&gt;h_min=1e-64;
 <a name="l54"></a>  ode-&gt;h_max=1e32;
 <a name="l55"></a>  ode-&gt;max_tolerance=ode-&gt;min_tolerance=ode-&gt;tolerance_internal=max_tolerance;
-<a name="l56"></a>  ode-&gt;win_task=ode-&gt;mem_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>;
+<a name="l56"></a>  ode-&gt;win_task=ode-&gt;mem_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>;
 <a name="l57"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(&amp;ode-&gt;next_mass);
 <a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(&amp;ode-&gt;next_spring);
 <a name="l59"></a>  ode-&gt;state=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(s);
@@ -123,7 +123,7 @@
 <a name="l83"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ode-&gt;array_base);
 <a name="l84"></a>  </span><span class=cB1>if</span><span class=cB0> (ode-&gt;slave_tasks)
 <a name="l85"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l86"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l86"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
 <a name="l87"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"></span><span class=cB5>Kill</a></span><span class=cB0>(ode-&gt;slave_tasks[i]);
 <a name="l88"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ode-&gt;slave_tasks);
 <a name="l89"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -174,24 +174,24 @@
 <a name="l134"></a>    tmpm=ode-&gt;next_mass;
 <a name="l135"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpm!=&amp;ode-&gt;next_mass)
 <a name="l136"></a>    {
-<a name="l137"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(tmpm-&gt;state,&amp;tmpm-&gt;saved_state,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l203"></span><span class=cB9>COrder2D3</a></span><span class=cB7>)</span><span class=cB0>/8);
+<a name="l137"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l174"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(tmpm-&gt;state,&amp;tmpm-&gt;saved_state,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l203"></span><span class=cB9>COrder2D3</a></span><span class=cB7>)</span><span class=cB0>/8);
 <a name="l138"></a>      tmpm=tmpm-&gt;next;
 <a name="l139"></a>    }
 <a name="l140"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l141"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(ode-&gt;state_internal,ode-&gt;state,ode-&gt;n);
+<a name="l141"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l174"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(ode-&gt;state_internal,ode-&gt;state,ode-&gt;n);
 <a name="l142"></a>}
 <a name="l143"></a>
 <a name="l144"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l144"></span><span class=cB5>ODEInternal2State</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l253"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode)
 <a name="l145"></a>{
 <a name="l146"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l211"></span><span class=cB9>CMass</a></span><span class=cB0> *tmpm;
-<a name="l147"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(ode-&gt;state,ode-&gt;state_internal,ode-&gt;n);
+<a name="l147"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l174"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(ode-&gt;state,ode-&gt;state_internal,ode-&gt;n);
 <a name="l148"></a>  </span><span class=cB1>if</span><span class=cB0> (ode-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l243"></span><span class=cB3>ODEF_HAS_MASSES</a></span><span class=cB0>)
 <a name="l149"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l150"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l101"></span><span class=cB5>ODESetMassesPtrs</a></span><span class=cB0>(ode,ode-&gt;state_internal,ode-&gt;state_internal);
 <a name="l151"></a>    tmpm=ode-&gt;next_mass;
 <a name="l152"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpm!=&amp;ode-&gt;next_mass)
 <a name="l153"></a>    {
-<a name="l154"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(&amp;tmpm-&gt;saved_state,tmpm-&gt;state,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l203"></span><span class=cB9>COrder2D3</a></span><span class=cB7>)</span><span class=cB0>/8);
+<a name="l154"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l174"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(&amp;tmpm-&gt;saved_state,tmpm-&gt;state,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l203"></span><span class=cB9>COrder2D3</a></span><span class=cB7>)</span><span class=cB0>/8);
 <a name="l155"></a>      tmpm=tmpm-&gt;next;
 <a name="l156"></a>    }
 <a name="l157"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -227,7 +227,7 @@
 <a name="l187"></a>  tmpm=ode-&gt;next_mass;
 <a name="l188"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm!=&amp;ode-&gt;next_mass)
 <a name="l189"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l190"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;x-x)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;y-y)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;z-z);
+<a name="l190"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;x-x)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;y-y)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;z-z);
 <a name="l191"></a>    </span><span class=cB1>if</span><span class=cB0> (dd&lt;best_dd)
 <a name="l192"></a>    {
 <a name="l193"></a>      best_dd=dd;
@@ -245,9 +245,9 @@
 <a name="l205"></a>  tmps=ode-&gt;next_spring;
 <a name="l206"></a>  </span><span class=cB1>while</span><span class=cB0> (tmps!=&amp;ode-&gt;next_spring)
 <a name="l207"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l208"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;x+tmps-&gt;end2-&gt;x</span><span class=cB7>)</span><span class=cB0>/2-x)+
-<a name="l209"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;y+tmps-&gt;end2-&gt;y</span><span class=cB7>)</span><span class=cB0>/2-y)+
-<a name="l210"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;z+tmps-&gt;end2-&gt;z</span><span class=cB7>)</span><span class=cB0>/2-z);
+<a name="l208"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;x+tmps-&gt;end2-&gt;x</span><span class=cB7>)</span><span class=cB0>/2-x)+
+<a name="l209"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;y+tmps-&gt;end2-&gt;y</span><span class=cB7>)</span><span class=cB0>/2-y)+
+<a name="l210"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;z+tmps-&gt;end2-&gt;z</span><span class=cB7>)</span><span class=cB0>/2-z);
 <a name="l211"></a>    </span><span class=cB1>if</span><span class=cB0> (dd&lt;best_dd)
 <a name="l212"></a>    {
 <a name="l213"></a>      best_dd=dd;
@@ -268,7 +268,7 @@
 <a name="l228"></a>  tmpm=ode-&gt;next_mass;
 <a name="l229"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm!=&amp;ode-&gt;next_mass)
 <a name="l230"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l231"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;x-x)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;y-y)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;z-z);
+<a name="l231"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;x-x)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;y-y)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(tmpm-&gt;z-z);
 <a name="l232"></a>    </span><span class=cB1>if</span><span class=cB0> (dd&lt;best_dd)
 <a name="l233"></a>    {
 <a name="l234"></a>      best_dd=dd;
@@ -279,9 +279,9 @@
 <a name="l239"></a>  tmps=ode-&gt;next_spring;
 <a name="l240"></a>  </span><span class=cB1>while</span><span class=cB0> (tmps!=&amp;ode-&gt;next_spring)
 <a name="l241"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l242"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;x+tmps-&gt;end2-&gt;x</span><span class=cB7>)</span><span class=cB0>/2-x)+
-<a name="l243"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;y+tmps-&gt;end2-&gt;y</span><span class=cB7>)</span><span class=cB0>/2-y)+
-<a name="l244"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;z+tmps-&gt;end2-&gt;z</span><span class=cB7>)</span><span class=cB0>/2-z);
+<a name="l242"></a>    dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;x+tmps-&gt;end2-&gt;x</span><span class=cB7>)</span><span class=cB0>/2-x)+
+<a name="l243"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;y+tmps-&gt;end2-&gt;y</span><span class=cB7>)</span><span class=cB0>/2-y)+
+<a name="l244"></a>       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqr</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>tmps-&gt;end1-&gt;z+tmps-&gt;end2-&gt;z</span><span class=cB7>)</span><span class=cB0>/2-z);
 <a name="l245"></a>    </span><span class=cB1>if</span><span class=cB0> (dd&lt;best_dd)
 <a name="l246"></a>    {
 <a name="l247"></a>      best_dd=dd;
@@ -341,7 +341,7 @@
 <a name="l301"></a>    {
 <a name="l302"></a>      e1=tmps-&gt;end1;
 <a name="l303"></a>      e2=tmps-&gt;end2;
-<a name="l304"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l158"></span><span class=cB5>D3Norm</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l160"></span><span class=cB5>D3Sub</a></span><span class=cB7>(</span><span class=cB0>&amp;p,&amp;e2-&gt;state-&gt;x,&amp;e1-&gt;state-&gt;x</span><span class=cB7>)</span><span class=cB0>);
+<a name="l304"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l161"></span><span class=cB5>D3Norm</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l163"></span><span class=cB5>D3Sub</a></span><span class=cB7>(</span><span class=cB0>&amp;p,&amp;e2-&gt;state-&gt;x,&amp;e1-&gt;state-&gt;x</span><span class=cB7>)</span><span class=cB0>);
 <a name="l305"></a>      tmps-&gt;displacement=d-tmps-&gt;rest_len;
 <a name="l306"></a>      tmps-&gt;f=tmps-&gt;displacement*tmps-&gt;const;
 <a name="l307"></a>      </span><span class=cB1>if</span><span class=cB0> (tmps-&gt;f&gt;0 &amp;&amp; tmps-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l228"></span><span class=cB3>SSF_NO_TENSION</a></span><span class=cB0>)
@@ -350,9 +350,9 @@
 <a name="l310"></a>        tmps-&gt;f=0;
 <a name="l311"></a>      </span><span class=cB1>if</span><span class=cB0> (d&gt;0)
 <a name="l312"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l313"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l157"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;p,tmps-&gt;f/d);
-<a name="l314"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l146"></span><span class=cB5>D3AddEqu</a></span><span class=cB0>(&amp;e1-&gt;DstateDt-&gt;DxDt,&amp;p);
-<a name="l315"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l161"></span><span class=cB5>D3SubEqu</a></span><span class=cB0>(&amp;e2-&gt;DstateDt-&gt;DxDt,&amp;p);
+<a name="l313"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l160"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;p,tmps-&gt;f/d);
+<a name="l314"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l149"></span><span class=cB5>D3AddEqu</a></span><span class=cB0>(&amp;e1-&gt;DstateDt-&gt;DxDt,&amp;p);
+<a name="l315"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l164"></span><span class=cB5>D3SubEqu</a></span><span class=cB0>(&amp;e2-&gt;DstateDt-&gt;DxDt,&amp;p);
 <a name="l316"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l317"></a>    }
 <a name="l318"></a>    tmps=tmps-&gt;next;
@@ -371,15 +371,15 @@
 <a name="l331"></a>    {
 <a name="l332"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpm-&gt;flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l209"></span><span class=cB3>MSF_INACTIVE</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
 <a name="l333"></a>          tmpm-&gt;drag_profile_factor &amp;&amp;
-<a name="l334"></a>          </span><span class=cB7>(</span><span class=cB0>dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l159"></span><span class=cB5>D3NormSqr</a></span><span class=cB0>(&amp;tmpm-&gt;state-&gt;DxDt)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l334"></a>          </span><span class=cB7>(</span><span class=cB0>dd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l162"></span><span class=cB5>D3NormSqr</a></span><span class=cB0>(&amp;tmpm-&gt;state-&gt;DxDt)</span><span class=cB7>)</span><span class=cB0>)
 <a name="l335"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l336"></a>        d=ode-&gt;drag_v;
 <a name="l337"></a>        </span><span class=cB1>if</span><span class=cB0> (ode-&gt;drag_v2)
-<a name="l338"></a>          d+=ode-&gt;drag_v2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(dd);
+<a name="l338"></a>          d+=ode-&gt;drag_v2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB0>(dd);
 <a name="l339"></a>        </span><span class=cB1>if</span><span class=cB0> (ode-&gt;drag_v3)
 <a name="l340"></a>          d+=dd*ode-&gt;drag_v3;
-<a name="l341"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l161"></span><span class=cB5>D3SubEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,
-<a name="l342"></a>                 <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l156"></span><span class=cB5>D3Mul</a></span><span class=cB7>(</span><span class=cB0>&amp;p,d*tmpm-&gt;drag_profile_factor,&amp;tmpm-&gt;state-&gt;DxDt</span><span class=cB7>)</span><span class=cB0>);
+<a name="l341"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l164"></span><span class=cB5>D3SubEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,
+<a name="l342"></a>                 <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l159"></span><span class=cB5>D3Mul</a></span><span class=cB7>(</span><span class=cB0>&amp;p,d*tmpm-&gt;drag_profile_factor,&amp;tmpm-&gt;state-&gt;DxDt</span><span class=cB7>)</span><span class=cB0>);
 <a name="l343"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l344"></a>      tmpm=tmpm-&gt;next;
 <a name="l345"></a>    }
@@ -396,8 +396,8 @@
 <a name="l356"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpm!=&amp;ode-&gt;next_mass)
 <a name="l357"></a>    {
 <a name="l358"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpm-&gt;flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l209"></span><span class=cB3>MSF_INACTIVE</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l359"></a>          </span><span class=cB7>(</span><span class=cB0>d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l158"></span><span class=cB5>D3Norm</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt)</span><span class=cB7>)</span><span class=cB0>&gt;ode-&gt;acceleration_limit)
-<a name="l360"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l157"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,ode-&gt;acceleration_limit/d);
+<a name="l359"></a>          </span><span class=cB7>(</span><span class=cB0>d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l161"></span><span class=cB5>D3Norm</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt)</span><span class=cB7>)</span><span class=cB0>&gt;ode-&gt;acceleration_limit)
+<a name="l360"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l160"></span><span class=cB5>D3MulEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,ode-&gt;acceleration_limit/d);
 <a name="l361"></a>      tmpm=tmpm-&gt;next;
 <a name="l362"></a>    }
 <a name="l363"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -407,12 +407,12 @@
 <a name="l367"></a>{
 <a name="l368"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
 <a name="l369"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l370"></a>    </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;ode-&gt;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num</span><span class=cB7>)</span><span class=cB0>)
+<a name="l370"></a>    </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;ode-&gt;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num</span><span class=cB7>)</span><span class=cB0>)
 <a name="l371"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
 <a name="l372"></a>    </span><span class=cB1>if</span><span class=cB0> (ode-&gt;mp_derive)
 <a name="l373"></a>      (*ode-&gt;mp_derive)(ode,ode-&gt;mp_t,
-<a name="l374"></a>                        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num,ode-&gt;mp_state,ode-&gt;mp_DstateDt);
-<a name="l375"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;ode-&gt;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num);
+<a name="l374"></a>                        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num,ode-&gt;mp_state,ode-&gt;mp_DstateDt);
+<a name="l375"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;ode-&gt;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num);
 <a name="l376"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l377"></a>}
 <a name="l378"></a>
@@ -421,11 +421,11 @@
 <a name="l381"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l382"></a>  </span><span class=cB1>if</span><span class=cB0> (!ode-&gt;slave_tasks)
 <a name="l383"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l384"></a>    ode-&gt;slave_tasks=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3744"></span><span class=cB9>CTask</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
-<a name="l385"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l384"></a>    ode-&gt;slave_tasks=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l385"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
 <a name="l386"></a>      ode-&gt;slave_tasks[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l366"></span><span class=cB5>ODEMPTask</a></span><span class=cB0>,ode,</span><span class=cB6>&quot;ODE Slave&quot;</span><span class=cB0>,i);
 <a name="l387"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l388"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l388"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
 <a name="l389"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l390"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l88"></span><span class=cB5>Suspend</a></span><span class=cB0>(ode-&gt;slave_tasks[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
 <a name="l391"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l131"></span><span class=cB5>MPInt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l350"></span><span class=cB3>I_WAKE</a></span><span class=cB0>,i);
@@ -439,7 +439,7 @@
 <a name="l399"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l400"></a>    </span><span class=cB1>while</span><span class=cB0> (ode-&gt;mp_not_done_flags)
 <a name="l401"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l402"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l402"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
 <a name="l403"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l88"></span><span class=cB5>Suspend</a></span><span class=cB0>(ode-&gt;slave_tasks[i]);
 <a name="l404"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l405"></a>}
@@ -449,7 +449,7 @@
 <a name="l409"></a>  ode-&gt;mp_t=t;
 <a name="l410"></a>  ode-&gt;mp_state=state;
 <a name="l411"></a>  ode-&gt;mp_DstateDt=DstateDt;
-<a name="l412"></a>  ode-&gt;mp_not_done_flags=1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1;
+<a name="l412"></a>  ode-&gt;mp_not_done_flags=1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1;
 <a name="l413"></a>  </span><span class=cB1>do</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
 <a name="l414"></a>  </span><span class=cB1>while</span><span class=cB0> (ode-&gt;mp_not_done_flags);
 <a name="l415"></a>}
@@ -465,8 +465,8 @@
 <a name="l425"></a>    {
 <a name="l426"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tmpm-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l209"></span><span class=cB3>MSF_INACTIVE</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l427"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l428"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l163"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt);
-<a name="l429"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l147"></span><span class=cB5>D3Copy</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;x,&amp;tmpm-&gt;state-&gt;DxDt);
+<a name="l428"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l166"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt);
+<a name="l429"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l150"></span><span class=cB5>D3Copy</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;x,&amp;tmpm-&gt;state-&gt;DxDt);
 <a name="l430"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l431"></a>      tmpm=tmpm-&gt;next;
 <a name="l432"></a>    }
@@ -483,11 +483,11 @@
 <a name="l443"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l444"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpm-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l210"></span><span class=cB3>MSF_FIXED</a></span><span class=cB0>)
 <a name="l445"></a>        {
-<a name="l446"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l163"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt);
-<a name="l447"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l163"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;x);
+<a name="l446"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l166"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt);
+<a name="l447"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l166"></span><span class=cB5>D3Zero</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;x);
 <a name="l448"></a>        }
 <a name="l449"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpm-&gt;mass)
-<a name="l450"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l152"></span><span class=cB5>D3DivEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,tmpm-&gt;mass);
+<a name="l450"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l155"></span><span class=cB5>D3DivEqu</a></span><span class=cB0>(&amp;tmpm-&gt;DstateDt-&gt;DxDt,tmpm-&gt;mass);
 <a name="l451"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l452"></a>      tmpm=tmpm-&gt;next;
 <a name="l453"></a>    }
@@ -625,7 +625,7 @@
 <a name="l585"></a>    errmax=0.0;
 <a name="l586"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;ode-&gt;n_internal; i++)
 <a name="l587"></a>    {
-<a name="l588"></a>      tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(stateerr[i]/ode-&gt;state_scale[i]);
+<a name="l588"></a>      tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>Abs</a></span><span class=cB0>(stateerr[i]/ode-&gt;state_scale[i]);
 <a name="l589"></a>      </span><span class=cB1>if</span><span class=cB0> (tmp&gt;errmax)
 <a name="l590"></a>        errmax=tmp;
 <a name="l591"></a>    }
@@ -643,14 +643,14 @@
 <a name="l603"></a>  </span><span class=cB1>else</span><span class=cB0>
 <a name="l604"></a>    ode-&gt;h*=5.0;
 <a name="l605"></a>  ode-&gt;h=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(ode-&gt;h,ode-&gt;h_min,ode-&gt;h_max);
-<a name="l606"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ode-&gt;state_internal,tmpstate,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>*ode-&gt;n_internal);
+<a name="l606"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ode-&gt;state_internal,tmpstate,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>*ode-&gt;n_internal);
 <a name="l607"></a>}
 <a name="l608"></a>
 <a name="l609"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l609"></span><span class=cB6>ode_alloced_factor</a></span><span class=cB0>=0.75;
 <a name="l610"></a>
-<a name="l611"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l611"></span><span class=cB5>ODEsUpdate</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3744"></span><span class=cB9>CTask</a></span><span class=cB0> *task)
+<a name="l611"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l611"></span><span class=cB5>ODEsUpdate</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *task)
 <a name="l612"></a>{
-<a name="l613"></a>  </span><span class=cB2>/* This routine is called by the </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l7"><span class=cB4>window mgr</span></a><span class=cB2>on a continuous</span><span class=cB0>
+<a name="l613"></a>  </span><span class=cB2>/* This routine is called by the </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l20"><span class=cB4>window mgr</span></a><span class=cB2>on a continuous</span><span class=cB0>
 <a name="l614"></a></span><span class=cB2>  basis to allow real-time simulation.  It is intended</span><span class=cB0>
 <a name="l615"></a></span><span class=cB2>  to provide ress good enough for games.  It uses a runge-kutta</span><span class=cB0>
 <a name="l616"></a></span><span class=cB2>  integrator which is a better algorithm than doing it with Euler.</span><span class=cB0>
@@ -664,17 +664,17 @@
 <a name="l624"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l253"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode;
 <a name="l625"></a>  </span><span class=cB1>if</span><span class=cB0> (task-&gt;next_ode==&amp;task-&gt;next_ode)
 <a name="l626"></a>    task-&gt;last_ode_time=0;
-<a name="l627"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;win_inhibit,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1545"></span><span class=cB3>WIf_SELF_ODE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l627"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;win_inhibit,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1546"></span><span class=cB3>WIf_SELF_ODE</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l628"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l629"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l68"><span class=cB4>GrUpdateTasks</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l3"><span class=cB4>GrUpdateTaskODEs</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l629"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l81"><span class=cB4>GrUpdateTasks</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l16"><span class=cB4>GrUpdateTaskODEs</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l630"></a>    </span><span class=cB2>//We will not pick a time limit based on</span><span class=cB0>
 <a name="l631"></a>    </span><span class=cB2>//how busy the CPU is, what percent of the</span><span class=cB0>
 <a name="l632"></a>    </span><span class=cB2>//last refresh cycle was spent on ODE's</span><span class=cB0>
 <a name="l633"></a>    </span><span class=cB2>//and what the refresh cycle rate was.</span><span class=cB0>
 <a name="l634"></a>    start_time=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l635"></a>    d=1.0/<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l19"></span><span class=cB6>winmgr</a></span><span class=cB0>.fps;
+<a name="l635"></a>    d=1.0/<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l16"></span><span class=cB6>winmgr</a></span><span class=cB0>.fps;
 <a name="l636"></a>    timeout_time=start_time+
-<a name="l637"></a>                 (task-&gt;last_ode_time/d+0.1)/(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l19"></span><span class=cB6>winmgr</a></span><span class=cB0>.last_ode_time/d+0.1)*
+<a name="l637"></a>                 (task-&gt;last_ode_time/d+0.1)/(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l16"></span><span class=cB6>winmgr</a></span><span class=cB0>.last_ode_time/d+0.1)*
 <a name="l638"></a>                 <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l609"></span><span class=cB6>ode_alloced_factor</a></span><span class=cB0>*d;
 <a name="l639"></a>    ode=task-&gt;next_ode;
 <a name="l640"></a>    </span><span class=cB1>while</span><span class=cB0> (ode!=&amp;task-&gt;next_ode)
@@ -702,15 +702,15 @@
 <a name="l662"></a>            </span><span class=cB1>if</span><span class=cB0> (ode-&gt;mp_derive)
 <a name="l663"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l379"></span><span class=cB5>ODEMPWake</a></span><span class=cB0>(ode);
 <a name="l664"></a>            <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l114"></span><span class=cB5>ODEState2Internal</a></span><span class=cB0>(ode);
-<a name="l665"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ode-&gt;initial_state,ode-&gt;state_internal,
+<a name="l665"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ode-&gt;initial_state,ode-&gt;state_internal,
 <a name="l666"></a>                   ode-&gt;n_internal*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
 <a name="l667"></a>            </span><span class=cB1>while</span><span class=cB0> (ode-&gt;t&lt;t_desired)
 <a name="l668"></a>            {
 <a name="l669"></a>              ode-&gt;h_max=t_desired-ode-&gt;t;
 <a name="l670"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l417"></span><span class=cB5>ODECallDerivative</a></span><span class=cB0>(ode,ode-&gt;t,ode-&gt;state_internal,ode-&gt;DstateDt);
 <a name="l671"></a>              </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;ode-&gt;n_internal; i++)
-<a name="l672"></a>                ode-&gt;state_scale[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ode-&gt;state_internal[i])+
-<a name="l673"></a>                                    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ode-&gt;DstateDt[i]*ode-&gt;h)+ode-&gt;tolerance_internal;
+<a name="l672"></a>                ode-&gt;state_scale[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>Abs</a></span><span class=cB0>(ode-&gt;state_internal[i])+
+<a name="l673"></a>                                    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>Abs</a></span><span class=cB0>(ode-&gt;DstateDt[i]*ode-&gt;h)+ode-&gt;tolerance_internal;
 <a name="l674"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l577"></span><span class=cB5>ODERK5OneStep</a></span><span class=cB0>(ode);
 <a name="l675"></a>              </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>&gt;timeout_time)
 <a name="l676"></a>              </span><span class=cB7>{</span><span class=cB0>
@@ -771,7 +771,7 @@
 <a name="l731"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l732"></a>      ode=ode-&gt;next;
 <a name="l733"></a>    }
-<a name="l734"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l19"></span><span class=cB6>winmgr</a></span><span class=cB0>.ode_time+=task-&gt;last_ode_time=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-start_time;
+<a name="l734"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l16"></span><span class=cB6>winmgr</a></span><span class=cB0>.ode_time+=task-&gt;last_ode_time=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>-start_time;
 <a name="l735"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l736"></a>}
 </span></div></pre></body>

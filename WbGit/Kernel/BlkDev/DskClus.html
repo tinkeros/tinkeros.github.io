@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.07">
+<meta name="generator" content="TinkerOS V5.08">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -38,7 +38,7 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt=1)
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt=1)
 <a name="l2"></a>{</span><span class=cB2>//Return next cnt'th clus in chain.</span><span class=cB0>
 <a name="l3"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock;
 <a name="l4"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l156"></span><span class=cB5>DrvChk</a></span><span class=cB0>(dv);
@@ -48,18 +48,18 @@
 <a name="l8"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
 <a name="l9"></a>    </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
 <a name="l10"></a>    {
-<a name="l11"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3131"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
-<a name="l12"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3129"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l11"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
+<a name="l12"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
 <a name="l13"></a>      c+=cnt;
 <a name="l14"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l15"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3130"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l15"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3375"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
 <a name="l16"></a>      </span><span class=cB1>while</span><span class=cB0> (cnt--&gt;0 &amp;&amp; 0&lt;c&lt;0x0FFFFFF8)
 <a name="l17"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l18"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,c);
-<a name="l19"></a>        c=dv-&gt;cur_fat_blk[c &amp; (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2402"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)];
+<a name="l19"></a>        c=dv-&gt;cur_fat_blk[c &amp; (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2647"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)];
 <a name="l20"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l21"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;c&lt;0x0FFFFFF8</span><span class=cB7>)</span><span class=cB0>)
-<a name="l22"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2405"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
+<a name="l22"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2650"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
 <a name="l23"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l24"></a>    </span><span class=cB1>default</span><span class=cB0>:
 <a name="l25"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
@@ -73,22 +73,22 @@
 <a name="l33"></a>  </span><span class=cB1>return</span><span class=cB0> c;
 <a name="l34"></a>}
 <a name="l35"></a>
-<a name="l36"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l36"></span><span class=cB5>Clus2Blk</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l36"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l36"></span><span class=cB5>Clus2Blk</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c)
 <a name="l37"></a>{</span><span class=cB2>//Drv clus num to blk num.</span><span class=cB0>
 <a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l156"></span><span class=cB5>DrvChk</a></span><span class=cB0>(dv);
 <a name="l39"></a>  </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
 <a name="l40"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l41"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3129"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l41"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
 <a name="l42"></a>    </span><span class=cB1>return</span><span class=cB0> c;
-<a name="l43"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3131"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
-<a name="l44"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3130"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l43"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
+<a name="l44"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3375"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
 <a name="l45"></a>    </span><span class=cB1>return</span><span class=cB0> dv-&gt;data_area+c*dv-&gt;spc;
 <a name="l46"></a>  </span><span class=cB1>default</span><span class=cB0>:
 <a name="l47"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
 <a name="l48"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l49"></a>}
 <a name="l50"></a>
-<a name="l51"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l51"></span><span class=cB5>ClusBlkRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> blks)
+<a name="l51"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l51"></span><span class=cB5>ClusBlkRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> blks)
 <a name="l52"></a>{</span><span class=cB2>//Accepts blk count, so padding on last clus is not read.</span><span class=cB0>
 <a name="l53"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l54"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock;
@@ -99,22 +99,22 @@
 <a name="l59"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
 <a name="l60"></a>    </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
 <a name="l61"></a>    {
-<a name="l62"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3131"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
+<a name="l62"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>:
 <a name="l63"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l36"></span><span class=cB5>BlkRead</a></span><span class=cB0>(dv,buf,dv-&gt;data_area+c*dv-&gt;spc,blks);
 <a name="l64"></a>      c+=(blks+dv-&gt;spc-1)/dv-&gt;spc;
 <a name="l65"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l66"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3129"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l66"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
 <a name="l67"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l36"></span><span class=cB5>BlkRead</a></span><span class=cB0>(dv,buf,c,blks);
 <a name="l68"></a>      c+=blks;
 <a name="l69"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l70"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3130"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l70"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3375"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
 <a name="l71"></a>      </span><span class=cB1>while</span><span class=cB0> (blks &amp;&amp; 0&lt;c&lt;0x0FFFFFF8)
 <a name="l72"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l73"></a>        i=blks;
 <a name="l74"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;dv-&gt;spc)
 <a name="l75"></a>          i=dv-&gt;spc;
 <a name="l76"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l36"></span><span class=cB5>BlkRead</a></span><span class=cB0>(dv,buf,dv-&gt;data_area+c*dv-&gt;spc,i);
-<a name="l77"></a>        buf+=i&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2401"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l77"></a>        buf+=i&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
 <a name="l78"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,c,1);
 <a name="l79"></a>        blks-=i;
 <a name="l80"></a>      </span><span class=cB7>}</span><span class=cB0>
@@ -133,12 +133,12 @@
 <a name="l93"></a>  </span><span class=cB1>return</span><span class=cB0> c;
 <a name="l94"></a>}
 <a name="l95"></a>
-<a name="l96"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l96"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt)
 <a name="l97"></a>{</span><span class=cB2>//Read clus cnt from drv to buf.</span><span class=cB0>
 <a name="l98"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l51"></span><span class=cB5>ClusBlkRead</a></span><span class=cB0>(dv,buf,c,cnt*dv-&gt;spc);
 <a name="l99"></a>}
 <a name="l100"></a>
-<a name="l101"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l101"></span><span class=cB5>ClusBlkWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> blks)
+<a name="l101"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l101"></span><span class=cB5>ClusBlkWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> blks)
 <a name="l102"></a>{</span><span class=cB2>//Accepts blk count, so padding on last clus is not written.</span><span class=cB0>
 <a name="l103"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l104"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock;
@@ -149,11 +149,11 @@
 <a name="l109"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
 <a name="l110"></a>    </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
 <a name="l111"></a>    {
-<a name="l112"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3129"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l112"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
 <a name="l113"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l93"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,buf,c,blks);
 <a name="l114"></a>      c=0;
 <a name="l115"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l116"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3130"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l116"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3375"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
 <a name="l117"></a>      </span><span class=cB1>while</span><span class=cB0> (blks)
 <a name="l118"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l119"></a>        </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;c&lt;0x0FFFFFF8</span><span class=cB7>)</span><span class=cB0>)
@@ -162,7 +162,7 @@
 <a name="l122"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;dv-&gt;spc)
 <a name="l123"></a>          i=dv-&gt;spc;
 <a name="l124"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l93"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,buf,dv-&gt;data_area+c*dv-&gt;spc,i);
-<a name="l125"></a>        buf+=i&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2401"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l125"></a>        buf+=i&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
 <a name="l126"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,c);
 <a name="l127"></a>        blks-=i;
 <a name="l128"></a>      </span><span class=cB7>}</span><span class=cB0>
@@ -179,21 +179,21 @@
 <a name="l139"></a>  </span><span class=cB1>return</span><span class=cB0> c;
 <a name="l140"></a>}
 <a name="l141"></a>
-<a name="l142"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l142"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> cnt)
 <a name="l143"></a>{</span><span class=cB2>//Write clus cnt from buf to drv.</span><span class=cB0>
 <a name="l144"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l101"></span><span class=cB5>ClusBlkWrite</a></span><span class=cB0>(dv,buf,c,cnt*dv-&gt;spc);
 <a name="l145"></a>}
 <a name="l146"></a>
-<a name="l147"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3158"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c=0,</span><span class=cB9>I64</span><span class=cB0> cnt=1,</span><span class=cB1>Bool</span><span class=cB0> contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l147"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c=0,</span><span class=cB9>I64</span><span class=cB0> cnt=1,</span><span class=cB1>Bool</span><span class=cB0> contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
 <a name="l148"></a>{</span><span class=cB2>//Alloc clus cnt into chain.</span><span class=cB0>
 <a name="l149"></a></span><span class=cB2>//c=0 means first clus in chain</span><span class=cB0>
 <a name="l150"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l156"></span><span class=cB5>DrvChk</a></span><span class=cB0>(dv);
 <a name="l151"></a>  </span><span class=cB1>if</span><span class=cB0> (cnt&lt;=0) </span><span class=cB1>return</span><span class=cB0> c;
 <a name="l152"></a>  </span><span class=cB1>switch</span><span class=cB0> (dv-&gt;fs_type)
 <a name="l153"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l154"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3129"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
+<a name="l154"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>:
 <a name="l155"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l318"></span><span class=cBD>RedSeaAllocClus</a></span><span class=cB0>(dv,cnt);
-<a name="l156"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3130"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
+<a name="l156"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3375"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>:
 <a name="l157"></a>    </span><span class=cB1>if</span><span class=cB0> (contiguous)
 <a name="l158"></a>    {
 <a name="l159"></a>      </span><span class=cB1>if</span><span class=cB0> (c) <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'File'</span><span class=cB0>);
