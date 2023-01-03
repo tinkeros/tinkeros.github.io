@@ -38,91 +38,91 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCDDVD.html#l1"></span><span class=cBD>ISOInit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> blk)
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCDDVD.html#l1"></span><span class=cBD>ISOInit</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> blk)
 <a name="l2"></a>{
-<a name="l3"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd;
-<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> spc=bd-&gt;blk_size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>,i=blk/spc,drv_offset=0;
-<a name="l5"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2813"></span><span class=cB9>CISOPriDesc</a></span><span class=cB0> *iso=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(bd-&gt;blk_size);
-<a name="l6"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2806"></span><span class=cB9>CISODirEntry</a></span><span class=cB0> *de;
-<a name="l7"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock,res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l3"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd;
+<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> spc=bd-&gt;blk_size&gt;&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>,i=blk/spc,drv_offset=0;
+<a name="l5"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2813"></span><span class=cB9>CISOPriDesc</a></span><span class=cB0> *iso=<a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(bd-&gt;blk_size);
+<a name="l6"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2806"></span><span class=cB9>CISODirEntry</a></span><span class=cB0> *de;
+<a name="l7"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock,res=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l8"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[8];
 <a name="l9"></a>  </span><span class=cB1>try</span><span class=cB0>
 <a name="l10"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l11"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l12"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>;
+<a name="l11"></a>    unlock=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l12"></a>    dv-&gt;fs_type=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>;
 <a name="l13"></a>    dv-&gt;spc=spc;
 <a name="l14"></a>    dv-&gt;data_area=dv-&gt;root_clus=dv-&gt;drv_offset=bd-&gt;drv_offset=dv-&gt;size=0;
-<a name="l15"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l15"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
 <a name="l16"></a>    {
-<a name="l17"></a>      dv-&gt;size=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dv-&gt;size,</span><span class=cB7>(</span><span class=cB0>i+1</span><span class=cB7>)</span><span class=cB0>*spc);
-<a name="l18"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l36"></span><span class=cB5>BlkRead</a></span><span class=cB0>(dv,iso,i*spc,spc);
+<a name="l17"></a>      dv-&gt;size=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB0>(dv-&gt;size,</span><span class=cB7>(</span><span class=cB0>i+1</span><span class=cB7>)</span><span class=cB0>*spc);
+<a name="l18"></a>      <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlk.html#l36"></span><span class=cB5>BlkRead</a></span><span class=cB0>(dv,iso,i*spc,spc);
 <a name="l19"></a>      buf[0](</span><span class=cB9>U32</span><span class=cB0>)=iso-&gt;id[0](</span><span class=cB9>U32</span><span class=cB0>);
 <a name="l20"></a>      buf[4](</span><span class=cB9>U16</span><span class=cB0>)=iso-&gt;id[4](</span><span class=cB1>U8</span><span class=cB0>);
-<a name="l21"></a>      </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;CD001\0CDW02\0BEA01\0BOOT2\0NSR02\0NSR03\0TEA01\0&quot;</span><span class=cB0>,
-<a name="l22"></a>                       <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4478"></span><span class=cB3>LMF_EXACT</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l21"></a>      </span><span class=cB1>switch</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;CD001\0CDW02\0BEA01\0BOOT2\0NSR02\0NSR03\0TEA01\0&quot;</span><span class=cB0>,
+<a name="l22"></a>                       <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l4478"></span><span class=cB3>LMF_EXACT</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l23"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l24"></a>      </span><span class=cB1>case</span><span class=cB0> 0:
 <a name="l25"></a>        </span><span class=cB1>switch</span><span class=cB0> (iso-&gt;type)
 <a name="l26"></a>        {
-<a name="l27"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2800"></span><span class=cB3>ISOT_BOOT_RECORD</a></span><span class=cB0>:
-<a name="l28"></a>          drv_offset+=(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2648"></span><span class=cB3>DVD_BLK_SIZE</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2648"></span><span class=cB3>DVD_BLK_SIZE</a></span><span class=cB0>)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2647"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
+<a name="l27"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2800"></span><span class=cB3>ISOT_BOOT_RECORD</a></span><span class=cB0>:
+<a name="l28"></a>          drv_offset+=(2*<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2648"></span><span class=cB3>DVD_BLK_SIZE</a></span><span class=cB0>+<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2648"></span><span class=cB3>DVD_BLK_SIZE</a></span><span class=cB0>)/<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2647"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
 <a name="l29"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l30"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2802"></span><span class=cB3>ISOT_SUPPLEMENTARY_DESC</a></span><span class=cB0>:
+<a name="l30"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2802"></span><span class=cB3>ISOT_SUPPLEMENTARY_DESC</a></span><span class=cB0>:
 <a name="l31"></a>          de=&amp;iso-&gt;root_dir_record;
-<a name="l32"></a>          dv-&gt;size=iso-&gt;vol_space_size.little*bd-&gt;blk_size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
-<a name="l33"></a>          </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>iso-&gt;publisher_id,</span><span class=cB6>&quot;TempleOS RedSea&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l32"></a>          dv-&gt;size=iso-&gt;vol_space_size.little*bd-&gt;blk_size&gt;&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l33"></a>          </span><span class=cB1>if</span><span class=cB0> (!<a href="http://www.templeos.org/Wb/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>iso-&gt;publisher_id,</span><span class=cB6>&quot;TempleOS RedSea&quot;</span><span class=cB7>)</span><span class=cB0>)
 <a name="l34"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l35"></a>            dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
+<a name="l35"></a>            dv-&gt;fs_type=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3374"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
 <a name="l36"></a>            bd-&gt;drv_offset=dv-&gt;drv_offset=19&lt;&lt;2+drv_offset;
 <a name="l37"></a>            bd-&gt;max_blk=dv-&gt;size-1;
 <a name="l38"></a>            dv-&gt;size-=bd-&gt;drv_offset;
-<a name="l39"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l67"></span><span class=cBD>RedSeaInit</a></span><span class=cB0>(dv);
+<a name="l39"></a>            <a href="http://www.templeos.org/Wb/Kernel/BlkDev/FileSysRedSea.html#l67"></span><span class=cBD>RedSeaInit</a></span><span class=cB0>(dv);
 <a name="l40"></a>          </span><span class=cB7>}</span><span class=cB0>
 <a name="l41"></a>          </span><span class=cB1>else</span><span class=cB0>
 <a name="l42"></a>            dv-&gt;root_clus=de-&gt;loc.little;
-<a name="l43"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l43"></a>          res=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l44"></a>          </span><span class=cB1>goto</span><span class=cB0> di_done;
-<a name="l45"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2804"></span><span class=cB3>ISOT_TERMINATOR</a></span><span class=cB0>:
-<a name="l46"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
+<a name="l45"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2804"></span><span class=cB3>ISOT_TERMINATOR</a></span><span class=cB0>:
+<a name="l46"></a>          <a href="http://www.templeos.org/Wb/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
 <a name="l47"></a>        }
 <a name="l48"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l49"></a>      </span><span class=cB1>default</span><span class=cB0>: </span><span class=cB2>//Its normal for ISO3346 to read NULL blk as terminator</span><span class=cB0>
-<a name="l50"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
-<a name="l51"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
+<a name="l50"></a>        <a href="http://www.templeos.org/Wb/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;File System Not Supported\n&quot;</span><span class=cB0>);
+<a name="l51"></a>        <a href="http://www.templeos.org/Wb/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
 <a name="l52"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l53"></a>      i++;
 <a name="l54"></a>    }
 <a name="l55"></a>di_done:
-<a name="l56"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(iso);
+<a name="l56"></a>    <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(iso);
 <a name="l57"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l58"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l58"></a>      <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
 <a name="l59"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l60"></a>  </span><span class=cB1>catch</span><span class=cB0>
 <a name="l61"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l62"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>;
+<a name="l62"></a>    dv-&gt;fs_type=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3376"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>;
 <a name="l63"></a>    dv-&gt;spc=spc;
 <a name="l64"></a>    dv-&gt;drv_offset=bd-&gt;drv_offset=dv-&gt;data_area=dv-&gt;root_clus=0;
-<a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(iso);
+<a name="l65"></a>    <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(iso);
 <a name="l66"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l67"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l67"></a>      <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
 <a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l69"></a>  </span><span class=cB1>return</span><span class=cB0> res;
 <a name="l70"></a>}
 <a name="l71"></a>
-<a name="l72"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCDDVD.html#l72"></span><span class=cB5>DVDImageRead</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> dvd_drv_let,</span><span class=cB1>U8</span><span class=cB0> *out_name)
+<a name="l72"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCDDVD.html#l72"></span><span class=cB5>DVDImageRead</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> dvd_drv_let,</span><span class=cB1>U8</span><span class=cB0> *out_name)
 <a name="l73"></a>{</span><span class=cB2>//Read entire CD/DVD image into ISO file.</span><span class=cB0>
-<a name="l74"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(dvd_drv_let);
-<a name="l75"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd;
-<a name="l76"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>),
-<a name="l77"></a>      *out_name2=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(out_name,</span><span class=cB6>&quot;ISO&quot;</span><span class=cB0>);
-<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(out_name2,</span><span class=cB6>&quot;w&quot;</span><span class=cB0>);
-<a name="l79"></a>  </span><span class=cB9>I64</span><span class=cB0> n,spc=bd-&gt;blk_size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>,blk=0,cnt,retry;
-<a name="l80"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l35"></span><span class=cB5>BlkDevInit</a></span><span class=cB0>(bd);
-<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>)
-<a name="l82"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l74"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(dvd_drv_let);
+<a name="l75"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd;
+<a name="l76"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=<a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>),
+<a name="l77"></a>      *out_name2=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(out_name,</span><span class=cB6>&quot;ISO&quot;</span><span class=cB0>);
+<a name="l78"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(out_name2,</span><span class=cB6>&quot;w&quot;</span><span class=cB0>);
+<a name="l79"></a>  </span><span class=cB9>I64</span><span class=cB0> n,spc=bd-&gt;blk_size&gt;&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>,blk=0,cnt,retry;
+<a name="l80"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlkDev.html#l35"></span><span class=cB5>BlkDevInit</a></span><span class=cB0>(bd);
+<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type!=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>)
+<a name="l82"></a>    <a href="http://www.templeos.org/Wb/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
 <a name="l83"></a>  </span><span class=cB1>if</span><span class=cB0> (!out_name)
-<a name="l84"></a>    out_name=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dft_iso_filename;
-<a name="l85"></a>  cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l41"></span><span class=cB5>CeilU64</a></span><span class=cB0>(dv-&gt;size,spc);
+<a name="l84"></a>    out_name=<a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dft_iso_filename;
+<a name="l85"></a>  cnt=<a href="http://www.templeos.org/Wb/Kernel/KMathB.html#l41"></span><span class=cB5>CeilU64</a></span><span class=cB0>(dv-&gt;size,spc);
 <a name="l86"></a>  </span><span class=cB1>while</span><span class=cB0> (cnt&gt;0)
 <a name="l87"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l88"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;COPY_BUF_BLKS)
@@ -133,18 +133,18 @@
 <a name="l93"></a>      n=bd-&gt;max_reads;
 <a name="l94"></a>    retry=4;
 <a name="l95"></a>    </span><span class=cB1>while</span><span class=cB0> (--retry)
-<a name="l96"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l536"></span><span class=cBD>ATAPIReadBlks2</a></span><span class=cB7>(</span><span class=cB0>bd,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>+7.0+0.004*n/spc,buf,blk/spc,n/spc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l96"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l536"></span><span class=cBD>ATAPIReadBlks2</a></span><span class=cB7>(</span><span class=cB0>bd,<a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>+7.0+0.004*n/spc,buf,blk/spc,n/spc,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l97"></a></span><span class=cB2>//n is 0x800 if max_reads.  Up to 8 additional seconds</span><span class=cB0>
 <a name="l98"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l99"></a>    </span><span class=cB1>if</span><span class=cB0> (!retry)
-<a name="l100"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l536"></span><span class=cBD>ATAPIReadBlks2</a></span><span class=cB0>(bd,0,buf,blk/spc,n/spc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l101"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l205"></span><span class=cB5>FBlkWrite</a></span><span class=cB0>(f,buf,blk,n);
+<a name="l100"></a>      <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l536"></span><span class=cBD>ATAPIReadBlks2</a></span><span class=cB0>(bd,0,buf,blk/spc,n/spc,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l101"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l205"></span><span class=cB5>FBlkWrite</a></span><span class=cB0>(f,buf,blk,n);
 <a name="l102"></a>    cnt-=n;
 <a name="l103"></a>    blk+=n;
 <a name="l104"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l105"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
-<a name="l106"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l107"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out_name2);
+<a name="l105"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l106"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l107"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out_name2);
 <a name="l108"></a>}
 <a name="l109"></a>
 <a name="l110"></a></span><span class=cB1>class</span><span class=cB0> CDualBuf
@@ -152,18 +152,18 @@
 <a name="l112"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf0,*buf1;
 <a name="l113"></a>  </span><span class=cB9>I64</span><span class=cB0> in_buf,out_buf,cnt;
 <a name="l114"></a>  </span><span class=cB1>U8</span><span class=cB0> *filename;
-<a name="l115"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *dvd_bd;
+<a name="l115"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *dvd_bd;
 <a name="l116"></a>};
 <a name="l117"></a>
-<a name="l118"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCDDVD.html#l118"></span><span class=cBD>DVDImageWriteTask</a></span><span class=cB0>(CDualBuf *d)
+<a name="l118"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCDDVD.html#l118"></span><span class=cBD>DVDImageWriteTask</a></span><span class=cB0>(CDualBuf *d)
 <a name="l119"></a>{
 <a name="l120"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
 <a name="l121"></a>  </span><span class=cB9>I64</span><span class=cB0> n,blk=0,cnt=d-&gt;cnt;
-<a name="l122"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
-<a name="l123"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l274"></span><span class=cB5>FileAttr</a></span><span class=cB7>(</span><span class=cB0>d-&gt;filename</span><span class=cB7>)</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2919"></span><span class=cB3>RS_ATTR_CONTIGUOUS</a></span><span class=cB0>)
-<a name="l124"></a>    f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(d-&gt;filename,</span><span class=cB6>&quot;rc&quot;</span><span class=cB0>);
+<a name="l122"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l123"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskStrA.html#l274"></span><span class=cB5>FileAttr</a></span><span class=cB7>(</span><span class=cB0>d-&gt;filename</span><span class=cB7>)</span><span class=cB0>&amp;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2919"></span><span class=cB3>RS_ATTR_CONTIGUOUS</a></span><span class=cB0>)
+<a name="l124"></a>    f=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(d-&gt;filename,</span><span class=cB6>&quot;rc&quot;</span><span class=cB0>);
 <a name="l125"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l126"></a>    f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(d-&gt;filename,</span><span class=cB6>&quot;r&quot;</span><span class=cB0>);
+<a name="l126"></a>    f=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(d-&gt;filename,</span><span class=cB6>&quot;r&quot;</span><span class=cB0>);
 <a name="l127"></a>  </span><span class=cB1>while</span><span class=cB0> (cnt&gt;0)
 <a name="l128"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l129"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;COPY_BUF_BLKS)
@@ -177,65 +177,65 @@
 <a name="l137"></a>    </span><span class=cB1>else</span><span class=cB0>
 <a name="l138"></a>      buf=d-&gt;buf0;
 <a name="l139"></a>    </span><span class=cB1>while</span><span class=cB0> (d-&gt;in_buf&gt;d-&gt;out_buf+1)
-<a name="l140"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l141"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l148"></span><span class=cB5>FBlkRead</a></span><span class=cB0>(f,buf,blk,n);
+<a name="l140"></a>      <a href="http://www.templeos.org/Wb/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l141"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l148"></span><span class=cB5>FBlkRead</a></span><span class=cB0>(f,buf,blk,n);
 <a name="l142"></a>    d-&gt;in_buf++;
 <a name="l143"></a>    cnt-=n;
 <a name="l144"></a>    blk+=n;
 <a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l146"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l146"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
 <a name="l147"></a>}
 <a name="l148"></a>
-<a name="l149"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCDDVD.html#l149"></span><span class=cB5>DVDImageWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> dvd_drv_let,</span><span class=cB1>U8</span><span class=cB0> *in_name=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> media_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2925"></span><span class=cB3>MT_DVD</a></span><span class=cB0>)
+<a name="l149"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCDDVD.html#l149"></span><span class=cB5>DVDImageWrite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> dvd_drv_let,</span><span class=cB1>U8</span><span class=cB0> *in_name=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> media_type=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2925"></span><span class=cB3>MT_DVD</a></span><span class=cB0>)
 <a name="l150"></a>{</span><span class=cB2>//Write CD/DVD ISO file to disk.</span><span class=cB0>
-<a name="l151"></a>  CDualBuf *d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CDualBuf</span><span class=cB7>)</span><span class=cB0>);
+<a name="l151"></a>  CDualBuf *d=<a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CDualBuf</span><span class=cB7>)</span><span class=cB0>);
 <a name="l152"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*in_name2,*in_name3;
 <a name="l153"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n,spc,blk=0,cnt;
-<a name="l154"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(dvd_drv_let);
-<a name="l155"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd,*bd2;
-<a name="l156"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *task;
-<a name="l157"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
+<a name="l154"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3403"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(dvd_drv_let);
+<a name="l155"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd=dv-&gt;bd,*bd2;
+<a name="l156"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *task;
+<a name="l157"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3478"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
 <a name="l158"></a>  </span><span class=cB1>if</span><span class=cB0> (!in_name)
-<a name="l159"></a>    in_name=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dft_iso_filename;
-<a name="l160"></a>  in_name3=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(in_name,</span><span class=cB6>&quot;ISO&quot;</span><span class=cB0>);
-<a name="l161"></a>  in_name2=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l205"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(in_name3);
-<a name="l162"></a>  f=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(in_name2,</span><span class=cB6>&quot;r&quot;</span><span class=cB0>);
+<a name="l159"></a>    in_name=<a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dft_iso_filename;
+<a name="l160"></a>  in_name3=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(in_name,</span><span class=cB6>&quot;ISO&quot;</span><span class=cB0>);
+<a name="l161"></a>  in_name2=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskStrA.html#l205"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(in_name3);
+<a name="l162"></a>  f=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(in_name2,</span><span class=cB6>&quot;r&quot;</span><span class=cB0>);
 <a name="l163"></a>  </span><span class=cB1>if</span><span class=cB0> (!f)
 <a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l165"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
+<a name="l165"></a>    <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
 <a name="l166"></a>    </span><span class=cB1>return</span><span class=cB0>;
 <a name="l167"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l168"></a>  cnt=(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l1"></span><span class=cB5>FSize</a></span><span class=cB7>(</span><span class=cB0>f</span><span class=cB7>)</span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2647"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-1)&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
-<a name="l169"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
-<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>)
-<a name="l171"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
-<a name="l172"></a>  bd2=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l272"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(*in_name2);
+<a name="l168"></a>  cnt=(<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l1"></span><span class=cB5>FSize</a></span><span class=cB7>(</span><span class=cB0>f</span><span class=cB7>)</span><span class=cB0>+<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2647"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-1)&gt;&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l169"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
+<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type!=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>)
+<a name="l171"></a>    <a href="http://www.templeos.org/Wb/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l172"></a>  bd2=<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlkDev.html#l272"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(*in_name2);
 <a name="l173"></a>  </span><span class=cB1>while</span><span class=cB0> (bd2-&gt;lock_fwding)
 <a name="l174"></a>    bd2=bd2-&gt;lock_fwding;  </span><span class=cB2>//If two blkdevs on same controller, use one lock</span><span class=cB0>
-<a name="l175"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>bd2-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3299"></span><span class=cB3>BDT_ATA</a></span><span class=cB0> || bd2-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l175"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>bd2-&gt;type==<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3299"></span><span class=cB3>BDT_ATA</a></span><span class=cB0> || bd2-&gt;type==<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3302"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
 <a name="l176"></a>      bd2-&gt;base0==bd-&gt;base0)
 <a name="l177"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l178"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Can't burn CD/DVD on same ATA controller as file.\n\n&quot;</span><span class=cB0>);
-<a name="l179"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
+<a name="l178"></a>    <a href="http://www.templeos.org/Wb/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Can't burn CD/DVD on same ATA controller as file.\n\n&quot;</span><span class=cB0>);
+<a name="l179"></a>    <a href="http://www.templeos.org/Wb/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BlkDev'</span><span class=cB0>);
 <a name="l180"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l181"></a>  bd-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3313"></span><span class=cB3>BDF_READ_ONLY_OVERRIDE</a></span><span class=cB0>;
-<a name="l182"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l35"></span><span class=cB5>BlkDevInit</a></span><span class=cB0>(bd);
-<a name="l183"></a>  spc=bd-&gt;blk_size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l181"></a>  bd-&gt;flags|=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3313"></span><span class=cB3>BDF_READ_ONLY_OVERRIDE</a></span><span class=cB0>;
+<a name="l182"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlkDev.html#l35"></span><span class=cB5>BlkDevInit</a></span><span class=cB0>(bd);
+<a name="l183"></a>  spc=bd-&gt;blk_size&gt;&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
 <a name="l184"></a>  </span><span class=cB1>if</span><span class=cB0> (dv-&gt;size&lt;cnt)
 <a name="l185"></a>    dv-&gt;size=cnt;
 <a name="l186"></a>  d-&gt;filename=in_name2;
 <a name="l187"></a>  d-&gt;dvd_bd=bd;
-<a name="l188"></a>  d-&gt;buf0=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
-<a name="l189"></a>  d-&gt;buf1=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
+<a name="l188"></a>  d-&gt;buf0=<a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
+<a name="l189"></a>  d-&gt;buf1=<a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(COPY_BUF_BLKS&lt;&lt;<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2646"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
 <a name="l190"></a>  d-&gt;cnt=cnt;
-<a name="l191"></a>  task=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCDDVD.html#l118"></span><span class=cBD>DVDImageWriteTask</a></span><span class=cB0>,d,</span><span class=cB6>&quot;Write CD/DVD&quot;</span><span class=cB0>);
+<a name="l191"></a>  task=<a href="http://www.templeos.org/Wb/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskCDDVD.html#l118"></span><span class=cBD>DVDImageWriteTask</a></span><span class=cB0>,d,</span><span class=cB6>&quot;Write CD/DVD&quot;</span><span class=cB0>);
 <a name="l192"></a>  </span><span class=cB1>while</span><span class=cB0> (d-&gt;in_buf&lt;=d-&gt;out_buf)
-<a name="l193"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l1"></span><span class=cB5>BlkDevLock</a></span><span class=cB0>(bd);
-<a name="l195"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l418"></span><span class=cBD>ATAPIWaitReady</a></span><span class=cB0>(bd,0);
-<a name="l196"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
-<a name="l197"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=cnt;
-<a name="l198"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Writing&quot;</span><span class=cB0>);
+<a name="l193"></a>    <a href="http://www.templeos.org/Wb/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l194"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlkDev.html#l1"></span><span class=cB5>BlkDevLock</a></span><span class=cB0>(bd);
+<a name="l195"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l418"></span><span class=cBD>ATAPIWaitReady</a></span><span class=cB0>(bd,0);
+<a name="l196"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
+<a name="l197"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=cnt;
+<a name="l198"></a>  <a href="http://www.templeos.org/Wb/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Writing&quot;</span><span class=cB0>);
 <a name="l199"></a>  </span><span class=cB1>while</span><span class=cB0> (cnt&gt;0)
 <a name="l200"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l201"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;COPY_BUF_BLKS)
@@ -249,39 +249,39 @@
 <a name="l209"></a>    </span><span class=cB1>else</span><span class=cB0>
 <a name="l210"></a>      buf=d-&gt;buf0;
 <a name="l211"></a>    </span><span class=cB1>while</span><span class=cB0> (d-&gt;in_buf&lt;=d-&gt;out_buf)
-<a name="l212"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l213"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l710"></span><span class=cBD>ATAPIWriteBlks</a></span><span class=cB0>(bd,buf,blk/spc,</span><span class=cB7>(</span><span class=cB0>n+spc-1</span><span class=cB7>)</span><span class=cB0>/spc);
+<a name="l212"></a>      <a href="http://www.templeos.org/Wb/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l213"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l710"></span><span class=cBD>ATAPIWriteBlks</a></span><span class=cB0>(bd,buf,blk/spc,</span><span class=cB7>(</span><span class=cB0>n+spc-1</span><span class=cB7>)</span><span class=cB0>/spc);
 <a name="l214"></a>    d-&gt;out_buf++;
 <a name="l215"></a>    cnt-=n;
 <a name="l216"></a>    blk+=n;
-<a name="l217"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>+=n;
+<a name="l217"></a>    <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>+=n;
 <a name="l218"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l219"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
-<a name="l220"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
-<a name="l221"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=2;
-<a name="l222"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Closing&quot;</span><span class=cB0>);
+<a name="l219"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
+<a name="l220"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
+<a name="l221"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=2;
+<a name="l222"></a>  <a href="http://www.templeos.org/Wb/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Closing&quot;</span><span class=cB0>);
 <a name="l223"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;2; i++)
 <a name="l224"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l225"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x100,i); </span><span class=cB2>//Close tracks</span><span class=cB0>
-<a name="l226"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>++;
+<a name="l225"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x100,i); </span><span class=cB2>//Close tracks</span><span class=cB0>
+<a name="l226"></a>    <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>++;
 <a name="l227"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l228"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
-<a name="l229"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x200); </span><span class=cB2>//close disk</span><span class=cB0>
-<a name="l230"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
-<a name="l231"></a>  </span><span class=cB1>if</span><span class=cB0> (media_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2925"></span><span class=cB3>MT_DVD</a></span><span class=cB0>)
+<a name="l228"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
+<a name="l229"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x200); </span><span class=cB2>//close disk</span><span class=cB0>
+<a name="l230"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
+<a name="l231"></a>  </span><span class=cB1>if</span><span class=cB0> (media_type==<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l2925"></span><span class=cB3>MT_DVD</a></span><span class=cB0>)
 <a name="l232"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l233"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x300);
-<a name="l234"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
+<a name="l233"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l696"></span><span class=cBD>ATAPIClose</a></span><span class=cB0>(bd,0x300);
+<a name="l234"></a>    <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskATA.html#l675"></span><span class=cBD>ATAPISync</a></span><span class=cB0>(bd);
 <a name="l235"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l236"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>=0;
-<a name="l237"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
-<a name="l238"></a>  bd-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3313"></span><span class=cB3>BDF_READ_ONLY_OVERRIDE</a></span><span class=cB0>;
-<a name="l239"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l17"></span><span class=cB5>BlkDevUnlock</a></span><span class=cB0>(bd);
-<a name="l240"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d-&gt;buf0);
-<a name="l241"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d-&gt;buf1);
-<a name="l242"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(in_name2);
-<a name="l243"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(in_name3);
-<a name="l244"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
+<a name="l236"></a>  *<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>=0;
+<a name="l237"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
+<a name="l238"></a>  bd-&gt;flags&amp;=~<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l3313"></span><span class=cB3>BDF_READ_ONLY_OVERRIDE</a></span><span class=cB0>;
+<a name="l239"></a>  <a href="http://www.templeos.org/Wb/Kernel/BlkDev/DskBlkDev.html#l17"></span><span class=cB5>BlkDevUnlock</a></span><span class=cB0>(bd);
+<a name="l240"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d-&gt;buf0);
+<a name="l241"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d-&gt;buf1);
+<a name="l242"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(in_name2);
+<a name="l243"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(in_name3);
+<a name="l244"></a>  <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
 <a name="l245"></a>}
 </span></div></pre></body>
 </html>
