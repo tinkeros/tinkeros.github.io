@@ -41,7 +41,7 @@
 <pre style="font-family:courier;font-size:10pt">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*TempleOS runs exclusively in ring 0.</span><span class=cB0>
-<a name="l2"></a></span><span class=cB2>Ring 0 is part of the </span><a href="http://www.templeos.org/Wb/Doc/Charter.html#l1"><span class=cB4>Charter</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>Ring 0 is part of the </span><a href="http://tinkeros.github.io/WbGit/Doc/Charter.html#l1"><span class=cB4>Charter</span></a><span class=cB2>.</span><span class=cB0>
 <a name="l3"></a></span><span class=cB2>This demo is for you to play around</span><span class=cB0>
 <a name="l4"></a></span><span class=cB2>with ring 3.  TempleOS is for</span><span class=cB0>
 <a name="l5"></a></span><span class=cB2>recreational programming, after all.</span><span class=cB0>
@@ -55,12 +55,12 @@
 <a name="l13"></a>
 <a name="l14"></a></span><span class=cB1>asm</span><span class=cB0> {
 <a name="l15"></a>INT_TO_RING0::  </span><span class=cB2>//Set to handle general protection 0xD fault temporarily.</span><span class=cB0>
-<a name="l16"></a>        </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> [<a href="http://www.templeos.org/Wb/Kernel/KStart32.html#l41"></span><span class=cBD>SYS_PROGRESS1</a></span><span class=cB0>]
-<a name="l17"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds     </span><span class=cB2>//STKSEG</span><span class=cB0>
+<a name="l16"></a>        </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> [<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l41"></span><span class=cBD>SYS_PROGRESS1</a></span><span class=cB0>]
+<a name="l17"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds     </span><span class=cB2>//STKSEG</span><span class=cB0>
 <a name="l18"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> [&amp;old_stk]
 <a name="l19"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>
 <a name="l20"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> 0           </span><span class=cB2>//FLAGS--interrupts off</span><span class=cB0>
-<a name="l21"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.cs64
+<a name="l21"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.cs64
 <a name="l22"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> [&amp;new_rip]
 <a name="l23"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>
 <a name="l24"></a>        </span><span class=cB1>IRET</span><span class=cB0>
@@ -69,12 +69,12 @@
 <a name="l27"></a></span><span class=cB1>U0</span><span class=cB0> Ring3Demo()
 <a name="l28"></a>{
 <a name="l29"></a>  </span><span class=cB1>U8</span><span class=cB0> *old_vect;
-<a name="l30"></a>  </span><span class=cB6>&quot;Progress1 Before:%X\n&quot;</span><span class=cB0>,<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>;
+<a name="l30"></a>  </span><span class=cB6>&quot;Progress1 Before:%X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>;
 <a name="l31"></a>  </span><span class=cB1>CLI</span><span class=cB0>
-<a name="l32"></a>  old_vect=<a href="http://www.templeos.org/Wb/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x0D,INT_TO_RING0,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l337"></span><span class=cB3>IDTET_TRAP</a></span><span class=cB0>,0);
+<a name="l32"></a>  old_vect=<a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x0D,INT_TO_RING0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l337"></span><span class=cB3>IDTET_TRAP</a></span><span class=cB0>,0);
 <a name="l33"></a>
-<a name="l34"></a>  <a href="http://www.templeos.org/Wb/Kernel/MultiProc.html#l74"></span><span class=cB5>TSSBusy</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr_ring3,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
-<a name="l35"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l263"></span><span class=cB5>SetRAX</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr_ring3+3);
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l74"></span><span class=cB5>TSSBusy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr_ring3,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
+<a name="l35"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l263"></span><span class=cB5>SetRAX</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr_ring3+3);
 <a name="l36"></a>  </span><span class=cB1>LTR</span><span class=cB0>   </span><span class=cBC>AX</span><span class=cB0>
 <a name="l37"></a>
 <a name="l38"></a>  </span><span class=cB1>asm</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
@@ -83,35 +83,35 @@
 <a name="l41"></a>    </span><span class=cB1>LEA</span><span class=cB0> </span><span class=cBC>RAX</span><span class=cB0>,[R3_CALLBACK]
 <a name="l42"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cB9>U64</span><span class=cB0> [&amp;new_rip],</span><span class=cBC>RAX</span><span class=cB0>
 <a name="l43"></a>
-<a name="l44"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>AX</span><span class=cB0>,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds_ring3+3
+<a name="l44"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds_ring3+3
 <a name="l45"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
 <a name="l46"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
 <a name="l47"></a>
-<a name="l48"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U32</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds_ring3+3     </span><span class=cB2>//STKSEG</span><span class=cB0>
+<a name="l48"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds_ring3+3     </span><span class=cB2>//STKSEG</span><span class=cB0>
 <a name="l49"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U64</span><span class=cB0> [&amp;old_stk]
 <a name="l50"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U32</span><span class=cB0> 0           </span><span class=cB2>//FLAGS--interrupts off</span><span class=cB0>
-<a name="l51"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U32</span><span class=cB0> <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.cs64_ring3+3
+<a name="l51"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.cs64_ring3+3
 <a name="l52"></a>    </span><span class=cB1>LEA</span><span class=cB0> </span><span class=cBC>RAX</span><span class=cB0>,[R3_START]
 <a name="l53"></a>    </span><span class=cB1>PUSH</span><span class=cB0>        </span><span class=cBC>RAX</span><span class=cB0>
 <a name="l54"></a>    </span><span class=cB1>IRET</span><span class=cB0>
 <a name="l55"></a>
 <a name="l56"></a>    R3_START:
-<a name="l57"></a>    </span><span class=cB1>INC</span><span class=cB0> </span><span class=cB9>U64</span><span class=cB0> [<a href="http://www.templeos.org/Wb/Kernel/KStart32.html#l41"></span><span class=cBD>SYS_PROGRESS1</a></span><span class=cB0>]
+<a name="l57"></a>    </span><span class=cB1>INC</span><span class=cB0> </span><span class=cB9>U64</span><span class=cB0> [<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l41"></span><span class=cBD>SYS_PROGRESS1</a></span><span class=cB0>]
 <a name="l58"></a>    </span><span class=cB1>CLI</span><span class=cB0> </span><span class=cB2>//This causes general protection fault #13</span><span class=cB0>
 <a name="l59"></a>
 <a name="l60"></a>    R3_CALLBACK:
-<a name="l61"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>AX</span><span class=cB0>,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds
+<a name="l61"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>AX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l390"></span><span class=cB9>CGDT</a></span><span class=cB0>.ds
 <a name="l62"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>DS</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
 <a name="l63"></a>    </span><span class=cB1>MOV</span><span class=cB0> </span><span class=cBC>ES</span><span class=cB0>,</span><span class=cBC>AX</span><span class=cB0>
 <a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l65"></a>
-<a name="l66"></a>  <a href="http://www.templeos.org/Wb/Kernel/MultiProc.html#l74"></span><span class=cB5>TSSBusy</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
-<a name="l67"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l263"></span><span class=cB5>SetRAX</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr);
+<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l74"></span><span class=cB5>TSSBusy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
+<a name="l67"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l263"></span><span class=cB5>SetRAX</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;tss-&gt;tr);
 <a name="l68"></a>  </span><span class=cB1>LTR</span><span class=cB0>   </span><span class=cBC>AX</span><span class=cB0>
 <a name="l69"></a>
-<a name="l70"></a>  <a href="http://www.templeos.org/Wb/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x0D,old_vect,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l336"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>,0);
+<a name="l70"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x0D,old_vect,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l336"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>,0);
 <a name="l71"></a>  </span><span class=cB1>STI</span><span class=cB0>
-<a name="l72"></a>  </span><span class=cB6>&quot;Progress1 After :%X\n&quot;</span><span class=cB0>,<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>;
+<a name="l72"></a>  </span><span class=cB6>&quot;Progress1 After :%X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>;
 <a name="l73"></a>}
 <a name="l74"></a>
 <a name="l75"></a>Ring3Demo;

@@ -38,7 +38,7 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB2>//See </span><a href="http://www.templeos.org/Wb/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB0>
+<a name="l1"></a><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB0>
 <a name="l2"></a></span><span class=cB1>U8</span><span class=cB0> rev[256],    </span><span class=cB2>//The VGA bits are bwd</span><span class=cB0>
 <a name="l3"></a>
 <a name="l4"></a>   image[640*480/8];    </span><span class=cB2>//We need read-modify write.</span><span class=cB0>
@@ -47,27 +47,27 @@
 <a name="l7"></a></span><span class=cB1>U0</span><span class=cB0> MGInit()
 <a name="l8"></a>{
 <a name="l9"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
-<a name="l10"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(image,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>image</span><span class=cB7>)</span><span class=cB0>);
-<a name="l11"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(rev,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>rev</span><span class=cB7>)</span><span class=cB0>);
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(image,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>image</span><span class=cB7>)</span><span class=cB0>);
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(rev,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>rev</span><span class=cB7>)</span><span class=cB0>);
 <a name="l12"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;256;i++)
 <a name="l13"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;8;j++)
-<a name="l14"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;i,j</span><span class=cB7>)</span><span class=cB0>)
-<a name="l15"></a>        <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(&amp;rev[i],7-j);
+<a name="l14"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;i,j</span><span class=cB7>)</span><span class=cB0>)
+<a name="l15"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(&amp;rev[i],7-j);
 <a name="l16"></a>}
 <a name="l17"></a> 
 <a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> MGUpdate()
 <a name="l19"></a>{</span><span class=cB2>//Copy image to VGA memory</span><span class=cB0>
 <a name="l20"></a></span><span class=cB2>//For better performance we could only write what's changed.</span><span class=cB0>
 <a name="l21"></a>  </span><span class=cB2>//0xA0000 alias is slower than normal RAM.</span><span class=cB0>
-<a name="l22"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l4399"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l4410"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l23"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l4400"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,0xF);</span><span class=cB2>//All color planes at once -- Black and White</span><span class=cB0>
-<a name="l24"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(<a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.vga_alias,image,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>image</span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>//Alias of 0xA0000</span><span class=cB0>
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4399"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4410"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,0xF);</span><span class=cB2>//All color planes at once -- Black and White</span><span class=cB0>
+<a name="l24"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.vga_alias,image,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>image</span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>//Alias of 0xA0000</span><span class=cB0>
 <a name="l25"></a>}
 <a name="l26"></a> 
 <a name="l27"></a></span><span class=cB1>U0</span><span class=cB0> MGPlot(</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y)
 <a name="l28"></a>{
 <a name="l29"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=x&lt;640 &amp;&amp; 0&lt;=y&lt;480)
-<a name="l30"></a>    <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(image,y*640+x^7);
+<a name="l30"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(image,y*640+x^7);
 <a name="l31"></a>}
 <a name="l32"></a> 
 <a name="l33"></a></span><span class=cB1>U0</span><span class=cB0> MGHLine(</span><span class=cB9>I64</span><span class=cB0> x1,</span><span class=cB9>I64</span><span class=cB0> x2,</span><span class=cB9>I64</span><span class=cB0> y)
@@ -75,7 +75,7 @@
 <a name="l35"></a></span><span class=cB2>//For performance, we do as many whole-bytes as possible.</span><span class=cB0>
 <a name="l36"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr;
 <a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> i,w,leading,trailing,whole_bytes;
-<a name="l38"></a>  </span><span class=cB1>if</span><span class=cB0> (x2&lt;x1) <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l114"></span><span class=cB5>SwapI64</a></span><span class=cB0>(&amp;x1,&amp;x2);
+<a name="l38"></a>  </span><span class=cB1>if</span><span class=cB0> (x2&lt;x1) <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l114"></span><span class=cB5>SwapI64</a></span><span class=cB0>(&amp;x1,&amp;x2);
 <a name="l39"></a>  ptr=image+y*640/8+x1&gt;&gt;3;
 <a name="l40"></a>  w=x2-x1+1;
 <a name="l41"></a>  leading =8-x1&amp;7;
@@ -98,16 +98,16 @@
 <a name="l58"></a>  </span><span class=cB9>I64</span><span class=cB0> dx=x2-x1,dy=y2-y1;
 <a name="l59"></a>  x1&lt;&lt;=32; x2&lt;&lt;=32;
 <a name="l60"></a>  y1&lt;&lt;=32; y2&lt;&lt;=32;
-<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB7>(</span><span class=cB0>dx</span><span class=cB7>)</span><span class=cB0>&gt;<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB7>(</span><span class=cB0>dy</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l62"></a>    dy=dy&lt;&lt;32/<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB0>(dx);
-<a name="l63"></a>    dx=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l107"></span><span class=cB5>SignI64</a></span><span class=cB0>(dx)&lt;&lt;32;
+<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB7>(</span><span class=cB0>dx</span><span class=cB7>)</span><span class=cB0>&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB7>(</span><span class=cB0>dy</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l62"></a>    dy=dy&lt;&lt;32/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB0>(dx);
+<a name="l63"></a>    dx=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l107"></span><span class=cB5>SignI64</a></span><span class=cB0>(dx)&lt;&lt;32;
 <a name="l64"></a>    </span><span class=cB1>while</span><span class=cB0> (x1!=x2) {
 <a name="l65"></a>      MGPlot(x1.i32[1],y1.i32[1]);
 <a name="l66"></a>      x1+=dx; y1+=dy;
 <a name="l67"></a>    }
 <a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l69"></a>    dx=dx&lt;&lt;32/<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB0>(dy);
-<a name="l70"></a>    dy=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l107"></span><span class=cB5>SignI64</a></span><span class=cB0>(dy)&lt;&lt;32;
+<a name="l69"></a>    dx=dx&lt;&lt;32/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l100"></span><span class=cB5>AbsI64</a></span><span class=cB0>(dy);
+<a name="l70"></a>    dy=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l107"></span><span class=cB5>SignI64</a></span><span class=cB0>(dy)&lt;&lt;32;
 <a name="l71"></a>    </span><span class=cB1>while</span><span class=cB0> (y1!=y2) {
 <a name="l72"></a>      MGPlot(x1.i32[1],y1.i32[1]);
 <a name="l73"></a>      x1+=dx; y1+=dy;
@@ -122,9 +122,9 @@
 <a name="l82"></a>  </span><span class=cB9>I64</span><span class=cB0> len;
 <a name="l83"></a>  </span><span class=cB1>if</span><span class=cB0> (r&lt;0) </span><span class=cB1>return</span><span class=cB0>;
 <a name="l84"></a>  x1=r; y1=0;
-<a name="l85"></a>  c=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l101"></span><span class=cB5>Cos</a></span><span class=cB0>(1/r);
-<a name="l86"></a>  s=<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l108"></span><span class=cB5>Sin</a></span><span class=cB0>(1/r);
-<a name="l87"></a>  len=2*r*<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>;
+<a name="l85"></a>  c=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>Cos</a></span><span class=cB0>(1/r);
+<a name="l86"></a>  s=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l108"></span><span class=cB5>Sin</a></span><span class=cB0>(1/r);
+<a name="l87"></a>  len=2*r*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>;
 <a name="l88"></a>  MGPlot(x+x1,y+y1);
 <a name="l89"></a>  </span><span class=cB1>while</span><span class=cB0> (len--&gt;=0) </span><span class=cB7>{</span><span class=cB0>
 <a name="l90"></a>
@@ -154,7 +154,7 @@
 <a name="l114"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;300;i+=4)
 <a name="l115"></a>    MGCircle(200,100+i,i);
 <a name="l116"></a>  MGUpdate;
-<a name="l117"></a>  <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l146"></span><span class=cB5>Busy</a></span><span class=cB0>(1500000);
+<a name="l117"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l146"></span><span class=cB5>Busy</a></span><span class=cB0>(1500000);
 <a name="l118"></a></span><span class=cB2>/*</span><span class=cB0>
 <a name="l119"></a></span><span class=cB2>We are returning graphics to normal operations under TempleOS.</span><span class=cB0>
 <a name="l120"></a></span><span class=cB2>It is not normal to by-pass the TempleOS graphcis routines.</span><span class=cB0>
@@ -162,13 +162,13 @@
 <a name="l122"></a></span><span class=cB2>This bit tells TempleOS to update whole scrn.</span><span class=cB0>
 <a name="l123"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l124"></a>  </span><span class=cB2>//&lt;CTRL-ALT-v&gt; will flush scrn VGA cache.</span><span class=cB0>
-<a name="l125"></a>  <a href="http://www.templeos.org/Wb/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l125"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
 <a name="l126"></a>}
 <a name="l127"></a> 
 <a name="l128"></a>MiniGrLibDemo;
 <a name="l129"></a>
-<a name="l130"></a></span><span class=cB2>//See </span><a href="http://www.templeos.org/Wb/Kernel/Display.html#l13"><span class=cB4>RawPutChar</span></a><span class=cB2>() for text.</span><span class=cB0>
-<a name="l131"></a></span><span class=cB2>//See </span><a href="http://www.templeos.org/Wb/Demo/Lectures/ScrnMemory.html#l1"><span class=cB4>::/Demo/Lectures/ScrnMemory.HC</span></a><span class=cB2> for color.</span><span class=cB0>
-<a name="l132"></a></span><span class=cB2>//See </span><a href="http://www.templeos.org/Wb/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l130"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l13"><span class=cB4>RawPutChar</span></a><span class=cB2>() for text.</span><span class=cB0>
+<a name="l131"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/ScrnMemory.html#l1"><span class=cB4>::/Demo/Lectures/ScrnMemory.HC</span></a><span class=cB2> for color.</span><span class=cB0>
+<a name="l132"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB2>.</span><span class=cB0>
 </span></div></pre></body>
 </html>
