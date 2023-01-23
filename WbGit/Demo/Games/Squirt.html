@@ -79,18 +79,18 @@
 <a name="l38"></a>
 <a name="l39"></a>#</span><span class=cB1>define</span><span class=cB0> HOSE_RADIUS     3
 <a name="l40"></a>#</span><span class=cB1>define</span><span class=cB0> LINK_SIZE       6
-<a name="l41"></a>#</span><span class=cB1>define</span><span class=cB0> NOZZLE_START_Y  (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-15*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4282"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
+<a name="l41"></a>#</span><span class=cB1>define</span><span class=cB0> NOZZLE_START_Y  (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-15*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4285"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
 <a name="l42"></a>#</span><span class=cB1>define</span><span class=cB0> NOZZLE_LEN      18
 <a name="l43"></a>#</span><span class=cB1>define</span><span class=cB0> FAUCET_X        (5*HOSE_RADIUS)
-<a name="l44"></a>#</span><span class=cB1>define</span><span class=cB0> FAUCET_Y        (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-12*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4282"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
-<a name="l45"></a>#</span><span class=cB1>define</span><span class=cB0> GROUND_Y        (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-3*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4282"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
+<a name="l44"></a>#</span><span class=cB1>define</span><span class=cB0> FAUCET_Y        (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-12*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4285"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
+<a name="l45"></a>#</span><span class=cB1>define</span><span class=cB0> GROUND_Y        (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>-3*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4285"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
 <a name="l46"></a>MyMass *faucet,*nozzle;
 <a name="l47"></a></span><span class=cB1>F64</span><span class=cB0> nozzle_theta;
 <a name="l48"></a>
 <a name="l49"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l253"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l50"></a></span><span class=cB1>F64</span><span class=cB0> start_up_timeout;
 <a name="l51"></a>
-<a name="l52"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l52"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3990"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
 <a name="l53"></a>{
 <a name="l54"></a>  </span><span class=cB1>Bool</span><span class=cB0> first;
 <a name="l55"></a>  </span><span class=cB1>F64</span><span class=cB0> dx,dy,d;
@@ -105,7 +105,7 @@
 <a name="l64"></a>    ode-&gt;drag_v2=0.01; </span><span class=cB2>//Let hose settle during start-up</span><span class=cB0>
 <a name="l65"></a>    ode-&gt;drag_v3=0.0001;
 <a name="l66"></a>    dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3633"></span><span class=cB3>RED</a></span><span class=cB0>;
-<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4281"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*6</span><span class=cB7>)</span><span class=cB0>&gt;&gt;1,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>&gt;&gt;1,</span><span class=cB6>&quot;Squirt&quot;</span><span class=cB0>);
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4284"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*6</span><span class=cB7>)</span><span class=cB0>&gt;&gt;1,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>&gt;&gt;1,</span><span class=cB6>&quot;Squirt&quot;</span><span class=cB0>);
 <a name="l68"></a>    </span><span class=cB1>return</span><span class=cB0>;
 <a name="l69"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
 <a name="l70"></a>    ode-&gt;drag_v2=0.0005;
@@ -221,7 +221,7 @@
 <a name="l180"></a>}
 <a name="l181"></a>
 <a name="l182"></a>MyMass *PlaceMass(</span><span class=cB9>I64</span><span class=cB0> type,</span><span class=cB9>I64</span><span class=cB0> x, </span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB1>F64</span><span class=cB0> r,
-<a name="l183"></a>        </span><span class=cB1>F64</span><span class=cB0> dx,</span><span class=cB1>F64</span><span class=cB0> dy,</span><span class=cB1>F64</span><span class=cB0> mass,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3987"></span><span class=cB9>CTask</a></span><span class=cB0> *mem_task)
+<a name="l183"></a>        </span><span class=cB1>F64</span><span class=cB0> dx,</span><span class=cB1>F64</span><span class=cB0> dy,</span><span class=cB1>F64</span><span class=cB0> mass,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3990"></span><span class=cB9>CTask</a></span><span class=cB0> *mem_task)
 <a name="l184"></a>{
 <a name="l185"></a>  MyMass *tmpm=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>MyMass</span><span class=cB7>)</span><span class=cB0>,mem_task);
 <a name="l186"></a>  tmpm-&gt;type=type;
@@ -291,7 +291,7 @@
 <a name="l250"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l251"></a>      tmpm=tmpm1;
 <a name="l252"></a>    }
-<a name="l253"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l253"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l33"></span><span class=cB5>Refresh</a></span><span class=cB0>;
 <a name="l254"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l255"></a>}
 <a name="l256"></a>
@@ -303,7 +303,7 @@
 <a name="l262"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;NOZZLE_MOVE_STEPS;i++) </span><span class=cB7>{</span><span class=cB0>
 <a name="l263"></a>    nozzle-&gt;x=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(nozzle-&gt;x+sign*NOZZLE_MOVE/NOZZLE_MOVE_STEPS,
 <a name="l264"></a>          HOSE_RADIUS*3,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>-HOSE_RADIUS*3);
-<a name="l265"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l265"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l33"></span><span class=cB5>Refresh</a></span><span class=cB0>;
 <a name="l266"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l267"></a>}
 <a name="l268"></a>
@@ -313,14 +313,14 @@
 <a name="l272"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;NOZZLE_MOVE_STEPS;i++) </span><span class=cB7>{</span><span class=cB0>
 <a name="l273"></a>    nozzle-&gt;y=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(nozzle-&gt;y+sign*NOZZLE_MOVE/NOZZLE_MOVE_STEPS,
 <a name="l274"></a>          HOSE_RADIUS*3,GROUND_Y);
-<a name="l275"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l275"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l33"></span><span class=cB5>Refresh</a></span><span class=cB0>;
 <a name="l276"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l277"></a>}
 <a name="l278"></a>
 <a name="l279"></a></span><span class=cB1>U0</span><span class=cB0> Init()
 <a name="l280"></a>{
 <a name="l281"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l282"></a>  </span><span class=cB6>&quot;$BG,LTCYAN$%h*c&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l124"></span><span class=cB5>ToI64</a></span><span class=cB0>(GROUND_Y/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4282"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>),</span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l282"></a>  </span><span class=cB6>&quot;$BG,LTCYAN$%h*c&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l124"></span><span class=cB5>ToI64</a></span><span class=cB0>(GROUND_Y/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4285"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>),</span><span class=cB6>'\n'</span><span class=cB0>;
 <a name="l283"></a>
 <a name="l284"></a>  </span><span class=cB2>//Allow hose to settle.</span><span class=cB0>
 <a name="l285"></a>  start_up_timeout=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l131"></span><span class=cB5>tS</a></span><span class=cB0>+0.5;
@@ -335,7 +335,7 @@
 <a name="l294"></a>
 <a name="l295"></a></span><span class=cB1>U0</span><span class=cB0> CleanUp()
 <a name="l296"></a>{
-<a name="l297"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l3"></span><span class=cB5>Refresh</a></span><span class=cB0>(NOZZLE_MOVE_STEPS); </span><span class=cB2>//Let nozzle move tasks die</span><span class=cB0>
+<a name="l297"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l33"></span><span class=cB5>Refresh</a></span><span class=cB0>(NOZZLE_MOVE_STEPS); </span><span class=cB2>//Let nozzle move tasks die</span><span class=cB0>
 <a name="l298"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(ode);
 <a name="l299"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l45"></span><span class=cB5>QueDel</a></span><span class=cB0>(&amp;ode-&gt;next_mass,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
 <a name="l300"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l45"></span><span class=cB5>QueDel</a></span><span class=cB0>(&amp;ode-&gt;next_spring,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
@@ -389,16 +389,16 @@
 <a name="l348"></a>      </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l155"></span><span class=cB5>GetKey</a></span><span class=cB7>(</span><span class=cB0>&amp;sc</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l349"></a>        </span><span class=cB1>case</span><span class=cB0> 0:
 <a name="l350"></a>          </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0]) {
-<a name="l351"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4227"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
+<a name="l351"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4230"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
 <a name="l352"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;MoveNozzleTaskX,-1,</span><span class=cB6>&quot;Move Nozzle&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>);
 <a name="l353"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l354"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4228"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
+<a name="l354"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4231"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
 <a name="l355"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;MoveNozzleTaskX,1,</span><span class=cB6>&quot;Move Nozzle&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>);
 <a name="l356"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l357"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4225"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l357"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4228"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
 <a name="l358"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;MoveNozzleTaskY,-1,</span><span class=cB6>&quot;Move Nozzle&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>);
 <a name="l359"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l360"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4226"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l360"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4229"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
 <a name="l361"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;MoveNozzleTaskY,1,</span><span class=cB6>&quot;Move Nozzle&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>);
 <a name="l362"></a>              </span><span class=cB1>break</span><span class=cB0>;
 <a name="l363"></a>          }
@@ -407,8 +407,8 @@
 <a name="l366"></a>          CleanUp;
 <a name="l367"></a>          Init;
 <a name="l368"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l369"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
-<a name="l370"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4172"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l369"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4176"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l370"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4175"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
 <a name="l371"></a>          </span><span class=cB1>goto</span><span class=cB0> sq_done;
 <a name="l372"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l373"></a>    }

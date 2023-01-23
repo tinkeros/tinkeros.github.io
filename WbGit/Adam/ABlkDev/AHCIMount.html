@@ -39,9 +39,9 @@
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;PCI;Info;File/System;Devices&quot;</span><span class=cB0>
 <a name="l2"></a>
-<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/AHCIMount.html#l3"></span><span class=cB5>SATARep</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bd_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3297"></span><span class=cB3>BDT_NULL</a></span><span class=cB0>)
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/AHCIMount.html#l3"></span><span class=cB5>SATARep</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> bd_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3297"></span><span class=cB3>BDT_NULL</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> *first_hdd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
 <a name="l4"></a>{</span><span class=cB2>// Report ATA and ATAPI drives implemented by SATA controller.</span><span class=cB0>
-<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0>                    i, j, i_max=0, num = 0;
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0>                    i, j, i_max=0, num = 0, first_hd=-1;
 <a name="l6"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB9>CAHCIPort</a></span><span class=cB0>     *port;
 <a name="l7"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3347"></span><span class=cB9>CBlkDev</a></span><span class=cB0>               *temp_blkdev;
 <a name="l8"></a>  </span><span class=cB9>U16</span><span class=cB0>                   *st, *model, *serial;
@@ -115,7 +115,7 @@
 <a name="l76"></a>            st = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(40 + 1);
 <a name="l77"></a>            </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; 20; j++)
 <a name="l78"></a>              st[j] = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(temp_blkdev-&gt;dev_id_record[27 + j]);
-<a name="l79"></a>            model = <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l66"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(st, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4460"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>);
+<a name="l79"></a>            model = <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l66"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(st, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4462"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4463"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>);
 <a name="l80"></a>            </span><span class=cB6>&quot;Model:  %s\n\t&quot;</span><span class=cB0>
 <a name="l81"></a>            , model;
 <a name="l82"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
@@ -123,7 +123,7 @@
 <a name="l84"></a>            st = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(20 + 1);
 <a name="l85"></a>            </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; 10; j++)
 <a name="l86"></a>              st[j] = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(temp_blkdev-&gt;dev_id_record[10 + j]);
-<a name="l87"></a>            serial = <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l66"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(st, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4460"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>);
+<a name="l87"></a>            serial = <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l66"></span><span class=cB5>MStrUtil</a></span><span class=cB0>(st, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4462"></span><span class=cB3>SUF_REM_LEADING</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4463"></span><span class=cB3>SUF_REM_TRAILING</a></span><span class=cB0>);
 <a name="l88"></a>            </span><span class=cB6>&quot;Serial: %s\n&quot;</span><span class=cB0>
 <a name="l89"></a>            , serial;
 <a name="l90"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
@@ -132,18 +132,22 @@
 <a name="l93"></a>            {
 <a name="l94"></a>              i_max=i+1;
 <a name="l95"></a>            }
-<a name="l96"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l97"></a>          </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l98"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l246"></span><span class=cB5>BlkDevDel</a></span><span class=cB0>(temp_blkdev);
-<a name="l99"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(temp_blkdev);
-<a name="l100"></a>        }
-<a name="l101"></a>        num++;
-<a name="l102"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l103"></a>    }
-<a name="l104"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l105"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l106"></a>    </span><span class=cB6>&quot;blkdev.ahci_hba is NULL !\n\n&quot;</span><span class=cB0>;
-<a name="l107"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB0>(num,i_max); </span><span class=cB2>//TODO</span><span class=cB0>
-<a name="l108"></a>}
+<a name="l96"></a>            </span><span class=cB1>if</span><span class=cB0> (first_hd&lt;0&amp;&amp;port-&gt;signature==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3063"></span><span class=cB3>AHCI_PxSIG_ATA</a></span><span class=cB0>)
+<a name="l97"></a>              first_hd=i;
+<a name="l98"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l99"></a>          </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l100"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l246"></span><span class=cB5>BlkDevDel</a></span><span class=cB0>(temp_blkdev);
+<a name="l101"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(temp_blkdev);
+<a name="l102"></a>        }
+<a name="l103"></a>        num++;
+<a name="l104"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l105"></a>    }
+<a name="l106"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l107"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l108"></a>    </span><span class=cB6>&quot;blkdev.ahci_hba is NULL !\n\n&quot;</span><span class=cB0>;
+<a name="l109"></a>  </span><span class=cB1>if</span><span class=cB0> (first_hdd)
+<a name="l110"></a>      *first_hdd=first_hd;
+<a name="l111"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB0>(num,i_max);
+<a name="l112"></a>}
 </span></div></pre></body>
 </html>
