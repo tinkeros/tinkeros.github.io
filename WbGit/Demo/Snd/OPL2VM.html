@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.09">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Midi.HH&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>/*</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>* This is a stripped own OPL2 implementation for single instrument usage within TempleOS</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>*</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>* For use with qemu with -soundhw adlib</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>*</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>* This uses 2-Operator FM sythesis only.</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>*</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>* The following functions only effect the carrier not the modulator:</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>* SetAttack, SetDecay, SetSustain, SetRelease</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>*</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> opl_registers[256];
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> **instruments[127]= {PIANO1,PIANO2,PIANO3,HONKTONK,EP1,EP2,HARPSIC,CLAVIC,CELESTA,GLOCK,MUSICBOX,VIBES,MARIMBA,XYLO,TUBEBELL,SANTUR,ORGAN1,ORGAN2,ORGAN3,PIPEORG,REEDORG,ACORDIAN,HARMONIC,BANDNEON,NYLONGT,STEELGT,JAZZGT,CLEANGT,MUTEGT,OVERDGT,DISTGT,GTHARMS,ACOUBASS,FINGBASS,PICKBASS,FRETLESS,SLAPBAS1,SLAPBAS2,SYNBASS1,SYNBASS2,VIOLIN,VIOLA,CELLO,CONTRAB,TREMSTR,PIZZ,HARP,TIMPANI,STRINGS,SLOWSTR,SYNSTR1,SYNSTR2,CHOIR,OOHS,SYNVOX,ORCHIT,TRUMPET,TROMBONE,TUBA,MUTETRP,FRHORN,BRASS1,SYNBRAS1,SYNBRAS2,SOPSAX,ALTOSAX,TENSAX,BARISAX,OBOE,ENGLHORN,BASSOON,CLARINET,PICCOLO,FLUTE1,RECORDER,PANFLUTE,BOTTLEB,SHAKU,WHISTLE,OCARINA,SQUARWAV,SAWWAV,SYNCALLI,CHIFLEAD,CHARANG,SOLOVOX,FIFTHSAW,BASSLEAD,FANTASIA,WARMPAD,POLYSYN,SPACEVOX,BOWEDGLS,METALPAD,HALOPAD,SWEEPPAD,ICERAIN,SOUNDTRK,CRYSTAL,ATMOSPH,BRIGHT,GOBLIN,ECHODROP,STARTHEM,SITAR,BANJO,SHAMISEN,KOTO,KALIMBA,BAGPIPE,FIDDLE,SHANNAI,TINKLBEL,AGOGO,STEELDRM,WOODBLOK,TAIKO,MELOTOM,SYNDRUM,REVRSCYM,FRETNOIS,BRTHNOIS,SEASHORE,BIRDS,TELEPHON,HELICOPT,APPLAUSE};
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> instrument_base_registers[6] = { 0x20, 0x40, 0x60, 0x80, 0xE0, 0xC0 };
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> Write(</span><span class=cB9>I64</span><span class=cB0> r, </span><span class=cB1>U8</span><span class=cB0> data)
+<a name="l22"></a>{
+<a name="l23"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l24"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x388,r);
+<a name="l25"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;4; i++)
+<a name="l26"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l1"></span><span class=cB5>PortNop</a></span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0x389,data);
+<a name="l30"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;23; i++)
+<a name="l31"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l1"></span><span class=cB5>PortNop</a></span><span class=cB0>;
+<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> Reset()
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l39"></a>  </span><span class=cB1>for</span><span class=cB0>(i = 0; i &lt; 256; i ++)
+<a name="l40"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l41"></a>    opl_registers[i] = 0x00;
+<a name="l42"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB1>for</span><span class=cB0>(i = 0; i &lt; 256; i ++)
+<a name="l44"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    Write(i, 0x00);
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> GetRegister(</span><span class=cB1>U8</span><span class=cB0> r)
+<a name="l50"></a>{
+<a name="l51"></a>  </span><span class=cB1>return</span><span class=cB0> opl_registers[r];
+<a name="l52"></a>}
+<a name="l53"></a>
+<a name="l54"></a>
+<a name="l55"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> SetRegister(</span><span class=cB1>U8</span><span class=cB0> r, </span><span class=cB1>U8</span><span class=cB0> val)
+<a name="l56"></a>{
+<a name="l57"></a>  opl_registers[r] = val;
+<a name="l58"></a>  Write(r, val);
+<a name="l59"></a>  </span><span class=cB1>return</span><span class=cB0> r;
+<a name="l60"></a>}
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> SetBlock(</span><span class=cB9>I64</span><span class=cB0> block)
+<a name="l63"></a>{
+<a name="l64"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0xB0;
+<a name="l65"></a>  SetRegister(r, </span><span class=cB7>(</span><span class=cB0>opl_registers[r] &amp; 0xE3</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB7>(</span><span class=cB0>block,0,7</span><span class=cB7>)</span><span class=cB0> &amp; 0x07) &lt;&lt; 2</span><span class=cB7>)</span><span class=cB0>);
+<a name="l66"></a>}
+<a name="l67"></a>
+<a name="l68"></a></span><span class=cB1>U0</span><span class=cB0> SetAttack(</span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l69"></a>{
+<a name="l70"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0x60;
+<a name="l71"></a>  SetRegister(r, </span><span class=cB7>(</span><span class=cB0>opl_registers[r] &amp; 0x0F</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB7>(</span><span class=cB0>val,0,15</span><span class=cB7>)</span><span class=cB0>&amp;0x0F)&lt;&lt;4</span><span class=cB7>)</span><span class=cB0>);
+<a name="l72"></a>}
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB1>U0</span><span class=cB0> SetDecay(</span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l75"></a>{
+<a name="l76"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0x60;
+<a name="l77"></a>  SetRegister(r, </span><span class=cB7>(</span><span class=cB0>opl_registers[r] &amp; 0xF0</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB0>(val,0,15)&amp;0x0F</span><span class=cB7>)</span><span class=cB0>);
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB1>U0</span><span class=cB0> SetSustain(</span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l81"></a>{
+<a name="l82"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0x80;
+<a name="l83"></a>  SetRegister(r, </span><span class=cB7>(</span><span class=cB0>opl_registers[r] &amp; 0x0F</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB7>(</span><span class=cB0>val,0,15</span><span class=cB7>)</span><span class=cB0>&amp;0x0F)&lt;&lt;4</span><span class=cB7>)</span><span class=cB0>);
+<a name="l84"></a>}
+<a name="l85"></a>
+<a name="l86"></a></span><span class=cB1>U0</span><span class=cB0> SetRelease(</span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l87"></a>{
+<a name="l88"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0x80;
+<a name="l89"></a>  SetRegister(r, </span><span class=cB7>(</span><span class=cB0>opl_registers[r] &amp; 0xF0</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB0>(val,0,15)&amp;0x0F</span><span class=cB7>)</span><span class=cB0>);
+<a name="l90"></a>}
+<a name="l91"></a>
+<a name="l92"></a></span><span class=cB1>U0</span><span class=cB0> SetInst(</span><span class=cB1>U8</span><span class=cB0> *instrument)
+<a name="l93"></a>{
+<a name="l94"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l95"></a>  </span><span class=cB2>// Only melodic instruments for now</span><span class=cB0>
+<a name="l96"></a>  SetRegister(0x01, opl_registers[0x01] | 0x20);
+<a name="l97"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 11; i ++)
+<a name="l98"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l99"></a>    SetRegister(instrument_base_registers[i % 6] + 3*</span><span class=cB7>(</span><span class=cB0>i &gt; 5</span><span class=cB7>)</span><span class=cB0>, instrument[i + 1]);
+<a name="l100"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l101"></a>}
+<a name="l102"></a>
+<a name="l103"></a></span><span class=cB1>U8</span><span class=cB0> SetFnum(</span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l104"></a>{
+<a name="l105"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0xA0;
+<a name="l106"></a>  SetRegister(r, val &amp; 0x00FF);
+<a name="l107"></a>  SetRegister(r + 0x10, </span><span class=cB7>(</span><span class=cB0>opl_registers[r + 0x10] &amp; 0xFC</span><span class=cB7>)</span><span class=cB0> | </span><span class=cB7>(</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB7>(</span><span class=cB0>val,0,1023</span><span class=cB7>)</span><span class=cB0> &amp; 0x0300) &gt;&gt; 8</span><span class=cB7>)</span><span class=cB0>);
+<a name="l108"></a>  </span><span class=cB1>return</span><span class=cB0> r;
+<a name="l109"></a>}
+<a name="l110"></a>
+<a name="l111"></a></span><span class=cB1>U0</span><span class=cB0> SetFreq(</span><span class=cB1>F64</span><span class=cB0> freq)
+<a name="l112"></a>{
+<a name="l113"></a>  </span><span class=cB1>F64</span><span class=cB0> fb_max=6208.431;
+<a name="l114"></a>  </span><span class=cB9>I16</span><span class=cB0> block=7,fnum=0;
+<a name="l115"></a>  </span><span class=cB1>while</span><span class=cB0> (fb_max/2.0&gt;freq &amp;&amp; block&gt;0)
+<a name="l116"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l117"></a>    block--;
+<a name="l118"></a>    fb_max/=2.0;
+<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>  fnum=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l124"></span><span class=cB5>ToI64</a></span><span class=cB0>(freq*2`</span><span class=cB7>(</span><span class=cB0>20-block</span><span class=cB7>)</span><span class=cB0>/49716.0);
+<a name="l121"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;fnum&lt;1024)
+<a name="l122"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l123"></a>    SetBlock(block);
+<a name="l124"></a>    SetFnum(fnum);
+<a name="l125"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l126"></a>}
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB1>U8</span><span class=cB0> SetKeyState(</span><span class=cB1>Bool</span><span class=cB0> state)
+<a name="l129"></a>{
+<a name="l130"></a>  </span><span class=cB9>I64</span><span class=cB0> r = 0xB0;
+<a name="l131"></a>  </span><span class=cB1>if</span><span class=cB0> (state)
+<a name="l132"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l133"></a>    </span><span class=cB1>return</span><span class=cB0> SetRegister(r, opl_registers[r] | 0x20);
+<a name="l134"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l135"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l136"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l137"></a>    </span><span class=cB1>return</span><span class=cB0> SetRegister(r, opl_registers[r] &amp; 0xDF);
+<a name="l138"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l139"></a>}
+<a name="l140"></a>
+<a name="l141"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> AdlibBeep()
+<a name="l142"></a>{
+<a name="l143"></a>  SetFreq(440.0);
+<a name="l144"></a>  SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l145"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1000);
+<a name="l146"></a>  SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l147"></a>}
+<a name="l148"></a>
+<a name="l149"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_INSTRUMENTS&quot;</span><span class=cB0>,</span><span class=cB6>&quot;PIANO1\0PIANO2\0PIANO3\0HONKTONK\0EP1\0EP2\0HARPSIC\0CLAVIC\0CELESTA\0GLOCK\0MUSICBOX\0VIBES\0MARIMBA\0XYLO\0TUBEBELL\0SANTUR\0ORGAN1\0ORGAN2\0ORGAN3\0PIPEORG\0REEDORG\0ACORDIAN\0HARMONIC\0BANDNEON\0NYLONGT\0STEELGT\0JAZZGT\0CLEANGT\0MUTEGT\0OVERDGT\0DISTGT\0GTHARMS\0ACOUBASS\0FINGBASS\0PICKBASS\0FRETLESS\0SLAPBAS1\0SLAPBAS2\0SYNBASS1\0SYNBASS2\0VIOLIN\0VIOLA\0CELLO\0CONTRAB\0TREMSTR\0PIZZ\0HARP\0TIMPANI\0STRINGS\0SLOWSTR\0SYNSTR1\0SYNSTR2\0CHOIR\0OOHS\0SYNVOX\0ORCHIT\0TRUMPET\0TROMBONE\0TUBA\0MUTETRP\0FRHORN\0BRASS1\0SYNBRAS1\0SYNBRAS2\0SOPSAX\0ALTOSAX\0TENSAX\0BARISAX\0OBOE\0ENGLHORN\0BASSOON\0CLARINET\0PICCOLO\0FLUTE1\0RECORDER\0PANFLUTE\0BOTTLEB\0SHAKU\0WHISTLE\0OCARINA\0SQUARWAV\0SAWWAV\0SYNCALLI\0CHIFLEAD\0CHARANG\0SOLOVOX\0FIFTHSAW\0BASSLEAD\0FANTASIA\0WARMPAD\0POLYSYN\0SPACEVOX\0BOWEDGLS\0METALPAD\0HALOPAD\0SWEEPPAD\0ICERAIN\0SOUNDTRK\0CRYSTAL\0ATMOSPH\0BRIGHT\0GOBLIN\0ECHODROP\0STARTHEM\0SITAR\0BANJO\0SHAMISEN\0KOTO\0KALIMBA\0BAGPIPE\0FIDDLE\0SHANNAI\0TINKLBEL\0AGOGO\0STEELDRM\0WOODBLOK\0TAIKO\0MELOTOM\0SYNDRUM\0REVRSCYM\0FRETNOIS\0BRTHNOIS\0SEASHORE\0BIRDS\0TELEPHON\0HELICOPT\0APPLAUSE\0&quot;</span><span class=cB0>);
+<a name="l150"></a>
+<a name="l151"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> base[11]= {20,2,111,21,0,0,6,0,86,15,0};
+<a name="l152"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> mod1[11]= {128,64,128,128,16,2,128,32,128,128,2};
+<a name="l153"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> mod2[11]= {1,  1, 1,  1,  1, 1,1,  1, 1,  32, 1};
+<a name="l154"></a>
+<a name="l155"></a></span><span class=cB2>// 64-bit instrument is factored into an instrument as follows:</span><span class=cB0>
+<a name="l156"></a></span><span class=cB2>// 2^64 = 128*64*128*128*16*2*128*32*128*128*2</span><span class=cB0>
+<a name="l157"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>  * 1* 1*  1*  1* 1*1*</span><span class=cB0>  </span><span class=cB2>1* 1*  1* 32*1</span><span class=cB0>
+<a name="l158"></a>
+<a name="l159"></a></span><span class=cB1>U0</span><span class=cB0> U64Inst(</span><span class=cB9>U64</span><span class=cB0> inst)
+<a name="l160"></a>{</span><span class=cB2>// Setup an instruments registers from a 64-bit number</span><span class=cB0>
+<a name="l161"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l162"></a>  </span><span class=cB1>U8</span><span class=cB0> opl2inst[12];
+<a name="l163"></a>  opl2inst[0]=0;
+<a name="l164"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;11; i++)
+<a name="l165"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l166"></a>    opl2inst[i+1]=base[i];
+<a name="l167"></a>    opl2inst[i+1]+=inst%mod1[i];
+<a name="l168"></a>    inst/=mod1[i];
+<a name="l169"></a>    opl2inst[i+1]+=inst%mod2[i];
+<a name="l170"></a>    inst/=mod2[i];
+<a name="l171"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l172"></a>  SetInst(opl2inst);
+<a name="l173"></a>}
+<a name="l174"></a>
+<a name="l175"></a></span><span class=cB9>U64</span><span class=cB0> RandInst()
+<a name="l176"></a>{</span><span class=cB2>// Generate a random instrument from a random 64-bit number</span><span class=cB0>
+<a name="l177"></a>  </span><span class=cB9>U64</span><span class=cB0> inst=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l131"></span><span class=cB5>RandU64</a></span><span class=cB0>();
+<a name="l178"></a>  SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l179"></a>  U64Inst(inst);
+<a name="l180"></a>  </span><span class=cB6>&quot;Instrument number: %u = 0x%016x\n&quot;</span><span class=cB0>
+<a name="l181"></a>  ,inst,inst;
+<a name="l182"></a>  </span><span class=cB1>return</span><span class=cB0> inst;
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB9>I64</span><span class=cB0> PickInst()
+<a name="l186"></a>{</span><span class=cB2>// Popup a window to pick some standard instruments</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB9>I64</span><span class=cB0> ins;
+<a name="l188"></a>  ins=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l116"></span><span class=cB5>PopUpPickDefineSub</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_INSTRUMENTS&quot;</span><span class=cB0>);
+<a name="l189"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=ins&lt;=127)
+<a name="l190"></a>    SetInst(instruments[ins]);
+<a name="l191"></a>  </span><span class=cB1>return</span><span class=cB0> ins;
+<a name="l192"></a>}
+<a name="l193"></a>
+<a name="l194"></a></span><span class=cB1>U0</span><span class=cB0> PickInstLoop(</span><span class=cB1>Bool</span><span class=cB0> doc_clear=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l195"></a>{</span><span class=cB2>// Keeps calling PickInst to open a new popup to change the instrument</span><span class=cB0>
+<a name="l196"></a>  </span><span class=cB9>I64</span><span class=cB0> ins;
+<a name="l197"></a>  ins=PickInst;
+<a name="l198"></a>  </span><span class=cB1>while</span><span class=cB0> (ins&gt;=0)
+<a name="l199"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l200"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_clear) <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l201"></a>    AdlibBeep;
+<a name="l202"></a>    </span><span class=cB6>&quot;Using Instrument: %s\n&quot;</span><span class=cB0>
+<a name="l203"></a>    ,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(ins,</span><span class=cB6>&quot;ST_INSTRUMENTS&quot;</span><span class=cB0>);
+<a name="l204"></a>    ins=PickInst;
+<a name="l205"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l206"></a>}
+<a name="l207"></a>
+<a name="l208"></a></span><span class=cB1>U0</span><span class=cB0> AdlibSnd(</span><span class=cB1>I8</span><span class=cB0> ona=0)
+<a name="l209"></a>{</span><span class=cB2>//Play ona, a piano key num. 0 means rest.</span><span class=cB0>
+<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4527"></span><span class=cB9>CSndData</a></span><span class=cB0> *d;
+<a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l727"></span><span class=cB3>SEMA_MUTE</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l212"></a>      !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)   </span><span class=cB2>//Mutex. Just throw-out if in use</span><span class=cB0>
+<a name="l213"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l214"></a>    </span><span class=cB1>if</span><span class=cB0> (!ona)
+<a name="l215"></a>    {
+<a name="l216"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
+<a name="l217"></a>      SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l218"></a>    }
+<a name="l219"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ona!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona)
+<a name="l220"></a>    {
+<a name="l221"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona)
+<a name="l222"></a>        SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l223"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.ona=ona;
+<a name="l224"></a>      SetFreq(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l145"></span><span class=cB5>Ona2Freq</a></span><span class=cB7>(</span><span class=cB0>ona</span><span class=cB7>)</span><span class=cB0>);
+<a name="l225"></a>      SetKeyState(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l226"></a>    }
+<a name="l227"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l327"></span><span class=cB5>IsDbgMode</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.record)
+<a name="l228"></a>    {
+<a name="l229"></a>      d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l434"></span><span class=cB5>ACAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4527"></span><span class=cB9>CSndData</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l230"></a>      d-&gt;ona=ona;
+<a name="l231"></a>      d-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l232"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(d,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>scrncast</a></span><span class=cB0>.snd_head.last);
+<a name="l233"></a>    }
+<a name="l234"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
+<a name="l235"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l236"></a>}
+<a name="l237"></a>
+<a name="l238"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> AdlibInit()
+<a name="l239"></a>{
+<a name="l240"></a>  Reset;
+<a name="l241"></a>  SetInst(SQUARWAV);
+<a name="l242"></a>  SetAttack(0xf);
+<a name="l243"></a>  SetDecay(0xf);
+<a name="l244"></a>  SetSustain(0);
+<a name="l245"></a>  SetRelease(0xf);
+<a name="l246"></a>}
+<a name="l247"></a>
+<a name="l248"></a>AdlibInit;
+<a name="l249"></a>
+<a name="l250"></a></span><span class=cB2>// Patch hook into sound system</span><span class=cB0>
+<a name="l251"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l161"></span><span class=cB5>Snd</a></span><span class=cB0>(0);
+<a name="l252"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l259"></span><span class=cB5>Mute</a></span><span class=cB0>(1);
+<a name="l253"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
+<a name="l254"></a><a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l255"></a>*(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l161"></span><span class=cB5>Snd</a></span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>)=0xe9;
+<a name="l256"></a>*(</span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l161"></span><span class=cB5>Snd</a></span><span class=cB0>+1</span><span class=cB7>)(</span><span class=cB9>U32</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>)=&amp;AdlibSnd-&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l161"></span><span class=cB5>Snd</a></span><span class=cB0>-5;
+<a name="l257"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l715"></span><span class=cB3>SEMA_SND</a></span><span class=cB0>],0);
+<a name="l258"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l259"></span><span class=cB5>Mute</a></span><span class=cB0>(0);
+<a name="l259"></a>
+<a name="l260"></a>
+</span></div></pre></body>
+</html>
