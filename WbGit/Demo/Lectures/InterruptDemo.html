@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,7 +36,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>//This is the software interrupt num</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>//we will use.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l350"><span class=cB4>Software Int's</span></a><span class=cB2> for</span><span class=cB0>
@@ -44,84 +44,83 @@
 <a name="l4"></a>
 <a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> I_F_UNARY_MINUS <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l356"></span><span class=cB3>I_USER</a></span><span class=cB0>
 <a name="l6"></a>
-<a name="l7"></a></span><span class=cB1>asm</span><span class=cB0> {
-<a name="l8"></a>
-<a name="l9"></a></span><span class=cB2>//This changes the sign of the floating</span><span class=cB0>
-<a name="l10"></a></span><span class=cB2>//point val in RAX</span><span class=cB0>
-<a name="l11"></a>F_UNARY_MINUS_INT::
-<a name="l12"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>
-<a name="l13"></a>        </span><span class=cB1>FLD</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
-<a name="l14"></a>        </span><span class=cB1>FCHS</span><span class=cB0>
-<a name="l15"></a>        </span><span class=cB1>FSTP</span><span class=cB0>    </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
-<a name="l16"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>
-<a name="l17"></a>        </span><span class=cB1>IRET</span><span class=cB0>
-<a name="l18"></a>
-<a name="l19"></a></span><span class=cB2>//This does the same thing, but not as</span><span class=cB0>
-<a name="l20"></a></span><span class=cB2>//an interrupt.</span><span class=cB0>
-<a name="l21"></a>F_UNARY_MINUS_CALL::
-<a name="l22"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RAX</span><span class=cB0>
-<a name="l23"></a>        </span><span class=cB1>FLD</span><span class=cB0>     </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
-<a name="l24"></a>        </span><span class=cB1>FCHS</span><span class=cB0>
-<a name="l25"></a>        </span><span class=cB1>FSTP</span><span class=cB0>    </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
-<a name="l26"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>
-<a name="l27"></a>        </span><span class=cB1>RET</span><span class=cB0>
-<a name="l28"></a>
-<a name="l29"></a></span><span class=cB2>//This invokes the interrupt version</span><span class=cB0>
-<a name="l30"></a></span><span class=cB2>//with a C callable function.</span><span class=cB0>
-<a name="l31"></a>_F_UM_INT::
-<a name="l32"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
-<a name="l33"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
-<a name="l34"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l679"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
-<a name="l35"></a>        </span><span class=cB1>INT</span><span class=cB0>     I_F_UNARY_MINUS
-<a name="l36"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>
-<a name="l37"></a>        </span><span class=cB1>RET1</span><span class=cB0>    8
-<a name="l38"></a>
-<a name="l39"></a></span><span class=cB2>//This invokes the call version</span><span class=cB0>
-<a name="l40"></a></span><span class=cB2>//with a C callable function.</span><span class=cB0>
-<a name="l41"></a>_F_UM_CALL::
-<a name="l42"></a>        </span><span class=cB1>PUSH</span><span class=cB0>    </span><span class=cBC>RBP</span><span class=cB0>
-<a name="l43"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
-<a name="l44"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l679"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
-<a name="l45"></a>        </span><span class=cB1>CALL</span><span class=cB0>    F_UNARY_MINUS_CALL
-<a name="l46"></a>        </span><span class=cB1>POP</span><span class=cB0>     </span><span class=cBC>RBP</span><span class=cB0>
-<a name="l47"></a>        </span><span class=cB1>RET1</span><span class=cB0>    8
-<a name="l48"></a>}
-<a name="l49"></a>
-<a name="l50"></a></span><span class=cB1>_extern</span><span class=cB0> _F_UM_INT </span><span class=cB1>F64</span><span class=cB0> UnaryMinusInt(</span><span class=cB1>F64</span><span class=cB0> d);
-<a name="l51"></a></span><span class=cB1>_extern</span><span class=cB0> _F_UM_CALL </span><span class=cB1>F64</span><span class=cB0> UnaryMinusCall(</span><span class=cB1>F64</span><span class=cB0> d);
-<a name="l52"></a>
-<a name="l53"></a>#</span><span class=cB1>define</span><span class=cB0> SAMPLE_SIZE     1000000
-<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l4"></span><span class=cB5>TimeIns</a></span><span class=cB0>()
-<a name="l55"></a>{
-<a name="l56"></a>  </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>,</span><span class=cB1>end</span><span class=cB0>;
-<a name="l57"></a>  </span><span class=cB9>I64</span><span class=cB0> i,old_irq;
-<a name="l58"></a>
+<a name="l7"></a></span><span class=cB1>asm</span><span class=cB0>
+<a name="l8"></a>{
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB2>//This changes the sign of the floating</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>//point val in RAX</span><span class=cB0>
+<a name="l12"></a>  F_UNARY_MINUS_INT::
+<a name="l13"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB1>FLD</span><span class=cB0>   </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
+<a name="l15"></a>  </span><span class=cB1>FCHS</span><span class=cB0>
+<a name="l16"></a>  </span><span class=cB1>FSTP</span><span class=cB0>  </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
+<a name="l17"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB1>IRET</span><span class=cB0>
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB2>//This does the same thing, but not as</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>//an interrupt.</span><span class=cB0>
+<a name="l22"></a>  F_UNARY_MINUS_CALL::
+<a name="l23"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l24"></a>  </span><span class=cB1>FLD</span><span class=cB0>   </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
+<a name="l25"></a>  </span><span class=cB1>FCHS</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB1>FSTP</span><span class=cB0>  </span><span class=cB9>U64</span><span class=cB0> [</span><span class=cBC>RSP</span><span class=cB0>]
+<a name="l27"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>RET</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB2>//This invokes the interrupt version</span><span class=cB0>
+<a name="l31"></a></span><span class=cB2>//with a C callable function.</span><span class=cB0>
+<a name="l32"></a>  _F_UM_INT::
+<a name="l33"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l34"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l679"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
+<a name="l36"></a>  </span><span class=cB1>INT</span><span class=cB0>   I_F_UNARY_MINUS
+<a name="l37"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l38"></a>  </span><span class=cB1>RET1</span><span class=cB0>  8
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB2>//This invokes the call version</span><span class=cB0>
+<a name="l41"></a></span><span class=cB2>//with a C callable function.</span><span class=cB0>
+<a name="l42"></a>  _F_UM_CALL::
+<a name="l43"></a>  </span><span class=cB1>PUSH</span><span class=cB0>  </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l44"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>,</span><span class=cBC>RSP</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l679"></span><span class=cB3>SF_ARG1</a></span><span class=cB0>[</span><span class=cBC>RBP</span><span class=cB0>]
+<a name="l46"></a>  </span><span class=cB1>CALL</span><span class=cB0>  F_UNARY_MINUS_CALL
+<a name="l47"></a>  </span><span class=cB1>POP</span><span class=cB0>   </span><span class=cBC>RBP</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB1>RET1</span><span class=cB0>  8
+<a name="l49"></a>}
+<a name="l50"></a>
+<a name="l51"></a></span><span class=cB1>_extern</span><span class=cB0> _F_UM_INT </span><span class=cB1>F64</span><span class=cB0> UnaryMinusInt(</span><span class=cB1>F64</span><span class=cB0> d);
+<a name="l52"></a></span><span class=cB1>_extern</span><span class=cB0> _F_UM_CALL </span><span class=cB1>F64</span><span class=cB0> UnaryMinusCall(</span><span class=cB1>F64</span><span class=cB0> d);
+<a name="l53"></a>
+<a name="l54"></a>#</span><span class=cB1>define</span><span class=cB0> SAMPLE_SIZE     1000000
+<a name="l55"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l4"></span><span class=cB5>TimeIns</a></span><span class=cB0>()
+<a name="l56"></a>{
+<a name="l57"></a>  </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>,</span><span class=cB1>end</span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB9>I64</span><span class=cB0> i,old_irq;
 <a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/CPURep.html#l27"></span><span class=cB5>CPURep</a></span><span class=cB0>;
 <a name="l60"></a>  old_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(I_F_UNARY_MINUS,F_UNARY_MINUS_INT,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l337"></span><span class=cB3>IDTET_TRAP</a></span><span class=cB0>);
-<a name="l61"></a>
-<a name="l62"></a>  </span><span class=cB2>//Measure interrupt time</span><span class=cB0>
-<a name="l63"></a>  </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
-<a name="l64"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;SAMPLE_SIZE;i++)
-<a name="l65"></a>    UnaryMinusInt(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>);
-<a name="l66"></a>  </span><span class=cB1>end</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
-<a name="l67"></a>  </span><span class=cB6>&quot;Interrupt Cycles: %10.5f\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l123"></span><span class=cB5>ToF64</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>)/SAMPLE_SIZE;
-<a name="l68"></a>
-<a name="l69"></a>  </span><span class=cB2>//Measure call time</span><span class=cB0>
-<a name="l70"></a>  </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
-<a name="l71"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;SAMPLE_SIZE;i++)
-<a name="l72"></a>    UnaryMinusCall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>);
-<a name="l73"></a>  </span><span class=cB1>end</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
-<a name="l74"></a>  </span><span class=cB6>&quot;Call      Cycles: %10.5f\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l123"></span><span class=cB5>ToF64</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>)/SAMPLE_SIZE;
-<a name="l75"></a>
-<a name="l76"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(I_F_UNARY_MINUS,old_irq,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l336"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
-<a name="l77"></a>}
-<a name="l78"></a>
-<a name="l79"></a><a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l4"></span><span class=cB5>TimeIns</a></span><span class=cB0>;
-<a name="l80"></a>
-<a name="l81"></a></span><span class=cB2>/*  Program Output</span><span class=cB1>
-<a name="l82"></a>6 Cores 3.395GHz
-<a name="l83"></a>Interrupt Cycles:  573.98543
-<a name="l84"></a>Call      Cycles:    9.74349
-<a name="l85"></a></span><span class=cB2>*/</span><span class=cB1>
+<a name="l61"></a>  </span><span class=cB2>//Measure interrupt time</span><span class=cB0>
+<a name="l62"></a>  </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l63"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;SAMPLE_SIZE; i++)
+<a name="l64"></a>    UnaryMinusInt(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>);
+<a name="l65"></a>  </span><span class=cB1>end</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l66"></a>  </span><span class=cB6>&quot;Interrupt Cycles: %10.5f\n&quot;</span><span class=cB0>
+<a name="l67"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l123"></span><span class=cB5>ToF64</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>)/SAMPLE_SIZE;
+<a name="l68"></a>  </span><span class=cB2>//Measure call time</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l70"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;SAMPLE_SIZE; i++)
+<a name="l71"></a>    UnaryMinusCall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>);
+<a name="l72"></a>  </span><span class=cB1>end</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l297"></span><span class=cB5>GetTSC</a></span><span class=cB0>;
+<a name="l73"></a>  </span><span class=cB6>&quot;Call      Cycles: %10.5f\n&quot;</span><span class=cB0>
+<a name="l74"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l123"></span><span class=cB5>ToF64</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>)/SAMPLE_SIZE;
+<a name="l75"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(I_F_UNARY_MINUS,old_irq,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l336"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
+<a name="l76"></a>}
+<a name="l77"></a>
+<a name="l78"></a><a href="http://tinkeros.github.io/WbGit/Home/HomeKeyPlugIns.html#l4"></span><span class=cB5>TimeIns</a></span><span class=cB0>;
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB2>/*  Program Output</span><span class=cB1>
+<a name="l81"></a>6 Cores 3.395GHz
+<a name="l82"></a>Interrupt Cycles:  573.98543
+<a name="l83"></a>Call      Cycles:    9.74349
+<a name="l84"></a></span><span class=cB2>*/</span><span class=cB1>
 </span></div></pre></body>
 </html>

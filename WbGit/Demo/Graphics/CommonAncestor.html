@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,127 +36,131 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> N       32
-<a name="l2"></a> 
+<a name="l2"></a>
 <a name="l3"></a></span><span class=cB1>class</span><span class=cB0> Node
 <a name="l4"></a>{
 <a name="l5"></a>  Node *left,*right;
 <a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
 <a name="l7"></a>};
-<a name="l8"></a> 
+<a name="l8"></a>
 <a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> n1,n2,common_ancestor;
 <a name="l10"></a>Node *root;
-<a name="l11"></a> 
+<a name="l11"></a>
 <a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> X_SPACING       16
 <a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> Y_SPACING       45
 <a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> ARROW_SPACING   3
-<a name="l15"></a> 
+<a name="l15"></a>
 <a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> ShowTree(</span><span class=cB9>CDC</span><span class=cB0> *dc,Node *tmpn,</span><span class=cB9>I64</span><span class=cB0> *_node_x,</span><span class=cB9>I64</span><span class=cB0> *_tree_x,</span><span class=cB9>I64</span><span class=cB0> y)
 <a name="l17"></a>{
 <a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> node_x;
-<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpn) </span><span class=cB7>{</span><span class=cB0>
-<a name="l20"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;left) {
-<a name="l21"></a>      ShowTree(dc,tmpn-&gt;left,&amp;node_x,_tree_x,y+Y_SPACING);
-<a name="l22"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
-<a name="l23"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l128"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc,*_tree_x,y,0,
-<a name="l24"></a>            node_x+ARROW_SPACING,y+Y_SPACING-ARROW_SPACING,0);
-<a name="l25"></a>    }
-<a name="l26"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==n1 || tmpn-&gt;n==n2) {
-<a name="l27"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==common_ancestor)
-<a name="l28"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
-<a name="l29"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l30"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>;
-<a name="l31"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==common_ancestor)
-<a name="l32"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3645"></span><span class=cB3>GREEN</a></span><span class=cB0>;
-<a name="l33"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l34"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
-<a name="l35"></a>
-<a name="l36"></a>    *_node_x=*_tree_x;
-<a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,*_node_x,y,</span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,tmpn-&gt;n);
-<a name="l38"></a>    *_tree_x+=X_SPACING;
-<a name="l39"></a>
-<a name="l40"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;right) {
-<a name="l41"></a>      ShowTree(dc,tmpn-&gt;right,&amp;node_x,_tree_x,y+Y_SPACING);
-<a name="l42"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
-<a name="l43"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l128"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc,*_node_x,y,0,
-<a name="l44"></a>            node_x-ARROW_SPACING,y+Y_SPACING-ARROW_SPACING,0);
-<a name="l45"></a>    }
-<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l47"></a>}
-<a name="l48"></a> 
-<a name="l49"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4004"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
-<a name="l50"></a>{
-<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> node_x=0,tree_x=0;
-<a name="l52"></a>  ShowTree(dc,root,&amp;node_x,&amp;tree_x,20);
-<a name="l53"></a>}
-<a name="l54"></a>
-<a name="l55"></a></span><span class=cB1>U0</span><span class=cB0> TreeAdd(Node **_root,Node *tmpn)
-<a name="l56"></a>{
-<a name="l57"></a>  Node *root=*_root;
-<a name="l58"></a>  </span><span class=cB1>if</span><span class=cB0> (!root)
-<a name="l59"></a>    *_root=tmpn;
-<a name="l60"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==root-&gt;n)
-<a name="l61"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpn);
-<a name="l62"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n&lt;root-&gt;n)
-<a name="l63"></a>    TreeAdd(&amp;root-&gt;left,tmpn);
-<a name="l64"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l65"></a>    TreeAdd(&amp;root-&gt;right,tmpn);
-<a name="l66"></a>}
-<a name="l67"></a>
-<a name="l68"></a></span><span class=cB1>U0</span><span class=cB0> TreeNew()
-<a name="l69"></a>{
-<a name="l70"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l71"></a>  Node *tmpn;
-<a name="l72"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;N;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l73"></a>    tmpn=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Node</span><span class=cB7>)</span><span class=cB0>);
-<a name="l74"></a>    tmpn-&gt;n=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>%N;
-<a name="l75"></a>
-<a name="l76"></a>    </span><span class=cB1>if</span><span class=cB0> (i==N-1)
-<a name="l77"></a>      n1=tmpn-&gt;n;
-<a name="l78"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i==N-2)
-<a name="l79"></a>      n2=tmpn-&gt;n;
-<a name="l80"></a>
-<a name="l81"></a>    TreeAdd(&amp;root,tmpn);
-<a name="l82"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(50);
-<a name="l83"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l84"></a>}
-<a name="l85"></a> 
-<a name="l86"></a></span><span class=cB1>U0</span><span class=cB0> TreeCommonAncestorFind(Node *root)
-<a name="l87"></a>{
-<a name="l88"></a>  </span><span class=cB1>if</span><span class=cB0> (root &amp;&amp; root-&gt;n!=n1 &amp;&amp; root-&gt;n!=n2) </span><span class=cB7>{</span><span class=cB0>
-<a name="l89"></a>    common_ancestor=root-&gt;n;
-<a name="l90"></a>    </span><span class=cB1>if</span><span class=cB0> (n1&lt;root-&gt;n &amp;&amp; n2&lt;root-&gt;n)
-<a name="l91"></a>      TreeCommonAncestorFind(root-&gt;left);
-<a name="l92"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (n1&gt;root-&gt;n &amp;&amp; n2&gt;root-&gt;n)
-<a name="l93"></a>      TreeCommonAncestorFind(root-&gt;right);
-<a name="l94"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l95"></a>}
-<a name="l96"></a> 
-<a name="l97"></a></span><span class=cB1>U0</span><span class=cB0> TreeCommonAncestor()
-<a name="l98"></a>{</span><span class=cB2>//Make tree and find common ancestor to n1 &amp; n2.</span><span class=cB0>
-<a name="l99"></a>  root=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l100"></a>  n1=n2=common_ancestor=0;
-<a name="l101"></a>
-<a name="l102"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
-<a name="l103"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
-<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l105"></a>  </span><span class=cB6>&quot;Scroll with {CTRL-Left Grab}.\n&quot;</span><span class=cB0>;
-<a name="l106"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l107"></a>    TreeNew;
-<a name="l108"></a>    TreeCommonAncestorFind(root);
-<a name="l109"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l110"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
-<a name="l111"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
-<a name="l112"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l113"></a>}
-<a name="l114"></a>
-<a name="l115"></a>TreeCommonAncestor;
-<a name="l116"></a></span><span class=cB2>/*Be careful with recursive routines in TempleOS</span><span class=cB0>
-<a name="l117"></a></span><span class=cB2>because the stack does not grow and will overflow.</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpn)
+<a name="l20"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;left)
+<a name="l22"></a>    {
+<a name="l23"></a>      ShowTree(dc,tmpn-&gt;left,&amp;node_x,_tree_x,y+Y_SPACING);
+<a name="l24"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l25"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l128"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc,*_tree_x,y,0,
+<a name="l26"></a>               node_x+ARROW_SPACING,y+Y_SPACING-ARROW_SPACING,0);
+<a name="l27"></a>    }
+<a name="l28"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==n1 || tmpn-&gt;n==n2)
+<a name="l29"></a>    {
+<a name="l30"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==common_ancestor)
+<a name="l31"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l32"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l33"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l34"></a>    }
+<a name="l35"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==common_ancestor)
+<a name="l36"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3645"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l37"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l38"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l39"></a>    *_node_x=*_tree_x;
+<a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc,*_node_x,y,</span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,tmpn-&gt;n);
+<a name="l41"></a>    *_tree_x+=X_SPACING;
+<a name="l42"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;right)
+<a name="l43"></a>    {
+<a name="l44"></a>      ShowTree(dc,tmpn-&gt;right,&amp;node_x,_tree_x,y+Y_SPACING);
+<a name="l45"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l46"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l128"></span><span class=cB5>GrArrow3</a></span><span class=cB0>(dc,*_node_x,y,0,
+<a name="l47"></a>               node_x-ARROW_SPACING,y+Y_SPACING-ARROW_SPACING,0);
+<a name="l48"></a>    }
+<a name="l49"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l50"></a>}
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4011"></span><span class=cB9>CTask</a></span><span class=cB0> *,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l53"></a>{
+<a name="l54"></a>  </span><span class=cB9>I64</span><span class=cB0> node_x=0,tree_x=0;
+<a name="l55"></a>  ShowTree(dc,root,&amp;node_x,&amp;tree_x,20);
+<a name="l56"></a>}
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB1>U0</span><span class=cB0> TreeAdd(Node **_root,Node *tmpn)
+<a name="l59"></a>{
+<a name="l60"></a>  Node *root=*_root;
+<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (!root)
+<a name="l62"></a>    *_root=tmpn;
+<a name="l63"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n==root-&gt;n)
+<a name="l64"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpn);
+<a name="l65"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (tmpn-&gt;n&lt;root-&gt;n)
+<a name="l66"></a>    TreeAdd(&amp;root-&gt;left,tmpn);
+<a name="l67"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l68"></a>    TreeAdd(&amp;root-&gt;right,tmpn);
+<a name="l69"></a>}
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB1>U0</span><span class=cB0> TreeNew()
+<a name="l72"></a>{
+<a name="l73"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l74"></a>  Node *tmpn;
+<a name="l75"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;N; i++)
+<a name="l76"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l77"></a>    tmpn=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Node</span><span class=cB7>)</span><span class=cB0>);
+<a name="l78"></a>    tmpn-&gt;n=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>%N;
+<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (i==N-1)
+<a name="l80"></a>      n1=tmpn-&gt;n;
+<a name="l81"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i==N-2)
+<a name="l82"></a>      n2=tmpn-&gt;n;
+<a name="l83"></a>    TreeAdd(&amp;root,tmpn);
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(50);
+<a name="l85"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l86"></a>}
+<a name="l87"></a>
+<a name="l88"></a></span><span class=cB1>U0</span><span class=cB0> TreeCommonAncestorFind(Node *root)
+<a name="l89"></a>{
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (root &amp;&amp; root-&gt;n!=n1 &amp;&amp; root-&gt;n!=n2)
+<a name="l91"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l92"></a>    common_ancestor=root-&gt;n;
+<a name="l93"></a>    </span><span class=cB1>if</span><span class=cB0> (n1&lt;root-&gt;n &amp;&amp; n2&lt;root-&gt;n)
+<a name="l94"></a>      TreeCommonAncestorFind(root-&gt;left);
+<a name="l95"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (n1&gt;root-&gt;n &amp;&amp; n2&gt;root-&gt;n)
+<a name="l96"></a>      TreeCommonAncestorFind(root-&gt;right);
+<a name="l97"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>}
+<a name="l99"></a>
+<a name="l100"></a></span><span class=cB1>U0</span><span class=cB0> TreeCommonAncestor()
+<a name="l101"></a>{</span><span class=cB2>//Make tree and find common ancestor to n1 &amp; n2.</span><span class=cB0>
+<a name="l102"></a>  root=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l103"></a>  n1=n2=common_ancestor=0;
+<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l105"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l106"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l107"></a>  </span><span class=cB6>&quot;Scroll with {CTRL-Left Grab}.\n&quot;</span><span class=cB0>;
+<a name="l108"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l109"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l110"></a>    TreeNew;
+<a name="l111"></a>    TreeCommonAncestorFind(root);
+<a name="l112"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l113"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l114"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l115"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l116"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l117"></a>}
 <a name="l118"></a>
-<a name="l119"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbGit/Demo/StkGrow.html#l1"><span class=cB4>::/Demo/StkGrow.HC</span></a><span class=cB2>.</span><span class=cB0>
-<a name="l120"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l119"></a>TreeCommonAncestor;
+<a name="l120"></a></span><span class=cB2>/*Be careful with recursive routines in TempleOS</span><span class=cB0>
+<a name="l121"></a></span><span class=cB2>because the stack does not grow and will overflow.</span><span class=cB0>
+<a name="l122"></a>
+<a name="l123"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbGit/Demo/StkGrow.html#l1"><span class=cB4>::/Demo/StkGrow.HC</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l124"></a></span><span class=cB2>*/</span><span class=cB0>
 </span></div></pre></body>
 </html>

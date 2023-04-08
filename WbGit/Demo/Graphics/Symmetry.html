@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -35,7 +35,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*Demonstrates symmetry.</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>Right-click and draw line of symmetry.</span><span class=cB0>
@@ -46,58 +46,67 @@
 <a name="l7"></a>{
 <a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> msg_code,x1,y1,x2,y2,arg1,arg2;
 <a name="l9"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"></span><span class=cB5>DCAlias</a></span><span class=cB0>;
-<a name="l10"></a>
-<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
-<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1544"></span><span class=cB3>WIG_TASK_DFT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1519"></span><span class=cB3>WIF_SELF_FOCUS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1527"></span><span class=cB3>WIF_SELF_BORDER</a></span><span class=cB0>;
-<a name="l13"></a>
-<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l592"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
-<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
-<a name="l16"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
-<a name="l18"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4317"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
-<a name="l19"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l269"></span><span class=cB5>DCSymmetrySet</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width/2,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width/2,1);
-<a name="l20"></a>  </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l21"></a>    msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
-<a name="l22"></a>          1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3909"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3912"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>+
-<a name="l23"></a>          1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>);
-<a name="l24"></a>    </span><span class=cB1>switch</span><span class=cB0> (msg_code) {
-<a name="l25"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>:
-<a name="l26"></a>        dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4317"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
-<a name="l27"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3628"></span><span class=cB3>ROP_XOR</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>^<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3642"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
-<a name="l28"></a>        x1=arg1; y1=arg2;
-<a name="l29"></a>        x2=arg1; y2=arg2;
-<a name="l30"></a>        </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3917"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l31"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l32"></a>          msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
-<a name="l33"></a>                1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3917"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3911"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
-<a name="l34"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l35"></a>          x2=arg1; y2=arg2;
-<a name="l36"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1544"></span><span class=cB3>WIG_TASK_DFT</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1519"></span><span class=cB3>WIF_SELF_FOCUS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1527"></span><span class=cB3>WIF_SELF_BORDER</a></span><span class=cB0>;
+<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l592"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
+<a name="l16"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l269"></span><span class=cB5>DCSymmetrySet</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width/2,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width/2,1);
+<a name="l18"></a>  </span><span class=cB1>do</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
+<a name="l21"></a>                    1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>+
+<a name="l22"></a>                    1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3923"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>);
+<a name="l23"></a>    </span><span class=cB1>switch</span><span class=cB0> (msg_code)
+<a name="l24"></a>    {
+<a name="l25"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3923"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>:
+<a name="l26"></a>      dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l27"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3628"></span><span class=cB3>ROP_XOR</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>^<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3642"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
+<a name="l28"></a>      x1=arg1;
+<a name="l29"></a>      y1=arg2;
+<a name="l30"></a>      x2=arg1;
+<a name="l31"></a>      y2=arg2;
+<a name="l32"></a>      </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3924"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>)
+<a name="l33"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
+<a name="l35"></a>        msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
+<a name="l36"></a>                        1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3924"></span><span class=cB3>MSG_MS_R_UP</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
 <a name="l37"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l38"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l292"></span><span class=cB5>DCSymmetry3Set</a></span><span class=cB7>(</span><span class=cB0>dc,x1,y1,0,x2,y2,0,x2,y2,1</span><span class=cB7>)</span><span class=cB0>)
-<a name="l39"></a>          dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4317"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
-<a name="l40"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l41"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3912"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>:
-<a name="l42"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3628"></span><span class=cB3>ROP_XOR</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>^<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3642"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
-<a name="l43"></a>        x1=arg1; y1=arg2;
-<a name="l44"></a>        x2=arg1; y2=arg2;
-<a name="l45"></a>        </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3913"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l46"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l47"></a>          msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
-<a name="l48"></a>                1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3913"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3911"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
-<a name="l49"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l50"></a>          x2=arg1; y2=arg2;
-<a name="l51"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l52"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
-<a name="l53"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l54"></a>    }
-<a name="l55"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3909"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0> || </span><span class=cB7>(</span><span class=cB0>arg1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4189"></span><span class=cB3>CH_ESC</a></span><span class=cB0> &amp;&amp; arg1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4190"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l56"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3910"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
-<a name="l57"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
-<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
-<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l60"></a>}
-<a name="l61"></a>
-<a name="l62"></a>SymmetryDemo;  </span><span class=cB2>//Execute when #included</span><span class=cB0>
+<a name="l38"></a>        x2=arg1;
+<a name="l39"></a>        y2=arg2;
+<a name="l40"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
+<a name="l42"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l292"></span><span class=cB5>DCSymmetry3Set</a></span><span class=cB7>(</span><span class=cB0>dc,x1,y1,0,x2,y2,0,x2,y2,1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l43"></a>        dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l44"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l45"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>:
+<a name="l46"></a>      dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3628"></span><span class=cB3>ROP_XOR</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>^<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3642"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>;
+<a name="l47"></a>      x1=arg1;
+<a name="l48"></a>      y1=arg2;
+<a name="l49"></a>      x2=arg1;
+<a name="l50"></a>      y2=arg2;
+<a name="l51"></a>      </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>)
+<a name="l52"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
+<a name="l54"></a>        msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;arg1,&amp;arg2,
+<a name="l55"></a>                        1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
+<a name="l56"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
+<a name="l57"></a>        x2=arg1;
+<a name="l58"></a>        y2=arg2;
+<a name="l59"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l898"></span><span class=cB5>GrLine3</a></span><span class=cB0>(dc,x1,y1,0,x2,y2,0);
+<a name="l61"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l62"></a>    }
+<a name="l63"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l64"></a>  </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0> || </span><span class=cB7>(</span><span class=cB0>arg1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4196"></span><span class=cB3>CH_ESC</a></span><span class=cB0> &amp;&amp; arg1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4197"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l65"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3917"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
+<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
+<a name="l67"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l68"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l69"></a>}
+<a name="l70"></a>
+<a name="l71"></a>SymmetryDemo;  </span><span class=cB2>//Execute when #included</span><span class=cB0>
 </span></div></pre></body>
 </html>

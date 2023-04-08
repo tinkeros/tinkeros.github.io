@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -34,7 +34,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*The moral of this story is simple</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>inst level optimizations</span><span class=cB0>
@@ -50,99 +50,104 @@
 <a name="l12"></a>
 <a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> SAMPLES (8*10000000+1)
 <a name="l14"></a>
-<a name="l15"></a></span><span class=cB1>asm</span><span class=cB0> {
-<a name="l16"></a>
-<a name="l17"></a>LIMIT:: </span><span class=cB1>DU64</span><span class=cB0>    SAMPLES;        </span><span class=cB2>//Memory reference should be bad, right?</span><span class=cB0>
-<a name="l18"></a>
-<a name="l19"></a>_BADLY_UNOPTIMIZED::
-<a name="l20"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,0
-<a name="l21"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,1
-<a name="l22"></a>@@05:   </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l23"></a>        </span><span class=cB1>INC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>             </span><span class=cB2>//if no dependencies, Free!</span><span class=cB0>
-<a name="l24"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RDX</span><span class=cB0>
-<a name="l25"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RDX</span><span class=cB0>,LIMIT-16    </span><span class=cB2>//added 16 displacement to make it worse</span><span class=cB0>
-<a name="l26"></a>        </span><span class=cB1>CMP</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> 16[</span><span class=cBC>RDX</span><span class=cB0>]
-<a name="l27"></a>        </span><span class=cB1>JB</span><span class=cB0>      @@05
-<a name="l28"></a>        </span><span class=cB1>RET</span><span class=cB0>
-<a name="l29"></a>
-<a name="l30"></a>_WELL_OPTIMIZED1::
-<a name="l31"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
-<a name="l32"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
-<a name="l33"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l34"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l35"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@05
-<a name="l36"></a>        </span><span class=cB1>RET</span><span class=cB0>
-<a name="l37"></a>
-<a name="l38"></a>_WELL_OPTIMIZED2:: </span><span class=cB2>//Unrolled</span><span class=cB0>
-<a name="l39"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
-<a name="l40"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
-<a name="l41"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l42"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l43"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l44"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l45"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l46"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l47"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l48"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l49"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l50"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l51"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l52"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l53"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l54"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l55"></a>        </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l56"></a>        </span><span class=cB1>DEC</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>
-<a name="l57"></a>        </span><span class=cB1>JNZ</span><span class=cB0>     @@05
-<a name="l58"></a>        </span><span class=cB1>RET</span><span class=cB0>
-<a name="l59"></a>
-<a name="l60"></a>_WELL_OPTIMIZED3::
-<a name="l61"></a>        </span><span class=cB1>XOR</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
-<a name="l62"></a>        </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
-<a name="l63"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
-<a name="l64"></a>        </span><span class=cB1>LOOP</span><span class=cB0>    @@05    </span><span class=cB2>//Inst has slow speed, but saves code size.</span><span class=cB0>
-<a name="l65"></a>        </span><span class=cB1>RET</span><span class=cB0>
-<a name="l66"></a>}
-<a name="l67"></a>
-<a name="l68"></a></span><span class=cB1>_extern</span><span class=cB0> _BADLY_UNOPTIMIZED </span><span class=cB9>I64</span><span class=cB0> Loop1();
-<a name="l69"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED1   </span><span class=cB9>I64</span><span class=cB0> Loop2();
-<a name="l70"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED2   </span><span class=cB9>I64</span><span class=cB0> Loop3();
-<a name="l71"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED3   </span><span class=cB9>I64</span><span class=cB0> Loop4();
-<a name="l72"></a>
-<a name="l73"></a></span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l74"></a></span><span class=cB1>F64</span><span class=cB0> t0;
-<a name="l75"></a>
-<a name="l76"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/CPURep.html#l27"></span><span class=cB5>CPURep</a></span><span class=cB0>;
-<a name="l77"></a>
-<a name="l78"></a></span><span class=cB6>&quot;Bad Code\n&quot;</span><span class=cB0>;
-<a name="l79"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l80"></a>i=Loop1;
-<a name="l81"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l82"></a>
-<a name="l83"></a></span><span class=cB6>&quot;Good Code #1\n&quot;</span><span class=cB0>;
-<a name="l84"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l85"></a>i=Loop2;
-<a name="l86"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l87"></a>
-<a name="l88"></a></span><span class=cB6>&quot;Good Code #2\n&quot;</span><span class=cB0>;
-<a name="l89"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l90"></a>i=Loop3;
-<a name="l91"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l92"></a>
-<a name="l93"></a></span><span class=cB6>&quot;Good Code #3\n&quot;</span><span class=cB0>;
-<a name="l94"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l95"></a>i=Loop4;
-<a name="l96"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l97"></a>
-<a name="l98"></a></span><span class=cB2>/*  Program Output</span><span class=cB1>
-<a name="l99"></a>8 Cores 2.660GHz
-<a name="l100"></a>Bad Code
-<a name="l101"></a>Res:3200000040000000 Time: 0.069966
-<a name="l102"></a>Good Code #1
-<a name="l103"></a>Res:3200000040000000 Time: 0.062567
-<a name="l104"></a>Good Code #2
-<a name="l105"></a>Res:3200000040000000 Time: 0.062907
-<a name="l106"></a>Good Code #3
-<a name="l107"></a>Res:3200000040000000 Time: 0.156359
-<a name="l108"></a></span><span class=cB2>*/</span><span class=cB1>
+<a name="l15"></a></span><span class=cB1>asm</span><span class=cB0>
+<a name="l16"></a>{
+<a name="l17"></a>
+<a name="l18"></a>  LIMIT::       </span><span class=cB1>DU64</span><span class=cB0>    SAMPLES;        </span><span class=cB2>//Memory reference should be bad, right?</span><span class=cB0>
+<a name="l19"></a>
+<a name="l20"></a>  _BADLY_UNOPTIMIZED::
+<a name="l21"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,0
+<a name="l22"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,1
+<a name="l23"></a>  @@05: </span><span class=cB1>MOV</span><span class=cB0>     </span><span class=cBC>RDX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l24"></a>  </span><span class=cB1>INC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>             </span><span class=cB2>//if no dependencies, Free!</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RDX</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RDX</span><span class=cB0>,LIMIT-16    </span><span class=cB2>//added 16 displacement to make it worse</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB1>CMP</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,</span><span class=cB9>U64</span><span class=cB0> 16[</span><span class=cBC>RDX</span><span class=cB0>]
+<a name="l28"></a>  </span><span class=cB1>JB</span><span class=cB0>    @@05
+<a name="l29"></a>  </span><span class=cB1>RET</span><span class=cB0>
+<a name="l30"></a>
+<a name="l31"></a>  _WELL_OPTIMIZED1::
+<a name="l32"></a>  </span><span class=cB1>XOR</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l33"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
+<a name="l34"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>JNZ</span><span class=cB0>   @@05
+<a name="l37"></a>  </span><span class=cB1>RET</span><span class=cB0>
+<a name="l38"></a>
+<a name="l39"></a>  _WELL_OPTIMIZED2:: </span><span class=cB2>//Unrolled</span><span class=cB0>
+<a name="l40"></a>  </span><span class=cB1>XOR</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l41"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
+<a name="l42"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l44"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l47"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l50"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l51"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l52"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l53"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l54"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l55"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l56"></a>  </span><span class=cB1>ADD</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l57"></a>  </span><span class=cB1>DEC</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>
+<a name="l58"></a>  </span><span class=cB1>JNZ</span><span class=cB0>   @@05
+<a name="l59"></a>  </span><span class=cB1>RET</span><span class=cB0>
+<a name="l60"></a>
+<a name="l61"></a>  _WELL_OPTIMIZED3::
+<a name="l62"></a>  </span><span class=cB1>XOR</span><span class=cB0>   </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RAX</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB1>MOV</span><span class=cB0>   </span><span class=cBC>RCX</span><span class=cB0>,SAMPLES-1
+<a name="l64"></a>@@05:   </span><span class=cB1>ADD</span><span class=cB0>     </span><span class=cBC>RAX</span><span class=cB0>,</span><span class=cBC>RCX</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB1>LOOP</span><span class=cB0>  @@05    </span><span class=cB2>//Inst has slow speed, but saves code size.</span><span class=cB0>
+<a name="l66"></a>  </span><span class=cB1>RET</span><span class=cB0>
+<a name="l67"></a>}
+<a name="l68"></a>
+<a name="l69"></a></span><span class=cB1>_extern</span><span class=cB0> _BADLY_UNOPTIMIZED </span><span class=cB9>I64</span><span class=cB0> Loop1();
+<a name="l70"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED1   </span><span class=cB9>I64</span><span class=cB0> Loop2();
+<a name="l71"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED2   </span><span class=cB9>I64</span><span class=cB0> Loop3();
+<a name="l72"></a></span><span class=cB1>_extern</span><span class=cB0> _WELL_OPTIMIZED3   </span><span class=cB9>I64</span><span class=cB0> Loop4();
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l75"></a></span><span class=cB1>F64</span><span class=cB0> t0;
+<a name="l76"></a>
+<a name="l77"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/CPURep.html#l27"></span><span class=cB5>CPURep</a></span><span class=cB0>;
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB6>&quot;Bad Code\n&quot;</span><span class=cB0>;
+<a name="l80"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l81"></a>i=Loop1;
+<a name="l82"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>
+<a name="l83"></a>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l84"></a>
+<a name="l85"></a></span><span class=cB6>&quot;Good Code #1\n&quot;</span><span class=cB0>;
+<a name="l86"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l87"></a>i=Loop2;
+<a name="l88"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>
+<a name="l89"></a>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l90"></a>
+<a name="l91"></a></span><span class=cB6>&quot;Good Code #2\n&quot;</span><span class=cB0>;
+<a name="l92"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l93"></a>i=Loop3;
+<a name="l94"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>
+<a name="l95"></a>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l96"></a>
+<a name="l97"></a></span><span class=cB6>&quot;Good Code #3\n&quot;</span><span class=cB0>;
+<a name="l98"></a>t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l99"></a>i=Loop4;
+<a name="l100"></a></span><span class=cB6>&quot;Res:%d Time:%9.6f\n&quot;</span><span class=cB0>
+<a name="l101"></a>,i,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l102"></a>
+<a name="l103"></a></span><span class=cB2>/*  Program Output</span><span class=cB1>
+<a name="l104"></a>8 Cores 2.660GHz
+<a name="l105"></a>Bad Code
+<a name="l106"></a>Res:3200000040000000 Time: 0.069966
+<a name="l107"></a>Good Code #1
+<a name="l108"></a>Res:3200000040000000 Time: 0.062567
+<a name="l109"></a>Good Code #2
+<a name="l110"></a>Res:3200000040000000 Time: 0.062907
+<a name="l111"></a>Good Code #3
+<a name="l112"></a>Res:3200000040000000 Time: 0.156359
+<a name="l113"></a></span><span class=cB2>*/</span><span class=cB1>
 </span></div></pre></body>
 </html>

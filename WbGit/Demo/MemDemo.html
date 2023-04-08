@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -34,71 +34,63 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB1>U0</span><span class=cB0> MemDemo()
 <a name="l2"></a>{
 <a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l4"></a></span><span class=cB6>&quot;$HL,1$$BLACK$</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB6>&quot;$HL,1$$BLACK$</span><span class=cB0>
 <a name="l5"></a></span><span class=cB6>#define MEM_PAG_BITS</span><span class=cB0>            </span><span class=cB6>9</span><span class=cB0>
 <a name="l6"></a></span><span class=cB6>#define MEM_PAG_SIZE</span><span class=cB0>            </span><span class=cB6>(1&lt;&lt;MEM_PAG_BITS)</span><span class=cB0>
 <a name="l7"></a></span><span class=cB6>#define MEM_HEAP_HASH_SIZE</span><span class=cB0>      </span><span class=cB6>1024</span><span class=cB0>
 <a name="l8"></a></span><span class=cB6>#define MEM_FREE_PAG_HASH_SIZE</span><span class=cB0>  </span><span class=cB6>0x100</span><span class=cB0>
 <a name="l9"></a></span><span class=cB6>#define MEM_EXTRA_HASH2_PAGS</span><span class=cB0>    </span><span class=cB6>2</span><span class=cB0>
-<a name="l10"></a>
-<a name="l11"></a></span><span class=cB6>public class CBlkPool</span><span class=cB0>
-<a name="l12"></a></span><span class=cB6>{</span><span class=cB0>
-<a name="l13"></a></span><span class=cB6>  CMemBlk *free_pag_hash[MEM_FREE_PAG_HASH_SIZE],</span><span class=cB0>
-<a name="l14"></a>        </span><span class=cB6>*free_pag_hash2[64-MEM_PAG_BITS];</span><span class=cB0>
-<a name="l15"></a></span><span class=cB6>};</span><span class=cB0>
-<a name="l16"></a>
-<a name="l17"></a></span><span class=cB6>public class CHeapCtrl</span><span class=cB0>
-<a name="l18"></a></span><span class=cB6>{</span><span class=cB0>
-<a name="l19"></a></span><span class=cB6>  CBlkPool *bp;</span><span class=cB0>
-<a name="l20"></a></span><span class=cB6>  CMemUnused *heap_hash[MEM_HEAP_HASH_SIZE/sizeof(U8 *)];</span><span class=cB0>
-<a name="l21"></a></span><span class=cB6>};</span><span class=cB0>
-<a name="l22"></a>
-<a name="l23"></a></span><span class=cB6>public class CTask //The Fs segment reg points to current CTask.</span><span class=cB0>
-<a name="l24"></a></span><span class=cB6>{</span><span class=cB0>
-<a name="l25"></a></span><span class=cB6>  CHeapCtrl *code_heap,*data_heap;</span><span class=cB0>
-<a name="l26"></a></span><span class=cB6>};</span><span class=cB0>
-<a name="l27"></a></span><span class=cB6>$HL,0$$FG$</span><span class=cB0>
-<a name="l28"></a>
-<a name="l29"></a></span><span class=cB6>  &quot;</span><span class=cB0>;
-<a name="l30"></a>
-<a name="l31"></a>
-<a name="l32"></a>  </span><span class=cB6>&quot;$PURPLE$Chunks in increments of 8 bytes, owned by the task.$FG$\n&quot;</span><span class=cB0>;
-<a name="l33"></a>  </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3521"></span><span class=cB9>CMemUnused</a></span><span class=cB7>)</span><span class=cB0>;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3563"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>;i+=8)
-<a name="l34"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x48)
-<a name="l35"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
-<a name="l36"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x48&lt;i&lt;0x3C8</span><span class=cB7>)</span><span class=cB0>)
-<a name="l37"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;heap_hash[%X/8]&quot;</span><span class=cB0>
-<a name="l38"></a>            </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i;
-<a name="l39"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
-<a name="l40"></a>
-<a name="l41"></a>  </span><span class=cB6>&quot;$PURPLE$Pages of 512 bytes, owned by the system.$FG$\n&quot;</span><span class=cB0>;
-<a name="l42"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3563"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3564"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>;
-<a name="l43"></a>        i+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>)
-<a name="l44"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x1200)
-<a name="l45"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
-<a name="l46"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x1200&lt;i&lt;0x1F200</span><span class=cB7>)</span><span class=cB0>)
-<a name="l47"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;bp-&gt;free_pag_hash[%X/512]&quot;</span><span class=cB0>
-<a name="l48"></a>            </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i;
-<a name="l49"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
-<a name="l50"></a>
-<a name="l51"></a>  </span><span class=cB6>&quot;$PURPLE$Powers of two, owned by the system.$FG$\n&quot;</span><span class=cB0>;
-<a name="l52"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3564"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB7>)</span><span class=cB0>;i&lt;64;i++)
-<a name="l53"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x1A)
-<a name="l54"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
-<a name="l55"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x1A&lt;=i&lt;=0x36</span><span class=cB7>)</span><span class=cB0>)
-<a name="l56"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;bp-&gt;free_pag_hash2[%X] %016X&quot;</span><span class=cB0>
-<a name="l57"></a>            </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i,
-<a name="l58"></a>            1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3567"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>;
-<a name="l59"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
-<a name="l60"></a>}
-<a name="l61"></a>
-<a name="l62"></a>MemDemo;
-<a name="l63"></a>
-<a name="l64"></a>
+<a name="l10"></a></span><span class=cB6>  public class CBlkPool</span><span class=cB0>
+<a name="l11"></a></span><span class=cB6>  {</span><span class=cB0>
+<a name="l12"></a></span><span class=cB6>    CMemBlk *free_pag_hash[MEM_FREE_PAG_HASH_SIZE],</span><span class=cB0>
+<a name="l13"></a>        </span><span class=cB6>    *free_pag_hash2[64-MEM_PAG_BITS];</span><span class=cB0>
+<a name="l14"></a></span><span class=cB6>  };</span><span class=cB0>
+<a name="l15"></a></span><span class=cB6>  public class CHeapCtrl</span><span class=cB0>
+<a name="l16"></a></span><span class=cB6>  {</span><span class=cB0>
+<a name="l17"></a></span><span class=cB6>    CBlkPool *bp;</span><span class=cB0>
+<a name="l18"></a></span><span class=cB6>    CMemUnused *heap_hash[MEM_HEAP_HASH_SIZE/sizeof(U8 *)];</span><span class=cB0>
+<a name="l19"></a></span><span class=cB6>  };</span><span class=cB0>
+<a name="l20"></a></span><span class=cB6>  public class CTask //The Fs segment reg points to current CTask.</span><span class=cB0>
+<a name="l21"></a></span><span class=cB6>  {</span><span class=cB0>
+<a name="l22"></a></span><span class=cB6>    CHeapCtrl *code_heap,*data_heap;</span><span class=cB0>
+<a name="l23"></a></span><span class=cB6>  };</span><span class=cB0>
+<a name="l24"></a></span><span class=cB6>  $HL,0$$FG$</span><span class=cB0>
+<a name="l25"></a></span><span class=cB6>  &quot;</span><span class=cB0>;
+<a name="l26"></a>  </span><span class=cB6>&quot;$PURPLE$Chunks in increments of 8 bytes, owned by the task.$FG$\n&quot;</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3521"></span><span class=cB9>CMemUnused</a></span><span class=cB7>)</span><span class=cB0>; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3563"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>; i+=8)
+<a name="l28"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x48)
+<a name="l29"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
+<a name="l30"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x48&lt;i&lt;0x3C8</span><span class=cB7>)</span><span class=cB0>)
+<a name="l31"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;heap_hash[%X/8]&quot;</span><span class=cB0>
+<a name="l32"></a>      </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i;
+<a name="l33"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB6>&quot;$PURPLE$Pages of 512 bytes, owned by the system.$FG$\n&quot;</span><span class=cB0>;
+<a name="l35"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3563"></span><span class=cB3>MEM_HEAP_HASH_SIZE</a></span><span class=cB0>; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3564"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>;
+<a name="l36"></a>       i+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>)
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x1200)
+<a name="l38"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
+<a name="l39"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x1200&lt;i&lt;0x1F200</span><span class=cB7>)</span><span class=cB0>)
+<a name="l40"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;bp-&gt;free_pag_hash[%X/512]&quot;</span><span class=cB0>
+<a name="l41"></a>      </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i;
+<a name="l42"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
+<a name="l43"></a>  </span><span class=cB6>&quot;$PURPLE$Powers of two, owned by the system.$FG$\n&quot;</span><span class=cB0>;
+<a name="l44"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3564"></span><span class=cB3>MEM_FREE_PAG_HASH_SIZE</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB7>)</span><span class=cB0>; i&lt;64; i++)
+<a name="l45"></a>    </span><span class=cB1>if</span><span class=cB0> (i==0x1A)
+<a name="l46"></a>      </span><span class=cB6>&quot;...\n&quot;</span><span class=cB0>;
+<a name="l47"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0x1A&lt;=i&lt;=0x36</span><span class=cB7>)</span><span class=cB0>)
+<a name="l48"></a>      </span><span class=cB6>&quot;Fs-&gt;data_heap-&gt;bp-&gt;free_pag_hash2[%X] %016X&quot;</span><span class=cB0>
+<a name="l49"></a>      </span><span class=cB6>&quot;$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$[X]$BLACK$ --&gt;$FG$\n&quot;</span><span class=cB0>,i,
+<a name="l50"></a>      1&lt;&lt;i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3567"></span><span class=cB3>MEM_EXTRA_HASH2_PAGS</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3562"></span><span class=cB3>MEM_PAG_SIZE</a></span><span class=cB0>;
+<a name="l51"></a>  </span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>;
+<a name="l52"></a>}
+<a name="l53"></a>
+<a name="l54"></a>MemDemo;
+<a name="l55"></a>
+<a name="l56"></a>
 </span></div></pre></body>
 </html>

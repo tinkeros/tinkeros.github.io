@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -33,7 +33,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> STEP_SIZE       400
 <a name="l2"></a>
@@ -41,82 +41,79 @@
 <a name="l4"></a>{
 <a name="l5"></a>  </span><span class=cB1>F64</span><span class=cB0> y,y1,t,dt;
 <a name="l6"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"></span><span class=cB5>DCAlias</a></span><span class=cB0>;
-<a name="l7"></a>
-<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l592"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
-<a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
-<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l11"></a>
-<a name="l12"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
-<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,0,0,0,STEP_SIZE);
-<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,0,STEP_SIZE,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,STEP_SIZE);
-<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,STEP_SIZE,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,0);
-<a name="l16"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>,0);
-<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l18"></a>
-<a name="l19"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3646"></span><span class=cB3>CYAN</a></span><span class=cB0>;
-<a name="l20"></a>  t=0;
-<a name="l21"></a>  y=0.0;
-<a name="l22"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l23"></a>    dt=1.0;
-<a name="l24"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
-<a name="l25"></a>      y1=STEP_SIZE-STEP_SIZE*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Exp</a></span><span class=cB0>(-0.01*t);
-<a name="l26"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l27"></a>      y1=STEP_SIZE*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Exp</a></span><span class=cB0>(-0.01*</span><span class=cB7>(</span><span class=cB0>t-<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>);
-<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
-<a name="l29"></a>    y=y1;
-<a name="l30"></a>    t+=dt;
-<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l33"></a>
-<a name="l34"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>;
-<a name="l35"></a>  t=0;
-<a name="l36"></a>  y=0.0;
-<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l38"></a>    dt=1.0;
-<a name="l39"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
-<a name="l40"></a>      y1=0.99*y+.01*STEP_SIZE;
-<a name="l41"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l42"></a>      y1=0.99*y;
-<a name="l43"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
-<a name="l44"></a>    y=y1;
-<a name="l45"></a>    t+=dt;
-<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l48"></a>
-<a name="l49"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>;
-<a name="l50"></a>  t=0;
-<a name="l51"></a>  y=0.0;
-<a name="l52"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l53"></a>    dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l141"></span><span class=cB5>Rand</a></span><span class=cB0>/10;
-<a name="l54"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
-<a name="l55"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.01,y,STEP_SIZE,dt);
-<a name="l56"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l57"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.01,y,0,dt);
-<a name="l58"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
-<a name="l59"></a>    y=y1;
-<a name="l60"></a>    t+=dt;
-<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l63"></a>
-<a name="l64"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3645"></span><span class=cB3>GREEN</a></span><span class=cB0>;
-<a name="l65"></a>  t=0;
-<a name="l66"></a>  y=0.0;
-<a name="l67"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l68"></a>    dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l141"></span><span class=cB5>Rand</a></span><span class=cB0>/10;
-<a name="l69"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
-<a name="l70"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.1,y,STEP_SIZE,dt);
-<a name="l71"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l72"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.1,y,0,dt);
-<a name="l73"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
-<a name="l74"></a>    y=y1;
-<a name="l75"></a>    t+=dt;
-<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
-<a name="l78"></a>
-<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
-<a name="l80"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
-<a name="l81"></a>}
-<a name="l82"></a>
-<a name="l83"></a>LowPassFilterDemo;
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l592"></span><span class=cB5>WinBorder</a></span><span class=cB0>;
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l10"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,0,0,0,STEP_SIZE);
+<a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,0,STEP_SIZE,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,STEP_SIZE);
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,STEP_SIZE,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,0);
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>,0);
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l16"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3646"></span><span class=cB3>CYAN</a></span><span class=cB0>;
+<a name="l17"></a>  t=0;
+<a name="l18"></a>  y=0.0;
+<a name="l19"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
+<a name="l20"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    dt=1.0;
+<a name="l22"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
+<a name="l23"></a>      y1=STEP_SIZE-STEP_SIZE*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Exp</a></span><span class=cB0>(-0.01*t);
+<a name="l24"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l25"></a>      y1=STEP_SIZE*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Exp</a></span><span class=cB0>(-0.01*</span><span class=cB7>(</span><span class=cB0>t-<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2</span><span class=cB7>)</span><span class=cB0>);
+<a name="l26"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
+<a name="l27"></a>    y=y1;
+<a name="l28"></a>    t+=dt;
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l31"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l32"></a>  t=0;
+<a name="l33"></a>  y=0.0;
+<a name="l34"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    dt=1.0;
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
+<a name="l38"></a>      y1=0.99*y+.01*STEP_SIZE;
+<a name="l39"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l40"></a>      y1=0.99*y;
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
+<a name="l42"></a>    y=y1;
+<a name="l43"></a>    t+=dt;
+<a name="l44"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l46"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3647"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l47"></a>  t=0;
+<a name="l48"></a>  y=0.0;
+<a name="l49"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
+<a name="l50"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l141"></span><span class=cB5>Rand</a></span><span class=cB0>/10;
+<a name="l52"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
+<a name="l53"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.01,y,STEP_SIZE,dt);
+<a name="l54"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l55"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.01,y,0,dt);
+<a name="l56"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
+<a name="l57"></a>    y=y1;
+<a name="l58"></a>    t+=dt;
+<a name="l59"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l61"></a>  dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3645"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l62"></a>  t=0;
+<a name="l63"></a>  y=0.0;
+<a name="l64"></a>  </span><span class=cB1>while</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
+<a name="l65"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>    dt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l141"></span><span class=cB5>Rand</a></span><span class=cB0>/10;
+<a name="l67"></a>    </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>/2)
+<a name="l68"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.1,y,STEP_SIZE,dt);
+<a name="l69"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l70"></a>      y1=<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l6"></span><span class=cB5>LowPass1</a></span><span class=cB0>(.1,y,0,dt);
+<a name="l71"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc,t,y,t+dt,y1);
+<a name="l72"></a>    y=y1;
+<a name="l73"></a>    t+=dt;
+<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l132"></span><span class=cB5>PressAKey</a></span><span class=cB0>;
+<a name="l76"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a>LowPassFilterDemo;
 </span></div></pre></body>
 </html>

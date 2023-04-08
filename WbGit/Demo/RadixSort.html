@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -34,7 +34,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> RADIX   256
 <a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> N       16
@@ -51,7 +51,7 @@
 <a name="l13"></a>{
 <a name="l14"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l15"></a>  </span><span class=cB6>&quot;$RED$\n\nInput$FG$\n&quot;</span><span class=cB0>;
-<a name="l16"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;N;i++)
+<a name="l16"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;N; i++)
 <a name="l17"></a>    </span><span class=cB6>&quot;%d:%d\n&quot;</span><span class=cB0>,i,a[i];
 <a name="l18"></a>}
 <a name="l19"></a>
@@ -60,43 +60,47 @@
 <a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j=0;
 <a name="l23"></a>  Lst *tmpl;
 <a name="l24"></a>  </span><span class=cB6>&quot;$RED$\n\nOutput$FG$\n&quot;</span><span class=cB0>;
-<a name="l25"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;RADIX;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l26"></a>    tmpl=r[i];
-<a name="l27"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpl) {
-<a name="l28"></a>      </span><span class=cB6>&quot;%d:%d\n&quot;</span><span class=cB0>,j++,*tmpl-&gt;a;
-<a name="l29"></a>      tmpl=tmpl-&gt;next;
-<a name="l30"></a>    }
-<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l32"></a>}
-<a name="l33"></a>
-<a name="l34"></a></span><span class=cB1>U0</span><span class=cB0> Init()
-<a name="l35"></a>{
-<a name="l36"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(r,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>r</span><span class=cB7>)</span><span class=cB0>);
-<a name="l38"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;N;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l39"></a>    a[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>&amp;255;
-<a name="l40"></a>    l[i].next=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l41"></a>    l[i].a=&amp;a[i];
-<a name="l42"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l43"></a>}
-<a name="l44"></a>
-<a name="l45"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/StrUtils.html#l8"></span><span class=cB5>Sort</a></span><span class=cB0>()
-<a name="l46"></a>{
-<a name="l47"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l48"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;N;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l49"></a>    l[i].next=r[*l[i].a];
-<a name="l50"></a>    r[*l[i].a]=&amp;l[i];
-<a name="l51"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l52"></a>}
-<a name="l53"></a>
-<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> RadixSort()
-<a name="l55"></a>{
-<a name="l56"></a>  Init;
-<a name="l57"></a>  DumpIn;
-<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/StrUtils.html#l8"></span><span class=cB5>Sort</a></span><span class=cB0>;
-<a name="l59"></a>  DumpOut;
-<a name="l60"></a>}
-<a name="l61"></a>
-<a name="l62"></a>RadixSort;
+<a name="l25"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;RADIX; i++)
+<a name="l26"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    tmpl=r[i];
+<a name="l28"></a>    </span><span class=cB1>while</span><span class=cB0> (tmpl)
+<a name="l29"></a>    {
+<a name="l30"></a>      </span><span class=cB6>&quot;%d:%d\n&quot;</span><span class=cB0>,j++,*tmpl-&gt;a;
+<a name="l31"></a>      tmpl=tmpl-&gt;next;
+<a name="l32"></a>    }
+<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(r,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>r</span><span class=cB7>)</span><span class=cB0>);
+<a name="l40"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;N; i++)
+<a name="l41"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l42"></a>    a[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>&amp;255;
+<a name="l43"></a>    l[i].next=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l44"></a>    l[i].a=&amp;a[i];
+<a name="l45"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a>}
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/StrUtils.html#l8"></span><span class=cB5>Sort</a></span><span class=cB0>()
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l51"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;N; i++)
+<a name="l52"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>    l[i].next=r[*l[i].a];
+<a name="l54"></a>    r[*l[i].a]=&amp;l[i];
+<a name="l55"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l56"></a>}
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB1>U0</span><span class=cB0> RadixSort()
+<a name="l59"></a>{
+<a name="l60"></a>  Init;
+<a name="l61"></a>  DumpIn;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/StrUtils.html#l8"></span><span class=cB5>Sort</a></span><span class=cB0>;
+<a name="l63"></a>  DumpOut;
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a>RadixSort;
 </span></div></pre></body>
 </html>

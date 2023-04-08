@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,7 +36,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*After making a font...</span><span class=cB0>
 <a name="l2"></a>
@@ -52,143 +52,154 @@
 <a name="l12"></a></span><span class=cB2>If you want to change the system font permanently,</span><span class=cB0>
 <a name="l13"></a></span><span class=cB2>save to a file with this font editor program</span><span class=cB0>
 <a name="l14"></a></span><span class=cB2>and cut and paste the code into </span><a href="http://tinkeros.github.io/WbGit/Kernel/FontStd.html#l1"><span class=cB4>::/Kernel/FontStd.HC</span></a><span class=cB2>.</span><span class=cB0>
-<a name="l15"></a></span><span class=cB2>You will need to recompile Kernel by calling </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l18"><span class=cB4>BootHDIns</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l15"></a></span><span class=cB2>You will need to recompile Kernel by calling </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l43"><span class=cB4>BootHDIns</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l16"></a>
 <a name="l17"></a></span><span class=cB2>See </span><a href="http://tinkeros.github.io/WbGit/Demo/ExtChars.html#l1"><span class=cB4>::/Demo/ExtChars.HC</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Demo/Games/CharDemo.html#l1"><span class=cB4>::/Demo/Games/CharDemo.HC</span></a><span class=cB2>,</span><span class=cB4>
 <a name="l18"></a></span><a href="http://tinkeros.github.io/WbGit/Demo/Graphics/CharAnimation.html#l1"><span class=cB4>::/Demo/Graphics/CharAnimation.HC</span></a><span class=cB2> and </span><a href="http://tinkeros.github.io/WbGit/Demo/ScrnCodes.html#l1"><span class=cB4>::/Demo/ScrnCodes.HC</span></a><span class=cB2>.</span><span class=cB0>
 <a name="l19"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l20"></a>
-<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> BLOW_UP_CHAR_X  (18*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>)
-<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> BLOW_UP_CHAR_Y  (4*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> BLOW_UP_CHAR_X  (18*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>)
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> BLOW_UP_CHAR_Y  (4*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
 <a name="l23"></a>
 <a name="l24"></a></span><span class=cB1>U8</span><span class=cB0> cur_ch;
 <a name="l25"></a>
-<a name="l26"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4004"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l26"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4011"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc)
 <a name="l27"></a>{
 <a name="l28"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,c;
 <a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/GrTextBase.html#l321"></span><span class=cB5>TextPrint</a></span><span class=cB0>(task,0,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>,</span><span class=cB6>&quot;Press &lt;CTRL-ALT-f&gt; to Toggle Aux Font.&quot;</span><span class=cB0>);
 <a name="l30"></a>  k=0;
-<a name="l31"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;16;i++)
-<a name="l32"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;16;j++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l33"></a>      </span><span class=cB1>if</span><span class=cB0> (k==cur_ch) {
-<a name="l34"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l115"></span><span class=cB5>Blink</a></span><span class=cB0>)
-<a name="l35"></a>          c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>)&lt;&lt;8 + k++;
-<a name="l36"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l37"></a>          c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>)&lt;&lt;8 + k++;
-<a name="l38"></a>      } </span><span class=cB1>else</span><span class=cB0>
-<a name="l39"></a>        c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3658"></span><span class=cB3>WHITE</a></span><span class=cB0>)&lt;&lt;8 + k++;
-<a name="l40"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/GrTextBase.html#l312"></span><span class=cB5>TextChar</a></span><span class=cB0>(task,,j,i+2,c);
-<a name="l41"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l42"></a>
-<a name="l43"></a>  k=0;
-<a name="l44"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;i++)
-<a name="l45"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;j++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l46"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k++</span><span class=cB7>)</span><span class=cB0>)
-<a name="l47"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
-<a name="l48"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l49"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
-<a name="l50"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc,BLOW_UP_CHAR_X+j*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,
-<a name="l51"></a>            BLOW_UP_CHAR_Y+i*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>,
-<a name="l52"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>);
-<a name="l53"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l54"></a>}
-<a name="l55"></a>
-<a name="l56"></a></span><span class=cB1>U0</span><span class=cB0> FESave(</span><span class=cB1>Bool</span><span class=cB0> pmt)
-<a name="l57"></a>{
-<a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> old_draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it;
-<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
-<a name="l60"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l61"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;256;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l62"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;0x%016X,&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[i]);
-<a name="l63"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l404"></span><span class=cB6>char_bmp_safe_dollar</a></span><span class=cB0>,i</span><span class=cB7>)</span><span class=cB0>)
-<a name="l64"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;//%c&quot;</span><span class=cB0>,i);
-<a name="l65"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i==</span><span class=cB6>'$'</span><span class=cB0>)
-<a name="l66"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;//$$&quot;</span><span class=cB0>,i);
-<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
-<a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l69"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l70"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l191"></span><span class=cB5>DocWrite</a></span><span class=cB0>(doc,pmt);
-<a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
-<a name="l72"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
-<a name="l73"></a>}
-<a name="l74"></a>
-<a name="l75"></a></span><span class=cB1>U0</span><span class=cB0> FontEd()
-<a name="l76"></a>{
-<a name="l77"></a>  </span><span class=cB9>I64</span><span class=cB0> msg_code,arg1,arg2,k;
-<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
-<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
-<a name="l80"></a>        </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
-<a name="l81"></a>        </span><span class=cB6>&quot;  SaveAs(,CH_CTRLA);&quot;</span><span class=cB0>
-<a name="l82"></a>        </span><span class=cB6>&quot;  Abort(,CH_SHIFT_ESC);&quot;</span><span class=cB0>
-<a name="l83"></a>        </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
-<a name="l84"></a>        </span><span class=cB6>&quot;}&quot;</span><span class=cB0>);
-<a name="l85"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
-<a name="l86"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
-<a name="l87"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l88"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1543"></span><span class=cB3>WIG_DBL_CLICK</a></span><span class=cB0>;
-<a name="l89"></a>  cur_ch=0;
-<a name="l90"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l91"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
-<a name="l92"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
-<a name="l93"></a>      </span><span class=cB1>switch</span><span class=cB0> (msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,
-<a name="l94"></a>            1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3909"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3912"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3911"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l95"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3909"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>:
-<a name="l96"></a>          </span><span class=cB1>switch</span><span class=cB0> (arg1) {
-<a name="l97"></a>            </span><span class=cB1>case</span><span class=cB0> 0:
-<a name="l98"></a>              </span><span class=cB1>switch</span><span class=cB0> (arg2.u8[0]) </span><span class=cB7>{</span><span class=cB0>
-<a name="l99"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4244"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
-<a name="l100"></a>                  cur_ch--;
-<a name="l101"></a>                  </span><span class=cB1>break</span><span class=cB0>;
-<a name="l102"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4245"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
-<a name="l103"></a>                  cur_ch++;
-<a name="l104"></a>                  </span><span class=cB1>break</span><span class=cB0>;
-<a name="l105"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4242"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
-<a name="l106"></a>                  cur_ch-=16;
-<a name="l107"></a>                  </span><span class=cB1>break</span><span class=cB0>;
-<a name="l108"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4243"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
-<a name="l109"></a>                  cur_ch+=16;
-<a name="l110"></a>                  </span><span class=cB1>break</span><span class=cB0>;
-<a name="l111"></a>
-<a name="l112"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l113"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l114"></a>              </span><span class=cB1>goto</span><span class=cB0> fe_done;
-<a name="l115"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4161"></span><span class=cB3>CH_CTRLA</a></span><span class=cB0>:
-<a name="l116"></a>              FESave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l117"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l118"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4189"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
-<a name="l119"></a>              FESave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l120"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4190"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
-<a name="l121"></a>              </span><span class=cB1>goto</span><span class=cB0> fe_done;
-<a name="l122"></a>            </span><span class=cB1>default</span><span class=cB0>:
-<a name="l123"></a>              cur_ch=arg1;
-<a name="l124"></a>          }
+<a name="l31"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;16; i++)
+<a name="l32"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;16; j++)
+<a name="l33"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>      </span><span class=cB1>if</span><span class=cB0> (k==cur_ch)
+<a name="l35"></a>      {
+<a name="l36"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l115"></span><span class=cB5>Blink</a></span><span class=cB0>)
+<a name="l37"></a>          c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>)&lt;&lt;8 + k++;
+<a name="l38"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l39"></a>          c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>)&lt;&lt;8 + k++;
+<a name="l40"></a>      }
+<a name="l41"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l42"></a>        c=(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3658"></span><span class=cB3>WHITE</a></span><span class=cB0>)&lt;&lt;8 + k++;
+<a name="l43"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/GrTextBase.html#l312"></span><span class=cB5>TextChar</a></span><span class=cB0>(task,,j,i+2,c);
+<a name="l44"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l45"></a>  k=0;
+<a name="l46"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>; i++)
+<a name="l47"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>; j++)
+<a name="l48"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l49"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k++</span><span class=cB7>)</span><span class=cB0>)
+<a name="l50"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3657"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l51"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l52"></a>        dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l53"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc,BLOW_UP_CHAR_X+j*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,
+<a name="l54"></a>             BLOW_UP_CHAR_Y+i*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>,
+<a name="l55"></a>             <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>);
+<a name="l56"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l57"></a>}
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB1>U0</span><span class=cB0> FESave(</span><span class=cB1>Bool</span><span class=cB0> pmt)
+<a name="l60"></a>{
+<a name="l61"></a>  </span><span class=cB1>U8</span><span class=cB0> old_draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l63"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l64"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;256; i++)
+<a name="l65"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;0x%016X,&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[i]);
+<a name="l67"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l404"></span><span class=cB6>char_bmp_safe_dollar</a></span><span class=cB0>,i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l68"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;//%c&quot;</span><span class=cB0>,i);
+<a name="l69"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i==</span><span class=cB6>'$'</span><span class=cB0>)
+<a name="l70"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;//$$&quot;</span><span class=cB0>,i);
+<a name="l71"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l72"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l73"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l74"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l191"></span><span class=cB5>DocWrite</a></span><span class=cB0>(doc,pmt);
+<a name="l75"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
+<a name="l76"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l77"></a>}
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB1>U0</span><span class=cB0> FontEd()
+<a name="l80"></a>{
+<a name="l81"></a>  </span><span class=cB9>I64</span><span class=cB0> msg_code,arg1,arg2,k;
+<a name="l82"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"></span><span class=cB5>SettingsPush</a></span><span class=cB0>; </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l3"><span class=cB4>SettingsPush</span></a><span class=cB0>
+<a name="l83"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
+<a name="l84"></a>  </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
+<a name="l85"></a>  </span><span class=cB6>&quot;  SaveAs(,CH_CTRLA);&quot;</span><span class=cB0>
+<a name="l86"></a>  </span><span class=cB6>&quot;  Abort(,CH_SHIFT_ESC);&quot;</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
+<a name="l88"></a>  </span><span class=cB6>&quot;}&quot;</span><span class=cB0>);
+<a name="l89"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l90"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l91"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l92"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1543"></span><span class=cB3>WIG_DBL_CLICK</a></span><span class=cB0>;
+<a name="l93"></a>  cur_ch=0;
+<a name="l94"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l95"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l96"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l97"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l98"></a>    {
+<a name="l99"></a>      </span><span class=cB1>switch</span><span class=cB0> (msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,
+<a name="l100"></a>                              1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3923"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>|1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l101"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l102"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>:
+<a name="l103"></a>        </span><span class=cB1>switch</span><span class=cB0> (arg1)
+<a name="l104"></a>        {
+<a name="l105"></a>        </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l106"></a>          </span><span class=cB1>switch</span><span class=cB0> (arg2.u8[0])
+<a name="l107"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4251"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
+<a name="l109"></a>            cur_ch--;
+<a name="l110"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l111"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4252"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
+<a name="l112"></a>            cur_ch++;
+<a name="l113"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l114"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4249"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l115"></a>            cur_ch-=16;
+<a name="l116"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l117"></a>          </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4250"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l118"></a>            cur_ch+=16;
+<a name="l119"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l120"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l121"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l122"></a>          </span><span class=cB1>goto</span><span class=cB0> fe_done;
+<a name="l123"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4168"></span><span class=cB3>CH_CTRLA</a></span><span class=cB0>:
+<a name="l124"></a>          FESave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
 <a name="l125"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l126"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3912"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>:
-<a name="l127"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>:
-<a name="l128"></a>          </span><span class=cB1>if</span><span class=cB0> (0&lt;=arg1&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*16 &amp;&amp; 0&lt;=arg2-2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*16) {
-<a name="l129"></a>            cur_ch=(arg2/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>-2)*16+arg1/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
-<a name="l130"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l131"></a>          } </span><span class=cB2>//fall through</span><span class=cB0>
-<a name="l132"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3911"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>:
-<a name="l133"></a>          k=(</span><span class=cB7>(</span><span class=cB0>arg2-BLOW_UP_CHAR_Y</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>+
-<a name="l134"></a>                (arg1-BLOW_UP_CHAR_X)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
-<a name="l135"></a>          </span><span class=cB1>if</span><span class=cB0> (0&lt;=k&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4298"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4299"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>) {
-<a name="l136"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.lb||msg_code==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3912"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>)
-<a name="l137"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k);
-<a name="l138"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.rb||msg_code==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>)
-<a name="l139"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l18"></span><span class=cB5>Btr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k);
-<a name="l140"></a>          }
-<a name="l141"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l142"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l143"></a>    }
-<a name="l144"></a>fe_done:
-<a name="l145"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3910"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
-<a name="l146"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
-<a name="l147"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
-<a name="l148"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
-<a name="l149"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l150"></a>}
-<a name="l151"></a>
-<a name="l152"></a>FontEd;
+<a name="l126"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4196"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l127"></a>          FESave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l128"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4197"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l129"></a>          </span><span class=cB1>goto</span><span class=cB0> fe_done;
+<a name="l130"></a>        </span><span class=cB1>default</span><span class=cB0>:
+<a name="l131"></a>          cur_ch=arg1;
+<a name="l132"></a>        }
+<a name="l133"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l134"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>:
+<a name="l135"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3923"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>:
+<a name="l136"></a>        </span><span class=cB1>if</span><span class=cB0> (0&lt;=arg1&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*16 &amp;&amp; 0&lt;=arg2-2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>*16)
+<a name="l137"></a>        {
+<a name="l138"></a>          cur_ch=(arg2/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>-2)*16+arg1/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l139"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l140"></a>        } </span><span class=cB2>//fall through</span><span class=cB0>
+<a name="l141"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>:
+<a name="l142"></a>        k=(</span><span class=cB7>(</span><span class=cB0>arg2-BLOW_UP_CHAR_Y</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>+
+<a name="l143"></a>          (arg1-BLOW_UP_CHAR_X)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l144"></a>        </span><span class=cB1>if</span><span class=cB0> (0&lt;=k&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4305"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4306"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>)
+<a name="l145"></a>        {
+<a name="l146"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.lb||msg_code==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>)
+<a name="l147"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k);
+<a name="l148"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.rb||msg_code==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3923"></span><span class=cB3>MSG_MS_R_DOWN</a></span><span class=cB0>)
+<a name="l149"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l18"></span><span class=cB5>Btr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.font[cur_ch],k);
+<a name="l150"></a>        }
+<a name="l151"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l152"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l153"></a>    }
+<a name="l154"></a>fe_done:
+<a name="l155"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(,,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3917"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>);
+<a name="l156"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l157"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l158"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l159"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l160"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l83"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l161"></a>}
+<a name="l162"></a>
+<a name="l163"></a>FontEd;
 </span></div></pre></body>
 </html>

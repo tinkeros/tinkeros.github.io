@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -35,7 +35,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*The magic pairs problem:</span><span class=cB0>
 <a name="l2"></a>
@@ -91,326 +91,352 @@
 <a name="l52"></a></span><span class=cB9>I64</span><span class=cB0> *PrimesNew(</span><span class=cB9>I64</span><span class=cB0> N,</span><span class=cB9>I64</span><span class=cB0> *_sqrt_primes,</span><span class=cB9>I64</span><span class=cB0> *_cbrt_primes)
 <a name="l53"></a>{
 <a name="l54"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,sqrt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l126"></span><span class=cB5>Ceil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>N</span><span class=cB7>)</span><span class=cB0>),cbrt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l126"></span><span class=cB5>Ceil</a></span><span class=cB0>(N`</span><span class=cB7>(</span><span class=cB0>1/3.0</span><span class=cB7>)</span><span class=cB0>),sqrt_sqrt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l126"></span><span class=cB5>Ceil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>sqrt</span><span class=cB7>)</span><span class=cB0>),
-<a name="l55"></a>        sqrt_primes=0,cbrt_primes=0;
+<a name="l55"></a>          sqrt_primes=0,cbrt_primes=0;
 <a name="l56"></a>  </span><span class=cB1>U8</span><span class=cB0> *s=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>sqrt+1+7</span><span class=cB7>)</span><span class=cB0>/8);
 <a name="l57"></a>  Prime *primes,*p;
-<a name="l58"></a>
-<a name="l59"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2;i&lt;=sqrt_sqrt;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l60"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l61"></a>      j=i*2;
-<a name="l62"></a>      </span><span class=cB1>while</span><span class=cB0> (j&lt;=sqrt) </span><span class=cB7>{</span><span class=cB0>
-<a name="l63"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(s,j);
-<a name="l64"></a>        j+=i;
-<a name="l65"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l66"></a>    }
-<a name="l67"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l68"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2;i&lt;=sqrt;i++)
-<a name="l69"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l70"></a>      sqrt_primes++; </span><span class=cB2>//Count primes</span><span class=cB0>
-<a name="l71"></a>      </span><span class=cB1>if</span><span class=cB0> (i&lt;=cbrt)
-<a name="l72"></a>        cbrt_primes++;
-<a name="l73"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l74"></a>
-<a name="l75"></a>  p=primes=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(sqrt_primes*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Prime</span><span class=cB7>)</span><span class=cB0>);
-<a name="l76"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2;i&lt;=sqrt;i++)
-<a name="l77"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l78"></a>      p-&gt;prime=i;
-<a name="l79"></a>      p++;
-<a name="l80"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l81"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(s);
-<a name="l82"></a>
-<a name="l83"></a>  *_sqrt_primes=sqrt_primes;
-<a name="l84"></a>  *_cbrt_primes=cbrt_primes;
-<a name="l85"></a>  </span><span class=cB1>return</span><span class=cB0> primes;
-<a name="l86"></a>}
-<a name="l87"></a>
-<a name="l88"></a>PowPrime *PowPrimesNew(</span><span class=cB9>I64</span><span class=cB0> N,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,Prime *primes,</span><span class=cB9>I64</span><span class=cB0> *_num_powprimes)
-<a name="l89"></a>{
-<a name="l90"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,sf,num_powprimes=0;
-<a name="l91"></a>  Prime *p;
-<a name="l92"></a>  PowPrime *powprimes,*pp;
-<a name="l93"></a>
-<a name="l94"></a>  p=primes;
-<a name="l95"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;sqrt_primes;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l96"></a>    num_powprimes+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l134"></span><span class=cB5>Floor</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Ln</a></span><span class=cB7>(</span><span class=cB0>N</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Ln</a></span><span class=cB7>(</span><span class=cB0>p-&gt;prime</span><span class=cB7>)</span><span class=cB0>);
-<a name="l97"></a>    p++;
-<a name="l98"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l99"></a>
-<a name="l100"></a>  p=primes;
-<a name="l101"></a>  pp=powprimes=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(num_powprimes*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PowPrime</span><span class=cB7>)</span><span class=cB0>);
-<a name="l102"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;sqrt_primes;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l103"></a>    p-&gt;pp=pp;
-<a name="l104"></a>    j=p-&gt;prime;
-<a name="l105"></a>    k=1;
-<a name="l106"></a>    sf=1;
-<a name="l107"></a>    </span><span class=cB1>while</span><span class=cB0> (j&lt;N) {
-<a name="l108"></a>      sf+=j;
-<a name="l109"></a>      pp-&gt;n=j;
-<a name="l110"></a>      pp-&gt;sumfact=sf;
-<a name="l111"></a>      j*=p-&gt;prime;
-<a name="l112"></a>      pp++;
-<a name="l113"></a>      p-&gt;pow_cnt++;
-<a name="l114"></a>    }
-<a name="l115"></a>    p++;
-<a name="l116"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l117"></a>  *_num_powprimes=num_powprimes;
-<a name="l118"></a>  </span><span class=cB1>return</span><span class=cB0> powprimes;
-<a name="l119"></a>}
-<a name="l120"></a>
-<a name="l121"></a></span><span class=cB9>I64</span><span class=cB0> SumFact(</span><span class=cB9>I64</span><span class=cB0> n,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,Prime *p)
-<a name="l122"></a>{
-<a name="l123"></a>  </span><span class=cB9>I64</span><span class=cB0> i,k,sf=1;
-<a name="l124"></a>  PowPrime *pp;
-<a name="l125"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;2)
-<a name="l126"></a>    </span><span class=cB1>return</span><span class=cB0> 1;
-<a name="l127"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;sqrt_primes;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l128"></a>    k=0;
-<a name="l129"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l130"></a>      n/=p-&gt;prime;
-<a name="l131"></a>      k++;
-<a name="l132"></a>    }
-<a name="l133"></a>    </span><span class=cB1>if</span><span class=cB0> (k) {
-<a name="l134"></a>      pp=p-&gt;pp+(k-1);
-<a name="l135"></a>      sf*=pp-&gt;sumfact;
-<a name="l136"></a>      </span><span class=cB1>if</span><span class=cB0> (n==1)
-<a name="l137"></a>        </span><span class=cB1>return</span><span class=cB0> sf;
-<a name="l138"></a>    }
-<a name="l139"></a>    p++;
-<a name="l140"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l141"></a>  </span><span class=cB1>return</span><span class=cB0> sf*(1+n); </span><span class=cB2>//Prime</span><span class=cB0>
-<a name="l142"></a>}
-<a name="l143"></a>
-<a name="l144"></a></span><span class=cB1>Bool</span><span class=cB0> TestSumFact(</span><span class=cB9>I64</span><span class=cB0> n,</span><span class=cB9>I64</span><span class=cB0> target_sf,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,</span><span class=cB9>I64</span><span class=cB0> cbrt_primes,Prime *p)
-<a name="l145"></a>{
-<a name="l146"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0,k,b,x1,x2;
-<a name="l147"></a>  PowPrime *pp;
-<a name="l148"></a>  </span><span class=cB1>F64</span><span class=cB0> disc;
-<a name="l149"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;2)
-<a name="l150"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l151"></a>  </span><span class=cB1>while</span><span class=cB0> (i++&lt;cbrt_primes) </span><span class=cB7>{</span><span class=cB0>
-<a name="l152"></a>    k=0;
-<a name="l153"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l154"></a>      n/=p-&gt;prime;
-<a name="l155"></a>      k++;
-<a name="l156"></a>    }
-<a name="l157"></a>    </span><span class=cB1>if</span><span class=cB0> (k) {
-<a name="l158"></a>      pp=p-&gt;pp+(k-1);
-<a name="l159"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>ModU64</a></span><span class=cB7>(</span><span class=cB0>&amp;target_sf,pp-&gt;sumfact</span><span class=cB7>)</span><span class=cB0>)
-<a name="l160"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l161"></a>      </span><span class=cB1>if</span><span class=cB0> (n==1) </span><span class=cB7>{</span><span class=cB0>
-<a name="l162"></a>        </span><span class=cB1>if</span><span class=cB0> (target_sf==1)
-<a name="l163"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l164"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l165"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l166"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l167"></a>    }
-<a name="l168"></a>    p++;
-<a name="l169"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l170"></a></span><span class=cB2>/*  At this point we have three possible cases to test</span><span class=cB0>
-<a name="l171"></a></span><span class=cB2>1)n==p1</span><span class=cB0>         </span><span class=cB2>-&gt;sf==(1+p1)</span><span class=cB0>    </span><span class=cB2>    ?</span><span class=cB0>
-<a name="l172"></a></span><span class=cB2>2)n==p1*p1</span><span class=cB0>      </span><span class=cB2>-&gt;sf==(1+p1+p1^2)   ?</span><span class=cB0>
-<a name="l173"></a></span><span class=cB2>3)n==p1*p2</span><span class=cB0>      </span><span class=cB2>-&gt;sf==(p1+1)*(p2+1) ?</span><span class=cB0>
-<a name="l174"></a>
-<a name="l175"></a></span><span class=cB2>*/</span><span class=cB0>
-<a name="l176"></a>  </span><span class=cB1>if</span><span class=cB0> (1+n==target_sf) </span><span class=cB7>{</span><span class=cB0>
-<a name="l177"></a>    </span><span class=cB1>while</span><span class=cB0> (i++&lt;sqrt_primes) {
-<a name="l178"></a>      k=0;
-<a name="l179"></a>      </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l180"></a>        n/=p-&gt;prime;
-<a name="l181"></a>        k++;
-<a name="l182"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l183"></a>      </span><span class=cB1>if</span><span class=cB0> (k) </span><span class=cB7>{</span><span class=cB0>
-<a name="l184"></a>        pp=p-&gt;pp+(k-1);
-<a name="l185"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>ModU64</a></span><span class=cB7>(</span><span class=cB0>&amp;target_sf,pp-&gt;sumfact</span><span class=cB7>)</span><span class=cB0>)
-<a name="l186"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l187"></a>        </span><span class=cB1>if</span><span class=cB0> (n==1) {
-<a name="l188"></a>          </span><span class=cB1>if</span><span class=cB0> (target_sf==1)
-<a name="l189"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l190"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l191"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l192"></a>        }
-<a name="l193"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l194"></a>      p++;
-<a name="l195"></a>    }
-<a name="l196"></a>    </span><span class=cB1>if</span><span class=cB0> (1+n==target_sf)
-<a name="l197"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l198"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l199"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l200"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l201"></a>
-<a name="l202"></a>  k=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB0>(n);
-<a name="l203"></a>  </span><span class=cB1>if</span><span class=cB0> (k*k==n) </span><span class=cB7>{</span><span class=cB0>
-<a name="l204"></a>    </span><span class=cB1>if</span><span class=cB0> (1+k+n==target_sf)
-<a name="l205"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l206"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l207"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l208"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l209"></a></span><span class=cB2>// n==p1*p2 -&gt; sf==(p1+1)*(p2+1) ?  where p1!=1 &amp;&amp; p2!=1</span><span class=cB0>
-<a name="l210"></a>    </span><span class=cB2>// if p1==1 || p2==1, it is FALSE because we checked a single prime above.</span><span class=cB0>
-<a name="l211"></a>
-<a name="l212"></a>    </span><span class=cB2>// sf==(p1+1)*(n/p1+1)</span><span class=cB0>
-<a name="l213"></a>    </span><span class=cB2>// sf==n+p1+n/p1+1</span><span class=cB0>
-<a name="l214"></a>    </span><span class=cB2>// sf*p1==n*p1+p1^2+n+p1</span><span class=cB0>
-<a name="l215"></a>    </span><span class=cB2>// p1^2+(n+1-sf)*p1+n=0</span><span class=cB0>
-<a name="l216"></a>    </span><span class=cB2>// x=(-b+/-sqrt(b^2-4ac))/2a</span><span class=cB0>
-<a name="l217"></a>    </span><span class=cB2>// a=1</span><span class=cB0>
-<a name="l218"></a>    </span><span class=cB2>// x=(-b+/-sqrt(b^2-4c))/2</span><span class=cB0>
-<a name="l219"></a>    </span><span class=cB2>// b=n+1-sf;c=n</span><span class=cB0>
-<a name="l220"></a>    b=n+1-target_sf;
-<a name="l221"></a></span><span class=cB2>// x=(-b+/-sqrt(b^2-4n))/2</span><span class=cB0>
-<a name="l222"></a>    disc=b*b-4*n;
-<a name="l223"></a>    </span><span class=cB1>if</span><span class=cB0> (disc&lt;0)
-<a name="l224"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l225"></a>    x1=(-b-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>disc</span><span class=cB7>)</span><span class=cB0>)/2;
-<a name="l226"></a>    </span><span class=cB1>if</span><span class=cB0> (x1&lt;=1)
-<a name="l227"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l228"></a>    x2=n/x1;
-<a name="l229"></a>    </span><span class=cB1>if</span><span class=cB0> (x2&gt;1 &amp;&amp; x1*x2==n)
-<a name="l230"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l231"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l232"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l233"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l234"></a>}
-<a name="l235"></a>
-<a name="l236"></a></span><span class=cB1>U0</span><span class=cB0> PutFactors(</span><span class=cB9>I64</span><span class=cB0> n) </span><span class=cB2>//For debugging</span><span class=cB0>
-<a name="l237"></a>{
-<a name="l238"></a>  </span><span class=cB9>I64</span><span class=cB0> i,k,sqrt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l126"></span><span class=cB5>Ceil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>n</span><span class=cB7>)</span><span class=cB0>);
-<a name="l239"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2;i&lt;=sqrt;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l240"></a>    k=0;
-<a name="l241"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%i</span><span class=cB7>)</span><span class=cB0>) {
-<a name="l242"></a>      k++;
-<a name="l243"></a>      n/=i;
-<a name="l244"></a>    }
-<a name="l245"></a>    </span><span class=cB1>if</span><span class=cB0> (k) {
-<a name="l246"></a>      </span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,i;
-<a name="l247"></a>      </span><span class=cB1>if</span><span class=cB0> (k&gt;1)
-<a name="l248"></a>        </span><span class=cB6>&quot;^%d&quot;</span><span class=cB0>,k;
-<a name="l249"></a>      </span><span class=cB6>''</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4192"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
-<a name="l250"></a>    }
-<a name="l251"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l252"></a>  </span><span class=cB1>if</span><span class=cB0> (n!=1)
-<a name="l253"></a>    </span><span class=cB6>&quot;%d &quot;</span><span class=cB0>,n;
-<a name="l254"></a>}
-<a name="l255"></a>
-<a name="l256"></a></span><span class=cB1>class</span><span class=cB0> RangeJob
-<a name="l257"></a>{
-<a name="l258"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
-<a name="l259"></a>  </span><span class=cB9>I64</span><span class=cB0> num,lo,hi,N,sqrt_primes,cbrt_primes;
-<a name="l260"></a>  Prime *primes;
-<a name="l261"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3880"></span><span class=cB9>CJob</a></span><span class=cB0> *cmd;
-<a name="l262"></a>} rj[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>];
-<a name="l263"></a>
-<a name="l264"></a></span><span class=cB9>I64</span><span class=cB0> TestCoreSubRange(RangeJob *r)
-<a name="l265"></a>{
-<a name="l266"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,m,n,n2,sf,res=0,range=r-&gt;hi-r-&gt;lo,
-<a name="l267"></a>        *sumfacts=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>),
-<a name="l268"></a>        *residue =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
-<a name="l269"></a>  </span><span class=cB9>U16</span><span class=cB0> *pow_cnt =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l270"></a>  Prime *p=r-&gt;primes;
-<a name="l271"></a>  PowPrime *pp;
-<a name="l272"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l178"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(sumfacts,1,range);
-<a name="l273"></a>  </span><span class=cB1>for</span><span class=cB0> (n=r-&gt;lo;n&lt;r-&gt;hi;n++)
-<a name="l274"></a>    residue[n-r-&gt;lo]=n;
-<a name="l275"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;r-&gt;sqrt_primes;j++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l276"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(pow_cnt,0,range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l277"></a>    m=1;
-<a name="l278"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;p-&gt;pow_cnt;i++) {
-<a name="l279"></a>      m*=p-&gt;prime;
-<a name="l280"></a>      n=m-r-&gt;lo%m;
-<a name="l281"></a>      </span><span class=cB1>while</span><span class=cB0> (n&lt;range) </span><span class=cB7>{</span><span class=cB0>
-<a name="l282"></a>        pow_cnt[n]++;
-<a name="l283"></a>        n+=m;
-<a name="l284"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l285"></a>    }
-<a name="l286"></a>    </span><span class=cB1>for</span><span class=cB0> (n=0;n&lt;range;n++)
-<a name="l287"></a>      </span><span class=cB1>if</span><span class=cB0> (i=pow_cnt[n]) {
-<a name="l288"></a>        pp=&amp;p-&gt;pp[i-1];
-<a name="l289"></a>        sumfacts[n]*=pp-&gt;sumfact;
-<a name="l290"></a>        residue [n]/=pp-&gt;n;
-<a name="l291"></a>      }
-<a name="l292"></a>    p++;
-<a name="l293"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l294"></a>
-<a name="l295"></a>  </span><span class=cB1>for</span><span class=cB0> (n=0;n&lt;range;n++)
-<a name="l296"></a>    </span><span class=cB1>if</span><span class=cB0> (residue[n]!=1)
-<a name="l297"></a>      sumfacts[n]*=1+residue[n];
-<a name="l298"></a>
-<a name="l299"></a>  </span><span class=cB1>for</span><span class=cB0> (n=r-&gt;lo;n&lt;r-&gt;hi;n++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l300"></a>    sf=sumfacts[n-r-&gt;lo];
-<a name="l301"></a>    n2=sf-n-1;
-<a name="l302"></a>    </span><span class=cB1>if</span><span class=cB0> (n&lt;n2&lt;r-&gt;N) {
-<a name="l303"></a>      </span><span class=cB1>if</span><span class=cB0> (r-&gt;lo&lt;=n2&lt;r-&gt;hi &amp;&amp; sumfacts[n2-r-&gt;lo]-n2-1==n ||
-<a name="l304"></a>            TestSumFact</span><span class=cB7>(</span><span class=cB0>n2,sf,r-&gt;sqrt_primes,r-&gt;cbrt_primes,r-&gt;primes</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l305"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(r-&gt;doc,</span><span class=cB6>&quot;%u:%u\n&quot;</span><span class=cB0>,n,sf-n-1);
-<a name="l306"></a>        res++;
+<a name="l58"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2; i&lt;=sqrt_sqrt; i++)
+<a name="l59"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l60"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l61"></a>    {
+<a name="l62"></a>      j=i*2;
+<a name="l63"></a>      </span><span class=cB1>while</span><span class=cB0> (j&lt;=sqrt)
+<a name="l64"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(s,j);
+<a name="l66"></a>        j+=i;
+<a name="l67"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l68"></a>    }
+<a name="l69"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l70"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2; i&lt;=sqrt; i++)
+<a name="l71"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l72"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>      sqrt_primes++; </span><span class=cB2>//Count primes</span><span class=cB0>
+<a name="l74"></a>      </span><span class=cB1>if</span><span class=cB0> (i&lt;=cbrt)
+<a name="l75"></a>        cbrt_primes++;
+<a name="l76"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>  p=primes=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(sqrt_primes*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>Prime</span><span class=cB7>)</span><span class=cB0>);
+<a name="l78"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2; i&lt;=sqrt; i++)
+<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>s,i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l80"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l81"></a>      p-&gt;prime=i;
+<a name="l82"></a>      p++;
+<a name="l83"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l84"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(s);
+<a name="l85"></a>  *_sqrt_primes=sqrt_primes;
+<a name="l86"></a>  *_cbrt_primes=cbrt_primes;
+<a name="l87"></a>  </span><span class=cB1>return</span><span class=cB0> primes;
+<a name="l88"></a>}
+<a name="l89"></a>
+<a name="l90"></a>PowPrime *PowPrimesNew(</span><span class=cB9>I64</span><span class=cB0> N,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,Prime *primes,</span><span class=cB9>I64</span><span class=cB0> *_num_powprimes)
+<a name="l91"></a>{
+<a name="l92"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,sf,num_powprimes=0;
+<a name="l93"></a>  Prime *p;
+<a name="l94"></a>  PowPrime *powprimes,*pp;
+<a name="l95"></a>  p=primes;
+<a name="l96"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;sqrt_primes; i++)
+<a name="l97"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l98"></a>    num_powprimes+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l134"></span><span class=cB5>Floor</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Ln</a></span><span class=cB7>(</span><span class=cB0>N</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Ln</a></span><span class=cB7>(</span><span class=cB0>p-&gt;prime</span><span class=cB7>)</span><span class=cB0>);
+<a name="l99"></a>    p++;
+<a name="l100"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l101"></a>  p=primes;
+<a name="l102"></a>  pp=powprimes=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(num_powprimes*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PowPrime</span><span class=cB7>)</span><span class=cB0>);
+<a name="l103"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;sqrt_primes; i++)
+<a name="l104"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l105"></a>    p-&gt;pp=pp;
+<a name="l106"></a>    j=p-&gt;prime;
+<a name="l107"></a>    k=1;
+<a name="l108"></a>    sf=1;
+<a name="l109"></a>    </span><span class=cB1>while</span><span class=cB0> (j&lt;N)
+<a name="l110"></a>    {
+<a name="l111"></a>      sf+=j;
+<a name="l112"></a>      pp-&gt;n=j;
+<a name="l113"></a>      pp-&gt;sumfact=sf;
+<a name="l114"></a>      j*=p-&gt;prime;
+<a name="l115"></a>      pp++;
+<a name="l116"></a>      p-&gt;pow_cnt++;
+<a name="l117"></a>    }
+<a name="l118"></a>    p++;
+<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>  *_num_powprimes=num_powprimes;
+<a name="l121"></a>  </span><span class=cB1>return</span><span class=cB0> powprimes;
+<a name="l122"></a>}
+<a name="l123"></a>
+<a name="l124"></a></span><span class=cB9>I64</span><span class=cB0> SumFact(</span><span class=cB9>I64</span><span class=cB0> n,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,Prime *p)
+<a name="l125"></a>{
+<a name="l126"></a>  </span><span class=cB9>I64</span><span class=cB0> i,k,sf=1;
+<a name="l127"></a>  PowPrime *pp;
+<a name="l128"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;2)
+<a name="l129"></a>    </span><span class=cB1>return</span><span class=cB0> 1;
+<a name="l130"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;sqrt_primes; i++)
+<a name="l131"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>    k=0;
+<a name="l133"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>)
+<a name="l134"></a>    {
+<a name="l135"></a>      n/=p-&gt;prime;
+<a name="l136"></a>      k++;
+<a name="l137"></a>    }
+<a name="l138"></a>    </span><span class=cB1>if</span><span class=cB0> (k)
+<a name="l139"></a>    {
+<a name="l140"></a>      pp=p-&gt;pp+(k-1);
+<a name="l141"></a>      sf*=pp-&gt;sumfact;
+<a name="l142"></a>      </span><span class=cB1>if</span><span class=cB0> (n==1)
+<a name="l143"></a>        </span><span class=cB1>return</span><span class=cB0> sf;
+<a name="l144"></a>    }
+<a name="l145"></a>    p++;
+<a name="l146"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l147"></a>  </span><span class=cB1>return</span><span class=cB0> sf*(1+n); </span><span class=cB2>//Prime</span><span class=cB0>
+<a name="l148"></a>}
+<a name="l149"></a>
+<a name="l150"></a></span><span class=cB1>Bool</span><span class=cB0> TestSumFact(</span><span class=cB9>I64</span><span class=cB0> n,</span><span class=cB9>I64</span><span class=cB0> target_sf,</span><span class=cB9>I64</span><span class=cB0> sqrt_primes,</span><span class=cB9>I64</span><span class=cB0> cbrt_primes,Prime *p)
+<a name="l151"></a>{
+<a name="l152"></a>  </span><span class=cB9>I64</span><span class=cB0> i=0,k,b,x1,x2;
+<a name="l153"></a>  PowPrime *pp;
+<a name="l154"></a>  </span><span class=cB1>F64</span><span class=cB0> disc;
+<a name="l155"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;2)
+<a name="l156"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l157"></a>  </span><span class=cB1>while</span><span class=cB0> (i++&lt;cbrt_primes)
+<a name="l158"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l159"></a>    k=0;
+<a name="l160"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>)
+<a name="l161"></a>    {
+<a name="l162"></a>      n/=p-&gt;prime;
+<a name="l163"></a>      k++;
+<a name="l164"></a>    }
+<a name="l165"></a>    </span><span class=cB1>if</span><span class=cB0> (k)
+<a name="l166"></a>    {
+<a name="l167"></a>      pp=p-&gt;pp+(k-1);
+<a name="l168"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>ModU64</a></span><span class=cB7>(</span><span class=cB0>&amp;target_sf,pp-&gt;sumfact</span><span class=cB7>)</span><span class=cB0>)
+<a name="l169"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l170"></a>      </span><span class=cB1>if</span><span class=cB0> (n==1)
+<a name="l171"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l172"></a>        </span><span class=cB1>if</span><span class=cB0> (target_sf==1)
+<a name="l173"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l174"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l175"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l176"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l177"></a>    }
+<a name="l178"></a>    p++;
+<a name="l179"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l180"></a>  </span><span class=cB2>/*  At this point we have three possible cases to test</span><span class=cB0>
+<a name="l181"></a></span><span class=cB2>  1)n==p1</span><span class=cB0>               </span><span class=cB2>-&gt;sf==(1+p1)</span><span class=cB0>    </span><span class=cB2>    ?</span><span class=cB0>
+<a name="l182"></a></span><span class=cB2>  2)n==p1*p1</span><span class=cB0>    </span><span class=cB2>-&gt;sf==(1+p1+p1^2)   ?</span><span class=cB0>
+<a name="l183"></a></span><span class=cB2>  3)n==p1*p2</span><span class=cB0>    </span><span class=cB2>-&gt;sf==(p1+1)*(p2+1) ?</span><span class=cB0>
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB2>  */</span><span class=cB0>
+<a name="l186"></a>  </span><span class=cB1>if</span><span class=cB0> (1+n==target_sf)
+<a name="l187"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l188"></a>    </span><span class=cB1>while</span><span class=cB0> (i++&lt;sqrt_primes)
+<a name="l189"></a>    {
+<a name="l190"></a>      k=0;
+<a name="l191"></a>      </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%p-&gt;prime</span><span class=cB7>)</span><span class=cB0>)
+<a name="l192"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l193"></a>        n/=p-&gt;prime;
+<a name="l194"></a>        k++;
+<a name="l195"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l196"></a>      </span><span class=cB1>if</span><span class=cB0> (k)
+<a name="l197"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l198"></a>        pp=p-&gt;pp+(k-1);
+<a name="l199"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>ModU64</a></span><span class=cB7>(</span><span class=cB0>&amp;target_sf,pp-&gt;sumfact</span><span class=cB7>)</span><span class=cB0>)
+<a name="l200"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l201"></a>        </span><span class=cB1>if</span><span class=cB0> (n==1)
+<a name="l202"></a>        {
+<a name="l203"></a>          </span><span class=cB1>if</span><span class=cB0> (target_sf==1)
+<a name="l204"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l205"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l206"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l207"></a>        }
+<a name="l208"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l209"></a>      p++;
+<a name="l210"></a>    }
+<a name="l211"></a>    </span><span class=cB1>if</span><span class=cB0> (1+n==target_sf)
+<a name="l212"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l213"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l214"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l215"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l216"></a>  k=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB0>(n);
+<a name="l217"></a>  </span><span class=cB1>if</span><span class=cB0> (k*k==n)
+<a name="l218"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l219"></a>    </span><span class=cB1>if</span><span class=cB0> (1+k+n==target_sf)
+<a name="l220"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l221"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l222"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l224"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l225"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l226"></a></span><span class=cB2>// n==p1*p2 -&gt; sf==(p1+1)*(p2+1) ?  where p1!=1 &amp;&amp; p2!=1</span><span class=cB0>
+<a name="l227"></a>    </span><span class=cB2>// if p1==1 || p2==1, it is FALSE because we checked a single prime above.</span><span class=cB0>
+<a name="l228"></a>    </span><span class=cB2>// sf==(p1+1)*(n/p1+1)</span><span class=cB0>
+<a name="l229"></a>    </span><span class=cB2>// sf==n+p1+n/p1+1</span><span class=cB0>
+<a name="l230"></a>    </span><span class=cB2>// sf*p1==n*p1+p1^2+n+p1</span><span class=cB0>
+<a name="l231"></a>    </span><span class=cB2>// p1^2+(n+1-sf)*p1+n=0</span><span class=cB0>
+<a name="l232"></a>    </span><span class=cB2>// x=(-b+/-sqrt(b^2-4ac))/2a</span><span class=cB0>
+<a name="l233"></a>    </span><span class=cB2>// a=1</span><span class=cB0>
+<a name="l234"></a>    </span><span class=cB2>// x=(-b+/-sqrt(b^2-4c))/2</span><span class=cB0>
+<a name="l235"></a>    </span><span class=cB2>// b=n+1-sf;c=n</span><span class=cB0>
+<a name="l236"></a>    b=n+1-target_sf;
+<a name="l237"></a></span><span class=cB2>// x=(-b+/-sqrt(b^2-4n))/2</span><span class=cB0>
+<a name="l238"></a>    disc=b*b-4*n;
+<a name="l239"></a>    </span><span class=cB1>if</span><span class=cB0> (disc&lt;0)
+<a name="l240"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l241"></a>    x1=(-b-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>disc</span><span class=cB7>)</span><span class=cB0>)/2;
+<a name="l242"></a>    </span><span class=cB1>if</span><span class=cB0> (x1&lt;=1)
+<a name="l243"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l244"></a>    x2=n/x1;
+<a name="l245"></a>    </span><span class=cB1>if</span><span class=cB0> (x2&gt;1 &amp;&amp; x1*x2==n)
+<a name="l246"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l247"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l248"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l249"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l250"></a>}
+<a name="l251"></a>
+<a name="l252"></a></span><span class=cB1>U0</span><span class=cB0> PutFactors(</span><span class=cB9>I64</span><span class=cB0> n) </span><span class=cB2>//For debugging</span><span class=cB0>
+<a name="l253"></a>{
+<a name="l254"></a>  </span><span class=cB9>I64</span><span class=cB0> i,k,sqrt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l126"></span><span class=cB5>Ceil</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB7>(</span><span class=cB0>n</span><span class=cB7>)</span><span class=cB0>);
+<a name="l255"></a>  </span><span class=cB1>for</span><span class=cB0> (i=2; i&lt;=sqrt; i++)
+<a name="l256"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l257"></a>    k=0;
+<a name="l258"></a>    </span><span class=cB1>while</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>n%i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l259"></a>    {
+<a name="l260"></a>      k++;
+<a name="l261"></a>      n/=i;
+<a name="l262"></a>    }
+<a name="l263"></a>    </span><span class=cB1>if</span><span class=cB0> (k)
+<a name="l264"></a>    {
+<a name="l265"></a>      </span><span class=cB6>&quot;%d&quot;</span><span class=cB0>,i;
+<a name="l266"></a>      </span><span class=cB1>if</span><span class=cB0> (k&gt;1)
+<a name="l267"></a>        </span><span class=cB6>&quot;^%d&quot;</span><span class=cB0>,k;
+<a name="l268"></a>      </span><span class=cB6>''</span><span class=cB0>
+<a name="l269"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4199"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>;
+<a name="l270"></a>    }
+<a name="l271"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l272"></a>  </span><span class=cB1>if</span><span class=cB0> (n!=1)
+<a name="l273"></a>    </span><span class=cB6>&quot;%d &quot;</span><span class=cB0>,n;
+<a name="l274"></a>}
+<a name="l275"></a>
+<a name="l276"></a></span><span class=cB1>class</span><span class=cB0> RangeJob
+<a name="l277"></a>{
+<a name="l278"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l279"></a>  </span><span class=cB9>I64</span><span class=cB0> num,lo,hi,N,sqrt_primes,cbrt_primes;
+<a name="l280"></a>  Prime *primes;
+<a name="l281"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3887"></span><span class=cB9>CJob</a></span><span class=cB0> *cmd;
+<a name="l282"></a>} rj[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>];
+<a name="l283"></a>
+<a name="l284"></a></span><span class=cB9>I64</span><span class=cB0> TestCoreSubRange(RangeJob *r)
+<a name="l285"></a>{
+<a name="l286"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,m,n,n2,sf,res=0,range=r-&gt;hi-r-&gt;lo,
+<a name="l287"></a>                    *sumfacts=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>),
+<a name="l288"></a>                     *residue =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l289"></a>  </span><span class=cB9>U16</span><span class=cB0> *pow_cnt =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l290"></a>  Prime *p=r-&gt;primes;
+<a name="l291"></a>  PowPrime *pp;
+<a name="l292"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l178"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(sumfacts,1,range);
+<a name="l293"></a>  </span><span class=cB1>for</span><span class=cB0> (n=r-&gt;lo; n&lt;r-&gt;hi; n++)
+<a name="l294"></a>    residue[n-r-&gt;lo]=n;
+<a name="l295"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;r-&gt;sqrt_primes; j++)
+<a name="l296"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l297"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(pow_cnt,0,range*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l298"></a>    m=1;
+<a name="l299"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;p-&gt;pow_cnt; i++)
+<a name="l300"></a>    {
+<a name="l301"></a>      m*=p-&gt;prime;
+<a name="l302"></a>      n=m-r-&gt;lo%m;
+<a name="l303"></a>      </span><span class=cB1>while</span><span class=cB0> (n&lt;range)
+<a name="l304"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l305"></a>        pow_cnt[n]++;
+<a name="l306"></a>        n+=m;
 <a name="l307"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l308"></a>    }
-<a name="l309"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l310"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(pow_cnt);
-<a name="l311"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(residue);
-<a name="l312"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(sumfacts);
-<a name="l313"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l314"></a>}
-<a name="l315"></a>
-<a name="l316"></a>#</span><span class=cB1>define</span><span class=cB0> CORE_SUB_RANGE  0x1000
-<a name="l317"></a>
-<a name="l318"></a></span><span class=cB9>I64</span><span class=cB0> TestCoreRange(RangeJob *r)
-<a name="l319"></a>{
-<a name="l320"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n,res=0;
-<a name="l321"></a>  RangeJob rj;
-<a name="l322"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;rj,r,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>RangeJob</span><span class=cB7>)</span><span class=cB0>);
-<a name="l323"></a>  </span><span class=cB1>for</span><span class=cB0> (i=r-&gt;lo;i&lt;r-&gt;hi;i+=CORE_SUB_RANGE) </span><span class=cB7>{</span><span class=cB0>
-<a name="l324"></a>    rj.lo=i;
-<a name="l325"></a>    rj.hi=i+CORE_SUB_RANGE;
-<a name="l326"></a>    </span><span class=cB1>if</span><span class=cB0> (rj.hi&gt;r-&gt;hi)
-<a name="l327"></a>      rj.hi=r-&gt;hi;
-<a name="l328"></a>    res+=TestCoreSubRange(&amp;rj);
-<a name="l329"></a>
-<a name="l330"></a>    n=rj.hi-rj.lo;
-<a name="l331"></a>    </span><span class=cB1>lock</span><span class=cB0> {<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>+=n;}
-<a name="l332"></a>
-<a name="l333"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l309"></a>    </span><span class=cB1>for</span><span class=cB0> (n=0; n&lt;range; n++)
+<a name="l310"></a>      </span><span class=cB1>if</span><span class=cB0> (i=pow_cnt[n])
+<a name="l311"></a>      {
+<a name="l312"></a>        pp=&amp;p-&gt;pp[i-1];
+<a name="l313"></a>        sumfacts[n]*=pp-&gt;sumfact;
+<a name="l314"></a>        residue [n]/=pp-&gt;n;
+<a name="l315"></a>      }
+<a name="l316"></a>    p++;
+<a name="l317"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l318"></a>  </span><span class=cB1>for</span><span class=cB0> (n=0; n&lt;range; n++)
+<a name="l319"></a>    </span><span class=cB1>if</span><span class=cB0> (residue[n]!=1)
+<a name="l320"></a>      sumfacts[n]*=1+residue[n];
+<a name="l321"></a>  </span><span class=cB1>for</span><span class=cB0> (n=r-&gt;lo; n&lt;r-&gt;hi; n++)
+<a name="l322"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l323"></a>    sf=sumfacts[n-r-&gt;lo];
+<a name="l324"></a>    n2=sf-n-1;
+<a name="l325"></a>    </span><span class=cB1>if</span><span class=cB0> (n&lt;n2&lt;r-&gt;N)
+<a name="l326"></a>    {
+<a name="l327"></a>      </span><span class=cB1>if</span><span class=cB0> (r-&gt;lo&lt;=n2&lt;r-&gt;hi &amp;&amp; sumfacts[n2-r-&gt;lo]-n2-1==n ||
+<a name="l328"></a>          TestSumFact</span><span class=cB7>(</span><span class=cB0>n2,sf,r-&gt;sqrt_primes,r-&gt;cbrt_primes,r-&gt;primes</span><span class=cB7>)</span><span class=cB0>)
+<a name="l329"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l330"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(r-&gt;doc,</span><span class=cB6>&quot;%u:%u\n&quot;</span><span class=cB0>,n,sf-n-1);
+<a name="l331"></a>        res++;
+<a name="l332"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l333"></a>    }
 <a name="l334"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l335"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l336"></a>}
-<a name="l337"></a>
-<a name="l338"></a></span><span class=cB9>I64</span><span class=cB0> MagicPairs(</span><span class=cB9>I64</span><span class=cB0> N)
-<a name="l339"></a>{
-<a name="l340"></a>  </span><span class=cB1>F64</span><span class=cB0> t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l341"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
-<a name="l342"></a>  </span><span class=cB9>I64</span><span class=cB0> sqrt_primes,cbrt_primes,num_powprimes,
-<a name="l343"></a>        i,k,n=(N-1)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>+1;
-<a name="l344"></a>  Prime *primes=PrimesNew(N,&amp;sqrt_primes,&amp;cbrt_primes);
-<a name="l345"></a>  PowPrime *powprimes=PowPrimesNew(N,sqrt_primes,primes,&amp;num_powprimes);
-<a name="l346"></a>
-<a name="l347"></a>  </span><span class=cB6>&quot;N:%u SqrtPrimes:%u CbrtPrimes:%u PowersOfPrimes:%u\n&quot;</span><span class=cB0>,
-<a name="l348"></a>        N,sqrt_primes,cbrt_primes,num_powprimes;
-<a name="l349"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
-<a name="l350"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>=0;
-<a name="l351"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=N;
-<a name="l352"></a>  k=2;
-<a name="l353"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l354"></a>    rj[i].doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
-<a name="l355"></a>    rj[i].num=i;
-<a name="l356"></a>    rj[i].lo=k;
-<a name="l357"></a>    k+=n;
-<a name="l358"></a>    </span><span class=cB1>if</span><span class=cB0> (k&gt;N) k=N;
-<a name="l359"></a>    rj[i].hi=k;
-<a name="l360"></a>    rj[i].N=N;
-<a name="l361"></a>    rj[i].sqrt_primes=sqrt_primes;
-<a name="l362"></a>    rj[i].cbrt_primes=cbrt_primes;
-<a name="l363"></a>    rj[i].primes=primes;
-<a name="l364"></a>    rj[i].cmd=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l213"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;TestCoreRange,&amp;rj[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1-i,0);
-<a name="l365"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l366"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++)
-<a name="l367"></a>    res+=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(rj[i].cmd);
-<a name="l368"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(powprimes);
-<a name="l369"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(primes);
-<a name="l370"></a>  </span><span class=cB6>&quot;Found:%u Time:%9.4f\n&quot;</span><span class=cB0>,res,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l371"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
-<a name="l372"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l373"></a>}
-<a name="l374"></a>
-<a name="l375"></a>MagicPairs(1000000);
+<a name="l335"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(pow_cnt);
+<a name="l336"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(residue);
+<a name="l337"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(sumfacts);
+<a name="l338"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l339"></a>}
+<a name="l340"></a>
+<a name="l341"></a>#</span><span class=cB1>define</span><span class=cB0> CORE_SUB_RANGE  0x1000
+<a name="l342"></a>
+<a name="l343"></a></span><span class=cB9>I64</span><span class=cB0> TestCoreRange(RangeJob *r)
+<a name="l344"></a>{
+<a name="l345"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n,res=0;
+<a name="l346"></a>  RangeJob rj;
+<a name="l347"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;rj,r,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>RangeJob</span><span class=cB7>)</span><span class=cB0>);
+<a name="l348"></a>  </span><span class=cB1>for</span><span class=cB0> (i=r-&gt;lo; i&lt;r-&gt;hi; i+=CORE_SUB_RANGE)
+<a name="l349"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l350"></a>    rj.lo=i;
+<a name="l351"></a>    rj.hi=i+CORE_SUB_RANGE;
+<a name="l352"></a>    </span><span class=cB1>if</span><span class=cB0> (rj.hi&gt;r-&gt;hi)
+<a name="l353"></a>      rj.hi=r-&gt;hi;
+<a name="l354"></a>    res+=TestCoreSubRange(&amp;rj);
+<a name="l355"></a>    n=rj.hi-rj.lo;
+<a name="l356"></a>    </span><span class=cB1>lock</span><span class=cB0> {<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>+=n;}
+<a name="l357"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l358"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l359"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l360"></a>}
+<a name="l361"></a>
+<a name="l362"></a></span><span class=cB9>I64</span><span class=cB0> MagicPairs(</span><span class=cB9>I64</span><span class=cB0> N)
+<a name="l363"></a>{
+<a name="l364"></a>  </span><span class=cB1>F64</span><span class=cB0> t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l365"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
+<a name="l366"></a>  </span><span class=cB9>I64</span><span class=cB0> sqrt_primes,cbrt_primes,num_powprimes,
+<a name="l367"></a>      i,k,n=(N-1)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>+1;
+<a name="l368"></a>  Prime *primes=PrimesNew(N,&amp;sqrt_primes,&amp;cbrt_primes);
+<a name="l369"></a>  PowPrime *powprimes=PowPrimesNew(N,sqrt_primes,primes,&amp;num_powprimes);
+<a name="l370"></a>  </span><span class=cB6>&quot;N:%u SqrtPrimes:%u CbrtPrimes:%u PowersOfPrimes:%u\n&quot;</span><span class=cB0>
+<a name="l371"></a>  ,
+<a name="l372"></a>  N,sqrt_primes,cbrt_primes,num_powprimes;
+<a name="l373"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
+<a name="l374"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>=0;
+<a name="l375"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=N;
+<a name="l376"></a>  k=2;
+<a name="l377"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l378"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l379"></a>    rj[i].doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l380"></a>    rj[i].num=i;
+<a name="l381"></a>    rj[i].lo=k;
+<a name="l382"></a>    k+=n;
+<a name="l383"></a>    </span><span class=cB1>if</span><span class=cB0> (k&gt;N) k=N;
+<a name="l384"></a>    rj[i].hi=k;
+<a name="l385"></a>    rj[i].N=N;
+<a name="l386"></a>    rj[i].sqrt_primes=sqrt_primes;
+<a name="l387"></a>    rj[i].cbrt_primes=cbrt_primes;
+<a name="l388"></a>    rj[i].primes=primes;
+<a name="l389"></a>    rj[i].cmd=<a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;TestCoreRange,&amp;rj[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1-i,0);
+<a name="l390"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l391"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l392"></a>    res+=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l217"></span><span class=cB5>JobResGet</a></span><span class=cB0>(rj[i].cmd);
+<a name="l393"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(powprimes);
+<a name="l394"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(primes);
+<a name="l395"></a>  </span><span class=cB6>&quot;Found:%u Time:%9.4f\n&quot;</span><span class=cB0>
+<a name="l396"></a>  ,res,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l397"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=0;
+<a name="l398"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l399"></a>}
+<a name="l400"></a>
+<a name="l401"></a>MagicPairs(1000000);
 </span></div></pre></body>
 </html>

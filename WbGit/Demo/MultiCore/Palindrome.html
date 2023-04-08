@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -35,7 +35,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> BORDER_CHARS    1
 <a name="l2"></a>
@@ -46,92 +46,93 @@
 <a name="l7"></a></span><span class=cB1>U0</span><span class=cB0> PDNormalize()
 <a name="l8"></a>{
 <a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0> *r=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(size+2*BORDER_CHARS),
-<a name="l10"></a>        *src=buf,*dst=r;
+<a name="l10"></a>      *src=buf,*dst=r;
 <a name="l11"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
 <a name="l12"></a>  *dst++=</span><span class=cB6>'['</span><span class=cB0>; </span><span class=cB2>//Border</span><span class=cB0>
-<a name="l13"></a>  </span><span class=cB1>while</span><span class=cB0> (size--) </span><span class=cB7>{</span><span class=cB0>
-<a name="l14"></a>    ch=*src++;
-<a name="l15"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'a'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'z'</span><span class=cB0>) </span><span class=cB2>//lower is most common so do first</span><span class=cB0>
-<a name="l16"></a>      *dst++=ch;
-<a name="l17"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'A'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'Z'</span><span class=cB0>)
-<a name="l18"></a>      *dst++=ch+</span><span class=cB6>'a'</span><span class=cB0>-</span><span class=cB6>'A'</span><span class=cB0>; </span><span class=cB2>//Convert to lower</span><span class=cB0>
-<a name="l19"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l20"></a>  *dst++=</span><span class=cB6>']'</span><span class=cB0>; </span><span class=cB2>//Border</span><span class=cB0>
-<a name="l21"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l22"></a>  buf=r;
-<a name="l23"></a>  size=dst-r-2*BORDER_CHARS;
-<a name="l24"></a>}
-<a name="l25"></a>
-<a name="l26"></a></span><span class=cB1>U0</span><span class=cB0> PDAnswer(</span><span class=cB1>U8</span><span class=cB0> *a,</span><span class=cB9>I64</span><span class=cB0> len)
-<a name="l27"></a>{
-<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
-<a name="l29"></a>  a-=(len-1)/2;
-<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;CPU%02X Len:%2d &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num,len);
-<a name="l31"></a>  </span><span class=cB1>while</span><span class=cB0> (len--)
-<a name="l32"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%C&quot;</span><span class=cB0>,*a++); </span><span class=cB2>//%C is toupper char</span><span class=cB0>
-<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
-<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l18"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
-<a name="l35"></a>}
-<a name="l36"></a>
-<a name="l37"></a></span><span class=cB1>U0</span><span class=cB0> MPPalindrome(</span><span class=cB9>I64</span><span class=cB0> dummy=0)
-<a name="l38"></a>{
-<a name="l39"></a>  </span><span class=cB1>no_warn</span><span class=cB0> dummy;
-<a name="l40"></a>  </span><span class=cB1>U8</span><span class=cB0> *src=buf+BORDER_CHARS+size*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>,
-<a name="l41"></a>        *f,*b;
-<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> len,best=0,
-<a name="l43"></a>        my_size=(size+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;
-<a name="l44"></a>  </span><span class=cB1>while</span><span class=cB0> (my_size--) </span><span class=cB7>{</span><span class=cB0>
-<a name="l45"></a>
-<a name="l46"></a>    </span><span class=cB2>//Odd</span><span class=cB0>
-<a name="l47"></a>    f=src+1;
-<a name="l48"></a>    b=src-1;
-<a name="l49"></a>    </span><span class=cB1>while</span><span class=cB0> (*f==*b) {
-<a name="l50"></a>      f++;
-<a name="l51"></a>      b--;
-<a name="l52"></a>    }
-<a name="l53"></a>    len=f-b+1-2;
-<a name="l54"></a>    </span><span class=cB1>if</span><span class=cB0> (len&gt;best) {
-<a name="l55"></a>      best=len;
-<a name="l56"></a>      PDAnswer(src,len);
-<a name="l57"></a>    }
-<a name="l58"></a>
-<a name="l59"></a>    </span><span class=cB2>//Even</span><span class=cB0>
-<a name="l60"></a>    f=src+1;
-<a name="l61"></a>    b=src;
-<a name="l62"></a>    </span><span class=cB1>while</span><span class=cB0> (*f==*b) {
-<a name="l63"></a>      f++;
-<a name="l64"></a>      b--;
-<a name="l65"></a>    }
-<a name="l66"></a>    len=f-b+1-2;
-<a name="l67"></a>    </span><span class=cB1>if</span><span class=cB0> (len&gt;best) {
-<a name="l68"></a>      best=len;
-<a name="l69"></a>      PDAnswer(src,len);
-<a name="l70"></a>    }
-<a name="l71"></a>
-<a name="l72"></a>    src++;
-<a name="l73"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l74"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num);
-<a name="l75"></a>}
-<a name="l76"></a>
-<a name="l77"></a></span><span class=cB1>U0</span><span class=cB0> Palindrome(</span><span class=cB1>U8</span><span class=cB0> *filename)
-<a name="l78"></a>{
-<a name="l79"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l80"></a>  </span><span class=cB1>F64</span><span class=cB0> t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l81"></a>
-<a name="l82"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
-<a name="l83"></a>  PDNormalize;
-<a name="l84"></a>
-<a name="l85"></a>  doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
-<a name="l86"></a>  mp_not_done_flags=1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1;
-<a name="l87"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;i++)
-<a name="l88"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l213"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPPalindrome,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,i);
-<a name="l89"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
-<a name="l90"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l91"></a>
+<a name="l13"></a>  </span><span class=cB1>while</span><span class=cB0> (size--)
+<a name="l14"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>    ch=*src++;
+<a name="l16"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'a'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'z'</span><span class=cB0>) </span><span class=cB2>//lower is most common so do first</span><span class=cB0>
+<a name="l17"></a>      *dst++=ch;
+<a name="l18"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'A'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'Z'</span><span class=cB0>)
+<a name="l19"></a>      *dst++=ch+</span><span class=cB6>'a'</span><span class=cB0>-</span><span class=cB6>'A'</span><span class=cB0>; </span><span class=cB2>//Convert to lower</span><span class=cB0>
+<a name="l20"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l21"></a>  *dst++=</span><span class=cB6>']'</span><span class=cB0>; </span><span class=cB2>//Border</span><span class=cB0>
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l23"></a>  buf=r;
+<a name="l24"></a>  size=dst-r-2*BORDER_CHARS;
+<a name="l25"></a>}
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB1>U0</span><span class=cB0> PDAnswer(</span><span class=cB1>U8</span><span class=cB0> *a,</span><span class=cB9>I64</span><span class=cB0> len)
+<a name="l28"></a>{
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
+<a name="l30"></a>  a-=(len-1)/2;
+<a name="l31"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;CPU%02X Len:%2d &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num,len);
+<a name="l32"></a>  </span><span class=cB1>while</span><span class=cB0> (len--)
+<a name="l33"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%C&quot;</span><span class=cB0>,*a++); </span><span class=cB2>//%C is toupper char</span><span class=cB0>
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l35"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l18"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
+<a name="l36"></a>}
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB1>U0</span><span class=cB0> MPPalindrome(</span><span class=cB9>I64</span><span class=cB0> dummy=0)
+<a name="l39"></a>{
+<a name="l40"></a>  </span><span class=cB1>no_warn</span><span class=cB0> dummy;
+<a name="l41"></a>  </span><span class=cB1>U8</span><span class=cB0> *src=buf+BORDER_CHARS+size*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>,
+<a name="l42"></a>      *f,*b;
+<a name="l43"></a>  </span><span class=cB9>I64</span><span class=cB0> len,best=0,
+<a name="l44"></a>          my_size=(size+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;
+<a name="l45"></a>  </span><span class=cB1>while</span><span class=cB0> (my_size--)
+<a name="l46"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>    </span><span class=cB2>//Odd</span><span class=cB0>
+<a name="l48"></a>    f=src+1;
+<a name="l49"></a>    b=src-1;
+<a name="l50"></a>    </span><span class=cB1>while</span><span class=cB0> (*f==*b)
+<a name="l51"></a>    {
+<a name="l52"></a>      f++;
+<a name="l53"></a>      b--;
+<a name="l54"></a>    }
+<a name="l55"></a>    len=f-b+1-2;
+<a name="l56"></a>    </span><span class=cB1>if</span><span class=cB0> (len&gt;best)
+<a name="l57"></a>    {
+<a name="l58"></a>      best=len;
+<a name="l59"></a>      PDAnswer(src,len);
+<a name="l60"></a>    }
+<a name="l61"></a>    </span><span class=cB2>//Even</span><span class=cB0>
+<a name="l62"></a>    f=src+1;
+<a name="l63"></a>    b=src;
+<a name="l64"></a>    </span><span class=cB1>while</span><span class=cB0> (*f==*b)
+<a name="l65"></a>    {
+<a name="l66"></a>      f++;
+<a name="l67"></a>      b--;
+<a name="l68"></a>    }
+<a name="l69"></a>    len=f-b+1-2;
+<a name="l70"></a>    </span><span class=cB1>if</span><span class=cB0> (len&gt;best)
+<a name="l71"></a>    {
+<a name="l72"></a>      best=len;
+<a name="l73"></a>      PDAnswer(src,len);
+<a name="l74"></a>    }
+<a name="l75"></a>    src++;
+<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;mp_not_done_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num);
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB1>U0</span><span class=cB0> Palindrome(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l81"></a>{
+<a name="l82"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l83"></a>  </span><span class=cB1>F64</span><span class=cB0> t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l84"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
+<a name="l85"></a>  PDNormalize;
+<a name="l86"></a>  doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l87"></a>  mp_not_done_flags=1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1;
+<a name="l88"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
+<a name="l89"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;MPPalindrome,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,i);
+<a name="l90"></a>  </span><span class=cB1>while</span><span class=cB0> (mp_not_done_flags)
+<a name="l91"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
 <a name="l92"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l93"></a>  </span><span class=cB6>&quot;Time:%9.5f\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
-<a name="l94"></a>}
-<a name="l95"></a>
-<a name="l96"></a>Palindrome(<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/MakeDoc.html#l35"></span><span class=cB3>BIBLE_FILENAME</a></span><span class=cB0>);
+<a name="l93"></a>  </span><span class=cB6>&quot;Time:%9.5f\n&quot;</span><span class=cB0>
+<a name="l94"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>-t0;
+<a name="l95"></a>}
+<a name="l96"></a>
+<a name="l97"></a>Palindrome(<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/MakeDoc.html#l35"></span><span class=cB3>BIBLE_FILENAME</a></span><span class=cB0>);
 </span></div></pre></body>
 </html>

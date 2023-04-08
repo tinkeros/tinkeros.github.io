@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -34,90 +34,93 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB1>U0</span><span class=cB0> BgtAcctsUpdate()
 <a name="l2"></a>{
 <a name="l3"></a>  CBgtEntry     *tmpb;
 <a name="l4"></a>  CBgtTemplate  *tmpt;
 <a name="l5"></a>  tmpb=b_head.next;
-<a name="l6"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb!=&amp;b_head) </span><span class=cB7>{</span><span class=cB0>
-<a name="l7"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;type!=BE_TEMPLATE_COPY) {
-<a name="l8"></a>      tmpb-&gt;credit_idx=StrFileAdd(tmpb-&gt;credit,
-<a name="l9"></a>            &amp;accts_table_strs,accts_table);
-<a name="l10"></a>      tmpb-&gt;debit_idx =StrFileAdd(tmpb-&gt;debit,
-<a name="l11"></a>            &amp;accts_table_strs,accts_table);
-<a name="l12"></a>    }
-<a name="l13"></a>    tmpb=tmpb-&gt;next;
-<a name="l14"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l15"></a>  tmpt=t_head.next;
-<a name="l16"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpt!=&amp;t_head) </span><span class=cB7>{</span><span class=cB0>
-<a name="l17"></a>    tmpt-&gt;b.credit_idx=StrFileAdd(tmpt-&gt;b.credit,
-<a name="l18"></a>          &amp;accts_table_strs,accts_table);
-<a name="l19"></a>    tmpt-&gt;b.debit_idx =StrFileAdd(tmpt-&gt;b.debit,
-<a name="l20"></a>          &amp;accts_table_strs,accts_table);
-<a name="l21"></a>    tmpt=tmpt-&gt;next;
-<a name="l22"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l23"></a>}
-<a name="l24"></a>
-<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> BgtAcctsWrite()
-<a name="l26"></a>{
-<a name="l27"></a>  BgtAcctsUpdate;
-<a name="l28"></a>  StrFileWrite(bgt_accts_file,accts_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l29"></a>}
-<a name="l30"></a>
-<a name="l31"></a></span><span class=cB1>U0</span><span class=cB0> BgtAcctsRead()
-<a name="l32"></a>{
-<a name="l33"></a>  </span><span class=cB9>I64</span><span class=cB0>   i,max_num;
-<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0>    *colors,**s=StrFileRead(bgt_accts_file,&amp;max_num,&amp;colors,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l35"></a>  StrFileDel(accts_table);
-<a name="l36"></a>  accts_table=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l51"></span><span class=cB5>HashTableNew</a></span><span class=cB0>(512);
-<a name="l37"></a>  accts_table_strs=0;
-<a name="l38"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=max_num;i++)
-<a name="l39"></a>    </span><span class=cB1>if</span><span class=cB0> (s[i])
-<a name="l40"></a>      StrFileAdd(s[i],&amp;accts_table_strs,accts_table,colors[i]);
-<a name="l41"></a>  StrFileArrDel(s,max_num);
-<a name="l42"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(colors);
-<a name="l43"></a>}
-<a name="l44"></a>
-<a name="l45"></a></span><span class=cB9>I64</span><span class=cB0> BgtAcctColor(</span><span class=cB1>U8</span><span class=cB0> *st)
-<a name="l46"></a>{
-<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l838"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph;
-<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (tmph=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB7>(</span><span class=cB0>st,accts_table,SFT_GENERIC</span><span class=cB7>)</span><span class=cB0>)
-<a name="l49"></a>    </span><span class=cB1>return</span><span class=cB0> tmph-&gt;user_data1;
-<a name="l50"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l51"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>;
-<a name="l52"></a>}
-<a name="l53"></a>
-<a name="l54"></a></span><span class=cB1>U8</span><span class=cB0> *BgtPopUpAcct(</span><span class=cB1>U8</span><span class=cB0> *header=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *dft=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l55"></a>{
-<a name="l56"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l57"></a>  </span><span class=cB1>U8</span><span class=cB0> *res;
-<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
-<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e,*doc_dft=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l60"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l838"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph;
-<a name="l61"></a>
-<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (header)
-<a name="l63"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,header);
-<a name="l64"></a>
-<a name="l65"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=accts_table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l66"></a>    tmph=accts_table-&gt;body[i];
-<a name="l67"></a>    </span><span class=cB1>while</span><span class=cB0> (tmph) {
-<a name="l68"></a>      doc_e=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$FG,%d$$MU-UL,\&quot;%s\&quot;,LE=0x%X$\n&quot;</span><span class=cB0>,
-<a name="l69"></a>            tmph-&gt;user_data1,tmph-&gt;str,tmph-&gt;str);
-<a name="l70"></a>      </span><span class=cB1>if</span><span class=cB0> (dft &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>dft,tmph-&gt;str</span><span class=cB7>)</span><span class=cB0>)
-<a name="l71"></a>        doc_dft=doc_e;
-<a name="l72"></a>      tmph=tmph-&gt;next;
-<a name="l73"></a>    }
-<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l75"></a>
-<a name="l76"></a>  </span><span class=cB1>if</span><span class=cB0> (doc_dft) </span><span class=cB7>{</span><span class=cB0>
-<a name="l77"></a>    doc-&gt;cur_entry=doc_dft;
-<a name="l78"></a>    doc-&gt;cur_col=0;
-<a name="l79"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l80"></a>  res=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1328"></span><span class=cB3>DOF_DONT_HOME</a></span><span class=cB0>);
-<a name="l81"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
-<a name="l82"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l83"></a>}
+<a name="l6"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpb!=&amp;b_head)
+<a name="l7"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpb-&gt;type!=BE_TEMPLATE_COPY)
+<a name="l9"></a>    {
+<a name="l10"></a>      tmpb-&gt;credit_idx=StrFileAdd(tmpb-&gt;credit,
+<a name="l11"></a>                                  &amp;accts_table_strs,accts_table);
+<a name="l12"></a>      tmpb-&gt;debit_idx =StrFileAdd(tmpb-&gt;debit,
+<a name="l13"></a>                                  &amp;accts_table_strs,accts_table);
+<a name="l14"></a>    }
+<a name="l15"></a>    tmpb=tmpb-&gt;next;
+<a name="l16"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l17"></a>  tmpt=t_head.next;
+<a name="l18"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpt!=&amp;t_head)
+<a name="l19"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    tmpt-&gt;b.credit_idx=StrFileAdd(tmpt-&gt;b.credit,
+<a name="l21"></a>                                  &amp;accts_table_strs,accts_table);
+<a name="l22"></a>    tmpt-&gt;b.debit_idx =StrFileAdd(tmpt-&gt;b.debit,
+<a name="l23"></a>                                  &amp;accts_table_strs,accts_table);
+<a name="l24"></a>    tmpt=tmpt-&gt;next;
+<a name="l25"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l26"></a>}
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB1>U0</span><span class=cB0> BgtAcctsWrite()
+<a name="l29"></a>{
+<a name="l30"></a>  BgtAcctsUpdate;
+<a name="l31"></a>  StrFileWrite(bgt_accts_file,accts_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l32"></a>}
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB1>U0</span><span class=cB0> BgtAcctsRead()
+<a name="l35"></a>{
+<a name="l36"></a>  </span><span class=cB9>I64</span><span class=cB0>   i,max_num;
+<a name="l37"></a>  </span><span class=cB1>U8</span><span class=cB0>    *colors,**s=StrFileRead(bgt_accts_file,&amp;max_num,&amp;colors,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l38"></a>  StrFileDel(accts_table);
+<a name="l39"></a>  accts_table=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l51"></span><span class=cB5>HashTableNew</a></span><span class=cB0>(512);
+<a name="l40"></a>  accts_table_strs=0;
+<a name="l41"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;=max_num; i++)
+<a name="l42"></a>    </span><span class=cB1>if</span><span class=cB0> (s[i])
+<a name="l43"></a>      StrFileAdd(s[i],&amp;accts_table_strs,accts_table,colors[i]);
+<a name="l44"></a>  StrFileArrDel(s,max_num);
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(colors);
+<a name="l46"></a>}
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB9>I64</span><span class=cB0> BgtAcctColor(</span><span class=cB1>U8</span><span class=cB0> *st)
+<a name="l49"></a>{
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l838"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph;
+<a name="l51"></a>  </span><span class=cB1>if</span><span class=cB0> (tmph=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB7>(</span><span class=cB0>st,accts_table,SFT_GENERIC</span><span class=cB7>)</span><span class=cB0>)
+<a name="l52"></a>    </span><span class=cB1>return</span><span class=cB0> tmph-&gt;user_data1;
+<a name="l53"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l54"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3643"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l55"></a>}
+<a name="l56"></a>
+<a name="l57"></a></span><span class=cB1>U8</span><span class=cB0> *BgtPopUpAcct(</span><span class=cB1>U8</span><span class=cB0> *header=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *dft=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l58"></a>{
+<a name="l59"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l60"></a>  </span><span class=cB1>U8</span><span class=cB0> *res;
+<a name="l61"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e,*doc_dft=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l63"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l838"></span><span class=cB9>CHashGeneric</a></span><span class=cB0> *tmph;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (header)
+<a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,header);
+<a name="l66"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;=accts_table-&gt;mask; i++)
+<a name="l67"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l68"></a>    tmph=accts_table-&gt;body[i];
+<a name="l69"></a>    </span><span class=cB1>while</span><span class=cB0> (tmph)
+<a name="l70"></a>    {
+<a name="l71"></a>      doc_e=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$FG,%d$$MU-UL,\&quot;%s\&quot;,LE=0x%X$\n&quot;</span><span class=cB0>,
+<a name="l72"></a>                     tmph-&gt;user_data1,tmph-&gt;str,tmph-&gt;str);
+<a name="l73"></a>      </span><span class=cB1>if</span><span class=cB0> (dft &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>dft,tmph-&gt;str</span><span class=cB7>)</span><span class=cB0>)
+<a name="l74"></a>        doc_dft=doc_e;
+<a name="l75"></a>      tmph=tmph-&gt;next;
+<a name="l76"></a>    }
+<a name="l77"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l78"></a>  </span><span class=cB1>if</span><span class=cB0> (doc_dft)
+<a name="l79"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l80"></a>    doc-&gt;cur_entry=doc_dft;
+<a name="l81"></a>    doc-&gt;cur_col=0;
+<a name="l82"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l83"></a>  res=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1328"></span><span class=cB3>DOF_DONT_HOME</a></span><span class=cB0>);
+<a name="l84"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l85"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l86"></a>}
 </span></div></pre></body>
 </html>

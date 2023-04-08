@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -34,7 +34,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l1"></span><span class=cB6>SHIFT_ROUNDS</a></span><span class=cB0>[64] =
 <a name="l2"></a>{
@@ -73,7 +73,7 @@
 <a name="l35"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l35"></span><span class=cB5>leftrotate</a></span><span class=cB0> (</span><span class=cB9>U32</span><span class=cB0> x, </span><span class=cB9>U32</span><span class=cB0> y)
 <a name="l36"></a>{
 <a name="l37"></a>  </span><span class=cB9>U32</span><span class=cB0> steps = y % 32;
-<a name="l38"></a>  </span><span class=cB1>return</span><span class=cB0> (x &lt;&lt; steps) | (x &gt;&gt; </span><span class=cB7>(</span><span class=cB0>32 - steps</span><span class=cB7>)</span><span class=cB0>);
+<a name="l38"></a>  </span><span class=cB1>return</span><span class=cB0> x &lt;&lt; steps | x &gt;&gt; (32 - steps);
 <a name="l39"></a>}
 <a name="l40"></a>
 <a name="l41"></a></span><span class=cB1>U0</span><span class=cB0>
@@ -90,29 +90,29 @@
 <a name="l52"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l53"></a>    </span><span class=cB1>if</span><span class=cB0> (i &lt; 16)
 <a name="l54"></a>    {
-<a name="l55"></a>      f = (xb &amp; xc) | (</span><span class=cB7>(</span><span class=cB0>~xb</span><span class=cB7>)</span><span class=cB0> &amp; xd);
+<a name="l55"></a>      f = xb &amp; xc | ~xb &amp; xd;
 <a name="l56"></a>      g = i;
 <a name="l57"></a>    }
 <a name="l58"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i &lt; 32)
 <a name="l59"></a>    {
-<a name="l60"></a>      f = (xd &amp; xb) | (</span><span class=cB7>(</span><span class=cB0>~xd</span><span class=cB7>)</span><span class=cB0> &amp; xc);
-<a name="l61"></a>      g = (</span><span class=cB7>(</span><span class=cB0>i * 5</span><span class=cB7>)</span><span class=cB0> + 1) % 16;
+<a name="l60"></a>      f = xd &amp; xb | ~xd &amp; xc;
+<a name="l61"></a>      g = (i * 5 + 1) % 16;
 <a name="l62"></a>    }
 <a name="l63"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (i &lt; 48)
 <a name="l64"></a>    {
 <a name="l65"></a>      f = xb ^ xc ^ xd;
-<a name="l66"></a>      g = (</span><span class=cB7>(</span><span class=cB0>i * 3</span><span class=cB7>)</span><span class=cB0> + 5) % 16;
+<a name="l66"></a>      g = (i * 3 + 5) % 16;
 <a name="l67"></a>    }
 <a name="l68"></a>    </span><span class=cB1>else</span><span class=cB0>
 <a name="l69"></a>    {
-<a name="l70"></a>      f = xc ^ (xb | </span><span class=cB7>(</span><span class=cB0>~xd</span><span class=cB7>)</span><span class=cB0>);
-<a name="l71"></a>      g = (i * 7) % 16;
+<a name="l70"></a>      f = xc ^ (xb | ~xd);
+<a name="l71"></a>      g = i * 7 % 16;
 <a name="l72"></a>    }
 <a name="l73"></a>    f += xa + <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l9"></span><span class=cB6>CONSTANTS</a></span><span class=cB0>[i] + words[g];
 <a name="l74"></a>    xa = xd;
 <a name="l75"></a>    xd = xc;
 <a name="l76"></a>    xc = xb;
-<a name="l77"></a>    xb += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l35"></span><span class=cB5>leftrotate</a></span><span class=cB0> (f, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l1"></span><span class=cB6>SHIFT_ROUNDS</a></span><span class=cB0>[i]);
+<a name="l77"></a>    xb += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l35"></span><span class=cB5>leftrotate</a></span><span class=cB0>(f, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l1"></span><span class=cB6>SHIFT_ROUNDS</a></span><span class=cB0>[i]);
 <a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l79"></a>  *a += xa;
 <a name="l80"></a>  *b += xb;
@@ -140,7 +140,7 @@
 <a name="l102"></a>  </span><span class=cB1>U8</span><span class=cB0> *msg;
 <a name="l103"></a>  </span><span class=cB9>I32</span><span class=cB0> i,msg_len;
 <a name="l104"></a>  </span><span class=cB9>U32</span><span class=cB0> a, b, c, d;
-<a name="l105"></a>  msg_len = 56 - (len % 64);
+<a name="l105"></a>  msg_len = 56 - len % 64;
 <a name="l106"></a>  </span><span class=cB1>if</span><span class=cB0> (msg_len &lt; 1)
 <a name="l107"></a>    msg_len += 64;
 <a name="l108"></a>  msg_len += len + 8;
@@ -178,5 +178,6 @@
 <a name="l140"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l100"></span><span class=cB5>md5buf</a></span><span class=cB0>(data,size, res);
 <a name="l141"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data);
 <a name="l142"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l143"></a>}</span></div></pre></body>
+<a name="l143"></a>}
+</span></div></pre></body>
 </html>

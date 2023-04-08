@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,7 +36,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*Scans the sym table and checks</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>each </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l789"><span class=cB4>HTT_DEFINE_STR</span></a><span class=cB2> entry to see if</span><span class=cB0>
@@ -59,66 +59,74 @@
 <a name="l19"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l740"></span><span class=cB9>CHash</a></span><span class=cB0> *tmph;
 <a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e,*doc_e2;
 <a name="l21"></a>  </span><span class=cB1>Bool</span><span class=cB0> old_silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l285"></span><span class=cB5>IsSilent</a></span><span class=cB0>;
-<a name="l22"></a>
-<a name="l23"></a>  </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l24"></a>    table=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table;
-<a name="l25"></a>    </span><span class=cB1>while</span><span class=cB0> (table) {
-<a name="l26"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l27"></a>        tmph=table-&gt;body[i];
-<a name="l28"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph) {
-<a name="l29"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l789"></span><span class=cB3>HTT_DEFINE_STR</a></span><span class=cB0>)
-<a name="l30"></a>            cnt++;
-<a name="l31"></a>          tmph=tmph-&gt;next;
-<a name="l32"></a>        }
-<a name="l33"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l34"></a>      table=table-&gt;next;
-<a name="l35"></a>    }
-<a name="l36"></a>
-<a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
-<a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=cnt;
-<a name="l39"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Define Scan&quot;</span><span class=cB0>);
-<a name="l40"></a>
-<a name="l41"></a>    table=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table;
-<a name="l42"></a>    </span><span class=cB1>while</span><span class=cB0> (table) {
-<a name="l43"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;=table-&gt;mask;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l44"></a>        tmph=table-&gt;body[i];
-<a name="l45"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph) {
-<a name="l46"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l789"></span><span class=cB3>HTT_DEFINE_STR</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l47"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>++;
-<a name="l48"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Find.html#l205"></span><span class=cB5>FileOcc</a></span><span class=cB7>(</span><span class=cB0>tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB7>)</span><span class=cB0>==1) {
-<a name="l49"></a>              doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
-<a name="l50"></a>              old_put_doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
-<a name="l51"></a>              old_display_doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l15"></span><span class=cB5>DocDisplay</a></span><span class=cB0>;
-<a name="l52"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_doc=doc;
-<a name="l53"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Find.html#l164"></span><span class=cB5>Find</a></span><span class=cB0>(tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB0>);
-<a name="l54"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=old_put_doc;
-<a name="l55"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_doc=old_display_doc;
-<a name="l56"></a>              doc_e=doc-&gt;head.next;
-<a name="l57"></a>              </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc) </span><span class=cB7>{</span><span class=cB0>
-<a name="l58"></a>                </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1033"></span><span class=cB3>DOCT_LINK</a></span><span class=cB0>) {
-<a name="l59"></a>                  </span><span class=cB6>&quot;%s &quot;</span><span class=cB0>,tmph-&gt;str;
-<a name="l60"></a>                  doc_e2=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l142"></span><span class=cB5>DocEntryCopy</a></span><span class=cB0>(doc,doc_e);
-<a name="l61"></a>                  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l210"></span><span class=cB5>DocInsEntry</a></span><span class=cB0>(old_put_doc,doc_e2);
-<a name="l62"></a>                  </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l63"></a>                }
-<a name="l64"></a>                doc_e=doc_e-&gt;next;
-<a name="l65"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l66"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
-<a name="l67"></a>            }
-<a name="l68"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l69"></a>          tmph=tmph-&gt;next;
-<a name="l70"></a>        }
-<a name="l71"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l72"></a>      table=table-&gt;next;
-<a name="l73"></a>    }
-<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
-<a name="l75"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
-<a name="l76"></a>
-<a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l280"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
-<a name="l78"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>ProgressBarsRst</a></span><span class=cB0>;
-<a name="l80"></a>}
-<a name="l81"></a>
-<a name="l82"></a>UnusedDefineScan;
+<a name="l25"></a>    </span><span class=cB1>while</span><span class=cB0> (table)
+<a name="l26"></a>    {
+<a name="l27"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;=table-&gt;mask; i++)
+<a name="l28"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l29"></a>        tmph=table-&gt;body[i];
+<a name="l30"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph)
+<a name="l31"></a>        {
+<a name="l32"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l789"></span><span class=cB3>HTT_DEFINE_STR</a></span><span class=cB0>)
+<a name="l33"></a>            cnt++;
+<a name="l34"></a>          tmph=tmph-&gt;next;
+<a name="l35"></a>        }
+<a name="l36"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l37"></a>      table=table-&gt;next;
+<a name="l38"></a>    }
+<a name="l39"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>=0;
+<a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l217"></span><span class=cB6>progress1_max</a></span><span class=cB0>=cnt;
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l216"></span><span class=cB6>progress1_desc</a></span><span class=cB0>,</span><span class=cB6>&quot;Define Scan&quot;</span><span class=cB0>);
+<a name="l42"></a>    table=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table;
+<a name="l43"></a>    </span><span class=cB1>while</span><span class=cB0> (table)
+<a name="l44"></a>    {
+<a name="l45"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;=table-&gt;mask; i++)
+<a name="l46"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>        tmph=table-&gt;body[i];
+<a name="l48"></a>        </span><span class=cB1>while</span><span class=cB0> (tmph)
+<a name="l49"></a>        {
+<a name="l50"></a>          </span><span class=cB1>if</span><span class=cB0> (tmph-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l789"></span><span class=cB3>HTT_DEFINE_STR</a></span><span class=cB0>)
+<a name="l51"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l52"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l214"></span><span class=cB6>progress1</a></span><span class=cB0>++;
+<a name="l53"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Find.html#l205"></span><span class=cB5>FileOcc</a></span><span class=cB7>(</span><span class=cB0>tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB7>)</span><span class=cB0>==1)
+<a name="l54"></a>            {
+<a name="l55"></a>              doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l56"></a>              old_put_doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>;
+<a name="l57"></a>              old_display_doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l15"></span><span class=cB5>DocDisplay</a></span><span class=cB0>;
+<a name="l58"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_doc=doc;
+<a name="l59"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Find.html#l164"></span><span class=cB5>Find</a></span><span class=cB0>(tmph-&gt;str,</span><span class=cB6>&quot;/*&quot;</span><span class=cB0>,</span><span class=cB6>&quot;+l-i+$&quot;</span><span class=cB0>);
+<a name="l60"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc=old_put_doc;
+<a name="l61"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;display_doc=old_display_doc;
+<a name="l62"></a>              doc_e=doc-&gt;head.next;
+<a name="l63"></a>              </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc)
+<a name="l64"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l65"></a>                </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;type_u8==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1033"></span><span class=cB3>DOCT_LINK</a></span><span class=cB0>)
+<a name="l66"></a>                {
+<a name="l67"></a>                  </span><span class=cB6>&quot;%s &quot;</span><span class=cB0>,tmph-&gt;str;
+<a name="l68"></a>                  doc_e2=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l142"></span><span class=cB5>DocEntryCopy</a></span><span class=cB0>(doc,doc_e);
+<a name="l69"></a>                  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l210"></span><span class=cB5>DocInsEntry</a></span><span class=cB0>(old_put_doc,doc_e2);
+<a name="l70"></a>                  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l71"></a>                }
+<a name="l72"></a>                doc_e=doc_e-&gt;next;
+<a name="l73"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l74"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l75"></a>            }
+<a name="l76"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>          tmph=tmph-&gt;next;
+<a name="l78"></a>        }
+<a name="l79"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l80"></a>      table=table-&gt;next;
+<a name="l81"></a>    }
+<a name="l82"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l83"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l85"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l280"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
+<a name="l86"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l87"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l374"></span><span class=cB5>ProgressBarsRst</a></span><span class=cB0>;
+<a name="l88"></a>}
+<a name="l89"></a>
+<a name="l90"></a>UnusedDefineScan;
 </span></div></pre></body>
 </html>

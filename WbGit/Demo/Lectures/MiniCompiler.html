@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,7 +36,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>/*</span><span class=cB5>
 <a name="l2"></a><u>-] Main Compiler</span><span class=cB0>
@@ -47,7 +47,7 @@
 <a name="l7"></a>  </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsExp.html#l295"><span class=cB4>PrsExpression</span></a><span class=cB2>(), </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsStmt.html#l978"><span class=cB4>PrsStmt</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l8"></a>  
 <a name="l9"></a>  </span><span class=cB2>The main compiler optimizes   See </span><a href="http://tinkeros.github.io/WbGit/Compiler/CInit.html#l17"><span class=cB4>Intermediate Code Attributes</span></a><span class=cB2>, </span><span class=cB4>
-<a name="l10"></a>  </span><a href="http://tinkeros.github.io/WbGit/Compiler/OptPass012.html#l360"><span class=cB4>Combining Consts</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Compiler/OptPass3.html#l613"><span class=cB4>Choosing Reg Vars</span></a><span class=cB2>.  Use </span><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l1"><span class=cB4>PassTrace</span></a><span class=cB2>() to see the optimization </span><span class=cB0>
+<a name="l10"></a>  </span><a href="http://tinkeros.github.io/WbGit/Compiler/OptPass012.html#l360"><span class=cB4>Combining Consts</span></a><span class=cB2>, </span><a href="http://tinkeros.github.io/WbGit/Compiler/OptPass3.html#l509"><span class=cB4>Choosing Reg Vars</span></a><span class=cB2>.  Use </span><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l1"><span class=cB4>PassTrace</span></a><span class=cB2>() to see the optimization </span><span class=cB0>
 <a name="l11"></a>  </span><span class=cB2>stages.</span><span class=cB0>
 <a name="l12"></a>  
 <a name="l13"></a>  </span><span class=cB2>The main compiler makes machine code in the back end.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1769"><span class=cB4>IC Struct</span></a><span class=cB2>, </span><span class=cB4>
@@ -83,206 +83,213 @@
 <a name="l43"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l500"><span class=cB4>Lex</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l44"></a>  </span><span class=cB1>U8</span><span class=cB0> *src=*_src;
 <a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l46"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l47"></a>    </span><span class=cB1>switch</span><span class=cB0> (*src) {
-<a name="l48"></a>      </span><span class=cB1>case</span><span class=cB0> 0:
-<a name="l49"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>';'</span><span class=cB0>:
-<a name="l50"></a>        *_src=src;
-<a name="l51"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2182"></span><span class=cB3>TK_EOF</a></span><span class=cB0>;
-<a name="l52"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4192"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>:
-<a name="l53"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\r'</span><span class=cB0>:
-<a name="l54"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
-<a name="l55"></a>        src++;
-<a name="l56"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l57"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'0'</span><span class=cB0>...</span><span class=cB6>'9'</span><span class=cB0>:
-<a name="l58"></a>        i=0;
-<a name="l59"></a>        </span><span class=cB1>do</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l60"></a>          i=i*10+*src-</span><span class=cB6>'0'</span><span class=cB0>;
-<a name="l61"></a>          src++;
-<a name="l62"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=*src&lt;=</span><span class=cB6>'9'</span><span class=cB0>);
-<a name="l63"></a>        *num=i;
-<a name="l64"></a>        *_src=src;
-<a name="l65"></a>        </span><span class=cB1>return</span><span class=cB0> TK_NUM;
-<a name="l66"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'*'</span><span class=cB0>:
-<a name="l67"></a>        *num=OP_MUL;
-<a name="l68"></a>        *_src=src+1;
-<a name="l69"></a>        </span><span class=cB1>return</span><span class=cB0> TK_OP;
-<a name="l70"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'/'</span><span class=cB0>:
-<a name="l71"></a>        *num=OP_DIV;
-<a name="l72"></a>        *_src=src+1;
-<a name="l73"></a>        </span><span class=cB1>return</span><span class=cB0> TK_OP;
-<a name="l74"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'+'</span><span class=cB0>:
-<a name="l75"></a>        *num=OP_ADD;
-<a name="l76"></a>        *_src=src+1;
-<a name="l77"></a>        </span><span class=cB1>return</span><span class=cB0> TK_OP;
-<a name="l78"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'-'</span><span class=cB0>:
-<a name="l79"></a>        *num=OP_SUB;
-<a name="l80"></a>        *_src=src+1;
-<a name="l81"></a>        </span><span class=cB1>return</span><span class=cB0> TK_OP;
-<a name="l82"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'('</span><span class=cB0>:
-<a name="l83"></a>        *_src=src+1;
-<a name="l84"></a>        </span><span class=cB1>return</span><span class=cB0> TK_LEFT;
-<a name="l85"></a>      </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>')'</span><span class=cB0>:
-<a name="l86"></a>        *_src=src+1;
-<a name="l87"></a>        </span><span class=cB1>return</span><span class=cB0> TK_RIGHT;
-<a name="l88"></a>      </span><span class=cB1>default</span><span class=cB0>:
-<a name="l89"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
-<a name="l90"></a>    }
-<a name="l91"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l92"></a>}
-<a name="l93"></a>
-<a name="l94"></a>#</span><span class=cB1>define</span><span class=cB0> PREC_EOF        0
-<a name="l95"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>       1
-<a name="l96"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>        2
-<a name="l97"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>        3
-<a name="l98"></a>#</span><span class=cB1>define</span><span class=cB0> PREC_PAREN      4
-<a name="l99"></a>
-<a name="l100"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> Parse(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst);
-<a name="l101"></a>
-<a name="l102"></a></span><span class=cB1>U0</span><span class=cB0> PrsTerm(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst,</span><span class=cB9>I64</span><span class=cB0> prec)
-<a name="l103"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsExp.html#l295"><span class=cB4>PrsExpression</span></a><span class=cB2>().</span><span class=cB0>
-<a name="l104"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l105"></a>  </span><span class=cB1>U8</span><span class=cB0> *src2;
-<a name="l106"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst2;
-<a name="l107"></a>  </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>_src,_dst</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l108"></a>    src2=*_src;
-<a name="l109"></a>    dst2=*_dst;
-<a name="l110"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) {
-<a name="l111"></a></span><span class=cB2>//This is inefficient.  The main compiler doesn't back-up like this.</span><span class=cB0>
-<a name="l112"></a>      i=Parse(&amp;src2,&amp;dst2);
-<a name="l113"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>&lt;=i&lt;prec) </span><span class=cB7>{</span><span class=cB0>
-<a name="l114"></a>        *_src=src2;
-<a name="l115"></a>        *_dst=dst2;
-<a name="l116"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l117"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l118"></a>    }
-<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
-<a name="l120"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
-<a name="l121"></a>}
-<a name="l122"></a>
-<a name="l123"></a></span><span class=cB9>I64</span><span class=cB0> Parse(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst)
-<a name="l124"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsExp.html#l295"><span class=cB4>PrsExpression</span></a><span class=cB2>().</span><span class=cB0>
-<a name="l125"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l709"><span class=cB4>Opcode Fmts</span></a><span class=cB2> for details on asm insts.</span><span class=cB0>
-<a name="l126"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l127"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=*_dst;
-<a name="l128"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l500"></span><span class=cB5>Lex</a></span><span class=cB7>(</span><span class=cB0>_src,&amp;i</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l129"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2182"></span><span class=cB3>TK_EOF</a></span><span class=cB0>:
-<a name="l130"></a>      *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
-<a name="l131"></a>      *dst++=0xC3; </span><span class=cB2>//RET</span><span class=cB0>
-<a name="l132"></a>      *_dst=dst;
-<a name="l133"></a>      </span><span class=cB1>return</span><span class=cB0> PREC_EOF;
-<a name="l134"></a>    </span><span class=cB1>case</span><span class=cB0> TK_NUM:
-<a name="l135"></a>      *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
-<a name="l136"></a>      *dst++=0xB8; </span><span class=cB2>//MOV RAX,immediate num</span><span class=cB0>
-<a name="l137"></a>      *dst(</span><span class=cB9>I64</span><span class=cB0> *)++=i;
-<a name="l138"></a>
-<a name="l139"></a>      *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
-<a name="l140"></a>      *_dst=dst;
-<a name="l141"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>;
-<a name="l142"></a>    </span><span class=cB1>case</span><span class=cB0> TK_LEFT:
-<a name="l143"></a>      PrsTerm(_src,_dst,PREC_PAREN);
-<a name="l144"></a>      </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>_src,_dst</span><span class=cB7>)</span><span class=cB0>!=PREC_PAREN)
-<a name="l145"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
-<a name="l146"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>;
-<a name="l147"></a>    </span><span class=cB1>case</span><span class=cB0> TK_RIGHT:
-<a name="l148"></a>      </span><span class=cB1>return</span><span class=cB0> PREC_PAREN;
-<a name="l149"></a>    </span><span class=cB1>case</span><span class=cB0> TK_OP:
-<a name="l150"></a>      </span><span class=cB1>switch</span><span class=cB0> (i) {
-<a name="l151"></a>        </span><span class=cB1>case</span><span class=cB0> OP_MUL:
-<a name="l152"></a>          PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>);
-<a name="l153"></a>          *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
-<a name="l154"></a>          *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
-<a name="l155"></a>
-<a name="l156"></a>          *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
-<a name="l157"></a>          *dst++=0x0F;
-<a name="l158"></a>          *dst++=0xAF; </span><span class=cB2>//IMUL RAX,RDX</span><span class=cB0>
-<a name="l159"></a>          *dst++=0xC2;
-<a name="l160"></a>
-<a name="l161"></a>          *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
-<a name="l162"></a>          *_dst=dst;
-<a name="l163"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>;
-<a name="l164"></a>        </span><span class=cB1>case</span><span class=cB0> OP_DIV:
-<a name="l165"></a>          PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>);
-<a name="l166"></a>          *dst++=0x5B; </span><span class=cB2>//POP RBX</span><span class=cB0>
-<a name="l167"></a>          *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
-<a name="l168"></a>
-<a name="l169"></a>          *dst++=0x33; </span><span class=cB2>//XOR RDX,RDX</span><span class=cB0>
-<a name="l170"></a>          *dst++=0xD2;
-<a name="l171"></a>
-<a name="l172"></a>          *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
-<a name="l173"></a>          *dst++=0xF7; </span><span class=cB2>//IDIV RBX</span><span class=cB0>
-<a name="l174"></a>          *dst++=0xFB;
-<a name="l175"></a>
-<a name="l176"></a>          *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
-<a name="l177"></a>          *_dst=dst;
-<a name="l178"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>;
-<a name="l179"></a>        </span><span class=cB1>case</span><span class=cB0> OP_ADD:
-<a name="l180"></a>          PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>);
-<a name="l181"></a>          *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
-<a name="l182"></a>          *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
-<a name="l183"></a>
-<a name="l184"></a>          *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
-<a name="l185"></a>          *dst++=0x03; </span><span class=cB2>//ADD RAX,RDX</span><span class=cB0>
-<a name="l186"></a>          *dst++=0xC2;
-<a name="l187"></a>
-<a name="l188"></a>          *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
-<a name="l189"></a>          *_dst=dst;
-<a name="l190"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>;
-<a name="l191"></a>        </span><span class=cB1>case</span><span class=cB0> OP_SUB:
-<a name="l192"></a>          PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>);
-<a name="l193"></a>          *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
-<a name="l194"></a>          *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
-<a name="l195"></a>
-<a name="l196"></a>          *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
-<a name="l197"></a>          *dst++=0x2B; </span><span class=cB2>//SUB RAX,RDX</span><span class=cB0>
-<a name="l198"></a>          *dst++=0xC2;
-<a name="l199"></a>
-<a name="l200"></a>          *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
-<a name="l201"></a>          *_dst=dst;
-<a name="l202"></a>          </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>;
-<a name="l203"></a>      }
-<a name="l204"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l205"></a>}
-<a name="l206"></a>
-<a name="l207"></a></span><span class=cB1>U0</span><span class=cB0> Main()
-<a name="l208"></a>{
-<a name="l209"></a>  </span><span class=cB1>U8</span><span class=cB0> *src,*src2,*code,*dst;
-<a name="l210"></a>
+<a name="l46"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l47"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l48"></a>    </span><span class=cB1>switch</span><span class=cB0> (*src)
+<a name="l49"></a>    {
+<a name="l50"></a>    </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l51"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>';'</span><span class=cB0>:
+<a name="l52"></a>      *_src=src;
+<a name="l53"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2182"></span><span class=cB3>TK_EOF</a></span><span class=cB0>;
+<a name="l54"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4199"></span><span class=cB3>CH_SPACE</a></span><span class=cB0>:
+<a name="l55"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\r'</span><span class=cB0>:
+<a name="l56"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
+<a name="l57"></a>      src++;
+<a name="l58"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l59"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'0'</span><span class=cB0>...</span><span class=cB6>'9'</span><span class=cB0>:
+<a name="l60"></a>      i=0;
+<a name="l61"></a>      </span><span class=cB1>do</span><span class=cB0>
+<a name="l62"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l63"></a>        i=i*10+*src-</span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l64"></a>        src++;
+<a name="l65"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l66"></a>      </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0>&lt;=*src&lt;=</span><span class=cB6>'9'</span><span class=cB0>);
+<a name="l67"></a>      *num=i;
+<a name="l68"></a>      *_src=src;
+<a name="l69"></a>      </span><span class=cB1>return</span><span class=cB0> TK_NUM;
+<a name="l70"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'*'</span><span class=cB0>:
+<a name="l71"></a>      *num=OP_MUL;
+<a name="l72"></a>      *_src=src+1;
+<a name="l73"></a>      </span><span class=cB1>return</span><span class=cB0> TK_OP;
+<a name="l74"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'/'</span><span class=cB0>:
+<a name="l75"></a>      *num=OP_DIV;
+<a name="l76"></a>      *_src=src+1;
+<a name="l77"></a>      </span><span class=cB1>return</span><span class=cB0> TK_OP;
+<a name="l78"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'+'</span><span class=cB0>:
+<a name="l79"></a>      *num=OP_ADD;
+<a name="l80"></a>      *_src=src+1;
+<a name="l81"></a>      </span><span class=cB1>return</span><span class=cB0> TK_OP;
+<a name="l82"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'-'</span><span class=cB0>:
+<a name="l83"></a>      *num=OP_SUB;
+<a name="l84"></a>      *_src=src+1;
+<a name="l85"></a>      </span><span class=cB1>return</span><span class=cB0> TK_OP;
+<a name="l86"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'('</span><span class=cB0>:
+<a name="l87"></a>      *_src=src+1;
+<a name="l88"></a>      </span><span class=cB1>return</span><span class=cB0> TK_LEFT;
+<a name="l89"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>')'</span><span class=cB0>:
+<a name="l90"></a>      *_src=src+1;
+<a name="l91"></a>      </span><span class=cB1>return</span><span class=cB0> TK_RIGHT;
+<a name="l92"></a>    </span><span class=cB1>default</span><span class=cB0>:
+<a name="l93"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
+<a name="l94"></a>    }
+<a name="l95"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>}
+<a name="l97"></a>
+<a name="l98"></a>#</span><span class=cB1>define</span><span class=cB0> PREC_EOF        0
+<a name="l99"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>       1
+<a name="l100"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>        2
+<a name="l101"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>        3
+<a name="l102"></a>#</span><span class=cB1>define</span><span class=cB0> PREC_PAREN      4
+<a name="l103"></a>
+<a name="l104"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> Parse(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst);
+<a name="l105"></a>
+<a name="l106"></a></span><span class=cB1>U0</span><span class=cB0> PrsTerm(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst,</span><span class=cB9>I64</span><span class=cB0> prec)
+<a name="l107"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsExp.html#l295"><span class=cB4>PrsExpression</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l108"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l109"></a>  </span><span class=cB1>U8</span><span class=cB0> *src2;
+<a name="l110"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst2;
+<a name="l111"></a>  </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>_src,_dst</span><span class=cB7>)</span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>)
+<a name="l112"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l113"></a>    src2=*_src;
+<a name="l114"></a>    dst2=*_dst;
+<a name="l115"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l116"></a>    {
+<a name="l117"></a></span><span class=cB2>//This is inefficient.  The main compiler doesn't back-up like this.</span><span class=cB0>
+<a name="l118"></a>      i=Parse(&amp;src2,&amp;dst2);
+<a name="l119"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>&lt;=i&lt;prec)
+<a name="l120"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l121"></a>        *_src=src2;
+<a name="l122"></a>        *_dst=dst2;
+<a name="l123"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l124"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l125"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l126"></a>    }
+<a name="l127"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l128"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l129"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
+<a name="l130"></a>}
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB9>I64</span><span class=cB0> Parse(</span><span class=cB1>U8</span><span class=cB0> **_src,</span><span class=cB1>U8</span><span class=cB0> **_dst)
+<a name="l133"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/PrsExp.html#l295"><span class=cB4>PrsExpression</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l134"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Compiler/OpCodes.html#l709"><span class=cB4>Opcode Fmts</span></a><span class=cB2> for details on asm insts.</span><span class=cB0>
+<a name="l135"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l136"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst=*_dst;
+<a name="l137"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l500"></span><span class=cB5>Lex</a></span><span class=cB7>(</span><span class=cB0>_src,&amp;i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l138"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2182"></span><span class=cB3>TK_EOF</a></span><span class=cB0>:
+<a name="l140"></a>    *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
+<a name="l141"></a>    *dst++=0xC3; </span><span class=cB2>//RET</span><span class=cB0>
+<a name="l142"></a>    *_dst=dst;
+<a name="l143"></a>    </span><span class=cB1>return</span><span class=cB0> PREC_EOF;
+<a name="l144"></a>  </span><span class=cB1>case</span><span class=cB0> TK_NUM:
+<a name="l145"></a>    *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
+<a name="l146"></a>    *dst++=0xB8; </span><span class=cB2>//MOV RAX,immediate num</span><span class=cB0>
+<a name="l147"></a>    *dst(</span><span class=cB9>I64</span><span class=cB0> *)++=i;
+<a name="l148"></a>    *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
+<a name="l149"></a>    *_dst=dst;
+<a name="l150"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>;
+<a name="l151"></a>  </span><span class=cB1>case</span><span class=cB0> TK_LEFT:
+<a name="l152"></a>    PrsTerm(_src,_dst,PREC_PAREN);
+<a name="l153"></a>    </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>_src,_dst</span><span class=cB7>)</span><span class=cB0>!=PREC_PAREN)
+<a name="l154"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
+<a name="l155"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l340"></span><span class=cB3>PREC_TERM</a></span><span class=cB0>;
+<a name="l156"></a>  </span><span class=cB1>case</span><span class=cB0> TK_RIGHT:
+<a name="l157"></a>    </span><span class=cB1>return</span><span class=cB0> PREC_PAREN;
+<a name="l158"></a>  </span><span class=cB1>case</span><span class=cB0> TK_OP:
+<a name="l159"></a>    </span><span class=cB1>switch</span><span class=cB0> (i)
+<a name="l160"></a>    {
+<a name="l161"></a>    </span><span class=cB1>case</span><span class=cB0> OP_MUL:
+<a name="l162"></a>      PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>);
+<a name="l163"></a>      *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
+<a name="l164"></a>      *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
+<a name="l165"></a>      *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
+<a name="l166"></a>      *dst++=0x0F;
+<a name="l167"></a>      *dst++=0xAF; </span><span class=cB2>//IMUL RAX,RDX</span><span class=cB0>
+<a name="l168"></a>      *dst++=0xC2;
+<a name="l169"></a>      *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
+<a name="l170"></a>      *_dst=dst;
+<a name="l171"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>;
+<a name="l172"></a>    </span><span class=cB1>case</span><span class=cB0> OP_DIV:
+<a name="l173"></a>      PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>);
+<a name="l174"></a>      *dst++=0x5B; </span><span class=cB2>//POP RBX</span><span class=cB0>
+<a name="l175"></a>      *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
+<a name="l176"></a>      *dst++=0x33; </span><span class=cB2>//XOR RDX,RDX</span><span class=cB0>
+<a name="l177"></a>      *dst++=0xD2;
+<a name="l178"></a>      *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
+<a name="l179"></a>      *dst++=0xF7; </span><span class=cB2>//IDIV RBX</span><span class=cB0>
+<a name="l180"></a>      *dst++=0xFB;
+<a name="l181"></a>      *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
+<a name="l182"></a>      *_dst=dst;
+<a name="l183"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l344"></span><span class=cB3>PREC_MUL</a></span><span class=cB0>;
+<a name="l184"></a>    </span><span class=cB1>case</span><span class=cB0> OP_ADD:
+<a name="l185"></a>      PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>);
+<a name="l186"></a>      *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
+<a name="l187"></a>      *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
+<a name="l188"></a>      *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
+<a name="l189"></a>      *dst++=0x03; </span><span class=cB2>//ADD RAX,RDX</span><span class=cB0>
+<a name="l190"></a>      *dst++=0xC2;
+<a name="l191"></a>      *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
+<a name="l192"></a>      *_dst=dst;
+<a name="l193"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>;
+<a name="l194"></a>    </span><span class=cB1>case</span><span class=cB0> OP_SUB:
+<a name="l195"></a>      PrsTerm(_src,&amp;dst,<a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>);
+<a name="l196"></a>      *dst++=0x5A; </span><span class=cB2>//POP RDX</span><span class=cB0>
+<a name="l197"></a>      *dst++=0x58; </span><span class=cB2>//POP RAX</span><span class=cB0>
+<a name="l198"></a>      *dst++=0x48; </span><span class=cB2>//REX</span><span class=cB0>
+<a name="l199"></a>      *dst++=0x2B; </span><span class=cB2>//SUB RAX,RDX</span><span class=cB0>
+<a name="l200"></a>      *dst++=0xC2;
+<a name="l201"></a>      *dst++=0x50; </span><span class=cB2>//PUSH RAX</span><span class=cB0>
+<a name="l202"></a>      *_dst=dst;
+<a name="l203"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Compiler/CompilerA.html#l348"></span><span class=cB3>PREC_ADD</a></span><span class=cB0>;
+<a name="l204"></a>    }
+<a name="l205"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l206"></a>}
+<a name="l207"></a>
+<a name="l208"></a></span><span class=cB1>U0</span><span class=cB0> Main()
+<a name="l209"></a>{
+<a name="l210"></a>  </span><span class=cB1>U8</span><span class=cB0> *src,*src2,*code,*dst;
 <a name="l211"></a>  </span><span class=cB2>//Fixed size, no buffer overrun check.</span><span class=cB0>
 <a name="l212"></a>  </span><span class=cB2>//You can make it fancier if you like.</span><span class=cB0>
 <a name="l213"></a>  code=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(512,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
-<a name="l214"></a>
-<a name="l215"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l214"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l215"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l216"></a>    </span><span class=cB6>&quot;This will compile an expression\n&quot;</span><span class=cB0>
-<a name="l217"></a>          </span><span class=cB6>&quot;consisting of ints, parentheses\n&quot;</span><span class=cB0>
-<a name="l218"></a>          </span><span class=cB6>&quot;and the operators +,-,* and /.\n&quot;</span><span class=cB0>;
+<a name="l217"></a>    </span><span class=cB6>&quot;consisting of ints, parentheses\n&quot;</span><span class=cB0>
+<a name="l218"></a>    </span><span class=cB6>&quot;and the operators +,-,* and /.\n&quot;</span><span class=cB0>;
 <a name="l219"></a>    src=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l214"></span><span class=cB5>GetStr</a></span><span class=cB0>;
-<a name="l220"></a>    </span><span class=cB1>if</span><span class=cB0> (*src) {
-<a name="l221"></a>      src2=src;
-<a name="l222"></a>      dst=code;
-<a name="l223"></a>      </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l224"></a>        PrsTerm(&amp;src2,&amp;dst,PREC_PAREN);
-<a name="l225"></a>        </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>&amp;src2,&amp;dst</span><span class=cB7>)</span><span class=cB0>!=PREC_EOF)
-<a name="l226"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
-<a name="l227"></a>        </span><span class=cB6>&quot;$RED$This code is not efficient, but the compiler is simple.$FG$\n&quot;</span><span class=cB0>;
-<a name="l228"></a>        <a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l757"></span><span class=cB5>Un</a></span><span class=cB0>(code,dst-code); </span><span class=cB2>//Unassemble the code we created.</span><span class=cB0>
-<a name="l229"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l44"><span class=cB4>Call</span></a><span class=cB2>() is a function.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l159"><span class=cB4>_CALL</span></a><span class=cB2>::</span><span class=cB0>
-<a name="l230"></a>        </span><span class=cB2>//See also </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l49"><span class=cB4>CallInd</span></a><span class=cB2>().  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l347"><span class=cB4>_CALL_IND</span></a><span class=cB2>::</span><span class=cB0>
-<a name="l231"></a>        </span><span class=cB6>&quot;$LTBLUE$Answer:%d$FG$\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l44"></span><span class=cB5>Call</a></span><span class=cB0>(code);
-<a name="l232"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l233"></a>        </span><span class=cB6>&quot;$RED$Error$FG$\n&quot;</span><span class=cB0>;
-<a name="l234"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l220"></a>    </span><span class=cB1>if</span><span class=cB0> (*src)
+<a name="l221"></a>    {
+<a name="l222"></a>      src2=src;
+<a name="l223"></a>      dst=code;
+<a name="l224"></a>      </span><span class=cB1>try</span><span class=cB0>
+<a name="l225"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l226"></a>        PrsTerm(&amp;src2,&amp;dst,PREC_PAREN);
+<a name="l227"></a>        </span><span class=cB1>if</span><span class=cB0> (Parse</span><span class=cB7>(</span><span class=cB0>&amp;src2,&amp;dst</span><span class=cB7>)</span><span class=cB0>!=PREC_EOF)
+<a name="l228"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>;
+<a name="l229"></a>        </span><span class=cB6>&quot;$RED$This code is not efficient, but the compiler is simple.$FG$\n&quot;</span><span class=cB0>;
+<a name="l230"></a>        <a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l757"></span><span class=cB5>Un</a></span><span class=cB0>(code,dst-code); </span><span class=cB2>//Unassemble the code we created.</span><span class=cB0>
+<a name="l231"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l44"><span class=cB4>Call</span></a><span class=cB2>() is a function.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l159"><span class=cB4>_CALL</span></a><span class=cB2>::</span><span class=cB0>
+<a name="l232"></a>        </span><span class=cB2>//See also </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l49"><span class=cB4>CallInd</span></a><span class=cB2>().  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/KUtils.html#l347"><span class=cB4>_CALL_IND</span></a><span class=cB2>::</span><span class=cB0>
+<a name="l233"></a>        </span><span class=cB6>&quot;$LTBLUE$Answer:%d$FG$\n&quot;</span><span class=cB0>
+<a name="l234"></a>        ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l44"></span><span class=cB5>Call</a></span><span class=cB0>(code);
 <a name="l235"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l236"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
-<a name="l237"></a>    } </span><span class=cB1>else</span><span class=cB0> {
-<a name="l238"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
-<a name="l239"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l240"></a>    }
-<a name="l241"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l242"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(code);
-<a name="l243"></a>}
-<a name="l244"></a>
-<a name="l245"></a>Main;
-<a name="l246"></a>
+<a name="l236"></a>      </span><span class=cB1>catch</span><span class=cB0>
+<a name="l237"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l238"></a>        </span><span class=cB6>&quot;$RED$Error$FG$\n&quot;</span><span class=cB0>;
+<a name="l239"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l240"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l241"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
+<a name="l242"></a>    }
+<a name="l243"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l244"></a>    {
+<a name="l245"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
+<a name="l246"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l247"></a>    }
+<a name="l248"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l249"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(code);
+<a name="l250"></a>}
+<a name="l251"></a>
+<a name="l252"></a>Main;
+<a name="l253"></a>
 </span></div></pre></body>
 </html>

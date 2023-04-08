@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.09">
+<meta name="generator" content="TinkerOS V5.10">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -35,7 +35,7 @@
 <body style="background-color:#55FFFF; border-style:solid;
 	  border-width:8px; border-color:#0000AA;
 	  margin-left:auto; margin-right:auto; width:800px; ">
-<pre style="font-family:courier;font-size:10pt">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB2>//Shows the </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"><span class=cB4>Carry</span></a><span class=cB2> function.  It holds the CPU carry flag.</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>//</span><a href="http://tinkeros.github.io/WbGit/Compiler/UAsm.html#l740"><span class=cB4>U</span></a><span class=cB2>() Unassemble to make sure it is right.</span><span class=cB0>
@@ -44,43 +44,48 @@
 <a name="l5"></a>{
 <a name="l6"></a>  </span><span class=cB9>U64</span><span class=cB0> lo=0,hi=0;
 <a name="l7"></a>  </span><span class=cB6>&quot;BigCnt\n&quot;</span><span class=cB0>;
-<a name="l8"></a>  </span><span class=cB1>while</span><span class=cB0> (hi&lt;0x10) </span><span class=cB7>{</span><span class=cB0>
-<a name="l9"></a>    lo+=1&lt;&lt;58;
-<a name="l10"></a>    hi+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>;
-<a name="l11"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>,hi,lo;
-<a name="l12"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l13"></a>}
-<a name="l14"></a>
-<a name="l15"></a>BigCnt;
+<a name="l8"></a>  </span><span class=cB1>while</span><span class=cB0> (hi&lt;0x10)
+<a name="l9"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l10"></a>    lo+=1&lt;&lt;58;
+<a name="l11"></a>    hi+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>;
+<a name="l12"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>
+<a name="l13"></a>    ,hi,lo;
+<a name="l14"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l15"></a>}
 <a name="l16"></a>
-<a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> BigShift()
-<a name="l18"></a>{
-<a name="l19"></a>  </span><span class=cB9>U64</span><span class=cB0> lo=1,hi=0;
-<a name="l20"></a>  </span><span class=cB6>&quot;Big Shift\n&quot;</span><span class=cB0>;
-<a name="l21"></a>  </span><span class=cB1>while</span><span class=cB0> (lo||hi) </span><span class=cB7>{</span><span class=cB0>
-<a name="l22"></a>    hi&lt;&lt;=1;
-<a name="l23"></a>    lo&lt;&lt;=1;
-<a name="l24"></a>    hi+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>;
-<a name="l25"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>,hi,lo;
-<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l27"></a>}
-<a name="l28"></a>
-<a name="l29"></a>BigShift;
-<a name="l30"></a>
-<a name="l31"></a></span><span class=cB1>U0</span><span class=cB0> Branch()
-<a name="l32"></a>{
-<a name="l33"></a>  </span><span class=cB9>U64</span><span class=cB0> i=0xFFCC3311,j;
-<a name="l34"></a>  </span><span class=cB6>'Branch\n'</span><span class=cB0>;
-<a name="l35"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;64;j++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l36"></a>    i&lt;&lt;=1;
-<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>)
-<a name="l38"></a>      </span><span class=cB6>'1'</span><span class=cB0>;
-<a name="l39"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l40"></a>      </span><span class=cB6>'0'</span><span class=cB0>;
-<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l42"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l43"></a>}
-<a name="l44"></a>
-<a name="l45"></a>Branch;
+<a name="l17"></a>BigCnt;
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB1>U0</span><span class=cB0> BigShift()
+<a name="l20"></a>{
+<a name="l21"></a>  </span><span class=cB9>U64</span><span class=cB0> lo=1,hi=0;
+<a name="l22"></a>  </span><span class=cB6>&quot;Big Shift\n&quot;</span><span class=cB0>;
+<a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (lo||hi)
+<a name="l24"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l25"></a>    hi&lt;&lt;=1;
+<a name="l26"></a>    lo&lt;&lt;=1;
+<a name="l27"></a>    hi+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>;
+<a name="l28"></a>    </span><span class=cB6>&quot;%016X %016X\n&quot;</span><span class=cB0>
+<a name="l29"></a>    ,hi,lo;
+<a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l31"></a>}
+<a name="l32"></a>
+<a name="l33"></a>BigShift;
+<a name="l34"></a>
+<a name="l35"></a></span><span class=cB1>U0</span><span class=cB0> Branch()
+<a name="l36"></a>{
+<a name="l37"></a>  </span><span class=cB9>U64</span><span class=cB0> i=0xFFCC3311,j;
+<a name="l38"></a>  </span><span class=cB6>'Branch\n'</span><span class=cB0>;
+<a name="l39"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;64; j++)
+<a name="l40"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l41"></a>    i&lt;&lt;=1;
+<a name="l42"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l256"></span><span class=cB5>Carry</a></span><span class=cB0>)
+<a name="l43"></a>      </span><span class=cB6>'1'</span><span class=cB0>;
+<a name="l44"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l45"></a>      </span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a>Branch;
 </span></div></pre></body>
 </html>
