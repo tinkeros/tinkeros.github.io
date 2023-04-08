@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*  Shrine mentions possibly using two FIFOs</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>    (in our case, Ques) for pending and</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>    empty frames. If logical to implement,</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>    perhaps Zeal NetQue code should</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>    do something similar to that idea.</span><span class=cB0>
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB2>    Each Ethernet Frame will be represented</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>    as an entry in a CQue. */</span><span class=cB0>
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>class</span><span class=cB0> CNetQueEntry:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> packet_length;
+<a name="l13"></a>  </span><span class=cB1>U8</span><span class=cB0>    frame[ETHERNET_FRAME_SIZE];
+<a name="l14"></a>};
+<a name="l15"></a>
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB2>/*  global variable, holds pointer of Ethernet Que.</span><span class=cB0>
+<a name="l18"></a></span><span class=cB2>    This acts as the Head of the Que, Entries act</span><span class=cB0>
+<a name="l19"></a></span><span class=cB2>    as the Tail of the Que.</span><span class=cB0>
+<a name="l20"></a></span><span class=cB2>    Upon QueInit, -&gt;next and -&gt;last are set to</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>    itself, the Head. */</span><span class=cB0>
+<a name="l22"></a>
+<a name="l23"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0> *net_queue; </span><span class=cB2>// no QueRem the Head! only Entries!</span><span class=cB0>
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> NetQueInit()
+<a name="l26"></a>{
+<a name="l27"></a>  net_queue = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l66"></span><span class=cB5>QueInit</a></span><span class=cB0>(net_queue);
+<a name="l29"></a>}
+<a name="l30"></a>
+<a name="l31"></a>CNetQueEntry *NetQuePull()
+<a name="l32"></a>{
+<a name="l33"></a>  </span><span class=cB2>/*</span><span class=cB0>    </span><span class=cB2>Returns a pointer to a CNetQueEntry,</span><span class=cB0>
+<a name="l34"></a></span><span class=cB2>  or NULL pointer if Net Que is empty. */</span><span class=cB0>
+<a name="l35"></a>  CNetQueEntry *entry;
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (net_queue-&gt;next != net_queue)
+<a name="l37"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    entry = net_queue-&gt;next;
+<a name="l39"></a>    NetLog(</span><span class=cB6>&quot;NETQUEUE PULL: Removing entry from queue.&quot;</span><span class=cB0>);
+<a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(entry);
+<a name="l41"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>// Que is empty if head-&gt;next is head itself.</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l44"></a>    entry = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l45"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB1>return</span><span class=cB0> entry;
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>U0</span><span class=cB0> NetQuePush(</span><span class=cB1>U8</span><span class=cB0> *data, </span><span class=cB9>I64</span><span class=cB0> length)
+<a name="l50"></a>{
+<a name="l51"></a>  </span><span class=cB2>/*</span><span class=cB0>    </span><span class=cB2>Pushes a copy of the packet data and length</span><span class=cB0>
+<a name="l52"></a></span><span class=cB2>  into the Net Que. The NetQueEntry is inserted</span><span class=cB0>
+<a name="l53"></a></span><span class=cB2>  after the last entry of net_queue to keep new</span><span class=cB0>
+<a name="l54"></a></span><span class=cB2>  items in the back of the Que, old in front. */</span><span class=cB0>
+<a name="l55"></a>  CNetQueEntry *entry = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CNetQueEntry</span><span class=cB7>)</span><span class=cB0>);
+<a name="l56"></a>  entry-&gt;packet_length = length;
+<a name="l57"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(entry-&gt;frame, data, length);
+<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l68"></span><span class=cB5>QueIns</a></span><span class=cB0>(entry, net_queue-&gt;last);
+<a name="l59"></a>  </span><span class=cB2>// Wake Net Handler</span><span class=cB0>
+<a name="l60"></a>  </span><span class=cB1>if</span><span class=cB0> (netfifo_handler_task)
+<a name="l61"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l62"></a>    NetLog(</span><span class=cB6>&quot;NETQUEUE PUSH COPY: Waking NetHandler.&quot;</span><span class=cB0>);
+<a name="l63"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;netfifo_handler_task-&gt;task_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3972"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>);
+<a name="l64"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l65"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l66"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l67"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l68"></a>    NetLog(</span><span class=cB6>&quot;NETQUEUE PUSH COPY: Error, no NetHandler task!&quot;</span><span class=cB0>);
+<a name="l69"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l70"></a>}
+<a name="l71"></a>
+<a name="l72"></a>
+<a name="l73"></a>NetQueInit;
+</span></div></pre></body>
+</html>

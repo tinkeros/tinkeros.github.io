@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>/*</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>    VirtIO Net driver ported from alec's Erythros.</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>// PCI virtio I/O registers.</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l8"></a>
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_HOST_FEATURES 0  </span><span class=cB2>// Features supported by the host</span><span class=cB0>
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_GUEST_FEATURES 4 </span><span class=cB2>// Features activated by the guest</span><span class=cB0>
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_QUEUE_PFN 8      </span><span class=cB2>// PFN for the currently selected queue</span><span class=cB0>
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_QUEUE_SIZE 12 </span><span class=cB2>// Que size for the currently selected queue</span><span class=cB0>
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_QUEUE_SEL 14  </span><span class=cB2>// Que selector</span><span class=cB0>
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_QUEUE_NOTIFY 16 </span><span class=cB2>// Que notifier</span><span class=cB0>
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_STATUS 18       </span><span class=cB2>// Device status register</span><span class=cB0>
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_ISR 19          </span><span class=cB2>// Interrupt status register</span><span class=cB0>
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_PCI_CONFIG 20       </span><span class=cB2>// Cfguration data block</span><span class=cB0>
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l20"></a></span><span class=cB2>// PCI virtio status register bits</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l22"></a>
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_CONFIG_S_ACKNOWLEDGE 1
+<a name="l24"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_CONFIG_S_DRIVER 2
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_CONFIG_S_DRIVER_OK 4
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> VIRTIO_CONFIG_S_FAILED 0x80
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l29"></a></span><span class=cB2>// Ring descriptor flags</span><span class=cB0>
+<a name="l30"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l31"></a>
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> VRING_DESC_F_NEXT 1     </span><span class=cB2>// Buffer continues via the next field</span><span class=cB0>
+<a name="l33"></a>#</span><span class=cB1>define</span><span class=cB0> VRING_DESC_F_WRITE 2    </span><span class=cB2>// Buffer is write-only (otherwise read-only)</span><span class=cB0>
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> VRING_DESC_F_INDIRECT 4 </span><span class=cB2>// Buffer contains a list of buffer descriptors</span><span class=cB0>
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>class</span><span class=cB0> @virtio_queue_buf
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB9>U64</span><span class=cB0> address;
+<a name="l39"></a>  </span><span class=cB9>U32</span><span class=cB0> length;
+<a name="l40"></a>  </span><span class=cB9>U16</span><span class=cB0> flags;
+<a name="l41"></a>  </span><span class=cB9>U16</span><span class=cB0> next;
+<a name="l42"></a>};
+<a name="l43"></a></span><span class=cB1>class</span><span class=cB0> @virtio_avail
+<a name="l44"></a>{
+<a name="l45"></a>  </span><span class=cB9>U16</span><span class=cB0> flags;
+<a name="l46"></a>  </span><span class=cB9>U16</span><span class=cB0> index;
+<a name="l47"></a>  </span><span class=cB9>U16</span><span class=cB0> ring[256];
+<a name="l48"></a>  </span><span class=cB9>U16</span><span class=cB0> int_index;
+<a name="l49"></a>};
+<a name="l50"></a></span><span class=cB1>class</span><span class=cB0> @virtio_used_item
+<a name="l51"></a>{
+<a name="l52"></a>  </span><span class=cB9>U32</span><span class=cB0> index;
+<a name="l53"></a>  </span><span class=cB9>U32</span><span class=cB0> length;
+<a name="l54"></a>};
+<a name="l55"></a></span><span class=cB1>class</span><span class=cB0> @virtio_used
+<a name="l56"></a>{
+<a name="l57"></a>  </span><span class=cB9>U16</span><span class=cB0> flags;
+<a name="l58"></a>  </span><span class=cB9>U16</span><span class=cB0> index;
+<a name="l59"></a>  @virtio_used_item ring[256];
+<a name="l60"></a>  </span><span class=cB9>U16</span><span class=cB0> int_index;
+<a name="l61"></a>};
+<a name="l62"></a></span><span class=cB1>class</span><span class=cB0> @virtio_queue
+<a name="l63"></a>{
+<a name="l64"></a>  @virtio_queue_buf buffers[256];
+<a name="l65"></a>  @virtio_avail available;
+<a name="l66"></a>  </span><span class=cB1>U8</span><span class=cB0> padding[3578];
+<a name="l67"></a>  @virtio_used used;
+<a name="l68"></a>};
+<a name="l69"></a>
+<a name="l70"></a></span><span class=cB1>class</span><span class=cB0> @virtio_avail_buf
+<a name="l71"></a>{
+<a name="l72"></a>  </span><span class=cB9>U32</span><span class=cB0> index;
+<a name="l73"></a>  </span><span class=cB9>U64</span><span class=cB0> address;
+<a name="l74"></a>  </span><span class=cB9>U32</span><span class=cB0> length;
+<a name="l75"></a>};
+<a name="l76"></a>
+<a name="l77"></a></span><span class=cB1>class</span><span class=cB0> @virtio_buf_info
+<a name="l78"></a>{
+<a name="l79"></a>  </span><span class=cB1>U8</span><span class=cB0> *buffer;
+<a name="l80"></a>  </span><span class=cB9>U64</span><span class=cB0> size;
+<a name="l81"></a>  </span><span class=cB1>U8</span><span class=cB0> flags;
+<a name="l82"></a>
+<a name="l83"></a>  </span><span class=cB2>// If the user wants to keep same buffer as passed in this struct, use &quot;true&quot;.</span><span class=cB0>
+<a name="l84"></a>  </span><span class=cB2>// otherwise, the supplied buffer will be copied in the queues' buffer</span><span class=cB0>
+<a name="l85"></a>  </span><span class=cB1>Bool</span><span class=cB0> copy;
+<a name="l86"></a>};
+<a name="l87"></a>
+<a name="l88"></a></span><span class=cB6>&quot;virtio &quot;</span><span class=cB0>;
+<a name="l89"></a>
+<a name="l90"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l91"></a></span><span class=cB2>// PCI VirtIO Net</span><span class=cB0>
+<a name="l92"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l93"></a>
+<a name="l94"></a></span><span class=cB9>I64</span><span class=cB0> rx_buffer_ptr = 0;
+<a name="l95"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_ptr = 0;
+<a name="l96"></a></span><span class=cB9>I64</span><span class=cB0> rx_buffer_cnt = 255;
+<a name="l97"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_cnt = 256;
+<a name="l98"></a></span><span class=cB9>U64</span><span class=cB0> rx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * rx_buffer_cnt);
+<a name="l99"></a></span><span class=cB9>U64</span><span class=cB0> tx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * tx_buffer_cnt);
+<a name="l100"></a>
+<a name="l101"></a></span><span class=cB1>class</span><span class=cB0> @virtio_net
+<a name="l102"></a>{
+<a name="l103"></a>  </span><span class=cB9>U16</span><span class=cB0> port;
+<a name="l104"></a>  </span><span class=cB1>U8</span><span class=cB0> mac[6];
+<a name="l105"></a>  @virtio_queue *rq;
+<a name="l106"></a>  @virtio_queue *sq;
+<a name="l107"></a>  </span><span class=cB9>I64</span><span class=cB0> rq_size;
+<a name="l108"></a>  </span><span class=cB9>I64</span><span class=cB0> rq_index;
+<a name="l109"></a>  </span><span class=cB9>I64</span><span class=cB0> sq_size;
+<a name="l110"></a>  </span><span class=cB9>I64</span><span class=cB0> sq_index;
+<a name="l111"></a>  </span><span class=cB9>I64</span><span class=cB0> rx_packets;
+<a name="l112"></a>  </span><span class=cB9>I64</span><span class=cB0> rx_bytes;
+<a name="l113"></a>  </span><span class=cB9>I64</span><span class=cB0> tx_packets;
+<a name="l114"></a>  </span><span class=cB9>I64</span><span class=cB0> tx_bytes;
+<a name="l115"></a>};
+<a name="l116"></a>
+<a name="l117"></a></span><span class=cB1>class</span><span class=cB0> @virtio_net_header
+<a name="l118"></a>{
+<a name="l119"></a>  </span><span class=cB1>U8</span><span class=cB0> flags;
+<a name="l120"></a>  </span><span class=cB1>U8</span><span class=cB0> gso_type;
+<a name="l121"></a>  </span><span class=cB9>U16</span><span class=cB0> header_length;
+<a name="l122"></a>  </span><span class=cB9>U16</span><span class=cB0> gso_size;
+<a name="l123"></a>  </span><span class=cB9>U16</span><span class=cB0> checksum_start;
+<a name="l124"></a>  </span><span class=cB9>U16</span><span class=cB0> checksum_offset;
+<a name="l125"></a>};
+<a name="l126"></a>
+<a name="l127"></a>@virtio_net VirtioNet;
+<a name="l128"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;VirtioNet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net</span><span class=cB7>)</span><span class=cB0>);
+<a name="l129"></a>
+<a name="l130"></a>@virtio_net_header *def_pkt_hdr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> @virtio_net_alloc_tx_packet(</span><span class=cB1>U8</span><span class=cB0> **buffer_out, </span><span class=cB9>I64</span><span class=cB0> length</span><span class=cB2>/*, I64 flags*/</span><span class=cB0>)
+<a name="l133"></a>{</span><span class=cB2>// FIXME: validate length</span><span class=cB0>
+<a name="l134"></a></span><span class=cB2>//  flags = flags;</span><span class=cB0>
+<a name="l135"></a>  </span><span class=cB9>I64</span><span class=cB0> sq_idx = VirtioNet.sq-&gt;available.index % 256;
+<a name="l136"></a>  </span><span class=cB9>I64</span><span class=cB0> sq_idx2 = sq_idx % 128;
+<a name="l137"></a>  </span><span class=cB9>I64</span><span class=cB0> index = tx_buffer_ptr;
+<a name="l138"></a>  tx_buffer_ptr = (tx_buffer_ptr + 1) &amp; (tx_buffer_cnt - 1);
+<a name="l139"></a>  *buffer_out = tx_buffers + index * ETHERNET_FRAME_SIZE;
+<a name="l140"></a>  VirtioNet.sq-&gt;buffers[sq_idx2 * 2].address = def_pkt_hdr;
+<a name="l141"></a>  VirtioNet.sq-&gt;buffers[sq_idx2 * 2].length = </span><span class=cB1>sizeof</span><span class=cB0>(@virtio_net_header);
+<a name="l142"></a>  VirtioNet.sq-&gt;buffers[sq_idx2 * 2].flags = VRING_DESC_F_NEXT;
+<a name="l143"></a>  VirtioNet.sq-&gt;buffers[sq_idx2 * 2].next = (sq_idx2 * 2) + 1;
+<a name="l144"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].address = *buffer_out;
+<a name="l145"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].length = length;
+<a name="l146"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].flags = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l147"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].next = 0;
+<a name="l148"></a>  VirtioNet.sq-&gt;available.ring[sq_idx] = sq_idx2 * 2;
+<a name="l149"></a>  VirtioNet.sq-&gt;available.index++;
+<a name="l150"></a>  VirtioNet.tx_packets++;
+<a name="l151"></a>  VirtioNet.tx_bytes += length;
+<a name="l152"></a>  </span><span class=cB1>return</span><span class=cB0> index;
+<a name="l153"></a>}
+<a name="l154"></a>
+<a name="l155"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> @virtio_net_finish_tx_packet(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l156"></a>{
+<a name="l157"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+<a name="l158"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l159"></a>}
+<a name="l160"></a>
+<a name="l161"></a></span><span class=cB1>U8</span><span class=cB0> *loopback_frame = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
+<a name="l162"></a></span><span class=cB9>I64</span><span class=cB0> loopback_length = 0;
+<a name="l163"></a>
+<a name="l164"></a></span><span class=cB9>I64</span><span class=cB0> EthernetFrameAllocate(</span><span class=cB1>U8</span><span class=cB0> **buffer_out, </span><span class=cB1>U8</span><span class=cB0> *src_addr, </span><span class=cB1>U8</span><span class=cB0> *dst_addr,
+<a name="l165"></a>                          </span><span class=cB9>U16</span><span class=cB0> ethertype, </span><span class=cB9>I64</span><span class=cB0> length</span><span class=cB2>/*, I64 flags*/</span><span class=cB0>)
+<a name="l166"></a>{
+<a name="l167"></a>  </span><span class=cB1>U8</span><span class=cB0> *frame;
+<a name="l168"></a>  </span><span class=cB2>// APAD_XMT doesn't seem to work in VirtualBox, so we have to pad the frame</span><span class=cB0>
+<a name="l169"></a>  </span><span class=cB2>// ourselves</span><span class=cB0>
+<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (length &lt; 46)
+<a name="l171"></a>    length = 46;
+<a name="l172"></a>  </span><span class=cB9>I64</span><span class=cB0> index;
+<a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l170"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>dst_addr, &amp;VirtioNet.mac, 6</span><span class=cB7>)</span><span class=cB0>)
+<a name="l174"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l175"></a>    frame = loopback_frame;
+<a name="l176"></a>    loopback_length = length;
+<a name="l177"></a>    index = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
+<a name="l178"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l179"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l180"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l181"></a>    index = @virtio_net_alloc_tx_packet(&amp;frame, 14 + length</span><span class=cB2>/*, flags*/</span><span class=cB0>);
+<a name="l182"></a>    </span><span class=cB1>if</span><span class=cB0> (index &lt; 0)
+<a name="l183"></a>      </span><span class=cB1>return</span><span class=cB0> index;
+<a name="l184"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l185"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 0, dst_addr, 6);
+<a name="l186"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 6, src_addr, 6);
+<a name="l187"></a>  frame[12] = (ethertype &gt;&gt; 8);
+<a name="l188"></a>  frame[13] = (ethertype &amp; 0xff);
+<a name="l189"></a>  *buffer_out = frame + 14;
+<a name="l190"></a>  </span><span class=cB1>return</span><span class=cB0> index;
+<a name="l191"></a>}
+<a name="l192"></a>
+<a name="l193"></a></span><span class=cB9>I64</span><span class=cB0> EthernetFrameFinish(</span><span class=cB9>I64</span><span class=cB0> index)
+<a name="l194"></a>{
+<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (index == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; loopback_frame &amp;&amp; loopback_length)
+<a name="l196"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l197"></a>    NetQuePush(loopback_frame, loopback_length);
+<a name="l198"></a>    loopback_length = 0;
+<a name="l199"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l200"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l201"></a>  </span><span class=cB1>return</span><span class=cB0> @virtio_net_finish_tx_packet(index);
+<a name="l202"></a>}
+<a name="l203"></a>
+<a name="l204"></a></span><span class=cB1>U8</span><span class=cB0> *EthernetMACGet()
+<a name="l205"></a>{
+<a name="l206"></a>  </span><span class=cB1>return</span><span class=cB0> &amp;VirtioNet.mac;
+<a name="l207"></a>}
+<a name="l208"></a>
+<a name="l209"></a></span><span class=cB9>I64</span><span class=cB0> @virtio_net_init()
+<a name="l210"></a>{
+<a name="l211"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j;
+<a name="l212"></a>  </span><span class=cB2>// Scan for device</span><span class=cB0>
+<a name="l213"></a>  j = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l84"></span><span class=cB5>PCIClassFind</a></span><span class=cB0>(0x020000, 0);
+<a name="l214"></a>  </span><span class=cB1>if</span><span class=cB0> (j &lt; 0)
+<a name="l215"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l216"></a>    </span><span class=cB6>&quot;\nVirtio-net device not found.\n&quot;</span><span class=cB0>;
+<a name="l217"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l218"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l219"></a>  VirtioNet.port = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(j.u8[2], j.u8[1], j.u8[0], 0x10) &amp; 0xFFFFFFFC;
+<a name="l220"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 6; i++)
+<a name="l221"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l222"></a>    VirtioNet.mac[i] = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_CONFIG + i);
+<a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l224"></a>  </span><span class=cB2>// Rst Device</span><span class=cB0>
+<a name="l225"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS, 0);
+<a name="l226"></a>  </span><span class=cB2>// Found Driver</span><span class=cB0>
+<a name="l227"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
+<a name="l228"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_ACKNOWLEDGE |
+<a name="l229"></a>        VIRTIO_CONFIG_S_DRIVER);
+<a name="l230"></a>  </span><span class=cB2>// Set up receive queue</span><span class=cB0>
+<a name="l231"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 0);
+<a name="l232"></a>  VirtioNet.rq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
+<a name="l233"></a>  VirtioNet.rq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l234"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.rq / 4096);
+<a name="l235"></a>  </span><span class=cB2>// Set up send queue</span><span class=cB0>
+<a name="l236"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 1);
+<a name="l237"></a>  VirtioNet.sq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
+<a name="l238"></a>  VirtioNet.sq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l239"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.sq / 4096);
+<a name="l240"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 128; i++)
+<a name="l241"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l242"></a>    VirtioNet.rq-&gt;buffers[i * 2].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l243"></a>    VirtioNet.rq-&gt;buffers[i * 2].length = </span><span class=cB1>sizeof</span><span class=cB0>(@virtio_net_header);
+<a name="l244"></a>    VirtioNet.rq-&gt;buffers[i * 2].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
+<a name="l245"></a>    VirtioNet.rq-&gt;buffers[i * 2].next = (i * 2) + 1;
+<a name="l246"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
+<a name="l247"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].length = ETHERNET_FRAME_SIZE;
+<a name="l248"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].flags = VRING_DESC_F_WRITE;
+<a name="l249"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].next = 0;
+<a name="l250"></a>    VirtioNet.rq-&gt;available.ring[i] = i * 2;
+<a name="l251"></a>    VirtioNet.rq-&gt;available.ring[i + 128] = i * 2;
+<a name="l252"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l253"></a>  VirtioNet.rq-&gt;available.index = 1;
+<a name="l254"></a>  </span><span class=cB2>// Init OK</span><span class=cB0>
+<a name="l255"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
+<a name="l256"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_DRIVER_OK);
+<a name="l257"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+<a name="l258"></a>  </span><span class=cB6>&quot;\x1b[33mVirtio-net device detected, MAC address &quot;</span><span class=cB0>
+<a name="l259"></a>  </span><span class=cB6>&quot;%02x:%02x:%02x:%02x:%02x:%02x\x1b[0m\n&quot;</span><span class=cB0>
+<a name="l260"></a>  ,
+<a name="l261"></a>  VirtioNet.mac[0], VirtioNet.mac[1], VirtioNet.mac[2], VirtioNet.mac[3],
+<a name="l262"></a>  VirtioNet.mac[4], VirtioNet.mac[5];
+<a name="l263"></a>}
+<a name="l264"></a>
+<a name="l265"></a></span><span class=cB6>&quot;virtio-net &quot;</span><span class=cB0>;
+<a name="l266"></a>@virtio_net_init;
+<a name="l267"></a>
+<a name="l268"></a></span><span class=cB2>/*</span><span class=cB0>
+<a name="l269"></a></span><span class=cB2>U0 @virtio_net_handle_net_fifo_entry(CNetFifoEntry *e) {</span><span class=cB0>
+<a name="l270"></a></span><span class=cB2>  CEthFrame l2_frame;</span><span class=cB0>
+<a name="l271"></a>
+<a name="l272"></a></span><span class=cB2>  if (EthernetFramePrs(&amp;l2_frame, e-&gt;frame, e-&gt;length) &lt; 0)</span><span class=cB0>
+<a name="l273"></a></span><span class=cB2>    return;</span><span class=cB0>
+<a name="l274"></a>
+<a name="l275"></a></span><span class=cB2>  CL3Protocol *l3 = l3_protocols;</span><span class=cB0>
+<a name="l276"></a>
+<a name="l277"></a></span><span class=cB2>  while (l3) {</span><span class=cB0>
+<a name="l278"></a></span><span class=cB2>    if (l3-&gt;ethertype == l2_frame.ethertype) {</span><span class=cB0>
+<a name="l279"></a></span><span class=cB2>      l3-&gt;hndlr(&amp;l2_frame);</span><span class=cB0>
+<a name="l280"></a></span><span class=cB2>      break;</span><span class=cB0>
+<a name="l281"></a></span><span class=cB2>    }</span><span class=cB0>
+<a name="l282"></a></span><span class=cB2>    l3 = l3-&gt;next;</span><span class=cB0>
+<a name="l283"></a></span><span class=cB2>  }</span><span class=cB0>
+<a name="l284"></a></span><span class=cB2>}</span><span class=cB0>
+<a name="l285"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l286"></a></span><span class=cB1>U0</span><span class=cB0> @virtio_net_hndlr_task()
+<a name="l287"></a>{
+<a name="l288"></a>  </span><span class=cB9>I64</span><span class=cB0> idx_used, idx_rec;
+<a name="l289"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j;
+<a name="l290"></a>  @virtio_used_item *item;
+<a name="l291"></a>  </span><span class=cB1>U8</span><span class=cB0> *buffer;
+<a name="l292"></a>  </span><span class=cB9>I64</span><span class=cB0> length;
+<a name="l293"></a>  </span><span class=cB1>while</span><span class=cB0> (1)
+<a name="l294"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l295"></a>    idx_rec = VirtioNet.rq_index;
+<a name="l296"></a>    idx_used = VirtioNet.rq-&gt;used.index;
+<a name="l297"></a>    </span><span class=cB1>if</span><span class=cB0> (idx_used &lt; idx_rec)
+<a name="l298"></a>    {
+<a name="l299"></a>      idx_used += 0x10000;
+<a name="l300"></a>    }
+<a name="l301"></a>    </span><span class=cB1>if</span><span class=cB0> (idx_rec != idx_used &amp;&amp; idx_used)
+<a name="l302"></a>    {
+<a name="l303"></a>      j = 0;
+<a name="l304"></a>      </span><span class=cB1>for</span><span class=cB0> (i = idx_rec; i &lt; idx_used; i++)
+<a name="l305"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l306"></a>        item = VirtioNet.rq-&gt;used.ring;
+<a name="l307"></a>        buffer = VirtioNet.rq-&gt;buffers[item[i % 256].index + 1];
+<a name="l308"></a>        length = item[i % 256].length;
+<a name="l309"></a>        NetQuePush(buffer, length - 10);
+<a name="l310"></a>        j++;
+<a name="l311"></a>        VirtioNet.rx_packets++;
+<a name="l312"></a>        VirtioNet.rx_bytes += length - 10;
+<a name="l313"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l314"></a>      VirtioNet.rq_index = idx_used % 0x10000;
+<a name="l315"></a>      VirtioNet.rq-&gt;available.index += j;
+<a name="l316"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+<a name="l317"></a>    }
+<a name="l318"></a>    CNetQueEntry *e = NetQuePull;
+<a name="l319"></a>    </span><span class=cB1>if</span><span class=cB0> (e)
+<a name="l320"></a>    {
+<a name="l321"></a></span><span class=cB2>//</span><span class=cB0>      </span><span class=cB2>@virtio_net_handle_net_fifo_entry(e);</span><span class=cB0>
+<a name="l322"></a>    }
+<a name="l323"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(30);
+<a name="l324"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l325"></a>}
+<a name="l326"></a>
+<a name="l327"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;@virtio_net_hndlr_task,, </span><span class=cB6>&quot;Virtio-net&quot;</span><span class=cB0>);
+</span></div></pre></body>
+</html>

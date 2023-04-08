@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l1"></span><span class=cB6>MOUSE_COM</a></span><span class=cB0>=0;
+<a name="l2"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l2"></span><span class=cB6>MOUSE_BAUD</a></span><span class=cB0>=1200;
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l4"></span><span class=cB5>ProbeSerialMouse</a></span><span class=cB0>()
+<a name="l5"></a>{
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> baud,i,tmp_byte;
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> tmp_buf[17];
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(tmp_buf,0,17);
+<a name="l9"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1; i&lt;=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l7"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
+<a name="l10"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l36"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base)
+<a name="l12"></a>    {
+<a name="l13"></a>      </span><span class=cB6>&quot;Checking COMM %d - &quot;</span><span class=cB0>,i;
+<a name="l14"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l128"></span><span class=cB5>CommInit7n1</a></span><span class=cB0>(i, 1200);
+<a name="l15"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l178"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(i,0xAA);
+<a name="l16"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l17"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>i,tmp_byte</span><span class=cB7>)</span><span class=cB0>)
+<a name="l18"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>        </span><span class=cB1>if</span><span class=cB0> (*tmp_byte==</span><span class=cB6>'M'</span><span class=cB0>)
+<a name="l20"></a>        {
+<a name="l21"></a>          </span><span class=cB6>&quot;Got M 7n1 baud %d\n&quot;</span><span class=cB0>,baud;
+<a name="l22"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(100);
+<a name="l23"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>i,tmp_byte</span><span class=cB7>)</span><span class=cB0> &amp;&amp; tmp_byte==</span><span class=cB6>'3'</span><span class=cB0>)
+<a name="l24"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l25"></a>            </span><span class=cB6>&quot;Found Serial Mouse on COMM %d\n&quot;</span><span class=cB0>,i;
+<a name="l26"></a>            <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l1"></span><span class=cB6>MOUSE_COM</a></span><span class=cB0>=i;
+<a name="l27"></a>            </span><span class=cB1>goto</span><span class=cB0> probe_end;
+<a name="l28"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l29"></a>        }
+<a name="l30"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l31"></a>      </span><span class=cB6>&quot; No device detected!\n&quot;</span><span class=cB0>;
+<a name="l32"></a>    }
+<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1; i&lt;=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l7"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l36"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base)
+<a name="l37"></a>    {
+<a name="l38"></a>      </span><span class=cB6>&quot;Checking COMM %d - &quot;</span><span class=cB0>,i;
+<a name="l39"></a>      </span><span class=cB1>for</span><span class=cB0> (baud=1200; baud&lt;=115200; baud*=2)
+<a name="l40"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l41"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l153"></span><span class=cB5>CommInit8n1</a></span><span class=cB0>(i, baud);
+<a name="l42"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l178"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(i,0xAA);
+<a name="l43"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l44"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>i,tmp_byte</span><span class=cB7>)</span><span class=cB0>)
+<a name="l45"></a>        {
+<a name="l46"></a>          </span><span class=cB1>if</span><span class=cB0> (*tmp_byte==</span><span class=cB6>'M'</span><span class=cB0>)
+<a name="l47"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l48"></a>            </span><span class=cB6>&quot;Got M 8n1 baud %d\n&quot;</span><span class=cB0>,baud;
+<a name="l49"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(100);
+<a name="l50"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>i,tmp_byte</span><span class=cB7>)</span><span class=cB0> &amp;&amp; tmp_byte==</span><span class=cB6>'3'</span><span class=cB0>)
+<a name="l51"></a>            {
+<a name="l52"></a>              </span><span class=cB6>&quot;Found Serial Mouse on COMM %d\n&quot;</span><span class=cB0>,i;
+<a name="l53"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l1"></span><span class=cB6>MOUSE_COM</a></span><span class=cB0>=i;
+<a name="l54"></a>              <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l2"></span><span class=cB6>MOUSE_BAUD</a></span><span class=cB0>=baud;
+<a name="l55"></a>              </span><span class=cB1>goto</span><span class=cB0> probe_end;
+<a name="l56"></a>            }
+<a name="l57"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l58"></a>        }
+<a name="l59"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>      </span><span class=cB6>&quot; No device detected!\n&quot;</span><span class=cB0>;
+<a name="l61"></a>    }
+<a name="l62"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>probe_end:
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/SerialMouse.html#l67"></span><span class=cB5>Test7n1Mouse</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> port=2, </span><span class=cB9>I64</span><span class=cB0> msg_size=4)
+<a name="l68"></a>{
+<a name="l69"></a>  </span><span class=cB1>U8</span><span class=cB0> tmp_byte, bytes[6];
+<a name="l70"></a>  </span><span class=cB9>I64</span><span class=cB0> idx=0;
+<a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l153"></span><span class=cB5>CommInit8n1</a></span><span class=cB0>(port, 115200);
+<a name="l72"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l178"></span><span class=cB5>CommPutChar</a></span><span class=cB0>(port,0xAA);
+<a name="l73"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l74"></a>  </span><span class=cB2>// initial flush</span><span class=cB0>
+<a name="l75"></a>  </span><span class=cB6>&quot;Init port %d\n&quot;</span><span class=cB0>
+<a name="l76"></a>  ,port;
+<a name="l77"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>port,&amp;tmp_byte</span><span class=cB7>)</span><span class=cB0>)
+<a name="l78"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    </span><span class=cB2>//Nothing</span><span class=cB0>
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>;
+<a name="l81"></a>  </span><span class=cB6>&quot;Flushed port %d\n&quot;</span><span class=cB0>
+<a name="l82"></a>  ,port;
+<a name="l83"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l84"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l85"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l86"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l87"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l200"></span><span class=cB5>CommGetCharNoWait</a></span><span class=cB7>(</span><span class=cB0>port,&amp;bytes[idx++]</span><span class=cB7>)</span><span class=cB0>)
+<a name="l88"></a>      </span><span class=cB1>if</span><span class=cB0> (idx==msg_size)
+<a name="l89"></a>      {
+<a name="l90"></a>        </span><span class=cB6>&quot;Got %d bytes!\n&quot;</span><span class=cB0>,msg_size;
+<a name="l91"></a>        idx=0;
+<a name="l92"></a>      }
+<a name="l93"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l94"></a>  </span><span class=cB6>&quot;Done\n&quot;</span><span class=cB0>;
+<a name="l95"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> UDP_MAX_PORT    65535
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>class</span><span class=cB0> CUDPMsgQue:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
+<a name="l4"></a>{ </span><span class=cB2>// each bound socket queues data. recv functions &amp; hndlr use this.</span><span class=cB0>
+<a name="l5"></a>        </span><span class=cB1>U8</span><span class=cB0>                                              *data;                          </span><span class=cB2>// contains the UDP payload data.</span><span class=cB0>
+<a name="l6"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              data_length;           </span><span class=cB2>// size of payload data.</span><span class=cB0>
+<a name="l7"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              received_length;       </span><span class=cB2>// amount of the data received so far.</span><span class=cB0>
+<a name="l8"></a>        CSocketAddressStorage    from_address;  </span><span class=cB2>// when UDP Handler sees UDP packet, this is filled with where packet came from.</span><span class=cB0>
+<a name="l9"></a>                                                                                        </span><span class=cB2>// recvfrom uses this to fill its address_out parameter.</span><span class=cB0>
+<a name="l10"></a>};
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>class</span><span class=cB0> CUDPSocket
+<a name="l13"></a>{
+<a name="l14"></a>        CSocket                                 *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>;
+<a name="l15"></a>        CUDPMsgQue              *receive_queue;
+<a name="l16"></a>        CSocketAddressStorage    receive_address;       </span><span class=cB2>// based on -&gt;family, cast or assign to a var as IPV4/IPV6 CSocketAddress</span><span class=cB0>
+<a name="l17"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              receive_timeout_ms;
+<a name="l18"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              receive_max_timeout;
+<a name="l19"></a>        </span><span class=cB9>U16</span><span class=cB0>                                              bound_to;                      </span><span class=cB2>// represents the currently bound port</span><span class=cB0>
+<a name="l20"></a>};
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeQue:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
+<a name="l23"></a>{
+<a name="l24"></a>        CUDPSocket              *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>;
+<a name="l25"></a>};
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeNode:CBST
+<a name="l28"></a>{
+<a name="l29"></a>        CUDPTreeQue     *queue;
+<a name="l30"></a>};
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB1>class</span><span class=cB0> CUDPRepEntry:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
+<a name="l33"></a>{
+<a name="l34"></a>        CUDPTreeNode *node;
+<a name="l35"></a>};
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>class</span><span class=cB0> CUDPHeader
+<a name="l38"></a>{
+<a name="l39"></a>        </span><span class=cB9>U16</span><span class=cB0> source_port;
+<a name="l40"></a>        </span><span class=cB9>U16</span><span class=cB0> destination_port;
+<a name="l41"></a>        </span><span class=cB9>U16</span><span class=cB0> length;
+<a name="l42"></a>        </span><span class=cB9>U16</span><span class=cB0> checksum;
+<a name="l43"></a>};
+<a name="l44"></a>
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>class</span><span class=cB0> CUDPGlbls
+<a name="l47"></a>{
+<a name="l48"></a>
+<a name="l49"></a>        CUDPTreeNode *bound_socket_tree;
+<a name="l50"></a>
+<a name="l51"></a>} udp_globals;
+<a name="l52"></a>
+</span></div></pre></body>
+</html>

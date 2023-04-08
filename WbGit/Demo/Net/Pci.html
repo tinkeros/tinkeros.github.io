@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// vim: set ft=c:</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_VENDOR_ID           0x00
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_DEVICE_ID           0x02
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_COMMAND             0x04
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_STATUS              0x06
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_REVISION_ID         0x08
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_PROG_IF             0x09
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_SUBCLASS            0x0a
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_CLASS               0x0b
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_CACHE_LINE_SIZE     0x0c
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_LATENCY_TIMER       0x0d
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_HEADER_TYPE         0x0e
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BIST                0x0f
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR0                0x10
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR1                0x14
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR2                0x18
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR3                0x1c
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR4                0x20
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_BAR5                0x24
+<a name="l21"></a>
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> PCI_REG_INTERRUPT_LINE      0x3C
+<a name="l23"></a>
+<a name="l24"></a></span><span class=cB1>class</span><span class=cB0> CPciDevInfo
+<a name="l25"></a>{
+<a name="l26"></a>  </span><span class=cB9>U16</span><span class=cB0> vendor_id, device_id;
+<a name="l27"></a>  </span><span class=cB9>U16</span><span class=cB0> command, status;
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> class_, subclass, prog_if, revision_id;
+<a name="l29"></a>  </span><span class=cB1>U8</span><span class=cB0> cache_line_size, latency_timer, header_type, bist;
+<a name="l30"></a>  </span><span class=cB9>U32</span><span class=cB0> bar[6];
+<a name="l31"></a>
+<a name="l32"></a>  </span><span class=cB2>// ...a lot of trash comes here...</span><span class=cB0>
+<a name="l33"></a>
+<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0> interrupt_line;
+<a name="l35"></a>  </span><span class=cB9>I64</span><span class=cB0> bus,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,fun;
+<a name="l36"></a>};
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB1>U0</span><span class=cB0> PciDumpInfo(CPciDevInfo* info)
+<a name="l39"></a>{
+<a name="l40"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l41"></a>  </span><span class=cB6>&quot;vendor_id=%04Xh\tdevice_id=%04Xh\n&quot;</span><span class=cB0>
+<a name="l42"></a>  , info-&gt;vendor_id, info-&gt;device_id;
+<a name="l43"></a>  </span><span class=cB6>&quot;command=%04Xh\tstatus=%04Xh\n&quot;</span><span class=cB0>
+<a name="l44"></a>  , info-&gt;command, info-&gt;status;
+<a name="l45"></a>  </span><span class=cB6>&quot;revision_id=%02Xh\tprog_if=%02Xh\n&quot;</span><span class=cB0>
+<a name="l46"></a>  , info-&gt;revision_id, info-&gt;prog_if;
+<a name="l47"></a>  </span><span class=cB6>&quot;subclass=%02Xh\tclass_=%02Xh\n&quot;</span><span class=cB0>
+<a name="l48"></a>  , info-&gt;subclass, info-&gt;class_;
+<a name="l49"></a>  </span><span class=cB6>&quot;cache_line_size=%02Xh\tlatency_timer=%02Xh\n&quot;</span><span class=cB0>
+<a name="l50"></a>  , info-&gt;cache_line_size, info-&gt;latency_timer;
+<a name="l51"></a>  </span><span class=cB6>&quot;header_type=%02Xh\tbist=%02Xh\n&quot;</span><span class=cB0>
+<a name="l52"></a>  , info-&gt;header_type, info-&gt;bist;
+<a name="l53"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 6; i++)
+<a name="l54"></a>    </span><span class=cB6>&quot;BAR[%d]=%08X\n&quot;</span><span class=cB0>, i, info-&gt;bar[i];
+<a name="l55"></a>  </span><span class=cB6>&quot;interrupt_line=%02Xh\n&quot;</span><span class=cB0>
+<a name="l56"></a>  , info-&gt;interrupt_line;
+<a name="l57"></a>}
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB1>Bool</span><span class=cB0> PciFindByID(</span><span class=cB9>U16</span><span class=cB0> vendor_id, </span><span class=cB9>U16</span><span class=cB0> device_id, </span><span class=cB9>I64</span><span class=cB0>* bus_out, </span><span class=cB9>I64</span><span class=cB0>* dev_out, </span><span class=cB9>I64</span><span class=cB0>* fun_out)
+<a name="l60"></a>{
+<a name="l61"></a>  </span><span class=cB9>I64</span><span class=cB0> vendor, b, d, f, timeout = 32 * 8 * 2;
+<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.next != &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head)
+<a name="l63"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l64"></a>  </span><span class=cB1>for</span><span class=cB0> (b = 0; b &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l253"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>; b++)
+<a name="l65"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>    </span><span class=cB1>for</span><span class=cB0> (d = 0; d &lt; 32; d++)
+<a name="l67"></a>    {
+<a name="l68"></a>      </span><span class=cB1>for</span><span class=cB0> (f = 0; f &lt; 8; f++)
+<a name="l69"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>        vendor = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(b, d, f, PCI_REG_VENDOR_ID);
+<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (vendor != 0xFFFF)
+<a name="l72"></a>        {
+<a name="l73"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor == vendor_id &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB7>(</span><span class=cB0>b, d, f, PCI_REG_DEVICE_ID</span><span class=cB7>)</span><span class=cB0> == device_id)
+<a name="l74"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>            *bus_out = b;
+<a name="l76"></a>            *dev_out = d;
+<a name="l77"></a>            *fun_out = f;
+<a name="l78"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l79"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l80"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor == vendor_id &amp;&amp; 0 == device_id)
+<a name="l81"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l82"></a>            *bus_out = b;
+<a name="l83"></a>            *dev_out = d;
+<a name="l84"></a>            *fun_out = f;
+<a name="l85"></a>            </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l86"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>          timeout = 32 * 8 * 2;
+<a name="l88"></a>        }
+<a name="l89"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l253"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0> == 256 &amp;&amp; --timeout &lt;= 0)
+<a name="l90"></a>        {
+<a name="l91"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l92"></a>        }
+<a name="l93"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l94"></a>    }
+<a name="l95"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l97"></a>}
+<a name="l98"></a>
+<a name="l99"></a></span><span class=cB1>U0</span><span class=cB0> PciGetDevInfo(CPciDevInfo* info_out, </span><span class=cB9>I64</span><span class=cB0> bus, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> fun)
+<a name="l100"></a>{</span><span class=cB2>// TODO: do a bunch of PCIReadU32 in a loop instead</span><span class=cB0>
+<a name="l101"></a>  info_out-&gt;vendor_id =       <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_VENDOR_ID);
+<a name="l102"></a>  info_out-&gt;device_id =       <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_DEVICE_ID);
+<a name="l103"></a>  info_out-&gt;command =         <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_COMMAND);
+<a name="l104"></a>  info_out-&gt;status =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_STATUS);
+<a name="l105"></a>  info_out-&gt;revision_id =     <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_REVISION_ID);
+<a name="l106"></a>  info_out-&gt;prog_if =         <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_PROG_IF);
+<a name="l107"></a>  info_out-&gt;subclass =        <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_SUBCLASS);
+<a name="l108"></a>  info_out-&gt;class_ =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_CLASS);
+<a name="l109"></a>  info_out-&gt;cache_line_size = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_CACHE_LINE_SIZE);
+<a name="l110"></a>  info_out-&gt;latency_timer =   <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_LATENCY_TIMER);
+<a name="l111"></a>  info_out-&gt;header_type =     <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_HEADER_TYPE);
+<a name="l112"></a>  info_out-&gt;bist =            <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BIST);
+<a name="l113"></a>  info_out-&gt;bar[0] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR0);
+<a name="l114"></a>  info_out-&gt;bar[1] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR1);
+<a name="l115"></a>  info_out-&gt;bar[2] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR2);
+<a name="l116"></a>  info_out-&gt;bar[3] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR3);
+<a name="l117"></a>  info_out-&gt;bar[4] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR4);
+<a name="l118"></a>  info_out-&gt;bar[5] =          <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_BAR5);
+<a name="l119"></a>  info_out-&gt;interrupt_line =  <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l21"></span><span class=cB5>PCIReadU8</a></span><span class=cB0>(bus, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>, fun, PCI_REG_INTERRUPT_LINE);
+<a name="l120"></a>  info_out-&gt;bus=bus;
+<a name="l121"></a>  info_out-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>;
+<a name="l122"></a>  info_out-&gt;fun=fun;
+<a name="l123"></a>}
+<a name="l124"></a>
+<a name="l125"></a></span><span class=cB2>//TODO fix me</span><span class=cB0>
+<a name="l126"></a>#</span><span class=cB1>define</span><span class=cB0> INT_DEST_CPU 2
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l237"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> base)
+<a name="l129"></a>{
+<a name="l130"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l131"></a>  </span><span class=cB1>U8</span><span class=cB0>* da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l638"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
+<a name="l132"></a>  </span><span class=cB9>U32</span><span class=cB0>* _d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l639"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
+<a name="l133"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 4; i++)
+<a name="l134"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l135"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l644"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2 + 1;
+<a name="l136"></a>    *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mp_apic_ids[INT_DEST_CPU] &lt;&lt; 24;
+<a name="l137"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l644"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2;
+<a name="l138"></a>    *_d = 0x4000 + base + i;
+<a name="l139"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l140"></a>}
+</span></div></pre></body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> Ping(</span><span class=cB1>U8</span><span class=cB0> *hostname, </span><span class=cB9>I64</span><span class=cB0> timeout=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l670"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB9>U32</span><span class=cB0>                    addr;
+<a name="l4"></a>  CAddressInfo      *current;
+<a name="l5"></a>  CAddressInfo      *result = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0>                    error;
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0>                    i = 0, t, delay, sent = 0, min_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>, max_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0>, sum_delay = 0;
+<a name="l8"></a>  CSocketAddressIPV4    *ipv4_address;
+<a name="l9"></a>  </span><span class=cB9>U16</span><span class=cB0>                    sequence_number = 1, identifier = <a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>, cnt = 0;
+<a name="l10"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *payload;
+<a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (!IPV4AddressPrs</span><span class=cB7>(</span><span class=cB0>hostname, &amp;addr</span><span class=cB7>)</span><span class=cB0>)
+<a name="l12"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l13"></a>    error = DNSAddressInfoGet(hostname, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, &amp;result);
+<a name="l14"></a>    </span><span class=cB1>if</span><span class=cB0> (error &lt; 0)
+<a name="l15"></a>    {
+<a name="l16"></a>      NetErr(</span><span class=cB6>&quot;Ping: Failed at DNS Get Address Info.&quot;</span><span class=cB0>);
+<a name="l17"></a>      </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l18"></a>    }
+<a name="l19"></a>    current = result;
+<a name="l20"></a>    </span><span class=cB1>while</span><span class=cB0> (current)
+<a name="l21"></a>    {
+<a name="l22"></a>      </span><span class=cB1>if</span><span class=cB0> (current-&gt;family == <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>)
+<a name="l23"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>        ipv4_address = current-&gt;address;
+<a name="l25"></a>        addr = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(ipv4_address-&gt;address); </span><span class=cB2>// why does it need EndianU32</span><span class=cB0>
+<a name="l26"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l27"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>      current = current-&gt;next;
+<a name="l29"></a>    }
+<a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB1>if</span><span class=cB0> (!current)
+<a name="l32"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    NetErr(</span><span class=cB6>&quot;Ping: Failed to resolve address.&quot;</span><span class=cB0>);
+<a name="l34"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l35"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l120"></span><span class=cB5>ScanChar</a></span><span class=cB0>)
+<a name="l38"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l39"></a>    payload = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(64);
+<a name="l40"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 64; i++)
+<a name="l41"></a>      payload[i] = <a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>;
+<a name="l42"></a>    </span><span class=cB6>&quot;Sending Ping request #%d\n&quot;</span><span class=cB0>
+<a name="l43"></a>    , sequence_number;
+<a name="l44"></a>    ICMPRequestSend(addr, identifier, <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>, payload, 64);
+<a name="l45"></a>    sent++;
+<a name="l46"></a>    t = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
+<a name="l47"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + timeout)
+<a name="l48"></a>    {
+<a name="l49"></a>      </span><span class=cB1>if</span><span class=cB0> (icmp_reply.identifier == identifier &amp;&amp; icmp_reply.sequence_number == <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>)
+<a name="l50"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>        delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies - t;
+<a name="l52"></a>        min_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l104"></span><span class=cB5>MinI64</a></span><span class=cB0>(min_delay, delay);
+<a name="l53"></a>        max_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB0>(max_delay, delay);
+<a name="l54"></a>        sum_delay += delay; </span><span class=cB2>// sum up delays, divide through by cnt during stat report to get average</span><span class=cB0>
+<a name="l55"></a>        cnt++;
+<a name="l56"></a>        </span><span class=cB6>&quot;\tReceived reply, delay: %dms\n&quot;</span><span class=cB0>
+<a name="l57"></a>        , delay;
+<a name="l58"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l59"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l60"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l61"></a>    }
+<a name="l62"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l670"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
+<a name="l63"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l64"></a>    sequence_number++;
+<a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(payload);
+<a name="l66"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l67"></a>  </span><span class=cB6>&quot;\nPing Statistics:\n&quot;</span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB6>&quot;\tSent: %d, Received: %d, Lost: %d (%0.02f %%)\n&quot;</span><span class=cB0>
+<a name="l69"></a>  , sent, cnt, sent - cnt, 100.0 - 100.0 * cnt / sent;
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (min_delay != <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; max_delay != <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0> &amp;&amp; sum_delay != 0)
+<a name="l71"></a>    </span><span class=cB6>&quot;\tMin: %dms, Max: %dms, Avg: %dms\n&quot;</span><span class=cB0>, min_delay, max_delay, sum_delay / cnt;
+<a name="l72"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l73"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;
+<a name="l74"></a>}
+</span></div></pre></body>
+</html>

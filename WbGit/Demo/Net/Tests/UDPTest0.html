@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>U8</span><span class=cB0> dst_mac[6] = {0xF0, 0x0D, 0xBE, 0xAD, 0xDE, 0xAF};
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>U32</span><span class=cB0> src_ip = 0x30313233;
+<a name="l4"></a></span><span class=cB9>U32</span><span class=cB0> dst_ip = 0x01020304;
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>U0</span><span class=cB0> UDPTest()
+<a name="l7"></a>{
+<a name="l8"></a>  </span><span class=cB1>U8</span><span class=cB0> *udp_payload;
+<a name="l9"></a>  </span><span class=cB9>I64</span><span class=cB0> de_index;
+<a name="l10"></a>  ARPCachePut(dst_ip, dst_mac); </span><span class=cB2>// Force entry into ARP Cache so IPV4 can match it with IPV4AddressMACGet</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l12"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l13"></a>    de_index = UDPPacketAllocate(&amp;udp_payload, src_ip, 0xDEAD, dst_ip, 0xBEEF, 8);
+<a name="l14"></a>    *(udp_payload</span><span class=cB7>(</span><span class=cB9>U64</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>) = EndianU64(0xDEADBEEFC0DEFADE);
+<a name="l15"></a>    UDPPacketFinish(de_index);
+<a name="l16"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(300);
+<a name="l17"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l18"></a>}
+<a name="l19"></a>
+<a name="l20"></a>UDPTest;
+</span></div></pre></body>
+</html>

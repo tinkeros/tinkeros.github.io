@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// These functions are only meant to be used with the original 16 TempleOS colors</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>/*</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2> * I apologize in advance for %04d causing a 4 digit year</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2> * limitation. If you using this in a year &gt; 9999 and time</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2> * travel has been invented, please come rescue me or at least</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2> * give me some winning lotto numbers.</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2> */</span><span class=cB0>
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnShot.html#l10"></span><span class=cB5>ScrnShotClip</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l11"></a>{</span><span class=cB2>// Captures a mouse seleted screen clip</span><span class=cB0>
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> x=0, y=0, x2=0, y2=0, msg_code, old_inhibit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit;
+<a name="l13"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc,*dc2,*dc3;
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.show=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l16"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1544"></span><span class=cB3>WIG_TASK_DFT</a></span><span class=cB0>;
+<a name="l17"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l434"></span><span class=cB5>DCScrnCapture</a></span><span class=cB0>;
+<a name="l18"></a>  dc2=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l258"></span><span class=cB5>DCCopy</a></span><span class=cB0>(dc);
+<a name="l19"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.show=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l21"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l72"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>=dc2;
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l24"></a>  </span><span class=cB1>do</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>    msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;x,&amp;y,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
+<a name="l27"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l29"></a>  </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>MSG_MS_L_UP</a></span><span class=cB0>);
+<a name="l30"></a>  x=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x;
+<a name="l31"></a>  y=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y;
+<a name="l32"></a>  </span><span class=cB1>do</span><span class=cB0>
+<a name="l33"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>    msg_code=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l104"></span><span class=cB5>GetMsg</a></span><span class=cB0>(&amp;x2,&amp;y2,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>+1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3918"></span><span class=cB3>MSG_MS_MOVE</a></span><span class=cB0>);
+<a name="l35"></a>    x2=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.pos.x;
+<a name="l36"></a>    y2=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.pos.y;
+<a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc2,0,0,dc);
+<a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l118"></span><span class=cB5>GrBorder</a></span><span class=cB0>(dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l104"></span><span class=cB5>MinI64</a></span><span class=cB7>(</span><span class=cB0>x,x2</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l104"></span><span class=cB5>MinI64</a></span><span class=cB7>(</span><span class=cB0>y,y2</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>x,x2</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>y,y2</span><span class=cB7>)</span><span class=cB0>);
+<a name="l39"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a>  </span><span class=cB1>while</span><span class=cB0> (msg_code!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3919"></span><span class=cB3>MSG_MS_L_DOWN</a></span><span class=cB0>);
+<a name="l42"></a>  dc3=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l697"></span><span class=cB5>DCExt</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l104"></span><span class=cB5>MinI64</a></span><span class=cB7>(</span><span class=cB0>x,x2</span><span class=cB7>)</span><span class=cB0>+1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l104"></span><span class=cB5>MinI64</a></span><span class=cB7>(</span><span class=cB0>y,y2</span><span class=cB7>)</span><span class=cB0>+1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>x,x2</span><span class=cB7>)</span><span class=cB0>-1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>y,y2</span><span class=cB7>)</span><span class=cB0>-1);
+<a name="l43"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l72"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l400"></span><span class=cB5>GRWrite</a></span><span class=cB0>(filename,dc3,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4339"></span><span class=cB3>DCSF_COMPRESSED</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4340"></span><span class=cB3>DCSF_PALETTE_GET</a></span><span class=cB0>);
+<a name="l49"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_inhibit=old_inhibit;
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc2);
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc3);
+<a name="l53"></a>}
+<a name="l54"></a>
+<a name="l55"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnShot.html#l55"></span><span class=cB5>ScrnShot</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> no_mouse=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> clip=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l56"></a>{</span><span class=cB2>// Captures GR screenshot or screen clip saved to Home/ScrnShot if possible, otherwise RAM drive B:/ScrnShot</span><span class=cB0>
+<a name="l57"></a>  </span><span class=cB1>Bool</span><span class=cB0> prev_mouse=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.show,old_silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l285"></span><span class=cB5>IsSilent</a></span><span class=cB0>;
+<a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> *prefix,*filename,*dircur;
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l280"></span><span class=cB5>Silent</a></span><span class=cB0>;
+<a name="l60"></a>  dircur=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l320"></span><span class=cB5>DirCur</a></span><span class=cB0>;
+<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (no_mouse) <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.show=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l63"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l195"></span><span class=cB9>CDateStruct</a></span><span class=cB0> ds;
+<a name="l64"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l43"></span><span class=cB5>Date2Struct</a></span><span class=cB0>(&amp;ds,<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l195"></span><span class=cB5>Now</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l23"></span><span class=cB6>local_time_offset</a></span><span class=cB0>);
+<a name="l65"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l66"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l199"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB6>&quot;~/ScrnShot&quot;</span><span class=cB0>,1);
+<a name="l68"></a>    prefix=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;~/ScrnShot&quot;</span><span class=cB0>);
+<a name="l69"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l70"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l71"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l199"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/ScrnShot&quot;</span><span class=cB0>,1);
+<a name="l73"></a>    prefix=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/ScrnShot&quot;</span><span class=cB0>);
+<a name="l74"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  filename=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s/%04d%02d%02d%02d%02d%02d&quot;</span><span class=cB0>,prefix,ds.year,ds.mon,ds.day_of_mon,ds.hour,ds.min,ds.sec);
+<a name="l77"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l78"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (clip)
+<a name="l80"></a>    {
+<a name="l81"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnShot.html#l10"></span><span class=cB5>ScrnShotClip</a></span><span class=cB0>(filename);
+<a name="l82"></a>    }
+<a name="l83"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l84"></a>    {
+<a name="l85"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l404"></span><span class=cB5>GRScrnCaptureWrite</a></span><span class=cB0>(filename);
+<a name="l86"></a>    }
+<a name="l87"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l88"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l89"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l90"></a>    </span><span class=cB2>// Nothing</span><span class=cB0>
+<a name="l91"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l92"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l93"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(filename);
+<a name="l94"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(dircur);
+<a name="l95"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dircur);
+<a name="l96"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l280"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
+<a name="l97"></a>  </span><span class=cB1>if</span><span class=cB0> (no_mouse) <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l34"></span><span class=cB6>ms</a></span><span class=cB0>.show=prev_mouse;
+<a name="l98"></a>}
+<a name="l99"></a>
+<a name="l100"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/ScrnShot.html#l100"></span><span class=cB5>GrView</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l101"></a>{</span><span class=cB2>// Views GR file full screen, ESC to exit</span><span class=cB0>
+<a name="l102"></a>  </span><span class=cB9>I64</span><span class=cB0> x=0,y=0;
+<a name="l103"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc,*dc2;
+<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4011"></span><span class=cB9>CTask</a></span><span class=cB0> *tmp;
+<a name="l105"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l258"></span><span class=cB5>DCCopy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc);
+<a name="l106"></a>  dc2=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l411"></span><span class=cB5>GRRead</a></span><span class=cB0>(filename);
+<a name="l107"></a>  </span><span class=cB1>if</span><span class=cB0> (dc2)
+<a name="l108"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l109"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;width_internal==dc2-&gt;width_internal
+<a name="l110"></a>        &amp;&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;height==dc2-&gt;height)
+<a name="l111"></a>    {
+<a name="l112"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l113"></a>      tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l445"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;InUntilChar(CH_ESC,CH_SHIFT_ESC,CH_SPACE);Exit;\n&quot;</span><span class=cB0>);
+<a name="l114"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l115"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>SetAltScrn</a></span><span class=cB0>(dc2);
+<a name="l116"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l117"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l41"></span><span class=cB5>DeathWait</a></span><span class=cB0>(tmp);
+<a name="l118"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>SetAltScrn</a></span><span class=cB0>;
+<a name="l119"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l120"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l121"></a>    }
+<a name="l122"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l123"></a>    {
+<a name="l124"></a>      </span><span class=cB1>if</span><span class=cB0> (dc2-&gt;width&lt;dc-&gt;width&amp;&amp;dc2-&gt;height&lt;dc-&gt;height)
+<a name="l125"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l126"></a>        x=(dc-&gt;width-dc2-&gt;width)/2;
+<a name="l127"></a>        y=(dc-&gt;height-dc2-&gt;height)/2;
+<a name="l128"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l129"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(dc,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3658"></span><span class=cB3>WHITE</a></span><span class=cB0>);
+<a name="l130"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,x,y,dc2);
+<a name="l131"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l132"></a>      tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l445"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;InUntilChar(CH_ESC,CH_SHIFT_ESC,CH_SPACE);Exit;\n&quot;</span><span class=cB0>);
+<a name="l133"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l134"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>SetAltScrn</a></span><span class=cB0>(dc);
+<a name="l135"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l136"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l41"></span><span class=cB5>DeathWait</a></span><span class=cB0>(tmp);
+<a name="l137"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l337"></span><span class=cB5>SetAltScrn</a></span><span class=cB0>;
+<a name="l138"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l129"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l139"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l718"></span><span class=cB3>SEMA_REFRESH_IN_PROGRESS</a></span><span class=cB0>],0);
+<a name="l140"></a>    }
+<a name="l141"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l142"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l143"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l144"></a>    </span><span class=cB6>&quot;Could not load %s\n&quot;</span><span class=cB0>,filename;
+<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l146"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l147"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc2);
+<a name="l148"></a>}
+<a name="l149"></a>
+</span></div></pre></body>
+</html>

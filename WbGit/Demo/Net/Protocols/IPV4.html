@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.10">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> IPV4_ERR_ADDR_INVALID       -200001
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> IPV4_ERR_HOST_UNREACHABLE   -200002
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> IPV4_TTL    64
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB2>//Look up IP Protocol Numbers online to see many more.</span><span class=cB0>
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> IP_PROTOCOL_ICMP    0x01
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> IP_PROTOCOL_TCP     0x06
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> IP_PROTOCOL_UDP     0x11
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>class</span><span class=cB0> CIPV4Packet
+<a name="l12"></a>{
+<a name="l13"></a>  CEthernetFrame    *ethernet_frame;
+<a name="l14"></a>
+<a name="l15"></a>  </span><span class=cB9>U32</span><span class=cB0>                source_ip_address;
+<a name="l16"></a>  </span><span class=cB9>U32</span><span class=cB0>                destination_ip_address;
+<a name="l17"></a>
+<a name="l18"></a>  </span><span class=cB1>U8</span><span class=cB0>                 protocol;
+<a name="l19"></a>  </span><span class=cB1>U8</span><span class=cB0>                 padding[7];
+<a name="l20"></a>
+<a name="l21"></a>  </span><span class=cB1>U8</span><span class=cB0>                *data;
+<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0>                length;
+<a name="l23"></a>};
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>class</span><span class=cB0> CIPV4Header
+<a name="l26"></a>{</span><span class=cB2>// note: U4's in some U8s.</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB1>U8</span><span class=cB0>    version_ihl;            </span><span class=cB2>// Version for IPV4 is 4. IHL=Internet Header Length</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0>    dscp_ecn;               </span><span class=cB2>// DSCP=Differentiated Services Code Point. ECN=Explicit Congestion Notification</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>  </span><span class=cB9>U16</span><span class=cB0> total_length;         </span><span class=cB2>// min 20B max 65535</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB9>U16</span><span class=cB0> identification;
+<a name="l32"></a>  </span><span class=cB9>U16</span><span class=cB0> flags_fragment_offset;    </span><span class=cB2>// flags first(?) 3 bits. fragment offset min 0 max 65528</span><span class=cB0>
+<a name="l33"></a>  </span><span class=cB2>// flag: bit 0: reserved must be 0. bit 1: don't fragment. bit 2: more fragments</span><span class=cB0>
+<a name="l34"></a>
+<a name="l35"></a>  </span><span class=cB1>U8</span><span class=cB0>    time_to_live;           </span><span class=cB2>// specified in seconds, wikipedia says nowadays serves as a hop cnt</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>U8</span><span class=cB0>    protocol;
+<a name="l37"></a>
+<a name="l38"></a>  </span><span class=cB9>U16</span><span class=cB0> header_checksum;
+<a name="l39"></a>
+<a name="l40"></a>  </span><span class=cB9>U32</span><span class=cB0> source_ip_address;
+<a name="l41"></a>  </span><span class=cB9>U32</span><span class=cB0> destination_ip_address;
+<a name="l42"></a>};
+<a name="l43"></a>
+<a name="l44"></a></span><span class=cB1>class</span><span class=cB0> CIPV4Glbls
+<a name="l45"></a>{</span><span class=cB2>// _be indicates Big Endian</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB9>U32</span><span class=cB0> local_ip;
+<a name="l47"></a>  </span><span class=cB9>U32</span><span class=cB0> local_ip_be;
+<a name="l48"></a>
+<a name="l49"></a>  </span><span class=cB9>U32</span><span class=cB0> ipv4_router_address;
+<a name="l50"></a>  </span><span class=cB9>U32</span><span class=cB0> ipv4_subnet_mask;
+<a name="l51"></a>
+<a name="l52"></a>} ipv4_globals;
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> IPV4GlblsInit()
+<a name="l55"></a>{
+<a name="l56"></a>  ipv4_globals.local_ip          = 0;
+<a name="l57"></a>  ipv4_globals.local_ip_be       = 0;
+<a name="l58"></a>  ipv4_globals.ipv4_router_address = 0;
+<a name="l59"></a>  ipv4_globals.ipv4_subnet_mask  = 0;
+<a name="l60"></a>};
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB2>// For now, trusting Shrine's implement</span><span class=cB0>
+<a name="l63"></a></span><span class=cB2>// of checksum. Shrine links back to</span><span class=cB0>
+<a name="l64"></a></span><span class=cB2>// http://stackoverflow.com/q/26774761/2524350</span><span class=cB0>
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB9>U16</span><span class=cB0> IPV4Checksum(</span><span class=cB1>U8</span><span class=cB0> *header, </span><span class=cB9>I64</span><span class=cB0> length)
+<a name="l67"></a>{</span><span class=cB2>//todo. make names clearer, and better comments.</span><span class=cB0>
+<a name="l68"></a>  </span><span class=cB9>I64</span><span class=cB0>  nleft = length;
+<a name="l69"></a>  </span><span class=cB9>U16</span><span class=cB0> *w = header;
+<a name="l70"></a>  </span><span class=cB9>I64</span><span class=cB0>  sum = 0;
+<a name="l71"></a>  </span><span class=cB1>while</span><span class=cB0> (nleft &gt; 1)
+<a name="l72"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>    sum += *w++;
+<a name="l74"></a>    nleft -= 2;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB2>// &quot;mop up an odd byte, if necessary&quot;</span><span class=cB0>
+<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (nleft == 1)
+<a name="l78"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    sum += *w &amp; 0x00FF;
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>  </span><span class=cB2>// &quot;add back carry outs from top 16 bits to low 16 bits&quot;</span><span class=cB0>
+<a name="l82"></a>  sum = sum &gt;&gt; 16 + sum &amp; 0xFFFF; </span><span class=cB2>// &quot;add hi 16 to low 16&quot;</span><span class=cB0>
+<a name="l83"></a>  sum += sum &gt;&gt; 16; </span><span class=cB2>// add carry</span><span class=cB0>
+<a name="l84"></a>  </span><span class=cB1>return</span><span class=cB0> ~sum &amp; 0xFFFF;
+<a name="l85"></a>}
+<a name="l86"></a>
+<a name="l87"></a></span><span class=cB9>I64</span><span class=cB0> IPV4AddressMACGet(</span><span class=cB9>U32</span><span class=cB0> ip_address, </span><span class=cB1>U8</span><span class=cB0> **mac_out)
+<a name="l88"></a>{
+<a name="l89"></a>  CARPHash  *entry;
+<a name="l90"></a>  </span><span class=cB9>I64</span><span class=cB0>            retries;
+<a name="l91"></a>  </span><span class=cB9>I64</span><span class=cB0>            attempt;
+<a name="l92"></a>  </span><span class=cB1>if</span><span class=cB0> (ip_address == 0)
+<a name="l93"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>    NetErr(</span><span class=cB6>&quot;GET MAC FOR IP: Failed. Address = 0&quot;</span><span class=cB0>);
+<a name="l95"></a>    </span><span class=cB1>return</span><span class=cB0> IPV4_ERR_ADDR_INVALID;
+<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>  </span><span class=cB1>if</span><span class=cB0> (ip_address == 0xFFFFFFFF)
+<a name="l98"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l99"></a>    NetLog(</span><span class=cB6>&quot;GET MAC FOR IP: Returning ethernet broadcast&quot;</span><span class=cB0>);
+<a name="l100"></a>    *mac_out = ethernet_globals.ethernet_broadcast;
+<a name="l101"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l102"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l103"></a>  </span><span class=cB2>// &quot;outside this subnet; needs routing&quot;</span><span class=cB0>
+<a name="l104"></a>  </span><span class=cB1>if</span><span class=cB0> (ip_address &amp; ipv4_globals.ipv4_subnet_mask != ipv4_globals.local_ip &amp; ipv4_globals.ipv4_subnet_mask)
+<a name="l105"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l106"></a>    NetWarn(</span><span class=cB6>&quot;GET MAC FOR IP: TODO: Doing IPV4AddressMACGet recursion, could infinite loop and overflow stack.&quot;</span><span class=cB0>);
+<a name="l107"></a>    </span><span class=cB1>return</span><span class=cB0> IPV4AddressMACGet(ipv4_globals.ipv4_router_address, mac_out);
+<a name="l108"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l109"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>// &quot;local network&quot;</span><span class=cB0>
+<a name="l110"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l111"></a>    NetLog(</span><span class=cB6>&quot;GET MAC FOR IP: Attempting ARP Find by IP for address: %0X.&quot;</span><span class=cB0>, ip_address);
+<a name="l112"></a>    entry = ARPCacheFind(ip_address);
+<a name="l113"></a>    </span><span class=cB1>if</span><span class=cB0> (entry)
+<a name="l114"></a>    {
+<a name="l115"></a>      *mac_out = entry-&gt;mac_address;
+<a name="l116"></a>      </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l117"></a>    }
+<a name="l118"></a>    </span><span class=cB2>//else, not in cache, need to request it</span><span class=cB0>
+<a name="l119"></a>    </span><span class=cB2>// &quot;Up to 4 retries, 500 ms each&quot;</span><span class=cB0>
+<a name="l120"></a>    retries = 4;
+<a name="l121"></a>    </span><span class=cB1>while</span><span class=cB0> (retries)
+<a name="l122"></a>    {
+<a name="l123"></a>      ARPSend(ARP_REQUEST,
+<a name="l124"></a>              ethernet_globals.ethernet_broadcast,
+<a name="l125"></a>              EthernetMACGet,
+<a name="l126"></a>              ipv4_globals.local_ip_be,
+<a name="l127"></a>              ethernet_globals.ethernet_null,
+<a name="l128"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB7>(</span><span class=cB0>ip_address</span><span class=cB7>)</span><span class=cB0>);
+<a name="l129"></a>      attempt = 0;
+<a name="l130"></a>      </span><span class=cB1>for</span><span class=cB0> (attempt = 0; attempt &lt; 50; attempt++)
+<a name="l131"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
+<a name="l133"></a>        entry = ARPCacheFind(ip_address);
+<a name="l134"></a>        </span><span class=cB1>if</span><span class=cB0> (entry)
+<a name="l135"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l136"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l137"></a>      </span><span class=cB1>if</span><span class=cB0> (entry)
+<a name="l138"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>        *mac_out = entry-&gt;mac_address;
+<a name="l140"></a>        </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l141"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l142"></a>      retries--;
+<a name="l143"></a>    }
+<a name="l144"></a>    </span><span class=cB2>//Shrine does some in_addr mess to log error</span><span class=cB0>
+<a name="l145"></a>    NetErr(</span><span class=cB6>&quot;GET MAC FOR IP: Failed to resolve address %d&quot;</span><span class=cB0>, ip_address);
+<a name="l146"></a>    </span><span class=cB1>return</span><span class=cB0> IPV4_ERR_HOST_UNREACHABLE;
+<a name="l147"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l148"></a>}
+<a name="l149"></a>
+<a name="l150"></a></span><span class=cB9>I64</span><span class=cB0> IPV4PacketAllocate(</span><span class=cB1>U8</span><span class=cB0> **frame_out,
+<a name="l151"></a>                       </span><span class=cB1>U8</span><span class=cB0> protocol,
+<a name="l152"></a>                       </span><span class=cB9>U32</span><span class=cB0> source_ip_address,
+<a name="l153"></a>                       </span><span class=cB9>U32</span><span class=cB0> destination_ip_address,
+<a name="l154"></a>                       </span><span class=cB9>I64</span><span class=cB0> length)
+<a name="l155"></a>{
+<a name="l156"></a>  </span><span class=cB1>U8</span><span class=cB0>            *ipv4_frame;
+<a name="l157"></a>  </span><span class=cB1>U8</span><span class=cB0>            *destination_mac_address;
+<a name="l158"></a>  </span><span class=cB9>I64</span><span class=cB0>            error;
+<a name="l159"></a>  </span><span class=cB9>I64</span><span class=cB0>            de_index;
+<a name="l160"></a>  </span><span class=cB9>I64</span><span class=cB0>            internet_header_length;
+<a name="l161"></a>  CIPV4Header *header;
+<a name="l162"></a>  error = IPV4AddressMACGet(destination_ip_address, &amp;destination_mac_address);
+<a name="l163"></a>  </span><span class=cB1>if</span><span class=cB0> (error &lt; 0)
+<a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    NetLog(</span><span class=cB6>&quot;IPV4 PACKET ALLOCATE: Failed to get MAC for destination.&quot;</span><span class=cB0>);
+<a name="l166"></a>    </span><span class=cB1>return</span><span class=cB0> error;
+<a name="l167"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l168"></a>  de_index = EthernetFrameAllocate(&amp;ipv4_frame,
+<a name="l169"></a>                                   EthernetMACGet,
+<a name="l170"></a>                                   destination_mac_address,
+<a name="l171"></a>                                   ETHERTYPE_IPV4,
+<a name="l172"></a>                                   </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CIPV4Header</span><span class=cB7>)</span><span class=cB0> + length);
+<a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (de_index &lt; 0)
+<a name="l174"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l175"></a>    NetLog(</span><span class=cB6>&quot;IPV4 PACKET ALLOCATE: Ethernet Frame Allocate failed.&quot;</span><span class=cB0>);
+<a name="l176"></a>    </span><span class=cB1>return</span><span class=cB0> de_index;
+<a name="l177"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l178"></a>  internet_header_length = 5;</span><span class=cB2>// ... why. need a #define</span><span class=cB0>
+<a name="l179"></a>  header = ipv4_frame;
+<a name="l180"></a>  header-&gt;version_ihl               = internet_header_length | 4 &lt;&lt; 4;</span><span class=cB2>// ? TODO: needs #define</span><span class=cB0>
+<a name="l181"></a>  header-&gt;dscp_ecn              = 0; </span><span class=cB2>// a clear define of what this actually means would be good</span><span class=cB0>
+<a name="l182"></a>  header-&gt;total_length          = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(internet_header_length * 4 + length); </span><span class=cB2>//...why?</span><span class=cB0>
+<a name="l183"></a>  header-&gt;identification            = 0; </span><span class=cB2>// define would be clearer</span><span class=cB0>
+<a name="l184"></a>  header-&gt;flags_fragment_offset = 0; </span><span class=cB2>// define would be clearer</span><span class=cB0>
+<a name="l185"></a>  header-&gt;time_to_live          = IPV4_TTL;
+<a name="l186"></a>  header-&gt;protocol              = protocol;
+<a name="l187"></a>  header-&gt;header_checksum           = 0; </span><span class=cB2>// why is 0 ok?</span><span class=cB0>
+<a name="l188"></a>  header-&gt;source_ip_address     = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(source_ip_address);
+<a name="l189"></a>  header-&gt;destination_ip_address    = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(destination_ip_address);
+<a name="l190"></a>  header-&gt;header_checksum           = IPV4Checksum(header, internet_header_length * 4);</span><span class=cB2>//why the 4's...</span><span class=cB0>
+<a name="l191"></a>  *frame_out = ipv4_frame + </span><span class=cB1>sizeof</span><span class=cB0>(CIPV4Header);
+<a name="l192"></a>  </span><span class=cB1>return</span><span class=cB0> de_index;
+<a name="l193"></a>}
+<a name="l194"></a>
+<a name="l195"></a></span><span class=cB1>U0</span><span class=cB0> IPV4PacketFinish(</span><span class=cB9>I64</span><span class=cB0> de_index) </span><span class=cB2>//alias for EthernetFrameFinish</span><span class=cB0>
+<a name="l196"></a>{
+<a name="l197"></a>  EthernetFrameFinish(de_index);
+<a name="l198"></a>}
+<a name="l199"></a>
+<a name="l200"></a></span><span class=cB9>U32</span><span class=cB0> IPV4AddressGet()
+<a name="l201"></a>{
+<a name="l202"></a>  </span><span class=cB1>return</span><span class=cB0> ipv4_globals.local_ip;
+<a name="l203"></a>}
+<a name="l204"></a>
+<a name="l205"></a></span><span class=cB1>U0</span><span class=cB0> IPV4AddressSet(</span><span class=cB9>U32</span><span class=cB0> ip_address)
+<a name="l206"></a>{
+<a name="l207"></a>  ipv4_globals.local_ip  = ip_address;
+<a name="l208"></a>  ipv4_globals.local_ip_be = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(ip_address);
+<a name="l209"></a>  ARPLocalIPV4Set(ip_address);
+<a name="l210"></a>}
+<a name="l211"></a>
+<a name="l212"></a></span><span class=cB1>U0</span><span class=cB0> IPV4SubnetSet(</span><span class=cB9>U32</span><span class=cB0> router_address, </span><span class=cB9>U32</span><span class=cB0> subnet_mask)
+<a name="l213"></a>{
+<a name="l214"></a>  ipv4_globals.ipv4_router_address = router_address;
+<a name="l215"></a>  ipv4_globals.ipv4_subnet_mask  = subnet_mask;
+<a name="l216"></a>}
+<a name="l217"></a>
+<a name="l218"></a></span><span class=cB2>//I64</span><span class=cB0>
+<a name="l219"></a></span><span class=cB1>U0</span><span class=cB0> IPV4PacketPrs(CIPV4Packet *packet_out, CEthernetFrame *ethernet_frame)
+<a name="l220"></a>{</span><span class=cB2>//...if ethertype not ipv4 error?</span><span class=cB0>
+<a name="l221"></a>  </span><span class=cB2>// TODO: Check ethernet_frame length ! ... we need to know what's appropriate</span><span class=cB0>
+<a name="l222"></a>  CIPV4Header *header = ethernet_frame-&gt;data;
+<a name="l223"></a>  </span><span class=cB9>I64</span><span class=cB0>            header_length = (header-&gt;version_ihl &amp; 0x0F) * 4;</span><span class=cB2>//this Has to go. at least abstract or something..</span><span class=cB0>
+<a name="l224"></a>  </span><span class=cB9>U16</span><span class=cB0>            total_length = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(header-&gt;total_length);
+<a name="l225"></a>  packet_out-&gt;ethernet_frame            = ethernet_frame;
+<a name="l226"></a>  packet_out-&gt;source_ip_address     = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(header-&gt;source_ip_address);
+<a name="l227"></a>  packet_out-&gt;destination_ip_address    = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(header-&gt;destination_ip_address);
+<a name="l228"></a>  packet_out-&gt;protocol              = header-&gt;protocol;
+<a name="l229"></a>  packet_out-&gt;data                  = ethernet_frame-&gt;data + header_length;
+<a name="l230"></a>  packet_out-&gt;length                    = total_length - header_length;
+<a name="l231"></a></span><span class=cB2>//  return 0;</span><span class=cB0>
+<a name="l232"></a>}
+<a name="l233"></a>
+<a name="l234"></a></span><span class=cB1>U0</span><span class=cB0> IPV4Rep()
+<a name="l235"></a>{
+<a name="l236"></a>  </span><span class=cB6>&quot;$LTBLUE$IPV4 Report:$FG$\n\n&quot;</span><span class=cB0>;
+<a name="l237"></a>  </span><span class=cB6>&quot;Local IPV4: %d.%d.%d.%d\n&quot;</span><span class=cB0>
+<a name="l238"></a>  ,
+<a name="l239"></a>  ipv4_globals.local_ip.u8[3],
+<a name="l240"></a>  ipv4_globals.local_ip.u8[2],
+<a name="l241"></a>  ipv4_globals.local_ip.u8[1],
+<a name="l242"></a>  ipv4_globals.local_ip.u8[0];
+<a name="l243"></a>  </span><span class=cB6>&quot;Router IPV4: %d.%d.%d.%d\n&quot;</span><span class=cB0>
+<a name="l244"></a>  ,
+<a name="l245"></a>  ipv4_globals.ipv4_router_address.u8[3],
+<a name="l246"></a>  ipv4_globals.ipv4_router_address.u8[2],
+<a name="l247"></a>  ipv4_globals.ipv4_router_address.u8[1],
+<a name="l248"></a>  ipv4_globals.ipv4_router_address.u8[0];
+<a name="l249"></a>  </span><span class=cB6>&quot;Subnet IPV4: %d.%d.%d.%d\n&quot;</span><span class=cB0>
+<a name="l250"></a>  ,
+<a name="l251"></a>  ipv4_globals.ipv4_subnet_mask.u8[3],
+<a name="l252"></a>  ipv4_globals.ipv4_subnet_mask.u8[2],
+<a name="l253"></a>  ipv4_globals.ipv4_subnet_mask.u8[1],
+<a name="l254"></a>  ipv4_globals.ipv4_subnet_mask.u8[0];
+<a name="l255"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l256"></a>}
+<a name="l257"></a>
+<a name="l258"></a></span><span class=cB2>// IPV4 hndlr moved to NetHandlerTask file.</span><span class=cB0>
+<a name="l259"></a>IPV4GlblsInit;
+</span></div></pre></body>
+</html>
