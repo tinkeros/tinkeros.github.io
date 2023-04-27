@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.10">
+<meta name="generator" content="TinkerOS V5.11">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -133,16 +133,16 @@
 <a name="l94"></a>
 <a name="l95"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l95"></span><span class=cB5>AddPCIComms</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> next_port)
 <a name="l96"></a>{
-<a name="l97"></a>  </span><span class=cB9>I64</span><span class=cB0> class_code = <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l3"></span><span class=cB3>PCIC_COMM</a></span><span class=cB0> &lt;&lt; 16 | <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l4"></span><span class=cB3>PCISC_SERIAL</a></span><span class=cB0> &lt;&lt; 8 + <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l5"></span><span class=cB3>SERIAL_16550</a></span><span class=cB0>,
+<a name="l97"></a>  </span><span class=cB9>I64</span><span class=cB0> class_code = <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l3"></span><span class=cB3>PCIC_COMM</a></span><span class=cB0> &lt;&lt; 8 | <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l4"></span><span class=cB3>PCISC_SERIAL</a></span><span class=cB0>,
 <a name="l98"></a>      ioport,bdf,cur_port=next_port,
 <a name="l99"></a>                 b, d, f, bar;
 <a name="l100"></a>  </span><span class=cB1>for</span><span class=cB0> (b = 0; b &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l253"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>; b++)
 <a name="l101"></a>    </span><span class=cB1>for</span><span class=cB0> (d = 0; d &lt; 32; d++)
 <a name="l102"></a>      </span><span class=cB1>for</span><span class=cB0> (f = 0; f &lt; 8; f++)
 <a name="l103"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l104"></a>        </span><span class=cB1>if</span><span class=cB0> (class_code == <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB7>(</span><span class=cB0>b, d, f, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l299"></span><span class=cB3>PCIR_PROG_IF</a></span><span class=cB7>)</span><span class=cB0> &amp; 0xFFFFFF)
+<a name="l104"></a>        </span><span class=cB1>if</span><span class=cB0> (class_code == <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB7>(</span><span class=cB0>b, d, f, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l300"></span><span class=cB3>PCIR_SUB_CODE</a></span><span class=cB7>)</span><span class=cB0> &amp; 0xFFFF)
 <a name="l105"></a>        {
-<a name="l106"></a>          </span><span class=cB1>for</span><span class=cB0> (bar=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l306"></span><span class=cB3>PCIR_BASE0</a></span><span class=cB0>; bar&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l311"></span><span class=cB3>PCIR_BASE5</a></span><span class=cB0>; bar+=4)
+<a name="l106"></a>          </span><span class=cB1>for</span><span class=cB0> (bar=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l306"></span><span class=cB3>PCIR_BASE0</a></span><span class=cB0>; bar&lt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l311"></span><span class=cB3>PCIR_BASE5</a></span><span class=cB0>; bar+=4)
 <a name="l107"></a>          </span><span class=cB7>{</span><span class=cB0>
 <a name="l108"></a>            bdf = b &lt;&lt; 16 | d &lt;&lt; 8 | f;
 <a name="l109"></a>            ioport = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bdf.u8[2], bdf.u8[1], bdf.u8[0], bar);

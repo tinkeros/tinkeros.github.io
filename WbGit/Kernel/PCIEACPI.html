@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.10">
+<meta name="generator" content="TinkerOS V5.11">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -883,223 +883,224 @@
 <a name="l843"></a>            header_type = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_HEADER_TYPE, 1);
 <a name="l844"></a>            irq_pin=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_PIN,1);
 <a name="l845"></a>            irq_line=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_LINE,1);
-<a name="l846"></a>            </span><span class=cB6>&quot;Bus %d Device %d Func %d Header Type %02x Vendor ID %04x Device ID %04x\n&quot;</span><span class=cB0>
-<a name="l847"></a>            ,Bus,Device,Function,header_type,vendor_id,device_id;
-<a name="l848"></a>            </span><span class=cB6>&quot;Class %02x Sub-Class %02x IRQ line: %d IRQ pin %02x\n&quot;</span><span class=cB0>
-<a name="l849"></a>            ,pci_class,pci_subclass,irq_line,irq_pin;
-<a name="l850"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
-<a name="l851"></a>            {
-<a name="l852"></a>              bar = &amp;cfg_space[PCI_BASE_ADDRESS_0];
-<a name="l853"></a>              </span><span class=cB1>for</span><span class=cB0> (bi=0; bi&lt;6; bi++)
-<a name="l854"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l855"></a>                </span><span class=cB1>if</span><span class=cB0> (bar[bi]&amp;0x1)
-<a name="l856"></a>                {
-<a name="l857"></a>                  </span><span class=cB6>&quot;Bar %d I/O port %08x\n&quot;</span><span class=cB0>, bi, bar[bi] &amp; 0xFFFFFFFC;
-<a name="l858"></a>                }
-<a name="l859"></a>                </span><span class=cB1>else</span><span class=cB0>
-<a name="l860"></a>                {
-<a name="l861"></a>                  </span><span class=cB1>if</span><span class=cB0> (bar[bi] &amp; ~0x1F&gt;0)
-<a name="l862"></a>                    </span><span class=cB6>&quot;Bar %d Address: %x\n&quot;</span><span class=cB0>,bi,bar[bi] &amp; ~0x1F;
-<a name="l863"></a>                }
-<a name="l864"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l865"></a>            }
-<a name="l866"></a>            </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l867"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l868"></a>        }
-<a name="l869"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l870"></a>    }
-<a name="l871"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l872"></a>}
-<a name="l873"></a>
-<a name="l874"></a></span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l874"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(mcfg_entry *arr, </span><span class=cB9>I64</span><span class=cB0> n, </span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> cnt=0, </span><span class=cB1>Bool</span><span class=cB0> io_only=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
-<a name="l875"></a>{
-<a name="l876"></a>  </span><span class=cB1>U8</span><span class=cB0> pci_class, pci_subclass, header_type,irq_line,irq_pin,*cfg_space;
-<a name="l877"></a>  </span><span class=cB9>U16</span><span class=cB0> vendor_id, device_id;
-<a name="l878"></a>  </span><span class=cB9>U32</span><span class=cB0> *bar;
-<a name="l879"></a>  </span><span class=cB9>I64</span><span class=cB0> bi,i,Bus, Device, Function=0, cur=0;
-<a name="l880"></a>  mcfg_entry *e;
-<a name="l881"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
-<a name="l882"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l883"></a>    </span><span class=cB6>&quot;Enumerating devices from MCFG entry %d\n&quot;</span><span class=cB0>,i;
-<a name="l884"></a>    e=&amp;arr[i];
-<a name="l885"></a>    </span><span class=cB1>for</span><span class=cB0> (Bus=e-&gt;bus_start; Bus&lt;=e-&gt;bus_end; Bus++)
-<a name="l886"></a>    {
-<a name="l887"></a>      </span><span class=cB1>for</span><span class=cB0> (Device=0; Device&lt;32; Device++)
-<a name="l888"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l889"></a>        </span><span class=cB1>for</span><span class=cB0> (Function=0; Function&lt;8; Function++)
-<a name="l890"></a>        {
-<a name="l891"></a>          cfg_space = e-&gt;addr + ( </span><span class=cB7>(</span><span class=cB0>Bus - e-&gt;bus_start</span><span class=cB7>)</span><span class=cB0> &lt;&lt; 20 | Device &lt;&lt; 15 | Function &lt;&lt; 12);
-<a name="l892"></a>          vendor_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_VENDOR_ID, 2);
-<a name="l893"></a>          device_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_DEVICE_ID, 2);
-<a name="l894"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor_id != 0xffff &amp;&amp; device_id != 0xffff)
-<a name="l895"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l896"></a>            pci_subclass = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_CLASS_DEVICE, 1);
-<a name="l897"></a>            pci_class = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_CLASS_DEVICE+1, 1);
-<a name="l898"></a>            header_type = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_HEADER_TYPE, 1);
-<a name="l899"></a>            irq_pin=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_PIN,1);
-<a name="l900"></a>            irq_line=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_LINE,1);
-<a name="l901"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
-<a name="l902"></a>            {
-<a name="l903"></a>              bar = &amp;cfg_space[PCI_BASE_ADDRESS_0];
-<a name="l904"></a>              </span><span class=cB1>for</span><span class=cB0> (bi=0; bi&lt;6; bi++)
-<a name="l905"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l906"></a>                </span><span class=cB1>if</span><span class=cB0> (bar_index == bi &amp;&amp; pci_class == find_class &amp;&amp; pci_subclass == find_subclass)
-<a name="l907"></a>                {
-<a name="l908"></a>                  </span><span class=cB1>if</span><span class=cB0> (bar[bi]&amp;0x1 &amp; !io_only)
-<a name="l909"></a>                  </span><span class=cB7>{</span><span class=cB0>
-<a name="l910"></a>                    </span><span class=cB1>if</span><span class=cB0> (cur == cnt)
-<a name="l911"></a>                    {
-<a name="l912"></a>                      </span><span class=cB1>return</span><span class=cB0> bar[bi] &amp; 0xFFFFFFFC;
-<a name="l913"></a>                    }
-<a name="l914"></a>                    </span><span class=cB1>else</span><span class=cB0>
-<a name="l915"></a>                    {
-<a name="l916"></a>                      cur++;
-<a name="l917"></a>                    }
-<a name="l918"></a>                  </span><span class=cB7>}</span><span class=cB0>
-<a name="l919"></a>                  </span><span class=cB1>else</span><span class=cB0>
-<a name="l920"></a>                  </span><span class=cB7>{</span><span class=cB0>
-<a name="l921"></a>                    </span><span class=cB1>if</span><span class=cB0> (bar[bi] &amp; ~0x1F&gt;0)
-<a name="l922"></a>                    {
-<a name="l923"></a>                      </span><span class=cB1>if</span><span class=cB0> (cur == cnt)
-<a name="l924"></a>                      </span><span class=cB7>{</span><span class=cB0>
-<a name="l925"></a>                        </span><span class=cB1>return</span><span class=cB0> bar[bi] &amp; ~0x1F;
-<a name="l926"></a>                      </span><span class=cB7>}</span><span class=cB0>
-<a name="l927"></a>                      </span><span class=cB1>else</span><span class=cB0>
-<a name="l928"></a>                      </span><span class=cB7>{</span><span class=cB0>
-<a name="l929"></a>                        cur++;
-<a name="l930"></a>                      </span><span class=cB7>}</span><span class=cB0>
-<a name="l931"></a>                    }
-<a name="l932"></a>                  </span><span class=cB7>}</span><span class=cB0>
-<a name="l933"></a>                }
-<a name="l934"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l935"></a>            }
-<a name="l936"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l937"></a>        }
-<a name="l938"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l939"></a>    }
-<a name="l940"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l941"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l942"></a>}
-<a name="l943"></a>
-<a name="l944"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l944"></span><span class=cBD>GetPcieDevSearch</a></span><span class=cB0>(mcfg_entry *arr, </span><span class=cB9>I64</span><span class=cB0> n, </span><span class=cB9>I64</span><span class=cB0> find_vendor_id, </span><span class=cB9>I64</span><span class=cB0> find_device_id)
-<a name="l945"></a>{
-<a name="l946"></a>  </span><span class=cB1>U8</span><span class=cB0> header_type,*cfg_space;
-<a name="l947"></a>  </span><span class=cB9>U16</span><span class=cB0> vendor_id, device_id;
-<a name="l948"></a>  </span><span class=cB9>I64</span><span class=cB0> i, Bus, Device, Function=0;
-<a name="l949"></a>  mcfg_entry *e;
-<a name="l950"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
-<a name="l951"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l952"></a>    </span><span class=cB6>&quot;Enumerating devices from MCFG entry %d\n&quot;</span><span class=cB0>,i;
-<a name="l953"></a>    e=&amp;arr[i];
-<a name="l954"></a>    </span><span class=cB1>for</span><span class=cB0> (Bus=e-&gt;bus_start; Bus&lt;=e-&gt;bus_end; Bus++)
-<a name="l955"></a>    {
-<a name="l956"></a>      </span><span class=cB1>for</span><span class=cB0> (Device=0; Device&lt;32; Device++)
-<a name="l957"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l958"></a>        </span><span class=cB1>for</span><span class=cB0> (Function=0; Function&lt;8; Function++)
-<a name="l959"></a>        {
-<a name="l960"></a>          cfg_space = e-&gt;addr + ( </span><span class=cB7>(</span><span class=cB0>Bus - e-&gt;bus_start</span><span class=cB7>)</span><span class=cB0> &lt;&lt; 20 | Device &lt;&lt; 15 | Function &lt;&lt; 12);
-<a name="l961"></a>          vendor_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_VENDOR_ID, 2);
-<a name="l962"></a>          device_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_DEVICE_ID, 2);
-<a name="l963"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor_id != 0xffff &amp;&amp; device_id != 0xffff)
-<a name="l964"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l965"></a>            header_type = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_HEADER_TYPE, 1);
-<a name="l966"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
-<a name="l967"></a>            {
-<a name="l968"></a>              </span><span class=cB1>if</span><span class=cB0> (vendor_id == find_vendor_id &amp;&amp; device_id == find_device_id)
-<a name="l969"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l970"></a>                </span><span class=cB1>return</span><span class=cB0> cfg_space;
-<a name="l971"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l972"></a>            }
-<a name="l973"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l974"></a>        }
-<a name="l975"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l976"></a>    }
-<a name="l977"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l978"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l979"></a>}
-<a name="l980"></a>
-<a name="l981"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l981"></span><span class=cB5>EnumPcie</a></span><span class=cB0>()
-<a name="l982"></a>{
-<a name="l983"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
-<a name="l984"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>;
-<a name="l985"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l986"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
-<a name="l987"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l988"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l989"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
-<a name="l990"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l819"></span><span class=cBD>EnumPcieDeviceIds</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
-<a name="l991"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
-<a name="l992"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l993"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l994"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l995"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
-<a name="l996"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l997"></a>}
-<a name="l998"></a>
-<a name="l999"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l999"></span><span class=cB5>GetPcieDevBarIO</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> n=0)
-<a name="l1000"></a>{
-<a name="l1001"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
-<a name="l1002"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
-<a name="l1003"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1004"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
-<a name="l1005"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1006"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1007"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
-<a name="l1008"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l874"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, find_class, find_subclass, bar_index, n, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l1009"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
-<a name="l1010"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1011"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l1012"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1013"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
-<a name="l1014"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
-<a name="l1015"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1016"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
-<a name="l1017"></a>    res=-1;
-<a name="l1018"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l1019"></a>}
-<a name="l1020"></a>
-<a name="l1021"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l1021"></span><span class=cB5>GetPcieDevBar</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> n=0)
-<a name="l1022"></a>{
-<a name="l1023"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
-<a name="l1024"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
-<a name="l1025"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1026"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
-<a name="l1027"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1028"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1029"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
-<a name="l1030"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l874"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, find_class, find_subclass, bar_index, n);
-<a name="l1031"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
-<a name="l1032"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1033"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l1034"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1035"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
-<a name="l1036"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
-<a name="l1037"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1038"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
-<a name="l1039"></a>    res=-1;
-<a name="l1040"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l1041"></a>}
-<a name="l1042"></a>
-<a name="l1043"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l1043"></span><span class=cB5>PcieFindDev</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor_id, </span><span class=cB9>I64</span><span class=cB0> device_id)
-<a name="l1044"></a>{
-<a name="l1045"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
-<a name="l1046"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
-<a name="l1047"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1048"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
-<a name="l1049"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
-<a name="l1050"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1051"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
-<a name="l1052"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l944"></span><span class=cBD>GetPcieDevSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, vendor_id, device_id);
-<a name="l1053"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
-<a name="l1054"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1055"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l1056"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1057"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
-<a name="l1058"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
-<a name="l1059"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1060"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
-<a name="l1061"></a>    res=-1;
-<a name="l1062"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l1063"></a>}
+<a name="l846"></a>            <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l281"></span><span class=cB5>PCILookUpDev</a></span><span class=cB0>(vendor_id,device_id);
+<a name="l847"></a>            </span><span class=cB6>&quot;Bus %d Device %d Func %d Header Type %02x Vendor ID %04x Device ID %04x\n&quot;</span><span class=cB0>
+<a name="l848"></a>            ,Bus,Device,Function,header_type,vendor_id,device_id;
+<a name="l849"></a>            </span><span class=cB6>&quot;Class %02x Sub-Class %02x IRQ line: %d IRQ pin %02x\n&quot;</span><span class=cB0>
+<a name="l850"></a>            ,pci_class,pci_subclass,irq_line,irq_pin;
+<a name="l851"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
+<a name="l852"></a>            {
+<a name="l853"></a>              bar = &amp;cfg_space[PCI_BASE_ADDRESS_0];
+<a name="l854"></a>              </span><span class=cB1>for</span><span class=cB0> (bi=0; bi&lt;6; bi++)
+<a name="l855"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l856"></a>                </span><span class=cB1>if</span><span class=cB0> (bar[bi]&amp;0x1)
+<a name="l857"></a>                {
+<a name="l858"></a>                  </span><span class=cB6>&quot;Bar %d I/O port %08x\n&quot;</span><span class=cB0>, bi, bar[bi] &amp; 0xFFFFFFFC;
+<a name="l859"></a>                }
+<a name="l860"></a>                </span><span class=cB1>else</span><span class=cB0>
+<a name="l861"></a>                {
+<a name="l862"></a>                  </span><span class=cB1>if</span><span class=cB0> (bar[bi] &amp; ~0x1F&gt;0)
+<a name="l863"></a>                    </span><span class=cB6>&quot;Bar %d Address: %x\n&quot;</span><span class=cB0>,bi,bar[bi] &amp; ~0x1F;
+<a name="l864"></a>                }
+<a name="l865"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l866"></a>            }
+<a name="l867"></a>            </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l868"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l869"></a>        }
+<a name="l870"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l871"></a>    }
+<a name="l872"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l873"></a>}
+<a name="l874"></a>
+<a name="l875"></a></span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l875"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(mcfg_entry *arr, </span><span class=cB9>I64</span><span class=cB0> n, </span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> cnt=0, </span><span class=cB1>Bool</span><span class=cB0> io_only=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l876"></a>{
+<a name="l877"></a>  </span><span class=cB1>U8</span><span class=cB0> pci_class, pci_subclass, header_type,irq_line,irq_pin,*cfg_space;
+<a name="l878"></a>  </span><span class=cB9>U16</span><span class=cB0> vendor_id, device_id;
+<a name="l879"></a>  </span><span class=cB9>U32</span><span class=cB0> *bar;
+<a name="l880"></a>  </span><span class=cB9>I64</span><span class=cB0> bi,i,Bus, Device, Function=0, cur=0;
+<a name="l881"></a>  mcfg_entry *e;
+<a name="l882"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
+<a name="l883"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l884"></a>    </span><span class=cB6>&quot;Enumerating devices from MCFG entry %d\n&quot;</span><span class=cB0>,i;
+<a name="l885"></a>    e=&amp;arr[i];
+<a name="l886"></a>    </span><span class=cB1>for</span><span class=cB0> (Bus=e-&gt;bus_start; Bus&lt;=e-&gt;bus_end; Bus++)
+<a name="l887"></a>    {
+<a name="l888"></a>      </span><span class=cB1>for</span><span class=cB0> (Device=0; Device&lt;32; Device++)
+<a name="l889"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l890"></a>        </span><span class=cB1>for</span><span class=cB0> (Function=0; Function&lt;8; Function++)
+<a name="l891"></a>        {
+<a name="l892"></a>          cfg_space = e-&gt;addr + ( </span><span class=cB7>(</span><span class=cB0>Bus - e-&gt;bus_start</span><span class=cB7>)</span><span class=cB0> &lt;&lt; 20 | Device &lt;&lt; 15 | Function &lt;&lt; 12);
+<a name="l893"></a>          vendor_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_VENDOR_ID, 2);
+<a name="l894"></a>          device_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_DEVICE_ID, 2);
+<a name="l895"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor_id != 0xffff &amp;&amp; device_id != 0xffff)
+<a name="l896"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l897"></a>            pci_subclass = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_CLASS_DEVICE, 1);
+<a name="l898"></a>            pci_class = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_CLASS_DEVICE+1, 1);
+<a name="l899"></a>            header_type = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_HEADER_TYPE, 1);
+<a name="l900"></a>            irq_pin=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_PIN,1);
+<a name="l901"></a>            irq_line=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space,PCI_INTERRUPT_LINE,1);
+<a name="l902"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
+<a name="l903"></a>            {
+<a name="l904"></a>              bar = &amp;cfg_space[PCI_BASE_ADDRESS_0];
+<a name="l905"></a>              </span><span class=cB1>for</span><span class=cB0> (bi=0; bi&lt;6; bi++)
+<a name="l906"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l907"></a>                </span><span class=cB1>if</span><span class=cB0> (bar_index == bi &amp;&amp; pci_class == find_class &amp;&amp; pci_subclass == find_subclass)
+<a name="l908"></a>                {
+<a name="l909"></a>                  </span><span class=cB1>if</span><span class=cB0> (bar[bi]&amp;0x1 &amp; !io_only)
+<a name="l910"></a>                  </span><span class=cB7>{</span><span class=cB0>
+<a name="l911"></a>                    </span><span class=cB1>if</span><span class=cB0> (cur == cnt)
+<a name="l912"></a>                    {
+<a name="l913"></a>                      </span><span class=cB1>return</span><span class=cB0> bar[bi] &amp; 0xFFFFFFFC;
+<a name="l914"></a>                    }
+<a name="l915"></a>                    </span><span class=cB1>else</span><span class=cB0>
+<a name="l916"></a>                    {
+<a name="l917"></a>                      cur++;
+<a name="l918"></a>                    }
+<a name="l919"></a>                  </span><span class=cB7>}</span><span class=cB0>
+<a name="l920"></a>                  </span><span class=cB1>else</span><span class=cB0>
+<a name="l921"></a>                  </span><span class=cB7>{</span><span class=cB0>
+<a name="l922"></a>                    </span><span class=cB1>if</span><span class=cB0> (bar[bi] &amp; ~0x1F&gt;0)
+<a name="l923"></a>                    {
+<a name="l924"></a>                      </span><span class=cB1>if</span><span class=cB0> (cur == cnt)
+<a name="l925"></a>                      </span><span class=cB7>{</span><span class=cB0>
+<a name="l926"></a>                        </span><span class=cB1>return</span><span class=cB0> bar[bi] &amp; ~0x1F;
+<a name="l927"></a>                      </span><span class=cB7>}</span><span class=cB0>
+<a name="l928"></a>                      </span><span class=cB1>else</span><span class=cB0>
+<a name="l929"></a>                      </span><span class=cB7>{</span><span class=cB0>
+<a name="l930"></a>                        cur++;
+<a name="l931"></a>                      </span><span class=cB7>}</span><span class=cB0>
+<a name="l932"></a>                    }
+<a name="l933"></a>                  </span><span class=cB7>}</span><span class=cB0>
+<a name="l934"></a>                }
+<a name="l935"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l936"></a>            }
+<a name="l937"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l938"></a>        }
+<a name="l939"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l940"></a>    }
+<a name="l941"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l942"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l943"></a>}
+<a name="l944"></a>
+<a name="l945"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l945"></span><span class=cBD>GetPcieDevSearch</a></span><span class=cB0>(mcfg_entry *arr, </span><span class=cB9>I64</span><span class=cB0> n, </span><span class=cB9>I64</span><span class=cB0> find_vendor_id, </span><span class=cB9>I64</span><span class=cB0> find_device_id)
+<a name="l946"></a>{
+<a name="l947"></a>  </span><span class=cB1>U8</span><span class=cB0> header_type,*cfg_space;
+<a name="l948"></a>  </span><span class=cB9>U16</span><span class=cB0> vendor_id, device_id;
+<a name="l949"></a>  </span><span class=cB9>I64</span><span class=cB0> i, Bus, Device, Function=0;
+<a name="l950"></a>  mcfg_entry *e;
+<a name="l951"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
+<a name="l952"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l953"></a>    </span><span class=cB6>&quot;Enumerating devices from MCFG entry %d\n&quot;</span><span class=cB0>,i;
+<a name="l954"></a>    e=&amp;arr[i];
+<a name="l955"></a>    </span><span class=cB1>for</span><span class=cB0> (Bus=e-&gt;bus_start; Bus&lt;=e-&gt;bus_end; Bus++)
+<a name="l956"></a>    {
+<a name="l957"></a>      </span><span class=cB1>for</span><span class=cB0> (Device=0; Device&lt;32; Device++)
+<a name="l958"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l959"></a>        </span><span class=cB1>for</span><span class=cB0> (Function=0; Function&lt;8; Function++)
+<a name="l960"></a>        {
+<a name="l961"></a>          cfg_space = e-&gt;addr + ( </span><span class=cB7>(</span><span class=cB0>Bus - e-&gt;bus_start</span><span class=cB7>)</span><span class=cB0> &lt;&lt; 20 | Device &lt;&lt; 15 | Function &lt;&lt; 12);
+<a name="l962"></a>          vendor_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_VENDOR_ID, 2);
+<a name="l963"></a>          device_id = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_DEVICE_ID, 2);
+<a name="l964"></a>          </span><span class=cB1>if</span><span class=cB0> (vendor_id != 0xffff &amp;&amp; device_id != 0xffff)
+<a name="l965"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l966"></a>            header_type = <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l732"></span><span class=cB5>PcieCfgRead</a></span><span class=cB0>(cfg_space, PCI_HEADER_TYPE, 1);
+<a name="l967"></a>            </span><span class=cB1>if</span><span class=cB0> (header_type == 0)
+<a name="l968"></a>            {
+<a name="l969"></a>              </span><span class=cB1>if</span><span class=cB0> (vendor_id == find_vendor_id &amp;&amp; device_id == find_device_id)
+<a name="l970"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l971"></a>                </span><span class=cB1>return</span><span class=cB0> cfg_space;
+<a name="l972"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l973"></a>            }
+<a name="l974"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l975"></a>        }
+<a name="l976"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l977"></a>    }
+<a name="l978"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l979"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l980"></a>}
+<a name="l981"></a>
+<a name="l982"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l982"></span><span class=cB5>EnumPcie</a></span><span class=cB0>()
+<a name="l983"></a>{
+<a name="l984"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
+<a name="l985"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>;
+<a name="l986"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l987"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
+<a name="l988"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l989"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l990"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
+<a name="l991"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l819"></span><span class=cBD>EnumPcieDeviceIds</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
+<a name="l992"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
+<a name="l993"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l994"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l995"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l996"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
+<a name="l997"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l998"></a>}
+<a name="l999"></a>
+<a name="l1000"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l1000"></span><span class=cB5>GetPcieDevBarIO</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> n=0)
+<a name="l1001"></a>{
+<a name="l1002"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
+<a name="l1003"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
+<a name="l1004"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1005"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
+<a name="l1006"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1007"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1008"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
+<a name="l1009"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l875"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, find_class, find_subclass, bar_index, n, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l1010"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
+<a name="l1011"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1012"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l1013"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1014"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
+<a name="l1015"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l1016"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1017"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
+<a name="l1018"></a>    res=-1;
+<a name="l1019"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l1020"></a>}
+<a name="l1021"></a>
+<a name="l1022"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l1022"></span><span class=cB5>GetPcieDevBar</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> find_class, </span><span class=cB9>I64</span><span class=cB0> find_subclass, </span><span class=cB9>I64</span><span class=cB0> bar_index, </span><span class=cB9>I64</span><span class=cB0> n=0)
+<a name="l1023"></a>{
+<a name="l1024"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
+<a name="l1025"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
+<a name="l1026"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1027"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
+<a name="l1028"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1029"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1030"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
+<a name="l1031"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l875"></span><span class=cBD>GetPcieDevBarSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, find_class, find_subclass, bar_index, n);
+<a name="l1032"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
+<a name="l1033"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1034"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l1035"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1036"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
+<a name="l1037"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l1038"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1039"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
+<a name="l1040"></a>    res=-1;
+<a name="l1041"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l1042"></a>}
+<a name="l1043"></a>
+<a name="l1044"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l1044"></span><span class=cB5>PcieFindDev</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor_id, </span><span class=cB9>I64</span><span class=cB0> device_id)
+<a name="l1045"></a>{
+<a name="l1046"></a>  mcfg_entry *<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>;
+<a name="l1047"></a>  </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>,res=-1;
+<a name="l1048"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1049"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l798"></span><span class=cBD>FindMCFG</a></span><span class=cB0>();
+<a name="l1050"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>)
+<a name="l1051"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1052"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l699"></span><span class=cBD>PcieCfgParse</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l58"></span><span class=cBD>MCFGTableAddr</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>);
+<a name="l1053"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l945"></span><span class=cBD>GetPcieDevSearch</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l697"></span><span class=cBD>n_mcfg_entries</a></span><span class=cB0>, vendor_id, device_id);
+<a name="l1054"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/PCIEACPI.html#l696"></span><span class=cBD>mcfg_entries</a></span><span class=cB0>);
+<a name="l1055"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1056"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l1057"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1058"></a>    </span><span class=cB6>&quot;Could not find MCFG table!\n&quot;</span><span class=cB0>;
+<a name="l1059"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l1060"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1061"></a>  </span><span class=cB1>if</span><span class=cB0> (res == 0)
+<a name="l1062"></a>    res=-1;
+<a name="l1063"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l1064"></a>}
 </span></div></pre></body>
 </html>

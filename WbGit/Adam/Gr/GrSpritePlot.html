@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.10">
+<meta name="generator" content="TinkerOS V5.11">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -62,49 +62,49 @@
 <a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k,x1,y1,z1,x2,y2,
 <a name="l23"></a>      *old_r,*r2,old_flags=dc-&gt;flags,old_pen_width=dc-&gt;thick;
 <a name="l24"></a>  </span><span class=cB9>I32</span><span class=cB0> *ptr;
-<a name="l25"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3669"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> old_color=dc-&gt;color;
+<a name="l25"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3675"></span><span class=cB9>CColorROPU32</a></span><span class=cB0> old_color=dc-&gt;color;
 <a name="l26"></a>  </span><span class=cB9>CDC</span><span class=cB0> *img;
 <a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l130"></span><span class=cB9>CD3I32</a></span><span class=cB0> *p,*p2;
-<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4344"></span><span class=cB9>CGrSym</a></span><span class=cB0> old_sym;
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4350"></span><span class=cB9>CGrSym</a></span><span class=cB0> old_sym;
 <a name="l29"></a>  </span><span class=cB1>Bool</span><span class=cB0> zero=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l30"></a>  </span><span class=cB1>if</span><span class=cB0> (x!=0||y!=0||z!=0)
 <a name="l31"></a>    zero=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;old_sym,&amp;dc-&gt;sym,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4344"></span><span class=cB9>CGrSym</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l33"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4330"></span><span class=cB3>DCF_LOCATE_NEAREST</a></span><span class=cB0>)
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;old_sym,&amp;dc-&gt;sym,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4350"></span><span class=cB9>CGrSym</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l33"></a>  </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4336"></span><span class=cB3>DCF_LOCATE_NEAREST</a></span><span class=cB0>)
 <a name="l34"></a>    dc-&gt;nearest_dist=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
 <a name="l35"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpg-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l151"></span><span class=cB3>SPG_TYPE_MASK</a></span><span class=cB0>)
 <a name="l36"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l37"></a>    </span><span class=cB1>switch</span><span class=cB0> (tmpg-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l151"></span><span class=cB3>SPG_TYPE_MASK</a></span><span class=cB0>)
 <a name="l38"></a>    {
 <a name="l39"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l121"></span><span class=cB3>SPT_COLOR</a></span><span class=cB0>:
-<a name="l40"></a>      dc-&gt;color=dc-&gt;color&amp;~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3673"></span><span class=cB3>COLORROP_COLORS_MASK</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3638"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>)|tmpg-&gt;c.color;
+<a name="l40"></a>      dc-&gt;color=dc-&gt;color&amp;~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3679"></span><span class=cB3>COLORROP_COLORS_MASK</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>)|tmpg-&gt;c.color;
 <a name="l41"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l42"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l122"></span><span class=cB3>SPT_DITHER_COLOR</a></span><span class=cB0>:
-<a name="l43"></a>      dc-&gt;color=dc-&gt;color&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3673"></span><span class=cB3>COLORROP_COLORS_MASK</a></span><span class=cB0>|
+<a name="l43"></a>      dc-&gt;color=dc-&gt;color&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3679"></span><span class=cB3>COLORROP_COLORS_MASK</a></span><span class=cB0>|
 <a name="l44"></a>                tmpg-&gt;d.dither_color.u8[0]|
-<a name="l45"></a>                tmpg-&gt;d.dither_color.u8[1]&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3675"></span><span class=cB3>COLORROP_BITS</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3638"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>;
+<a name="l45"></a>                tmpg-&gt;d.dither_color.u8[1]&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3681"></span><span class=cB3>COLORROP_BITS</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3644"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>;
 <a name="l46"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l47"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l123"></span><span class=cB3>SPT_THICK</a></span><span class=cB0>:
 <a name="l48"></a>      dc-&gt;thick=tmpg-&gt;t.thick;
 <a name="l49"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l236"></span><span class=cB5>DCThickScale</a></span><span class=cB0>(dc);
 <a name="l50"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l51"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l125"></span><span class=cB3>SPT_TRANSFORM_ON</a></span><span class=cB0>:
-<a name="l52"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l52"></a>      </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l53"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l54"></a>        x-=dc-&gt;x;
 <a name="l55"></a>        y-=dc-&gt;y;
 <a name="l56"></a>        z-=dc-&gt;z;
 <a name="l57"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l58"></a>      dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l58"></a>      dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l59"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l60"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l126"></span><span class=cB3>SPT_TRANSFORM_OFF</a></span><span class=cB0>:
-<a name="l61"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l61"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
 <a name="l62"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l63"></a>        x+=dc-&gt;x;
 <a name="l64"></a>        y+=dc-&gt;y;
 <a name="l65"></a>        z+=dc-&gt;z;
 <a name="l66"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l67"></a>      dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l67"></a>      dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l68"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l69"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l128"></span><span class=cB3>SPT_PT</a></span><span class=cB0>:
 <a name="l70"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l482"></span><span class=cB5>GrPlot3</a></span><span class=cB0>(dc,tmpg-&gt;p.x1+x,tmpg-&gt;p.y1+y,z);
@@ -143,9 +143,9 @@
 <a name="l103"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l292"></span><span class=cB5>DCSymmetry3Set</a></span><span class=cB7>(</span><span class=cB0>dc,tmpg-&gt;pp.x1+x,tmpg-&gt;pp.y1+y,z,
 <a name="l104"></a>                         tmpg-&gt;pp.x2+x,tmpg-&gt;pp.y2+y,z,
 <a name="l105"></a>                         tmpg-&gt;pp.x2+x,tmpg-&gt;pp.y2+y,z+1</span><span class=cB7>)</span><span class=cB0>)
-<a name="l106"></a>        dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l106"></a>        dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4330"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
 <a name="l107"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l108"></a>        dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
+<a name="l108"></a>        dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4330"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>;
 <a name="l109"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l110"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l143"></span><span class=cB3>SPT_BITMAP</a></span><span class=cB0>:
 <a name="l111"></a>      img=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>CDC</span><span class=cB7>)</span><span class=cB0>);
@@ -153,7 +153,7 @@
 <a name="l113"></a>      img-&gt;width_internal=(tmpg-&gt;pwhu.width+7)&amp;~7;
 <a name="l114"></a>      img-&gt;height=tmpg-&gt;pwhu.height;
 <a name="l115"></a>      img-&gt;body=&amp;tmpg-&gt;pwhu.u;
-<a name="l116"></a>      img-&gt;dc_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4342"></span><span class=cB3>DCS_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l116"></a>      img-&gt;dc_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4348"></span><span class=cB3>DCS_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l117"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1140"></span><span class=cB5>GrBlot3</a></span><span class=cB0>(dc,tmpg-&gt;pwhu.x1+x,tmpg-&gt;pwhu.y1+y,z,img);
 <a name="l118"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(img);
 <a name="l119"></a>      </span><span class=cB1>break</span><span class=cB0>;
@@ -167,7 +167,7 @@
 <a name="l127"></a>      z1=z;
 <a name="l128"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l6"></span><span class=cB5>Mat4x4MulXYZ</a></span><span class=cB0>(dc-&gt;r,&amp;x1,&amp;y1,&amp;z1);
 <a name="l129"></a>      old_r=dc-&gt;r;
-<a name="l130"></a>      dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l130"></a>      dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l131"></a>      r2=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l48"></span><span class=cB5>Mat4x4IdentNew</a></span><span class=cB0>;
 <a name="l132"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l198"></span><span class=cB5>Mat4x4RotZ</a></span><span class=cB0>(r2,-tmpg-&gt;ppa.angle);
 <a name="l133"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l251"></span><span class=cB5>Mat4x4TranslationEqu</a></span><span class=cB0>(r2,x1,y1,z1);
@@ -177,7 +177,7 @@
 <a name="l137"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dc-&gt;r);
 <a name="l138"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(r2);
 <a name="l139"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l61"></span><span class=cB5>DCMat4x4Set</a></span><span class=cB0>(dc,old_r);
-<a name="l140"></a>      dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
+<a name="l140"></a>      dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
 <a name="l141"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l142"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l134"></span><span class=cB3>SPT_CIRCLE</a></span><span class=cB0>:
 <a name="l143"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc,tmpg-&gt;pr.x1+x,tmpg-&gt;pr.y1+y,z,tmpg-&gt;pr.radius);
@@ -271,7 +271,7 @@
 <a name="l231"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l232"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l233"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l145"></span><span class=cB3>SPT_SHIFTABLE_MESH</a></span><span class=cB0>:
-<a name="l234"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l234"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
 <a name="l235"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l236"></a>        dc-&gt;x+=tmpg-&gt;pmu.x;
 <a name="l237"></a>        dc-&gt;y+=tmpg-&gt;pmu.y;
@@ -297,7 +297,7 @@
 <a name="l257"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrComposites.html#l296"></span><span class=cB5>Gr3Mesh</a></span><span class=cB0>(dc,tmpg-&gt;pmu.vertex_cnt,p,tmpg-&gt;pmu.tri_cnt,
 <a name="l258"></a>              </span><span class=cB7>(</span><span class=cB0>&amp;tmpg-&gt;pmu.u</span><span class=cB7>)(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l130"></span><span class=cB9>CD3I32</a></span><span class=cB7>)</span><span class=cB0>*tmpg-&gt;pmu.vertex_cnt);
 <a name="l259"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(p);
-<a name="l260"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
+<a name="l260"></a>      </span><span class=cB1>if</span><span class=cB0> (dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>)
 <a name="l261"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l262"></a>        dc-&gt;x-=tmpg-&gt;pmu.x;
 <a name="l263"></a>        dc-&gt;y-=tmpg-&gt;pmu.y;
@@ -308,39 +308,39 @@
 <a name="l268"></a>    </span><span class=cB1>if</span><span class=cB0> (just_one_elem) </span><span class=cB1>break</span><span class=cB0>;
 <a name="l269"></a>    tmpg(</span><span class=cB1>U8</span><span class=cB0> *)+=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteNew.html#l45"></span><span class=cB5>SpriteElemSize</a></span><span class=cB0>(tmpg);
 <a name="l270"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l271"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;dc-&gt;sym,&amp;old_sym,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4344"></span><span class=cB9>CGrSym</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l271"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;dc-&gt;sym,&amp;old_sym,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4350"></span><span class=cB9>CGrSym</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l272"></a>  dc-&gt;color=old_color;
 <a name="l273"></a>  dc-&gt;thick=old_pen_width;
-<a name="l274"></a>  dc-&gt;flags=dc-&gt;flags&amp;~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>) |
-<a name="l275"></a>            old_flags&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4324"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>);
+<a name="l274"></a>  dc-&gt;flags=dc-&gt;flags&amp;~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4330"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>) |
+<a name="l275"></a>            old_flags&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4330"></span><span class=cB3>DCF_SYMMETRY</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>);
 <a name="l276"></a>}
 <a name="l277"></a>
 <a name="l278"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l278"></span><span class=cB5>Sprite3B</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>I64</span><span class=cB0> z,</span><span class=cB1>U8</span><span class=cB0> *elems)
 <a name="l279"></a>{</span><span class=cB2>//Plot a sprite into a CDC, post transform xyz translation.</span><span class=cB0>
 <a name="l280"></a>  </span><span class=cB9>I64</span><span class=cB0> old_x=dc-&gt;x,old_y=dc-&gt;y,old_z=dc-&gt;z,
-<a name="l281"></a>      old_flags=dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l281"></a>      old_flags=dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l282"></a>  dc-&gt;x=x;
 <a name="l283"></a>  dc-&gt;y=y;
 <a name="l284"></a>  dc-&gt;z=z;
-<a name="l285"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l285"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l286"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,0,0,0,elems);
 <a name="l287"></a>  dc-&gt;x=old_x;
 <a name="l288"></a>  dc-&gt;y=old_y;
 <a name="l289"></a>  dc-&gt;z=old_z;
-<a name="l290"></a>  dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
+<a name="l290"></a>  dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
 <a name="l291"></a>}
 <a name="l292"></a>
 <a name="l293"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l293"></span><span class=cB5>Sprite3Mat4x4B</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>I64</span><span class=cB0> z,</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB9>I64</span><span class=cB0> *m)
 <a name="l294"></a>{</span><span class=cB2>//Plot rotated by matrix.</span><span class=cB0>
 <a name="l295"></a>  </span><span class=cB9>I64</span><span class=cB0> r[16],*old_r=dc-&gt;r,new_m[16],
-<a name="l296"></a>             old_flags=dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l296"></a>             old_flags=dc-&gt;flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l297"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l174"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(new_m,m,16);
-<a name="l298"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
+<a name="l298"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>;
 <a name="l299"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l260"></span><span class=cB5>Mat4x4TranslationAdd</a></span><span class=cB0>(new_m,x,y,z);
 <a name="l300"></a>  dc-&gt;r=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrMath.html#l118"></span><span class=cB5>Mat4x4MulMat4x4Equ</a></span><span class=cB0>(r,old_r,new_m);
 <a name="l301"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l18"></span><span class=cB5>Sprite3</a></span><span class=cB0>(dc,0,0,0,elems);
 <a name="l302"></a>  dc-&gt;r=old_r;
-<a name="l303"></a>  dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4321"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
+<a name="l303"></a>  dc-&gt;flags=dc-&gt;flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4327"></span><span class=cB3>DCF_TRANSFORMATION</a></span><span class=cB0>|old_flags;
 <a name="l304"></a>}
 <a name="l305"></a>
 <a name="l306"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l306"></span><span class=cB5>Sprite3XB</a></span><span class=cB0>(</span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>I64</span><span class=cB0> z,</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB1>F64</span><span class=cB0> phi=0)
@@ -521,18 +521,18 @@
 <a name="l481"></a>}
 <a name="l482"></a>
 <a name="l483"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Graphics/Sprite;DolDoc/Output;StdOut/DolDoc&quot;</span><span class=cB0>
-<a name="l484"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l484"></span><span class=cB5>DocSprite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB1>U8</span><span class=cB0> *fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l484"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1298"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l484"></span><span class=cB5>DocSprite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1474"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB1>U8</span><span class=cB0> *fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
 <a name="l485"></a>{</span><span class=cB2>//Put a sprite into a document.  You can, optionally, supply a fmt string</span><span class=cB0>
 <a name="l486"></a></span><span class=cB2>//for </span><a href="http://tinkeros.github.io/WbGit/Doc/DolDocOverview.html#l1"><span class=cB4>DolDoc</span></a><span class=cB2> cmd with a %d for the bin_num.</span><span class=cB0>
 <a name="l487"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
 <a name="l488"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
 <a name="l489"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock;
-<a name="l490"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e;
-<a name="l491"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1219"></span><span class=cB9>CDocBin</a></span><span class=cB0> *tmpb;
+<a name="l490"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1298"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e;
+<a name="l491"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1225"></span><span class=cB9>CDocBin</a></span><span class=cB0> *tmpb;
 <a name="l492"></a>  </span><span class=cB1>if</span><span class=cB0> (!doc &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l493"></a>  unlock=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l3"></span><span class=cB5>DocLock</a></span><span class=cB0>(doc);
 <a name="l494"></a>  size=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/SpriteNew.html#l82"></span><span class=cB5>SpriteSize</a></span><span class=cB0>(elems);
-<a name="l495"></a>  tmpb=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1219"></span><span class=cB9>CDocBin</a></span><span class=cB7>)</span><span class=cB0>,doc-&gt;mem_task);
+<a name="l495"></a>  tmpb=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1225"></span><span class=cB9>CDocBin</a></span><span class=cB7>)</span><span class=cB0>,doc-&gt;mem_task);
 <a name="l496"></a>  tmpb-&gt;size=size;
 <a name="l497"></a>  tmpb-&gt;data=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(size,doc-&gt;mem_task);
 <a name="l498"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmpb-&gt;data,elems,size);
@@ -546,17 +546,17 @@
 <a name="l506"></a>  doc_e=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,st);
 <a name="l507"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
 <a name="l508"></a>  doc_e-&gt;bin_data=tmpb;
-<a name="l509"></a>  </span><span class=cB1>if</span><span class=cB0> (doc_e &amp;&amp; doc_e-&gt;de_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1070"></span><span class=cB3>DOCEF_TAG</a></span><span class=cB0> &amp;&amp; doc_e-&gt;tag &amp;&amp; *doc_e-&gt;tag)
+<a name="l509"></a>  </span><span class=cB1>if</span><span class=cB0> (doc_e &amp;&amp; doc_e-&gt;de_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1076"></span><span class=cB3>DOCEF_TAG</a></span><span class=cB0> &amp;&amp; doc_e-&gt;tag &amp;&amp; *doc_e-&gt;tag)
 <a name="l510"></a>    tmpb-&gt;tag=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(doc_e-&gt;tag,doc-&gt;mem_task);
 <a name="l511"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
 <a name="l512"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l18"></span><span class=cB5>DocUnlock</a></span><span class=cB0>(doc);
 <a name="l513"></a>  </span><span class=cB1>return</span><span class=cB0> doc_e;
 <a name="l514"></a>}
 <a name="l515"></a>
-<a name="l516"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1292"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l516"></span><span class=cB5>Sprite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB1>U8</span><span class=cB0> *fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l516"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1298"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l516"></span><span class=cB5>Sprite</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *elems,</span><span class=cB1>U8</span><span class=cB0> *fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
 <a name="l517"></a>{</span><span class=cB2>//Put sprite to the command-line, </span><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"><span class=cB4>DocPut</span></a><span class=cB2>.</span><span class=cB0>
 <a name="l518"></a></span><span class=cB2>//If you set fmt, then include dollars (&quot;$SP ...$&quot;) and leave %d for num.</span><span class=cB0>
-<a name="l519"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1468"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l519"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1474"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
 <a name="l520"></a>  </span><span class=cB1>if</span><span class=cB0> (doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocDblBuf.html#l2"></span><span class=cB5>DocPut</a></span><span class=cB0>)
 <a name="l521"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l484"></span><span class=cB5>DocSprite</a></span><span class=cB0>(doc,elems,fmt);
 <a name="l522"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
