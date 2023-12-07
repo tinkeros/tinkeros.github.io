@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.11">
+<meta name="generator" content="TinkerOS V5.12">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -38,50 +38,53 @@
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4017"><span class=cB9>CTask</a></span><span class=cB0> *net_log_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l2"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> log_log=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l3"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> log_warn=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l4"></a>
-<a name="l5"></a></span><span class=cB1>U0</span><span class=cB0> NetLogTask(</span><span class=cB9>I64</span><span class=cB0>)
-<a name="l6"></a>{
-<a name="l7"></a>}
-<a name="l8"></a>
-<a name="l9"></a></span><span class=cB1>U0</span><span class=cB0> NetLogSave()
-<a name="l10"></a>{
-<a name="l11"></a>}
-<a name="l12"></a>
-<a name="l13"></a></span><span class=cB1>U0</span><span class=cB0> NetLog(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
-<a name="l14"></a>{</span><span class=cB2>// Output text to NetLogTask as Log.</span><span class=cB0>
-<a name="l15"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
-<a name="l16"></a>  </span><span class=cB1>if</span><span class=cB0> (log_log)
-<a name="l17"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l18"></a>    buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
-<a name="l19"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(net_log_task-&gt;put_doc, </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>, buf);
-<a name="l20"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l21"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l22"></a>}
-<a name="l23"></a>
-<a name="l24"></a></span><span class=cB1>U0</span><span class=cB0> NetWarn(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
-<a name="l25"></a>{</span><span class=cB2>// Output text to NetLogTask as Warning.</span><span class=cB0>
-<a name="l26"></a>  </span><span class=cB1>if</span><span class=cB0> (log_warn)
-<a name="l27"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l28"></a>    </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
-<a name="l29"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,BROWN$$WHITE$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
-<a name="l30"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l32"></a>}
-<a name="l33"></a>
-<a name="l34"></a></span><span class=cB1>U0</span><span class=cB0> NetErr(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
-<a name="l35"></a>{</span><span class=cB2>// Output text to NetLogTask as Error.</span><span class=cB0>
-<a name="l36"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
-<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l472"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,RED$$WHITE$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
-<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l39"></a>}
-<a name="l40"></a>
-<a name="l41"></a></span><span class=cB1>U0</span><span class=cB0> NetDbg(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
-<a name="l42"></a>{</span><span class=cB2>// Output text to NetLogTask as Dbg.</span><span class=cB0>
-<a name="l43"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
-<a name="l44"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l472"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,YELLOW$$DKGRAY$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
-<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l46"></a>}
+<a name="l2"></a>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> NetLogTask(</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l5"></a>{
+<a name="l6"></a>}
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>U0</span><span class=cB0> NetLogSave()
+<a name="l9"></a>{
+<a name="l10"></a>}
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>U0</span><span class=cB0> NetLog(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l13"></a>{</span><span class=cB2>// Output text to NetLogTask as Log.</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l16"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>    buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
+<a name="l18"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(net_log_task-&gt;put_doc, </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>, buf);
+<a name="l19"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l20"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> NetWarn(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l24"></a>{</span><span class=cB2>// Output text to NetLogTask as Warning.</span><span class=cB0>
+<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_warn)
+<a name="l26"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,BROWN$$WHITE$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
+<a name="l29"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l31"></a>}
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB1>U0</span><span class=cB0> NetErr(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l34"></a>{</span><span class=cB2>// Output text to NetLogTask as Error.</span><span class=cB0>
+<a name="l35"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
+<a name="l36"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l472"></span><span class=cB5>AdamErr</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,RED$$WHITE$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
+<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l38"></a>}
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB1>U0</span><span class=cB0> NetDbg(</span><span class=cB1>U8</span><span class=cB0> *fmt,...)
+<a name="l41"></a>{</span><span class=cB2>// Output text to NetLogTask as Dbg.</span><span class=cB0>
+<a name="l42"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l43"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_dbg)
+<a name="l44"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l45"></a>    buf = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l266"></span><span class=cB5>StrPrintJoin</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, fmt, argc, argv);
+<a name="l46"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;$BG,YELLOW$$DKGRAY$%s$BG$$FG$\n&quot;</span><span class=cB0>, buf);
+<a name="l47"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l48"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l49"></a>}
 </span></div></pre></body>
 </html>

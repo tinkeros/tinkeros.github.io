@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.11">
+<meta name="generator" content="TinkerOS V5.12">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -41,87 +41,128 @@
 <a name="l3"></a>  CIPV4Packet packet;
 <a name="l4"></a>  IPV4PacketPrs(&amp;packet, ethernet_frame);
 <a name="l5"></a>  ARPCachePut(packet.source_ip_address, ethernet_frame-&gt;source_address);
-<a name="l6"></a>  </span><span class=cB1>switch</span><span class=cB0> (packet.protocol)
-<a name="l7"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l8"></a>  </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_ICMP:
-<a name="l9"></a>    NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: ICMP.&quot;</span><span class=cB0>);
-<a name="l10"></a>    ICMPHandler(&amp;packet);
-<a name="l11"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l12"></a>  </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_TCP:
-<a name="l13"></a>    NetWarn(</span><span class=cB6>&quot;IPV4 HANDLER: TCP.&quot;</span><span class=cB0>);
-<a name="l14"></a>    TCPHandler(&amp;packet);
-<a name="l15"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l16"></a>  </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_UDP:
-<a name="l17"></a>    NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: UDP.&quot;</span><span class=cB0>);
-<a name="l18"></a>    UDPHandler(&amp;packet);
-<a name="l19"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l20"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l21"></a>    NetErr(</span><span class=cB6>&quot;IPV4 HANDLER: Unrecognized protocol: 0x%X&quot;</span><span class=cB0>, packet.protocol);
-<a name="l22"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l6"></a>
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_log) </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    </span><span class=cB1>switch</span><span class=cB0> (packet.protocol)
+<a name="l9"></a>      {
+<a name="l10"></a>      </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_ICMP:
+<a name="l11"></a>        NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: ICMP.&quot;</span><span class=cB0>);
+<a name="l12"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l13"></a>      </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_TCP:
+<a name="l14"></a>        NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: TCP.&quot;</span><span class=cB0>);
+<a name="l15"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l16"></a>      </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_UDP:
+<a name="l17"></a>        NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: UDP.&quot;</span><span class=cB0>);
+<a name="l18"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l19"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l20"></a>        NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: Unrecognized protocol: 0x%X&quot;</span><span class=cB0>, packet.protocol);
+<a name="l21"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l22"></a>    }
 <a name="l23"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l24"></a>  NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: Exiting.&quot;</span><span class=cB0>);
-<a name="l25"></a>}
-<a name="l26"></a>
-<a name="l27"></a></span><span class=cB1>U0</span><span class=cB0> NetQueEntryHandle(CNetQueEntry *entry)
-<a name="l28"></a>{
-<a name="l29"></a>  CEthernetFrame ethernet_frame;
-<a name="l30"></a>  EthernetFramePrs(&amp;ethernet_frame, entry-&gt;frame, entry-&gt;packet_length);
-<a name="l31"></a>  </span><span class=cB1>switch</span><span class=cB0> (ethernet_frame.ethertype)
-<a name="l32"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l33"></a>  </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_ARP:
-<a name="l34"></a>    NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: ARP.&quot;</span><span class=cB0>);
-<a name="l35"></a>    ARPHandler(&amp;ethernet_frame);
-<a name="l36"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l37"></a>  </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV4:
-<a name="l38"></a>    NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: IPV4.&quot;</span><span class=cB0>);
-<a name="l39"></a>    IPV4Handler(&amp;ethernet_frame);
-<a name="l40"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l41"></a>  </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV6:
-<a name="l42"></a>    NetWarn(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: IPV6. FIXME&quot;</span><span class=cB0>);
-<a name="l43"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l44"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l45"></a>    NetErr(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: Unrecognized ethertype: 0x%X&quot;</span><span class=cB0>, ethernet_frame.ethertype);
-<a name="l46"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l48"></a>  NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: Exiting.&quot;</span><span class=cB0>);
-<a name="l49"></a>}
-<a name="l50"></a>
-<a name="l51"></a></span><span class=cB1>U0</span><span class=cB0> NetHandler()
-<a name="l52"></a>{
-<a name="l53"></a>  CNetQueEntry *entry;
-<a name="l54"></a>  </span><span class=cB1>while</span><span class=cB0> (1)
-<a name="l55"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l56"></a>    </span><span class=cB1>if</span><span class=cB0> (entry=NetQuePull)
-<a name="l57"></a>    {
-<a name="l58"></a>      NetLog(</span><span class=cB6>&quot;$BG,DKGRAY$$FG,BLACK$&quot;</span><span class=cB0>
-<a name="l59"></a>             </span><span class=cB6>&quot;=== NET HANDLER ===&quot;</span><span class=cB0>
-<a name="l60"></a>             </span><span class=cB6>&quot;$BG$$FG$&quot;</span><span class=cB0>);
-<a name="l61"></a>      NetLog(</span><span class=cB6>&quot;$BD,LTGRAY$$FD,WHITE$&quot;</span><span class=cB0>
-<a name="l62"></a>             </span><span class=cB6>&quot;NET HANDLER: Handling entry.&quot;</span><span class=cB0>);
-<a name="l63"></a>      NetLog(</span><span class=cB6>&quot;NET HANDLER: Caught NetQue Entry, handling.&quot;</span><span class=cB0>);
-<a name="l64"></a>      NetQueEntryHandle(entry);
-<a name="l65"></a>      NetLog(</span><span class=cB6>&quot;NET HANDLER: Finished handling NetQue Entry, Freeing.&quot;</span><span class=cB0>);
-<a name="l66"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(entry);
-<a name="l67"></a>      NetLog(</span><span class=cB6>&quot;NET HANDLER: NetQue empty, exiting interrupt.\n&quot;</span><span class=cB0>
-<a name="l68"></a>             </span><span class=cB6>&quot;$BD,WHITE$$FD,LTGRAY$&quot;</span><span class=cB0>
-<a name="l69"></a>             </span><span class=cB6>&quot;$BG,DKGRAY$$FG,BLACK$&quot;</span><span class=cB0>
-<a name="l70"></a>             </span><span class=cB6>&quot;===================&quot;</span><span class=cB0>
-<a name="l71"></a>             </span><span class=cB6>&quot;$BG$$FG$&quot;</span><span class=cB0>);
-<a name="l72"></a>    }
-<a name="l73"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l74"></a>    {
-<a name="l75"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3978"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>);
-<a name="l76"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l77"></a>    }
-<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l79"></a>}
-<a name="l80"></a>
-<a name="l81"></a></span><span class=cB1>U0</span><span class=cB0> NetHandlerInit()
-<a name="l82"></a>{</span><span class=cB2>//IntEntrySet(I_NETHANDLER, &amp;NetHandler);</span><span class=cB0>
-<a name="l83"></a>  netfifo_handler_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NetHandler, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB6>&quot;NetHandler&quot;</span><span class=cB0>);
+<a name="l24"></a>
+<a name="l25"></a>  </span><span class=cB1>switch</span><span class=cB0> (packet.protocol)
+<a name="l26"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_ICMP:
+<a name="l28"></a>      ICMPHandler(&amp;packet);
+<a name="l29"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l30"></a>    </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_TCP:
+<a name="l31"></a>      TCPHandler(&amp;packet);
+<a name="l32"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l33"></a>    </span><span class=cB1>case</span><span class=cB0> IP_PROTOCOL_UDP:
+<a name="l34"></a>      UDPHandler(&amp;packet);
+<a name="l35"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l36"></a>    </span><span class=cB1>default</span><span class=cB0>:
+<a name="l37"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l38"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l39"></a>
+<a name="l40"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l41"></a>    NetLog(</span><span class=cB6>&quot;IPV4 HANDLER: Exiting.&quot;</span><span class=cB0>);
+<a name="l42"></a>}
+<a name="l43"></a>
+<a name="l44"></a></span><span class=cB1>U0</span><span class=cB0> NetQueEntryHandle(CNetQueEntry *entry)
+<a name="l45"></a>{
+<a name="l46"></a>  CEthernetFrame ethernet_frame;
+<a name="l47"></a>  EthernetFramePrs(&amp;ethernet_frame, entry-&gt;frame, entry-&gt;packet_length);
+<a name="l48"></a>
+<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l50"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    </span><span class=cB1>switch</span><span class=cB0> (ethernet_frame.ethertype)
+<a name="l52"></a>      {
+<a name="l53"></a>      </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_ARP:
+<a name="l54"></a>        NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: ARP.&quot;</span><span class=cB0>);
+<a name="l55"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l56"></a>      </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV4:
+<a name="l57"></a>        NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: IPV4.&quot;</span><span class=cB0>);
+<a name="l58"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l59"></a>      </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV6:
+<a name="l60"></a>        NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: IPV6. FIXME&quot;</span><span class=cB0>);
+<a name="l61"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l62"></a>      </span><span class=cB1>default</span><span class=cB0>:
+<a name="l63"></a>        NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: Unrecognized ethertype: 0x%X&quot;</span><span class=cB0>, ethernet_frame.ethertype);
+<a name="l64"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l65"></a>    }
+<a name="l66"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l67"></a>
+<a name="l68"></a>  </span><span class=cB1>switch</span><span class=cB0> (ethernet_frame.ethertype)
+<a name="l69"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>    </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_ARP:
+<a name="l71"></a>      ARPHandler(&amp;ethernet_frame);
+<a name="l72"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l73"></a>    </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV4:
+<a name="l74"></a>      IPV4Handler(&amp;ethernet_frame);
+<a name="l75"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l76"></a>    </span><span class=cB1>case</span><span class=cB0> ETHERTYPE_IPV6:
+<a name="l77"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l78"></a>    </span><span class=cB1>default</span><span class=cB0>:
+<a name="l79"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>
+<a name="l82"></a>  </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l83"></a>    NetLog(</span><span class=cB6>&quot;HANDLE NETQUEUE ENTRY: Exiting.&quot;</span><span class=cB0>);
 <a name="l84"></a>}
 <a name="l85"></a>
-<a name="l86"></a>NetHandlerInit;
-<a name="l87"></a>
+<a name="l86"></a></span><span class=cB1>U0</span><span class=cB0> NetHandler()
+<a name="l87"></a>{
+<a name="l88"></a>  CNetQueEntry *entry;
+<a name="l89"></a>  </span><span class=cB1>while</span><span class=cB0> (1)
+<a name="l90"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l91"></a>    </span><span class=cB1>if</span><span class=cB0> (entry=NetQuePull)
+<a name="l92"></a>      {
+<a name="l93"></a>      </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l94"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l95"></a>        NetLog(</span><span class=cB6>&quot;$BG,DKGRAY$$FG,BLACK$&quot;</span><span class=cB0>
+<a name="l96"></a>              </span><span class=cB6>&quot;=== NET HANDLER ===&quot;</span><span class=cB0>
+<a name="l97"></a>              </span><span class=cB6>&quot;$BG$$FG$&quot;</span><span class=cB0>);
+<a name="l98"></a>        NetLog(</span><span class=cB6>&quot;$BD,LTGRAY$$FD,WHITE$&quot;</span><span class=cB0>
+<a name="l99"></a>              </span><span class=cB6>&quot;NET HANDLER: Handling entry.&quot;</span><span class=cB0>);
+<a name="l100"></a>        NetLog(</span><span class=cB6>&quot;NET HANDLER: Caught NetQue Entry, handling.&quot;</span><span class=cB0>);
+<a name="l101"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l102"></a>      NetQueEntryHandle(entry);
+<a name="l103"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(entry);
+<a name="l104"></a>      </span><span class=cB1>if</span><span class=cB0> (net_log_log)
+<a name="l105"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l106"></a>        NetLog(</span><span class=cB6>&quot;NET HANDLER: Finished handling NetQue Entry, Freeing.&quot;</span><span class=cB0>);
+<a name="l107"></a>        NetLog(</span><span class=cB6>&quot;NET HANDLER: NetQue empty, exiting interrupt.\n&quot;</span><span class=cB0>
+<a name="l108"></a>              </span><span class=cB6>&quot;$BD,WHITE$$FD,LTGRAY$&quot;</span><span class=cB0>
+<a name="l109"></a>              </span><span class=cB6>&quot;$BG,DKGRAY$$FG,BLACK$&quot;</span><span class=cB0>
+<a name="l110"></a>              </span><span class=cB6>&quot;===================&quot;</span><span class=cB0>
+<a name="l111"></a>              </span><span class=cB6>&quot;$BG$$FG$&quot;</span><span class=cB0>);
+<a name="l112"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l113"></a>    }
+<a name="l114"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l115"></a>      {
+<a name="l116"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;task_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3978"></span><span class=cB3>TASKf_IDLE</a></span><span class=cB0>);
+<a name="l117"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l118"></a>    }
+<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>}
+<a name="l121"></a>
+<a name="l122"></a></span><span class=cB1>U0</span><span class=cB0> NetHandlerInit()
+<a name="l123"></a>{</span><span class=cB2>//IntEntrySet(I_NETHANDLER, &amp;NetHandler);</span><span class=cB0>
+<a name="l124"></a>  netfifo_handler_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NetHandler, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB6>&quot;NetHandler&quot;</span><span class=cB0>);
+<a name="l125"></a>}
+<a name="l126"></a>
+<a name="l127"></a>NetHandlerInit;
+<a name="l128"></a>
 </span></div></pre></body>
 </html>

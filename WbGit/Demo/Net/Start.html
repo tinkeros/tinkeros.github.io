@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.11">
+<meta name="generator" content="TinkerOS V5.12">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -12,6 +12,7 @@
 .cB3{color:#00aaaa;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
 .cF1{color:#0000aa;background-color:#ffffff;}
@@ -38,24 +39,30 @@
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>
 <a name="l2"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2152"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
-<a name="l3"></a><a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>(0);
-<a name="l4"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Load&quot;</span><span class=cB0>
-<a name="l5"></a></span><span class=cB9>I64</span><span class=cB0> retries = 5;
-<a name="l6"></a>NetConfigure;
-<a name="l7"></a></span><span class=cB1>while</span><span class=cB0> (ipv4_globals.local_ip == 0 &amp;&amp; retries--)  </span><span class=cB2>// local_ip is set if NetConfigure is successful</span><span class=cB0>
-<a name="l8"></a>{
-<a name="l9"></a>  </span><span class=cB6>&quot;\nNetConfigure unsuccessful. Retrying...\n&quot;</span><span class=cB0>;
-<a name="l10"></a>  NetConfigure;
-<a name="l11"></a>}
-<a name="l12"></a></span><span class=cB1>if</span><span class=cB0> (ipv4_globals.local_ip == 0)
-<a name="l13"></a>  </span><span class=cB6>&quot;\nNetConfigure unsuccessful. See Network Log for details.\n\n&quot;</span><span class=cB0>;
-<a name="l14"></a></span><span class=cB1>else</span><span class=cB0>
-<a name="l15"></a>  </span><span class=cB6>&quot;\nNetConfigure successful!\n\n&quot;</span><span class=cB0>;
-<a name="l16"></a>NetRep;
-<a name="l17"></a></span><span class=cB1>if</span><span class=cB0> (ipv4_globals.local_ip != 0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0> != <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>)
-<a name="l18"></a>{
-<a name="l19"></a>  </span><span class=cB6>&quot;\nNow run one of the </span><span class=cB9><u>Programs</u></span><span class=cB6>.\n&quot;</span><span class=cB0>;
-<a name="l20"></a>      </span><span class=cB6>&quot;\nIf anything crashes to Dbg, try typing G2;\n\n&quot;</span><span class=cB0>;
-<a name="l21"></a>}
+<a name="l3"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Load&quot;</span><span class=cB0>
+<a name="l4"></a></span><span class=cB9>I64</span><span class=cB0> retries = 0;
+<a name="l5"></a>NetCfg;
+<a name="l6"></a></span><span class=cB1>while</span><span class=cB0> (ipv4_globals.local_ip == 0 &amp;&amp; retries&lt;3)  </span><span class=cB2>// local_ip is set if NetConfigure is successful</span><span class=cB0>
+<a name="l7"></a>{
+<a name="l8"></a>  retries++;
+<a name="l9"></a>  </span><span class=cB1>if</span><span class=cB0> (retries&gt;0)
+<a name="l10"></a>    net_log_dbg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (retries&gt;1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l12"></a>    net_log_warn=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l13"></a>    net_log_log=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l14"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l15"></a>  </span><span class=cB6>&quot;\nNetCfg unsuccessful. Retrying...\n&quot;</span><span class=cB0>;
+<a name="l16"></a>  NetCfg;
+<a name="l17"></a>}
+<a name="l18"></a></span><span class=cB1>if</span><span class=cB0> (ipv4_globals.local_ip == 0)
+<a name="l19"></a>  </span><span class=cB6>&quot;\nNetCfg unsuccessful. See Network Log for details.\n\n&quot;</span><span class=cB0>;
+<a name="l20"></a></span><span class=cB1>else</span><span class=cB0>
+<a name="l21"></a>  </span><span class=cB6>&quot;\nNetCfg successful!\n\n&quot;</span><span class=cB0>;
+<a name="l22"></a>NetRep;
+<a name="l23"></a></span><span class=cB1>if</span><span class=cB0> (ipv4_globals.local_ip != 0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0> != <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>)
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB6>&quot;\nNow run one of the </span><span class=cB9><u>Programs</u></span><span class=cB6>.\n&quot;</span><span class=cB0>;
+<a name="l26"></a>      </span><span class=cB6>&quot;\nIf anything crashes to Dbg, try typing G2;\n\n&quot;</span><span class=cB0>;
+<a name="l27"></a>}
 </span></div></pre></body>
 </html>

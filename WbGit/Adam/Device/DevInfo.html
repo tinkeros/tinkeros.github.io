@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.11">
+<meta name="generator" content="TinkerOS V5.12">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -206,9 +206,9 @@
 <a name="l165"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l165"></span><span class=cB5>PCIRep</a></span><span class=cB0>()
 <a name="l166"></a>{</span><span class=cB2>//Report description of PCI devices.</span><span class=cB0>
 <a name="l167"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *tmppci;
-<a name="l168"></a>  </span><span class=cB9>U16</span><span class=cB0> d,v;
+<a name="l168"></a>  </span><span class=cB9>U16</span><span class=cB0> cmd,stat,d,v;
 <a name="l169"></a>  </span><span class=cB9>U32</span><span class=cB0> bar;
-<a name="l170"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l170"></a>  </span><span class=cB9>I64</span><span class=cB0> i,progif;
 <a name="l171"></a>  </span><span class=cB6>&quot;PCI Busses:%d\n&quot;</span><span class=cB0>
 <a name="l172"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l253"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>;
 <a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65"></span><span class=cB5>FileFind</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB7>)</span><span class=cB0>)
@@ -223,112 +223,140 @@
 <a name="l182"></a>    bar=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x0);
 <a name="l183"></a>    v=bar.u16[0];
 <a name="l184"></a>    d=bar.u16[1];
-<a name="l185"></a>    </span><span class=cB6>&quot;bs:dv:f cl:sc v_id:d_id \n&quot;</span><span class=cB0>;
-<a name="l186"></a>    </span><span class=cB6>&quot;%02X:%02X:%01X %02X:%02X %04X:%04X $GREEN$%s $CYAN$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l187"></a>    ,
-<a name="l188"></a>    tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,
-<a name="l189"></a>    tmppci-&gt;base_code,tmppci-&gt;sub_code,
-<a name="l190"></a>    v,d,
-<a name="l191"></a>    tmppci-&gt;vendor_str,tmppci-&gt;dev_id_str;
-<a name="l192"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;6; i++)
-<a name="l193"></a>    {
-<a name="l194"></a>      bar=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x10+4*i);
-<a name="l195"></a>      </span><span class=cB2>//&quot;%08x\n&quot;,bar;</span><span class=cB0>
-<a name="l196"></a>      </span><span class=cB1>if</span><span class=cB0> (bar&amp;1) </span><span class=cB6>&quot;</span><span class=cB0>      </span><span class=cB6> I/O : 0x%08x\n&quot;</span><span class=cB0>,bar&amp;0xfffffffc;
-<a name="l197"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==0) </span><span class=cB6>&quot;32-bit MMIO: 0x%08x\n&quot;</span><span class=cB0>,bar&amp;0xfffffff0;
-<a name="l198"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==4) </span><span class=cB6>&quot;64-bit MMIO: 0x%016x\n&quot;</span><span class=cB0>,(bar&amp;0xfffffff0)(</span><span class=cB9>I64</span><span class=cB0>)+<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x10+4*</span><span class=cB7>(</span><span class=cB0>i+1</span><span class=cB7>)</span><span class=cB0>)(</span><span class=cB9>I64</span><span class=cB0>)&lt;&lt;32;
-<a name="l199"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==2) </span><span class=cB6>&quot;16-bit MMIO: 0x%04x\n&quot;</span><span class=cB0>,(bar&amp;0xfff0)(</span><span class=cB9>I64</span><span class=cB0>);
-<a name="l200"></a>    }
-<a name="l201"></a>    tmppci=tmppci-&gt;next;
-<a name="l202"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l203"></a>}
-<a name="l204"></a>
-<a name="l205"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Info;Memory/Info&quot;</span><span class=cB0>
-<a name="l206"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l206"></span><span class=cB5>MemBIOSRep</a></span><span class=cB0>()
-<a name="l207"></a>{</span><span class=cB2>//Report the memory ranges reported by the BIOS at boot.</span><span class=cB0>
-<a name="l208"></a>  </span><span class=cB9>U16</span><span class=cB0>           *m01=<a href="http://tinkeros.github.io/WbGit/Kernel/KStart16.html#l17"></span><span class=cBD>MEM_E801</a></span><span class=cB0>;
-<a name="l209"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l432"></span><span class=cB9>CMemE820</a></span><span class=cB0>      *m20=<a href="http://tinkeros.github.io/WbGit/Kernel/KStart16.html#l18"></span><span class=cBD>MEM_E820</a></span><span class=cB0>;
-<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3559"></span><span class=cB9>CMemRange</a></span><span class=cB0>     *tmpmr;
-<a name="l211"></a>  </span><span class=cB6>&quot;Standard Addresses\n&quot;</span><span class=cB0>
-<a name="l212"></a>  </span><span class=cB6>&quot;000A0000-000BFFFF VGA\n&quot;</span><span class=cB0>
-<a name="l213"></a>  </span><span class=cB6>&quot;FEE00000-FEE00FFF See $LK,\&quot;APIC\&quot;,A=\&quot;MN:LAPIC_BASE\&quot;$\n\n&quot;</span><span class=cB0>
-<a name="l214"></a>  </span><span class=cB6>&quot;32 Bit Device Mem\n&quot;</span><span class=cB0>;
-<a name="l215"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l729"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
-<a name="l216"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l217"></a>  tmpmr=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head.next;
-<a name="l218"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpmr!=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head)
-<a name="l219"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l220"></a>    </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,
-<a name="l221"></a>    tmpmr-&gt;type,tmpmr-&gt;base,tmpmr-&gt;base+tmpmr-&gt;size-1;
-<a name="l222"></a>    tmpmr=tmpmr-&gt;next;
-<a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l224"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l729"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0);
-<a name="l225"></a>  </span><span class=cB6>&quot;\nBIOS Memory Report 15:E801\n&quot;</span><span class=cB0>
-<a name="l226"></a>  </span><span class=cB6>&quot;01:0000000000000000-%016X\n&quot;</span><span class=cB0>
-<a name="l227"></a>  ,0x100000+m01[0]&lt;&lt;10-1;
-<a name="l228"></a>  </span><span class=cB6>&quot;01:0000000001000000-%016X\n&quot;</span><span class=cB0>
-<a name="l229"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4162"></span><span class=cB3>SYS_16MEG_AREA_LIMIT</a></span><span class=cB0>+m01[1]&lt;&lt;16-1;
-<a name="l230"></a>  </span><span class=cB1>if</span><span class=cB0> (m20-&gt;type)
-<a name="l231"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l232"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l233"></a>    </span><span class=cB6>&quot;BIOS Memory Report 15:E820\n&quot;</span><span class=cB0>;
-<a name="l234"></a>    </span><span class=cB1>while</span><span class=cB0> (m20-&gt;type)
-<a name="l235"></a>    {
-<a name="l236"></a>      </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,m20-&gt;type,m20-&gt;base,m20-&gt;base+m20-&gt;len-1;
-<a name="l237"></a>      m20++;
-<a name="l238"></a>    }
-<a name="l239"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l240"></a>}
-<a name="l241"></a>
-<a name="l242"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l242"></span><span class=cB5>MemPageRep</a></span><span class=cB0>()
-<a name="l243"></a>{</span><span class=cB2>//Page Table Report.</span><span class=cB0>
-<a name="l244"></a>  </span><span class=cB6>&quot;MAPPED\t  :%010X with &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l201"></span><span class=cB6>mem_mapped_space</a></span><span class=cB0>;
-<a name="l245"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB6>mem_page_size</a></span><span class=cB0>,30</span><span class=cB7>)</span><span class=cB0>)
-<a name="l246"></a>    </span><span class=cB6>&quot;$RED$1GIG$FG$ pages\n&quot;</span><span class=cB0>;
-<a name="l247"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l248"></a>    </span><span class=cB6>&quot;$RED$2MEG$FG$ pages\n&quot;</span><span class=cB0>;
-<a name="l249"></a>  </span><span class=cB6>&quot;PML2\t  :%010X 2MEG  :%08X\n&quot;</span><span class=cB0>
-<a name="l250"></a>  ,
-<a name="l251"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l13"></span><span class=cBD>MEM_PML2</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l10"></span><span class=cBD>MEM_2MEG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
-<a name="l252"></a>  </span><span class=cB6>&quot;PML3\t  :%010X 1GIG  :%08X\n&quot;</span><span class=cB0>
-<a name="l253"></a>  ,
-<a name="l254"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l14"></span><span class=cBD>MEM_PML3</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l11"></span><span class=cBD>MEM_1GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
-<a name="l255"></a>  </span><span class=cB6>&quot;PML4\t  :%010X 512GIG:%08X\n&quot;</span><span class=cB0>
-<a name="l256"></a>  ,
-<a name="l257"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l15"></span><span class=cBD>MEM_PML4</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l12"></span><span class=cBD>MEM_512GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
-<a name="l258"></a>  </span><span class=cB6>&quot;FIXED_AREA:%010X\n&quot;</span><span class=cB0>
-<a name="l259"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4161"></span><span class=cB3>SYS_FIXED_AREA</a></span><span class=cB0>;
-<a name="l260"></a>  </span><span class=cB6>&quot;HEAP_BASE :%010X\nHEAP_LIMIT:%010X\n&quot;</span><span class=cB0>
-<a name="l261"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l199"></span><span class=cB6>mem_heap_base</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l200"></span><span class=cB6>mem_heap_limit</a></span><span class=cB0>;
-<a name="l262"></a>}
-<a name="l263"></a>
-<a name="l264"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l264"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(</span><span class=cB9>U16</span><span class=cB0> class_code=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>U16</span><span class=cB0> sub_code=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
-<a name="l265"></a>                           </span><span class=cB9>U16</span><span class=cB0> vendor_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>U16</span><span class=cB0> device_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
-<a name="l266"></a>                           </span><span class=cB1>U8</span><span class=cB0> _bus=0xFF, </span><span class=cB1>U8</span><span class=cB0> _dev=0xFF, </span><span class=cB1>U8</span><span class=cB0> _fun=0xFF)
-<a name="l267"></a>{</span><span class=cB2>//return first device with matching class &amp; subcode, vendor &amp; device id, or a specific device.</span><span class=cB0>
-<a name="l268"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l131"></span><span class=cB5>PCILookUpDevs</a></span><span class=cB0>;
-<a name="l269"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *p = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.next;
-<a name="l270"></a>  </span><span class=cB1>while</span><span class=cB0> (p != &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head)
-<a name="l271"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l272"></a>    </span><span class=cB1>if</span><span class=cB0> (p-&gt;vendor == vendor_id &amp;&amp; p-&gt;dev_id == device_id ||
-<a name="l273"></a>        p-&gt;base_code == class_code &amp;&amp; p-&gt;sub_code == sub_code ||
-<a name="l274"></a>        p-&gt;bus == _bus &amp;&amp; p-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0> == _dev &amp;&amp; p-&gt;fun == _fun)
-<a name="l275"></a>      </span><span class=cB1>return</span><span class=cB0> p;
-<a name="l276"></a>    p = p-&gt;next;
-<a name="l277"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l278"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l279"></a>}
-<a name="l280"></a>
-<a name="l281"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l281"></span><span class=cB5>PCILookUpDev</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>)
-<a name="l282"></a>{
-<a name="l283"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1474"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
-<a name="l284"></a>  </span><span class=cB1>U8</span><span class=cB0> *vendor_str, *dev_id_str;
-<a name="l285"></a>  doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l38"></span><span class=cB5>DocRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1376"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1379"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
-<a name="l286"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l55"></span><span class=cB5>PCILookUpSingle</a></span><span class=cB0>(doc,vendor,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,vendor_str,dev_id_str);
-<a name="l287"></a>  </span><span class=cB6>&quot;Vendor: %s\n&quot;</span><span class=cB0>,vendor_str;
-<a name="l288"></a>  </span><span class=cB6>&quot;Device: %s\n&quot;</span><span class=cB0>,dev_id_str;
-<a name="l289"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l185"></a>    bar=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x4);
+<a name="l186"></a>    cmd=bar.u16[0];
+<a name="l187"></a>    stat=bar.u16[1];
+<a name="l188"></a>    </span><span class=cB6>&quot;bs:dv:f cl:sc v_id:d_id  cmd\n&quot;</span><span class=cB0>;
+<a name="l189"></a>    </span><span class=cB6>&quot;%02X:%02X:%01X %02X:%02X %04X:%04X %04X $GREEN$%s $CYAN$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l190"></a>    ,
+<a name="l191"></a>    tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,
+<a name="l192"></a>    tmppci-&gt;base_code,tmppci-&gt;sub_code,
+<a name="l193"></a>    v,d,cmd,
+<a name="l194"></a>    tmppci-&gt;vendor_str,tmppci-&gt;dev_id_str;
+<a name="l195"></a>
+<a name="l196"></a>    </span><span class=cB1>if</span><span class=cB0> (0xc == tmppci-&gt;base_code &amp;&amp; 0x3 == tmppci-&gt;sub_code)
+<a name="l197"></a>    {
+<a name="l198"></a>      bar=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x8);
+<a name="l199"></a>      progif=bar.u8[1];
+<a name="l200"></a>      </span><span class=cB1>switch</span><span class=cB0> (progif)
+<a name="l201"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l202"></a>         </span><span class=cB1>case</span><span class=cB0> 0x00:
+<a name="l203"></a>           </span><span class=cB6>&quot;USB 1.0 (UHCI)\n&quot;</span><span class=cB0>;
+<a name="l204"></a>           </span><span class=cB1>break</span><span class=cB0>;
+<a name="l205"></a>         </span><span class=cB1>case</span><span class=cB0> 0x10:
+<a name="l206"></a>           </span><span class=cB6>&quot;USB 1.0 (OHCI)\n&quot;</span><span class=cB0>;
+<a name="l207"></a>           </span><span class=cB1>break</span><span class=cB0>;
+<a name="l208"></a>         </span><span class=cB1>case</span><span class=cB0> 0x20:
+<a name="l209"></a>           </span><span class=cB6>&quot;USB 2.0 (EHCI)\n&quot;</span><span class=cB0>;
+<a name="l210"></a>           </span><span class=cB1>break</span><span class=cB0>;
+<a name="l211"></a>         </span><span class=cB1>case</span><span class=cB0> 0x30:
+<a name="l212"></a>           </span><span class=cB6>&quot;USB 3.0 (XHCI)\n&quot;</span><span class=cB0>;
+<a name="l213"></a>           </span><span class=cB1>break</span><span class=cB0>;
+<a name="l214"></a>         </span><span class=cB1>default</span><span class=cB0>:
+<a name="l215"></a>           </span><span class=cB6>&quot;USB (unknown)\n&quot;</span><span class=cB0>;
+<a name="l216"></a>           </span><span class=cB1>break</span><span class=cB0>;
+<a name="l217"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l218"></a>    }
+<a name="l219"></a>
+<a name="l220"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;6; i++)
+<a name="l221"></a>    {
+<a name="l222"></a>      bar=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x10+4*i);
+<a name="l223"></a>      </span><span class=cB2>//&quot;%08x\n&quot;,bar;</span><span class=cB0>
+<a name="l224"></a>      </span><span class=cB1>if</span><span class=cB0> (bar&amp;1) </span><span class=cB6>&quot;</span><span class=cB0>      </span><span class=cB6> I/O : 0x%08x\n&quot;</span><span class=cB0>,bar&amp;0xfffffffc;
+<a name="l225"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==0) </span><span class=cB6>&quot;32-bit MMIO: 0x%08x\n&quot;</span><span class=cB0>,bar&amp;0xfffffff0;
+<a name="l226"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==4) </span><span class=cB6>&quot;64-bit MMIO: 0x%016x\n&quot;</span><span class=cB0>,(bar&amp;0xfffffff0)(</span><span class=cB9>I64</span><span class=cB0>)+<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(tmppci-&gt;bus,tmppci-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,tmppci-&gt;fun,0x10+4*</span><span class=cB7>(</span><span class=cB0>i+1</span><span class=cB7>)</span><span class=cB0>)(</span><span class=cB9>I64</span><span class=cB0>)&lt;&lt;32;
+<a name="l227"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bar&amp;7==2) </span><span class=cB6>&quot;16-bit MMIO: 0x%04x\n&quot;</span><span class=cB0>,(bar&amp;0xfff0)(</span><span class=cB9>I64</span><span class=cB0>);
+<a name="l228"></a>    }
+<a name="l229"></a>    tmppci=tmppci-&gt;next;
+<a name="l230"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l231"></a>}
+<a name="l232"></a>
+<a name="l233"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Info;Memory/Info&quot;</span><span class=cB0>
+<a name="l234"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l234"></span><span class=cB5>MemBIOSRep</a></span><span class=cB0>()
+<a name="l235"></a>{</span><span class=cB2>//Report the memory ranges reported by the BIOS at boot.</span><span class=cB0>
+<a name="l236"></a>  </span><span class=cB9>U16</span><span class=cB0>           *m01=<a href="http://tinkeros.github.io/WbGit/Kernel/KStart16.html#l17"></span><span class=cBD>MEM_E801</a></span><span class=cB0>;
+<a name="l237"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l432"></span><span class=cB9>CMemE820</a></span><span class=cB0>      *m20=<a href="http://tinkeros.github.io/WbGit/Kernel/KStart16.html#l18"></span><span class=cBD>MEM_E820</a></span><span class=cB0>;
+<a name="l238"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3559"></span><span class=cB9>CMemRange</a></span><span class=cB0>     *tmpmr;
+<a name="l239"></a>  </span><span class=cB6>&quot;Standard Addresses\n&quot;</span><span class=cB0>
+<a name="l240"></a>  </span><span class=cB6>&quot;000A0000-000BFFFF VGA\n&quot;</span><span class=cB0>
+<a name="l241"></a>  </span><span class=cB6>&quot;FEE00000-FEE00FFF See $LK,\&quot;APIC\&quot;,A=\&quot;MN:LAPIC_BASE\&quot;$\n\n&quot;</span><span class=cB0>
+<a name="l242"></a>  </span><span class=cB6>&quot;32 Bit Device Mem\n&quot;</span><span class=cB0>;
+<a name="l243"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l729"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l244"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l245"></a>  tmpmr=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head.next;
+<a name="l246"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpmr!=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mem32_head)
+<a name="l247"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l248"></a>    </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,
+<a name="l249"></a>    tmpmr-&gt;type,tmpmr-&gt;base,tmpmr-&gt;base+tmpmr-&gt;size-1;
+<a name="l250"></a>    tmpmr=tmpmr-&gt;next;
+<a name="l251"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l252"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l729"></span><span class=cB3>SEMA_DEV_MEM</a></span><span class=cB0>],0);
+<a name="l253"></a>  </span><span class=cB6>&quot;\nBIOS Memory Report 15:E801\n&quot;</span><span class=cB0>
+<a name="l254"></a>  </span><span class=cB6>&quot;01:0000000000000000-%016X\n&quot;</span><span class=cB0>
+<a name="l255"></a>  ,0x100000+m01[0]&lt;&lt;10-1;
+<a name="l256"></a>  </span><span class=cB6>&quot;01:0000000001000000-%016X\n&quot;</span><span class=cB0>
+<a name="l257"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4162"></span><span class=cB3>SYS_16MEG_AREA_LIMIT</a></span><span class=cB0>+m01[1]&lt;&lt;16-1;
+<a name="l258"></a>  </span><span class=cB1>if</span><span class=cB0> (m20-&gt;type)
+<a name="l259"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l260"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l261"></a>    </span><span class=cB6>&quot;BIOS Memory Report 15:E820\n&quot;</span><span class=cB0>;
+<a name="l262"></a>    </span><span class=cB1>while</span><span class=cB0> (m20-&gt;type)
+<a name="l263"></a>    {
+<a name="l264"></a>      </span><span class=cB6>&quot;%02X:%016X-%016X\n&quot;</span><span class=cB0>,m20-&gt;type,m20-&gt;base,m20-&gt;base+m20-&gt;len-1;
+<a name="l265"></a>      m20++;
+<a name="l266"></a>    }
+<a name="l267"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l268"></a>}
+<a name="l269"></a>
+<a name="l270"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l270"></span><span class=cB5>MemPageRep</a></span><span class=cB0>()
+<a name="l271"></a>{</span><span class=cB2>//Page Table Report.</span><span class=cB0>
+<a name="l272"></a>  </span><span class=cB6>&quot;MAPPED\t  :%010X with &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l201"></span><span class=cB6>mem_mapped_space</a></span><span class=cB0>;
+<a name="l273"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB6>mem_page_size</a></span><span class=cB0>,30</span><span class=cB7>)</span><span class=cB0>)
+<a name="l274"></a>    </span><span class=cB6>&quot;$RED$1GIG$FG$ pages\n&quot;</span><span class=cB0>;
+<a name="l275"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l276"></a>    </span><span class=cB6>&quot;$RED$2MEG$FG$ pages\n&quot;</span><span class=cB0>;
+<a name="l277"></a>  </span><span class=cB6>&quot;PML2\t  :%010X 2MEG  :%08X\n&quot;</span><span class=cB0>
+<a name="l278"></a>  ,
+<a name="l279"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l13"></span><span class=cBD>MEM_PML2</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l10"></span><span class=cBD>MEM_2MEG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l280"></a>  </span><span class=cB6>&quot;PML3\t  :%010X 1GIG  :%08X\n&quot;</span><span class=cB0>
+<a name="l281"></a>  ,
+<a name="l282"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l14"></span><span class=cBD>MEM_PML3</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l11"></span><span class=cBD>MEM_1GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l283"></a>  </span><span class=cB6>&quot;PML4\t  :%010X 512GIG:%08X\n&quot;</span><span class=cB0>
+<a name="l284"></a>  ,
+<a name="l285"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l15"></span><span class=cBD>MEM_PML4</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *),*<a href="http://tinkeros.github.io/WbGit/Kernel/KStart32.html#l12"></span><span class=cBD>MEM_512GIG_NUM</a></span><span class=cB0>(</span><span class=cB9>U64</span><span class=cB0> *);
+<a name="l286"></a>  </span><span class=cB6>&quot;FIXED_AREA:%010X\n&quot;</span><span class=cB0>
+<a name="l287"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4161"></span><span class=cB3>SYS_FIXED_AREA</a></span><span class=cB0>;
+<a name="l288"></a>  </span><span class=cB6>&quot;HEAP_BASE :%010X\nHEAP_LIMIT:%010X\n&quot;</span><span class=cB0>
+<a name="l289"></a>  ,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l199"></span><span class=cB6>mem_heap_base</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l200"></span><span class=cB6>mem_heap_limit</a></span><span class=cB0>;
 <a name="l290"></a>}
 <a name="l291"></a>
+<a name="l292"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l292"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(</span><span class=cB9>U16</span><span class=cB0> class_code=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>U16</span><span class=cB0> sub_code=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
+<a name="l293"></a>                           </span><span class=cB9>U16</span><span class=cB0> vendor_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>U16</span><span class=cB0> device_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
+<a name="l294"></a>                           </span><span class=cB1>U8</span><span class=cB0> _bus=0xFF, </span><span class=cB1>U8</span><span class=cB0> _dev=0xFF, </span><span class=cB1>U8</span><span class=cB0> _fun=0xFF)
+<a name="l295"></a>{</span><span class=cB2>//return first device with matching class &amp; subcode, vendor &amp; device id, or a specific device.</span><span class=cB0>
+<a name="l296"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l131"></span><span class=cB5>PCILookUpDevs</a></span><span class=cB0>;
+<a name="l297"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *p = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head.next;
+<a name="l298"></a>  </span><span class=cB1>while</span><span class=cB0> (p != &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.pci_head)
+<a name="l299"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l300"></a>    </span><span class=cB1>if</span><span class=cB0> (p-&gt;vendor == vendor_id &amp;&amp; p-&gt;dev_id == device_id ||
+<a name="l301"></a>        p-&gt;base_code == class_code &amp;&amp; p-&gt;sub_code == sub_code ||
+<a name="l302"></a>        p-&gt;bus == _bus &amp;&amp; p-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0> == _dev &amp;&amp; p-&gt;fun == _fun)
+<a name="l303"></a>      </span><span class=cB1>return</span><span class=cB0> p;
+<a name="l304"></a>    p = p-&gt;next;
+<a name="l305"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l306"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l307"></a>}
+<a name="l308"></a>
+<a name="l309"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l309"></span><span class=cB5>PCILookUpDev</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor, </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>)
+<a name="l310"></a>{
+<a name="l311"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1474"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l312"></a>  </span><span class=cB1>U8</span><span class=cB0> *vendor_str, *dev_id_str;
+<a name="l313"></a>  doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l38"></span><span class=cB5>DocRead</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l6"></span><span class=cB3>PCI_DEV_FILE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1376"></span><span class=cB3>DOCF_PLAIN_TEXT</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1379"></span><span class=cB3>DOCF_NO_CURSOR</a></span><span class=cB0>);
+<a name="l314"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l55"></span><span class=cB5>PCILookUpSingle</a></span><span class=cB0>(doc,vendor,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>,vendor_str,dev_id_str);
+<a name="l315"></a>  </span><span class=cB6>&quot;Vendor: %s\n&quot;</span><span class=cB0>,vendor_str;
+<a name="l316"></a>  </span><span class=cB6>&quot;Device: %s\n&quot;</span><span class=cB0>,dev_id_str;
+<a name="l317"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l318"></a>}
+<a name="l319"></a>
 </span></div></pre></body>
 </html>

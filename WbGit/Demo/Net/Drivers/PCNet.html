@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.11">
+<meta name="generator" content="TinkerOS V5.12">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -106,8 +106,8 @@
 <a name="l67"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_CTRL_IDON 8
 <a name="l68"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_CTRL_RINT 10
 <a name="l69"></a>
-<a name="l70"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_RX_BUFF_COUNT 32  </span><span class=cB2>// Linux &amp; Shrine Driver use 32 and 8 for</span><span class=cB0>
-<a name="l71"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_TX_BUFF_COUNT 8   </span><span class=cB2>// these, we could allow more if wanted.</span><span class=cB0>
+<a name="l70"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_RX_BUFF_COUNT 64
+<a name="l71"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_TX_BUFF_COUNT 64
 <a name="l72"></a>
 <a name="l73"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_DESCRIPTORf_ENP   24
 <a name="l74"></a>#</span><span class=cB1>define</span><span class=cB0> PCNET_DESCRIPTORf_STP   25
@@ -160,7 +160,7 @@
 <a name="l121"></a>
 <a name="l122"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *PCNetPCIDevFind()
 <a name="l123"></a>{</span><span class=cB2>// Find and return PCNetII card as a CPCIDev pointer.</span><span class=cB0>
-<a name="l124"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l264"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(,, PCIV_PCNET, PCID_PCNET);
+<a name="l124"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l292"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(,, PCIV_PCNET, PCID_PCNET);
 <a name="l125"></a>}
 <a name="l126"></a>
 <a name="l127"></a></span><span class=cB9>U32</span><span class=cB0> PCNetIOBaseGet()
@@ -411,8 +411,8 @@
 <a name="l372"></a>  CPCNetBufferSetup *u_setup = setup + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias;
 <a name="l373"></a>  </span><span class=cB9>U32</span><span class=cB0>                    p_setup;
 <a name="l374"></a>  u_setup-&gt;mode     = 0;
-<a name="l375"></a>  u_setup-&gt;rlen     = 5 &lt;&lt; 4;
-<a name="l376"></a>  u_setup-&gt;tlen     = 3 &lt;&lt; 4;
+<a name="l375"></a>  u_setup-&gt;rlen     = 6 &lt;&lt; 4;
+<a name="l376"></a>  u_setup-&gt;tlen     = 6 &lt;&lt; 4;
 <a name="l377"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(u_setup-&gt;mac, pcnet.mac_address, 6);
 <a name="l378"></a>  u_setup-&gt;reserved = 0;
 <a name="l379"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(u_setup-&gt;ladr, 0, 8);
@@ -643,7 +643,7 @@
 <a name="l604"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l605"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 4; i++)
 <a name="l606"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l109"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x40+i, &amp;PCNetIRQ);
-<a name="l607"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l237"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(0x40);
+<a name="l607"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l238"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(0x40);
 <a name="l608"></a>}
 <a name="l609"></a>
 <a name="l610"></a></span><span class=cB1>U0</span><span class=cB0> PCNetInit()
