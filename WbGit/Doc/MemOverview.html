@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.12">
+<meta name="generator" content="TinkerOS V5.13">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
@@ -67,7 +67,7 @@
 <a name="l32"></a>
 <a name="l33"></a></span><span class=cB5>                           <h1><center>Single System-wide Mem Map</center></h1>
 <a name="l34"></a>
-<a name="l35"></a></span><span class=cB2> 0x0000007C00- 0x0000043ADF</span><span class=cB0>
+<a name="l35"></a></span><span class=cB2> 0x0000007C00- 0x00000439BF</span><span class=cB0>
 <a name="l36"></a>  Kernel module, placed here by the boot-loader, </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4603"><span class=cB4>BOOT_RAM_BASE</span></a><span class=cB0>.
 <a name="l37"></a>
 <a name="l38"></a></span><span class=cB2> 0x0000096600- 0x0000096FFF</span><span class=cB0>
@@ -82,7 +82,7 @@
 <a name="l47"></a></span><span class=cB2> 0x00E0000000- 0x00FFFFFFFF</span><span class=cB0>
 <a name="l48"></a>  32-bit devices could alloc memory at 0xF0000000 going up, but this is wrong, 
 <a name="l49"></a>  since some PCs already have devices at 0xF0000000.  No PCI devices are 
-<a name="l50"></a>  supported, so </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l62"><span class=cB4>Mem32DevAlloc</span></a><span class=cB0>() flaws are not an issue.
+<a name="l50"></a>  supported, so </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l68"><span class=cB4>Mem32DevAlloc</span></a><span class=cB0>() flaws are not an issue.
 <a name="l51"></a>
 <a name="l52"></a></span><span class=cB2> 0x0080000000-~0x00DFFFFFFF</span><span class=cB0>
 <a name="l53"></a></span><span class=cB2> 0x0100000000-~0xFFFFFFFFFF</span><span class=cB0>
@@ -92,7 +92,7 @@
 <a name="l57"></a>  Uncached alias of first 4Gig.  (For 32-bit device access.)
 <a name="l58"></a>
 <a name="l59"></a></span><span class=cB2>             - 0x100FFFFFFFF</span><span class=cB0>
-<a name="l60"></a>  64-bit devices are alloced with </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l117"><span class=cB4>Mem64DevAlloc</span></a><span class=cB0>() counting bwd, but no PCI 
+<a name="l60"></a>  64-bit devices are alloced with </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l123"><span class=cB4>Mem64DevAlloc</span></a><span class=cB0>() counting bwd, but no PCI 
 <a name="l61"></a>  devices are actually supported.
 <a name="l62"></a>
 <a name="l63"></a>
@@ -130,7 +130,7 @@
 <a name="l95"></a>In 2016, I came-up with an alternate idea.  I double mapped the lowest memory 
 <a name="l96"></a>with an alias that was uncached.  Accessing the lowest 2Meg area directly was 
 <a name="l97"></a>cached but the alias I created up at the top of address space was uncached.  See </span><span class=cB4>
-<a name="l98"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l150"><span class=cB4>UncachedAliasAlloc</span></a><span class=cB0>().  Unfortunately, I could no longer boast of the simplicity 
+<a name="l98"></a></span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l156"><span class=cB4>UncachedAliasAlloc</span></a><span class=cB0>().  Unfortunately, I could no longer boast of the simplicity 
 <a name="l99"></a>of identity mapping everything.  Since many of my users are familiar with 
 <a name="l100"></a>A0000-BFFFF, it is actually pretty seriously unfortunate that they cannot use 
 <a name="l101"></a>the easy-to-understand numbers of A0000-BFFFF, but must access the relocated 
@@ -138,7 +138,7 @@
 <a name="l103"></a>dereferencing NULL.
 <a name="l104"></a>
 <a name="l105"></a>Then, I switched to 1Gig page sizes.  For the lowest 4Gig, I set-up an alias up 
-<a name="l106"></a>at the top of address space.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l150"><span class=cB4>UncachedAliasAlloc</span></a><span class=cB0>().  Not all computers 
+<a name="l106"></a>at the top of address space.  See </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l156"><span class=cB4>UncachedAliasAlloc</span></a><span class=cB0>().  Not all computers 
 <a name="l107"></a>support 1Gig page tables, however, so I also support 2Meg.
 <a name="l108"></a>
 <a name="l109"></a>My original plan was to allow changing the page tables as needed, so I had code 
