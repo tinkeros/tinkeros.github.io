@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.14">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l1"></span><span class=cB5>ToLower</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> ch)
+<a name="l2"></a>{</span><span class=cB2>// Basic lower case conversion implementation</span><span class=cB0>
+<a name="l3"></a>  </span><span class=cB9>I64</span><span class=cB0> res=ch;
+<a name="l4"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'A'</span><span class=cB0>&lt;=ch&lt;=</span><span class=cB6>'Z'</span><span class=cB0>)
+<a name="l5"></a>    res = ch ^ 0x20;
+<a name="l6"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l7"></a>}
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l9"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> enter_default=0)
+<a name="l10"></a>{</span><span class=cB2>//Wait for user to answer Y or N.</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l1"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'y'</span><span class=cB0> || <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l1"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'n'</span><span class=cB0>)
+<a name="l13"></a>    </span><span class=cB6>&quot;(y or n, default: %c)? &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l1"></span><span class=cB5>ToLower</a></span><span class=cB0>(enter_default);
+<a name="l14"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l15"></a>    </span><span class=cB6>&quot;(y or n)? &quot;</span><span class=cB0>;
+<a name="l16"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l17"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l18"></a>    ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l204"></span><span class=cB5>GetChar</a></span><span class=cB7>(</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l19"></a>    </span><span class=cB1>if</span><span class=cB0> (enter_default &amp;&amp; ch==</span><span class=cB6>'\n'</span><span class=cB0>)
+<a name="l20"></a>      ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(enter_default);
+<a name="l21"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'Y'</span><span class=cB0>)
+<a name="l22"></a>    {
+<a name="l23"></a>      </span><span class=cB6>&quot;$PT$YES$FG$\n&quot;</span><span class=cB0>;
+<a name="l24"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l25"></a>    }
+<a name="l26"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'N'</span><span class=cB0>)
+<a name="l27"></a>    {
+<a name="l28"></a>      </span><span class=cB6>&quot;$PT$NO$FG$\n&quot;</span><span class=cB0>;
+<a name="l29"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l30"></a>    }
+<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l32"></a>}
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l34"></span><span class=cB5>AreYouSure</a></span><span class=cB0>()
+<a name="l35"></a>{</span><span class=cB2>//Print &quot;Are you sure&quot; and waits for Y or N.</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB6>&quot;ARE YOU SURE &quot;</span><span class=cB0>;
+<a name="l37"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l9"></span><span class=cB5>YorN</a></span><span class=cB0>;
+<a name="l38"></a>}
+</span></div></pre></body>
+</html>

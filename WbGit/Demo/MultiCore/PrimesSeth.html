@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.13">
+<meta name="generator" content="TinkerOS V5.14">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -45,11 +45,11 @@
 <a name="l7"></a>
 <a name="l8"></a></span><span class=cB1>U0</span><span class=cB0> PrimesJob(</span><span class=cB9>I64</span><span class=cB0> i)
 <a name="l9"></a>{
-<a name="l10"></a>  </span><span class=cB9>I64</span><span class=cB0> j,k,l=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l112"></span><span class=cB5>Sqrt</a></span><span class=cB0>(prime_range),
+<a name="l10"></a>  </span><span class=cB9>I64</span><span class=cB0> j,k,l=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(prime_range),
 <a name="l11"></a>          lo=i*prime_range/my_mp_cnt,
 <a name="l12"></a>          hi=(i+1)*prime_range/my_mp_cnt,
-<a name="l13"></a>          lo2=lo+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l285"></span><span class=cB6>sys_cache_line_width</a></span><span class=cB0>,
-<a name="l14"></a>          hi2=hi-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l285"></span><span class=cB6>sys_cache_line_width</a></span><span class=cB0>;
+<a name="l13"></a>          lo2=lo+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l282"></span><span class=cB6>sys_cache_line_width</a></span><span class=cB0>,
+<a name="l14"></a>          hi2=hi-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l282"></span><span class=cB6>sys_cache_line_width</a></span><span class=cB0>;
 <a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (lo2&gt;hi2) lo2=hi2;
 <a name="l16"></a>  </span><span class=cB1>for</span><span class=cB0> (j=2; j&lt;=l; j++)
 <a name="l17"></a>  </span><span class=cB7>{</span><span class=cB0>
@@ -89,7 +89,7 @@
 <a name="l51"></a>{
 <a name="l52"></a>  </span><span class=cB9>I64</span><span class=cB0> i,prime_cnt=0;
 <a name="l53"></a>  </span><span class=cB1>F64</span><span class=cB0> t0=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>,tf;
-<a name="l54"></a>  sleep_mod=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>ClampI64</a></span><span class=cB0>(100/sleep_percent,2,100);
+<a name="l54"></a>  sleep_mod=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(100/sleep_percent,2,100);
 <a name="l55"></a>  my_mp_cnt=NUM_SETH_CORES_TO_TEST;
 <a name="l56"></a>  prime_range=range;
 <a name="l57"></a>  master_bitmap=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>prime_range+7</span><span class=cB7>)</span><span class=cB0>/8+1);
@@ -97,7 +97,7 @@
 <a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l20"></span><span class=cB5>Bts</a></span><span class=cB0>(master_bitmap,1);
 <a name="l60"></a>  pending=my_mp_cnt;
 <a name="l61"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;my_mp_cnt; i++)
-<a name="l62"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;PrimesJob,i,i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-NUM_SETH_CORES_TO_TEST);
+<a name="l62"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"></span><span class=cB5>JobQue</a></span><span class=cB0>(&amp;PrimesJob,i,i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-NUM_SETH_CORES_TO_TEST);
 <a name="l63"></a>  </span><span class=cB1>while</span><span class=cB0> (pending)
 <a name="l64"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
@@ -106,7 +106,7 @@
 <a name="l68"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;prime_range; i++)
 <a name="l69"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>master_bitmap,i</span><span class=cB7>)</span><span class=cB0>)
 <a name="l70"></a>      prime_cnt++;
-<a name="l71"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l102"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>prime_range-100,0</span><span class=cB7>)</span><span class=cB0>; i&lt;prime_range; i++)
+<a name="l71"></a>  </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>prime_range-100,0</span><span class=cB7>)</span><span class=cB0>; i&lt;prime_range; i++)
 <a name="l72"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>master_bitmap,i</span><span class=cB7>)</span><span class=cB0>)
 <a name="l73"></a>      </span><span class=cB6>&quot;%d &quot;</span><span class=cB0>,i;
 <a name="l74"></a>  </span><span class=cB6>&quot;\n$RED$CPUs:%d PrimeRange:%,d PrimeCnt:%,d Time:%9.7,f$FG$\n&quot;</span><span class=cB0>
@@ -116,7 +116,7 @@
 <a name="l78"></a>  </span><span class=cB1>return</span><span class=cB0> prime_cnt;
 <a name="l79"></a>}
 <a name="l80"></a>
-<a name="l81"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;NUM_SETH_CORES_TO_TEST)
+<a name="l81"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;NUM_SETH_CORES_TO_TEST)
 <a name="l82"></a>  PrimesSethOnly(500000000,10);
 <a name="l83"></a>
 </span></div></pre></body>

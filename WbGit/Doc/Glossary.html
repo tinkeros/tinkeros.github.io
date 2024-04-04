@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.13">
+<meta name="generator" content="TinkerOS V5.14">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
@@ -194,7 +194,7 @@
 <a name="l159"></a>  </span><span class=cB2>Wiz</span><span class=cB0>   Wizard
 <a name="l160"></a></span><span class=cB5><u>-] Task/Process/Thread</span><span class=cB0>
 <a name="l161"></a></u>  There is no distinction between </span><span class=cB2>task</span><span class=cB0>, </span><span class=cB2>process</span><span class=cB0> or </span><span class=cB2>thread</span><span class=cB0>.  The </span><span class=cB2>Fs</span><span class=cB0> segment reg 
-<a name="l162"></a>  is kept pointing to the current task's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4017"><span class=cB4>CTask</span></a><span class=cB0>.  There is only one window per 
+<a name="l162"></a>  is kept pointing to the current task's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"><span class=cB4>CTask</span></a><span class=cB0>.  There is only one window per 
 <a name="l163"></a>  task, and only </span><span class=cB2>Core0</span><span class=cB0> tasks can have windows.  Each task has a code and data 
 <a name="l164"></a>  heap so memory is returned when it dies.  Each task has a </span><a href="http://tinkeros.github.io/WbGit/LiveHelp/HashTables.html#l1"><span class=cB4>hash</span></a><span class=cB0> symbol table.
 <a name="l165"></a>  
@@ -223,13 +223,13 @@
 <a name="l188"></a>  out-of-range issues, I decided to separate code and data, placing all code 
 <a name="l189"></a>  within the lowest </span><span class=cB2>2Gig</span><span class=cB0> of memory, addresses </span><span class=cB2>00000000</span><span class=cB0>-</span><span class=cB2>7FFFFFFF</span><span class=cB0>.  The compiler 
 <a name="l190"></a>  and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l213"><span class=cB4>Load</span></a><span class=cB0>()er alloc memory from the code heap to store code and glbl vars, 
-<a name="l191"></a>  unless the compiler option </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1664"><span class=cB4>OPTf_GLBLS_ON_DATA_HEAP</span></a><span class=cB0> is used.  When programs 
+<a name="l191"></a>  unless the compiler option </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1682"><span class=cB4>OPTf_GLBLS_ON_DATA_HEAP</span></a><span class=cB0> is used.  When programs 
 <a name="l192"></a>  call </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"><span class=cB4>MAlloc</span></a><span class=cB0>() is from the data heap, which in not limited in size, except by 
 <a name="l193"></a>  physical RAM memory.  You can alloc from any heap in any task at any time on 
 <a name="l194"></a>  any core, even making </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPag.html#l11"><span class=cB4>independent</span></a><span class=cB0> heaps.
 <a name="l195"></a></span><span class=cB5><u>-] Parent, Child and PopUp Tasks</span><span class=cB0>
-<a name="l196"></a></u>  Often a task will </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"><span class=cB4>Spawn</span></a><span class=cB0>() or </span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l409"><span class=cB4>PopUp</span></a><span class=cB0>() a task as a helper.  The helper is known 
-<a name="l197"></a>  as a child Task, though you can </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"><span class=cB4>Spawn</span></a><span class=cB0> a task and assign it a different 
+<a name="l196"></a></u>  Often a task will </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"><span class=cB4>Spawn</span></a><span class=cB0>() or </span><a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l409"><span class=cB4>PopUp</span></a><span class=cB0>() a task as a helper.  The helper is known 
+<a name="l197"></a>  as a child Task, though you can </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"><span class=cB4>Spawn</span></a><span class=cB0> a task and assign it a different 
 <a name="l198"></a>  parent... like </span><span class=cB2>Adam</span><span class=cB0>.  Links are kept as to who's whose child, so when one task 
 <a name="l199"></a>  is </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"><span class=cB4>Kill</span></a><span class=cB0>()ed the child helper tasks die, too.  You can get a report of current 
 <a name="l200"></a>  system tasks with </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TaskRep.html#l92"><span class=cB4>TaskRep</span></a><span class=cB0>().  There is just one window per task, so child 
@@ -332,11 +332,11 @@
 <a name="l297"></a>  </span><span class=cB5>*.GR.Z;*.GR</span><span class=cB0>
 <a name="l298"></a>    Graphics file
 <a name="l299"></a>  </span><span class=cB4>
-<a name="l300"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2660"><span class=cB4>FILEMASK_TXT</span></a><span class=cB4>
-<a name="l301"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"><span class=cB4>FILEMASK_SRC</span></a><span class=cB4>
-<a name="l302"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2657"><span class=cB4>FILEMASK_AOT</span></a><span class=cB4>
-<a name="l303"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2656"><span class=cB4>FILEMASK_JIT</span></a><span class=cB4>
-<a name="l304"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"><span class=cB4>FILEMASK_GR</span></a><span class=cB0>
+<a name="l300"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2437"><span class=cB4>FILEMASK_TXT</span></a><span class=cB4>
+<a name="l301"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2435"><span class=cB4>FILEMASK_SRC</span></a><span class=cB4>
+<a name="l302"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2434"><span class=cB4>FILEMASK_AOT</span></a><span class=cB4>
+<a name="l303"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2433"><span class=cB4>FILEMASK_JIT</span></a><span class=cB4>
+<a name="l304"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2438"><span class=cB4>FILEMASK_GR</span></a><span class=cB0>
 <a name="l305"></a></span><span class=cB5>-] Naming Convention</span><span class=cB0>
 <a name="l306"></a>  Since there are no </span><span class=cB2>namespaces</span><span class=cB0> and I don't plan to implement name spaces, I 
 <a name="l307"></a>  highly recommend putting a 2-3 character module code prefix on syms. e.g. </span><span class=cB2>WS</span><span class=cB0>, </span><span class=cB2>
@@ -373,9 +373,9 @@
 <a name="l338"></a>  function name instead of at the beginning.  </span><span class=cB2>RstMusicSettings</span><span class=cB0> should be </span><span class=cB2>MusicSe
 <a name="l339"></a>  ttingsRst</span><span class=cB0>.
 <a name="l340"></a></span><span class=cB5><u>-] Fs</span><span class=cB0>
-<a name="l341"></a></u>  The CPU FS segment reg.  This reg points to the current task's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4017"><span class=cB4>CTask</span></a><span class=cB0>.
+<a name="l341"></a></u>  The CPU FS segment reg.  This reg points to the current task's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"><span class=cB4>CTask</span></a><span class=cB0>.
 <a name="l342"></a></span><span class=cB5><u>-] Gs</span><span class=cB0>
-<a name="l343"></a></u>  The CPU GS segment reg.  This reg points to the current core's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4139"><span class=cB4>CCPU</span></a><span class=cB0>.
+<a name="l343"></a></u>  The CPU GS segment reg.  This reg points to the current core's </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3916"><span class=cB4>CCPU</span></a><span class=cB0>.
 <a name="l344"></a></span><span class=cB5><u>-] Heap</span><span class=cB0>
 <a name="l345"></a></u>  Programs can dynamically request chunks of memory alloced from a </span><span class=cB2>heap</span><span class=cB0> using </span><span class=cB4>
 <a name="l346"></a>  </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"><span class=cB4>MAlloc</span></a><span class=cB0>().  They must </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"><span class=cB4>Free</span></a><span class=cB0>() it when finished.  Ptrs are used to refer to the 
@@ -390,7 +390,7 @@
 <a name="l355"></a></u>  Core0, has the </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l171"><span class=cB4>Adam Task</span></a><span class=cB0>, and it is the master.  The </span><span class=cB2>application processors</span><span class=cB0> 
 <a name="l356"></a>  have an executive </span><a href="http://tinkeros.github.io/WbGit/Doc/Glossary.html#l181"><span class=cB4>Seth Tasks</span></a><span class=cB0> and are the slave processors.  Only </span><span class=cB2>Core0</span><span class=cB0> tasks 
 <a name="l357"></a>  can have windows and can launch applications.  Slave cores are used if the 
-<a name="l358"></a>  application explicitly </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l246"><span class=cB4>Spawn</span></a><span class=cB0>s() a task or </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"><span class=cB4>JobQue</span></a><span class=cB0>() a job on them.
+<a name="l358"></a>  application explicitly </span><a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"><span class=cB4>Spawn</span></a><span class=cB0>s() a task or </span><a href="http://tinkeros.github.io/WbGit/Kernel/MultiProc.html#l214"><span class=cB4>JobQue</span></a><span class=cB0>() a job on them.
 <a name="l359"></a>
 </span></div></pre></body>
 </html>

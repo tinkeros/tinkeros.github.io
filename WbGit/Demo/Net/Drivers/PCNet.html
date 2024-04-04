@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.13">
+<meta name="generator" content="TinkerOS V5.14">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -115,7 +115,7 @@
 <a name="l76"></a>
 <a name="l77"></a></span><span class=cB1>class</span><span class=cB0> CPCNet
 <a name="l78"></a>{
-<a name="l79"></a>  CPciDevInfo *pci;
+<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l321"></span><span class=cB9>CPciDevInfo</a></span><span class=cB0> *pci;
 <a name="l80"></a>
 <a name="l81"></a>  </span><span class=cB1>U8</span><span class=cB0>    mac_address[6];         </span><span class=cB2>// MAC address is first 6 bytes of PCNet EEPROM (page # ? )</span><span class=cB0>
 <a name="l82"></a>
@@ -158,9 +158,9 @@
 <a name="l119"></a>  </span><span class=cB9>U32</span><span class=cB0> txbuf;
 <a name="l120"></a>};
 <a name="l121"></a>
-<a name="l122"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2604"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *PCNetPCIDevFind()
+<a name="l122"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2379"></span><span class=cB9>CPCIDev</a></span><span class=cB0> *PCNetPCIDevFind()
 <a name="l123"></a>{</span><span class=cB2>// Find and return PCNetII card as a CPCIDev pointer.</span><span class=cB0>
-<a name="l124"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l292"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(,, PCIV_PCNET, PCID_PCNET);
+<a name="l124"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/DevInfo.html#l370"></span><span class=cB5>PCIDevFind</a></span><span class=cB0>(,, PCIV_PCNET, PCID_PCNET);
 <a name="l125"></a>}
 <a name="l126"></a>
 <a name="l127"></a></span><span class=cB9>U32</span><span class=cB0> PCNetIOBaseGet()
@@ -303,15 +303,15 @@
 <a name="l264"></a></span><span class=cB2>    must be on 16-byte boundary. (TDRA[3:0]=0, RDRA[3:0]=0) */</span><span class=cB0>
 <a name="l265"></a>  pcnet.rx_de_buffer_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNetDescriptorEntry</span><span class=cB7>)</span><span class=cB0> * PCNET_RX_BUFF_COUNT,
 <a name="l266"></a>                                          16,
-<a name="l267"></a>                                          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l267"></a>                                          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
 <a name="l268"></a>  pcnet.tx_de_buffer_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNetDescriptorEntry</span><span class=cB7>)</span><span class=cB0> * PCNET_TX_BUFF_COUNT,
 <a name="l269"></a>                                          16,
-<a name="l270"></a>                                          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l270"></a>                                          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
 <a name="l271"></a>  </span><span class=cB2>//Shrine does a check and returns -1 here, if the end of either buffer exceeds 0x100000000</span><span class=cB0>
 <a name="l272"></a>  pcnet.rx_de_buffer = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + pcnet.rx_de_buffer_phys; </span><span class=cB2>// we want uncached</span><span class=cB0>
 <a name="l273"></a>  pcnet.tx_de_buffer = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + pcnet.tx_de_buffer_phys; </span><span class=cB2>// access to these.</span><span class=cB0>
-<a name="l274"></a>  pcnet.rx_buffer_addr_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * PCNET_RX_BUFF_COUNT, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
-<a name="l275"></a>  pcnet.tx_buffer_addr_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * PCNET_TX_BUFF_COUNT, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l274"></a>  pcnet.rx_buffer_addr_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * PCNET_RX_BUFF_COUNT, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l275"></a>  pcnet.tx_buffer_addr_phys = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * PCNET_TX_BUFF_COUNT, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
 <a name="l276"></a>  </span><span class=cB2>//Shrine does a check and returns -1 here, if the end of either buffer exceeds 0x100000000</span><span class=cB0>
 <a name="l277"></a>  CPCNetDescriptorEntry *entry = pcnet.rx_de_buffer;
 <a name="l278"></a>  </span><span class=cB1>for</span><span class=cB0> (de_index = 0; de_index &lt; PCNET_RX_BUFF_COUNT; de_index++)
@@ -407,15 +407,15 @@
 <a name="l368"></a>
 <a name="l369"></a></span><span class=cB1>U8</span><span class=cB0> *PCNetInitBlockSetup()
 <a name="l370"></a>{
-<a name="l371"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *setup   = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNetBufferSetup</span><span class=cB7>)</span><span class=cB0>, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l293"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l371"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *setup   = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNetBufferSetup</span><span class=cB7>)</span><span class=cB0>, 16, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
 <a name="l372"></a>  CPCNetBufferSetup *u_setup = setup + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias;
 <a name="l373"></a>  </span><span class=cB9>U32</span><span class=cB0>                    p_setup;
 <a name="l374"></a>  u_setup-&gt;mode     = 0;
 <a name="l375"></a>  u_setup-&gt;rlen     = 6 &lt;&lt; 4;
 <a name="l376"></a>  u_setup-&gt;tlen     = 6 &lt;&lt; 4;
-<a name="l377"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(u_setup-&gt;mac, pcnet.mac_address, 6);
+<a name="l377"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(u_setup-&gt;mac, pcnet.mac_address, 6);
 <a name="l378"></a>  u_setup-&gt;reserved = 0;
-<a name="l379"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(u_setup-&gt;ladr, 0, 8);
+<a name="l379"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(u_setup-&gt;ladr, 0, 8);
 <a name="l380"></a>  u_setup-&gt;rxbuf        = pcnet.rx_de_buffer_phys;
 <a name="l381"></a>  u_setup-&gt;txbuf        = pcnet.tx_de_buffer_phys;
 <a name="l382"></a>  p_setup = setup;
@@ -621,19 +621,19 @@
 <a name="l582"></a>             </span><span class=cB6>&quot;$BG$$FG$&quot;</span><span class=cB0>);
 <a name="l583"></a>    }
 <a name="l584"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l585"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l613"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0>*) = 0;
+<a name="l585"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l631"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0>*) = 0;
 <a name="l586"></a>}
 <a name="l587"></a>
 <a name="l588"></a></span><span class=cB1>U0</span><span class=cB0> PCIInterruptsReroute(</span><span class=cB9>I64</span><span class=cB0> base)
 <a name="l589"></a>{</span><span class=cB2>// todo: comments explaining process, maybe better var names</span><span class=cB0>
 <a name="l590"></a>  </span><span class=cB9>I64</span><span class=cB0>    i;
-<a name="l591"></a>  </span><span class=cB1>U8</span><span class=cB0>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l638"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
-<a name="l592"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l639"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
+<a name="l591"></a>  </span><span class=cB1>U8</span><span class=cB0>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l656"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
+<a name="l592"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l657"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
 <a name="l593"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 4; i++)
 <a name="l594"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l595"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l644"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2 + 1;
+<a name="l595"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l662"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2 + 1;
 <a name="l596"></a>    *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.mp_apic_ids[INT_DEST_CPU] &lt;&lt; 24;
-<a name="l597"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l644"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2;
+<a name="l597"></a>    *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l662"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> + i * 2;
 <a name="l598"></a>    *_d = 0x4000 + base + i;
 <a name="l599"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l600"></a>}
@@ -643,13 +643,13 @@
 <a name="l604"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l605"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 4; i++)
 <a name="l606"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x40+i, &amp;PCNetIRQ);
-<a name="l607"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l238"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(0x40);
+<a name="l607"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l237"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(0x40);
 <a name="l608"></a>}
 <a name="l609"></a>
 <a name="l610"></a></span><span class=cB1>U0</span><span class=cB0> PCNetInit()
 <a name="l611"></a>{
 <a name="l612"></a>  </span><span class=cB1>U8</span><span class=cB0> *setup; </span><span class=cB2>// PCNetInitBlockSetup</span><span class=cB0>
-<a name="l613"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;pcnet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNet</span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>// pcnet global var will hold member data the driver uses often.</span><span class=cB0>
+<a name="l613"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;pcnet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CPCNet</span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>// pcnet global var will hold member data the driver uses often.</span><span class=cB0>
 <a name="l614"></a>  pcnet.pci = &amp;net_driver_pci;
 <a name="l615"></a>  </span><span class=cB1>if</span><span class=cB0> (!pcnet.pci)
 <a name="l616"></a>    </span><span class=cB1>return</span><span class=cB0>; </span><span class=cB2>// if we don't find the card, quit.</span><span class=cB0>
@@ -739,9 +739,9 @@
 <a name="l700"></a>    NetErr(</span><span class=cB6>&quot;ETHERNET FRAME ALLOCATE: Failure&quot;</span><span class=cB0>);
 <a name="l701"></a>    </span><span class=cB1>return</span><span class=cB0> -1; </span><span class=cB2>// Positive value expected. Functions calling this must factor this in.</span><span class=cB0>
 <a name="l702"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l703"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l176"></span><span class=cB5>MemSet</a></span><span class=cB0>(ethernet_frame, 0, ETHERNET_FRAME_SIZE); </span><span class=cB2>// Clear buffer contents in advance.</span><span class=cB0>
-<a name="l704"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ethernet_frame,                         destination_address, MAC_ADDRESS_LENGTH);
-<a name="l705"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l172"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ethernet_frame + MAC_ADDRESS_LENGTH, source_address,     MAC_ADDRESS_LENGTH);
+<a name="l703"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(ethernet_frame, 0, ETHERNET_FRAME_SIZE); </span><span class=cB2>// Clear buffer contents in advance.</span><span class=cB0>
+<a name="l704"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ethernet_frame,                         destination_address, MAC_ADDRESS_LENGTH);
+<a name="l705"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ethernet_frame + MAC_ADDRESS_LENGTH, source_address,     MAC_ADDRESS_LENGTH);
 <a name="l706"></a>  ethernet_frame[ETHERNET_ETHERTYPE_OFFSET]     = ethertype &gt;&gt; 8;
 <a name="l707"></a>  ethernet_frame[ETHERNET_ETHERTYPE_OFFSET + 1] = ethertype &amp; 0xFF;
 <a name="l708"></a>  *packet_buffer_out = ethernet_frame + ETHERNET_MAC_HEADER_LENGTH;

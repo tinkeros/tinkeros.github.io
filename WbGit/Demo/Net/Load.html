@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.13">
+<meta name="generator" content="TinkerOS V5.14">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -36,41 +36,39 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2152"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
+<a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2170"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
 <a name="l2"></a>
-<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4017"></span><span class=cB9>CTask</a></span><span class=cB0>* netfifo_handler_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"></span><span class=cB9>CTask</a></span><span class=cB0>* netfifo_handler_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l4"></a>
 <a name="l5"></a></span><span class=cB1>Bool</span><span class=cB0> net_log_log=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l6"></a></span><span class=cB1>Bool</span><span class=cB0> net_log_warn=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l7"></a></span><span class=cB1>Bool</span><span class=cB0> net_log_dbg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l8"></a>
-<a name="l9"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Pci&quot;</span><span class=cB0>
+<a name="l9"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/Net.HH&quot;</span><span class=cB0>
 <a name="l10"></a>
-<a name="l11"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/Net.HH&quot;</span><span class=cB0>
+<a name="l11"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetLogAdam&quot;</span><span class=cB0>
 <a name="l12"></a>
-<a name="l13"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetLogAdam&quot;</span><span class=cB0>
+<a name="l13"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetQueue&quot;</span><span class=cB0>
 <a name="l14"></a>
-<a name="l15"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetQueue&quot;</span><span class=cB0>
+<a name="l15"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Drivers/Run&quot;</span><span class=cB0>
 <a name="l16"></a>
-<a name="l17"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Drivers/Run&quot;</span><span class=cB0>
+<a name="l17"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/Ethernet&quot;</span><span class=cB0>
 <a name="l18"></a>
-<a name="l19"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/Ethernet&quot;</span><span class=cB0>
-<a name="l20"></a>
-<a name="l21"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/ARP&quot;</span><span class=cB0>
-<a name="l22"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/IPV4&quot;</span><span class=cB0>
-<a name="l23"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/ICMP&quot;</span><span class=cB0>
+<a name="l19"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/ARP&quot;</span><span class=cB0>
+<a name="l20"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/IPV4&quot;</span><span class=cB0>
+<a name="l21"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/ICMP&quot;</span><span class=cB0>
+<a name="l22"></a>
+<a name="l23"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/Sockets&quot;</span><span class=cB0>
 <a name="l24"></a>
-<a name="l25"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/Sockets&quot;</span><span class=cB0>
-<a name="l26"></a>
-<a name="l27"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/BST&quot;</span><span class=cB0>
-<a name="l28"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/UDP/MakeUDP&quot;</span><span class=cB0>
-<a name="l29"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/DNS&quot;</span><span class=cB0>
-<a name="l30"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/Ping&quot;</span><span class=cB0>
+<a name="l25"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/BST&quot;</span><span class=cB0>
+<a name="l26"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/UDP/MakeUDP&quot;</span><span class=cB0>
+<a name="l27"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/DNS&quot;</span><span class=cB0>
+<a name="l28"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/Ping&quot;</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/TCP/MakeTCP&quot;</span><span class=cB0>
 <a name="l31"></a>
-<a name="l32"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/TCP/MakeTCP&quot;</span><span class=cB0>
+<a name="l32"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/DHCP&quot;</span><span class=cB0>
 <a name="l33"></a>
-<a name="l34"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Protocols/DHCP&quot;</span><span class=cB0>
-<a name="l35"></a>
-<a name="l36"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetHandler&quot;</span><span class=cB0> </span><span class=cB2>// needs IPV4, UDP, ICMP</span><span class=cB0>
+<a name="l34"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;Utilities/NetHandler&quot;</span><span class=cB0> </span><span class=cB2>// needs IPV4, UDP, ICMP</span><span class=cB0>
 </span></div></pre></body>
 </html>
