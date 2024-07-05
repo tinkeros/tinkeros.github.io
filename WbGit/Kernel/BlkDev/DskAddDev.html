@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.14">
+<meta name="generator" content="TinkerOS V5.15">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -38,28 +38,28 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l1"></span><span class=cBD>BlkDevLockFwdingSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd)
+<a name="l1"></a><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l1"></span><span class=cBD>BlkDevLockFwdingSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd)
 <a name="l2"></a>{</span><span class=cB2>//If two blkdevs on same controller, use just one lock</span><span class=cB0>
-<a name="l3"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd1;
+<a name="l3"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd1;
 <a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l5"></a>  </span><span class=cB1>switch</span><span class=cB0> (bd-&gt;type)
 <a name="l6"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l7"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_RAM</a></span><span class=cB0>:
+<a name="l7"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3092"></span><span class=cB3>BDT_RAM</a></span><span class=cB0>:
 <a name="l8"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l9"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3095"></span><span class=cB3>BDT_ISO_FILE_READ</a></span><span class=cB0>:
-<a name="l10"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ISO_FILE_WRITE</a></span><span class=cB0>:
+<a name="l9"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ISO_FILE_READ</a></span><span class=cB0>:
+<a name="l10"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3095"></span><span class=cB3>BDT_ISO_FILE_WRITE</a></span><span class=cB0>:
 <a name="l11"></a>    bd-&gt;lock_fwding=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l272"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(*bd-&gt;file_dsk_name);
 <a name="l12"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l13"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
-<a name="l14"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
-<a name="l15"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
-<a name="l16"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
-<a name="l17"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3141"></span><span class=cB3>BLKDEVS_NUM</a></span><span class=cB0>; i++)
+<a name="l13"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
+<a name="l14"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
+<a name="l15"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3098"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
+<a name="l16"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
+<a name="l17"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3140"></span><span class=cB3>BLKDEVS_NUM</a></span><span class=cB0>; i++)
 <a name="l18"></a>    {
 <a name="l19"></a>      bd1=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.blkdevs[i];
-<a name="l20"></a>      </span><span class=cB1>if</span><span class=cB0> (bd1-&gt;bd_signature==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB3>BD_SIGNATURE_VAL</a></span><span class=cB0> &amp;&amp; bd!=bd1 &amp;&amp;
-<a name="l21"></a>          </span><span class=cB7>(</span><span class=cB0>bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0> || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ATA</a></span><span class=cB0> || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>
-<a name="l22"></a>              || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l20"></a>      </span><span class=cB1>if</span><span class=cB0> (bd1-&gt;bd_signature==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3141"></span><span class=cB3>BD_SIGNATURE_VAL</a></span><span class=cB0> &amp;&amp; bd!=bd1 &amp;&amp;
+<a name="l21"></a>          </span><span class=cB7>(</span><span class=cB0>bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0> || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_ATA</a></span><span class=cB0> || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>
+<a name="l22"></a>              || bd1-&gt;type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3098"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
 <a name="l23"></a>          bd1-&gt;base0==bd-&gt;base0)
 <a name="l24"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l25"></a>        bd-&gt;lock_fwding=bd1;
@@ -70,15 +70,15 @@
 <a name="l30"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l31"></a>}
 <a name="l32"></a>
-<a name="l33"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l33"></span><span class=cB5>BlkDevAdd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd,</span><span class=cB9>I64</span><span class=cB0> prt_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0>,
+<a name="l33"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l33"></span><span class=cB5>BlkDevAdd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd,</span><span class=cB9>I64</span><span class=cB0> prt_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0>,
 <a name="l34"></a>    </span><span class=cB1>Bool</span><span class=cB0> whole_drv,</span><span class=cB1>Bool</span><span class=cB0> make_free)
 <a name="l35"></a>{</span><span class=cB2>//It will mount just one partition of prt_num&gt;=0.</span><span class=cB0>
 <a name="l36"></a></span><span class=cB2>//When repartitioing whole drive, whole_drv=TRUE.</span><span class=cB0>
 <a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,ext_base,</span><span class=cB1>offset</span><span class=cB0>,res=0,num=0;
-<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3200"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
-<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2468"></span><span class=cB9>CRedSeaBoot</a></span><span class=cB0> br;
-<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2459"></span><span class=cB9>CMasterBoot</a></span><span class=cB0> mbr;
-<a name="l41"></a>  bd-&gt;bd_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB3>BD_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2467"></span><span class=cB9>CRedSeaBoot</a></span><span class=cB0> br;
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2458"></span><span class=cB9>CMasterBoot</a></span><span class=cB0> mbr;
+<a name="l41"></a>  bd-&gt;bd_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3141"></span><span class=cB3>BD_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (make_free)
 <a name="l43"></a>    dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l43"></span><span class=cB5>DrvMakeFreeSlot</a></span><span class=cB0>(bd-&gt;first_drv_let);
 <a name="l44"></a>  </span><span class=cB1>else</span><span class=cB0>
@@ -88,12 +88,12 @@
 <a name="l48"></a>  dv-&gt;size=bd-&gt;max_blk+1-bd-&gt;drv_offset;
 <a name="l49"></a>  </span><span class=cB1>switch</span><span class=cB0> (bd-&gt;type)
 <a name="l50"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l51"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_RAM</a></span><span class=cB0>:
-<a name="l52"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3095"></span><span class=cB3>BDT_ISO_FILE_READ</a></span><span class=cB0>:
-<a name="l53"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ISO_FILE_WRITE</a></span><span class=cB0>:
-<a name="l54"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l51"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3092"></span><span class=cB3>BDT_RAM</a></span><span class=cB0>:
+<a name="l52"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ISO_FILE_READ</a></span><span class=cB0>:
+<a name="l53"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3095"></span><span class=cB3>BDT_ISO_FILE_WRITE</a></span><span class=cB0>:
+<a name="l54"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l55"></a>    dv-&gt;prt_num=num;
-<a name="l56"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3170"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
+<a name="l56"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3169"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
 <a name="l57"></a></span><span class=cB2>//This is to force creation of a RAM</span><span class=cB0>
 <a name="l58"></a>    </span><span class=cB2>//drive during boot, so it is probably</span><span class=cB0>
 <a name="l59"></a>    </span><span class=cB2>//MAlloced to the same addr and can</span><span class=cB0>
@@ -106,12 +106,12 @@
 <a name="l66"></a>    </span><span class=cB1>else</span><span class=cB0>
 <a name="l67"></a>      dv-&gt;dv_signature=0;
 <a name="l68"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l69"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>:
-<a name="l70"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3102"></span><span class=cB3>BDT_SERIAL</a></span><span class=cB0>:
-<a name="l71"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3103"></span><span class=cB3>BDT_VIRTUAL</a></span><span class=cB0>:
-<a name="l72"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
-<a name="l73"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
-<a name="l74"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>; </span><span class=cB2>//Temporarily validate</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>:
+<a name="l70"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_SERIAL</a></span><span class=cB0>:
+<a name="l71"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3102"></span><span class=cB3>BDT_VIRTUAL</a></span><span class=cB0>:
+<a name="l72"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
+<a name="l73"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3098"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
+<a name="l74"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>; </span><span class=cB2>//Temporarily validate</span><span class=cB0>
 <a name="l75"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l35"></span><span class=cB5>BlkDevInit</a></span><span class=cB7>(</span><span class=cB0>bd</span><span class=cB7>)</span><span class=cB0>)
 <a name="l76"></a>      dv-&gt;dv_signature=0; </span><span class=cB2>//Revoke validation</span><span class=cB0>
 <a name="l77"></a>    </span><span class=cB1>else</span><span class=cB0>
@@ -119,24 +119,24 @@
 <a name="l79"></a>      dv-&gt;dv_signature=0; </span><span class=cB2>//Revoke validation</span><span class=cB0>
 <a name="l80"></a>      </span><span class=cB1>if</span><span class=cB0> (whole_drv)
 <a name="l81"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l82"></a>        dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l82"></a>        dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l83"></a>        dv-&gt;prt_num=num;
 <a name="l84"></a>        res++;
-<a name="l85"></a>        dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3170"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
+<a name="l85"></a>        dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3169"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
 <a name="l86"></a>        dv-&gt;size=bd-&gt;max_blk+1-bd-&gt;drv_offset;
 <a name="l87"></a></span><span class=cB2>//The following read is a test read.</span><span class=cB0>
 <a name="l88"></a>        </span><span class=cB2>//if it hangs, the drive is not supported.</span><span class=cB0>
-<a name="l89"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
+<a name="l89"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
 <a name="l90"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l448"></span><span class=cB5>ATAReadBlks</a></span><span class=cB0>(bd,&amp;mbr,0,1);
 <a name="l91"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bd-&gt;read_func)
 <a name="l92"></a>          (*bd-&gt;read_func)(&amp;mbr,0,1);
 <a name="l93"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l94"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l95"></a>      </span><span class=cB1>offset</span><span class=cB0>=0;
-<a name="l96"></a>      ext_base=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2445"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
+<a name="l96"></a>      ext_base=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2444"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
 <a name="l97"></a>      </span><span class=cB1>while</span><span class=cB0> (prt_num&lt;0 || num&lt;=prt_num)
 <a name="l98"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l99"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
+<a name="l99"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
 <a name="l100"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l448"></span><span class=cB5>ATAReadBlks</a></span><span class=cB0>(bd,&amp;mbr,</span><span class=cB1>offset</span><span class=cB0>,1);
 <a name="l101"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bd-&gt;read_func)
 <a name="l102"></a>          (*bd-&gt;read_func)(&amp;mbr,</span><span class=cB1>offset</span><span class=cB0>,1);
@@ -145,7 +145,7 @@
 <a name="l105"></a>        j=-1;
 <a name="l106"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;4 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>prt_num&lt;0 || num&lt;=prt_num</span><span class=cB7>)</span><span class=cB0>; i++)
 <a name="l107"></a>        {
-<a name="l108"></a>          </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0> &amp;&amp; prt_num &gt; 0)
+<a name="l108"></a>          </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0> &amp;&amp; prt_num &gt; 0)
 <a name="l109"></a>          </span><span class=cB7>{</span><span class=cB0>
 <a name="l110"></a>            </span><span class=cB6>&quot;\nOnly one parition/drive supported for serial/other/virtual devices!\n&quot;</span><span class=cB0>;
 <a name="l111"></a>            </span><span class=cB1>break</span><span class=cB0>;
@@ -161,52 +161,52 @@
 <a name="l121"></a>            dv-&gt;size    =mbr.p[i].size;
 <a name="l122"></a>            </span><span class=cB1>switch</span><span class=cB0> (mbr.p[i].type)
 <a name="l123"></a>            {
-<a name="l124"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3189"></span><span class=cB3>MBR_PT_REDSEA</a></span><span class=cB0>:
-<a name="l125"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l124"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3188"></span><span class=cB3>MBR_PT_REDSEA</a></span><span class=cB0>:
+<a name="l125"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l126"></a>              dv-&gt;prt_num=num;
 <a name="l127"></a>              res++;
-<a name="l128"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3170"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
+<a name="l128"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3169"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
 <a name="l129"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l67"></span><span class=cBD>RedSeaInit</a></span><span class=cB0>(dv);
 <a name="l130"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l131"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3182"></span><span class=cB3>MBR_PT_FAT32a</a></span><span class=cB0>:
-<a name="l132"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3183"></span><span class=cB3>MBR_PT_FAT32b</a></span><span class=cB0>:
-<a name="l133"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3184"></span><span class=cB3>MBR_PT_FAT32c</a></span><span class=cB0>:
-<a name="l134"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3185"></span><span class=cB3>MBR_PT_FAT32d</a></span><span class=cB0>:
-<a name="l135"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3186"></span><span class=cB3>MBR_PT_FAT32e</a></span><span class=cB0>:
-<a name="l136"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3187"></span><span class=cB3>MBR_PT_FAT32f</a></span><span class=cB0>:
-<a name="l137"></a>              </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
+<a name="l131"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3181"></span><span class=cB3>MBR_PT_FAT32a</a></span><span class=cB0>:
+<a name="l132"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3182"></span><span class=cB3>MBR_PT_FAT32b</a></span><span class=cB0>:
+<a name="l133"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3183"></span><span class=cB3>MBR_PT_FAT32c</a></span><span class=cB0>:
+<a name="l134"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3184"></span><span class=cB3>MBR_PT_FAT32d</a></span><span class=cB0>:
+<a name="l135"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3185"></span><span class=cB3>MBR_PT_FAT32e</a></span><span class=cB0>:
+<a name="l136"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3186"></span><span class=cB3>MBR_PT_FAT32f</a></span><span class=cB0>:
+<a name="l137"></a>              </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
 <a name="l138"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l448"></span><span class=cB5>ATAReadBlks</a></span><span class=cB0>(bd,&amp;br,dv-&gt;drv_offset,1);
 <a name="l139"></a>              </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (bd-&gt;read_func)
 <a name="l140"></a>                (*bd-&gt;read_func)(&amp;br,dv-&gt;drv_offset,1);
-<a name="l141"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l141"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l142"></a>              dv-&gt;prt_num=num;
 <a name="l143"></a>              res++;
-<a name="l144"></a>              </span><span class=cB1>if</span><span class=cB0> (br.signature==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3189"></span><span class=cB3>MBR_PT_REDSEA</a></span><span class=cB0>)
+<a name="l144"></a>              </span><span class=cB1>if</span><span class=cB0> (br.signature==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3188"></span><span class=cB3>MBR_PT_REDSEA</a></span><span class=cB0>)
 <a name="l145"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l146"></a>                dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3170"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
+<a name="l146"></a>                dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3169"></span><span class=cB3>FSt_REDSEA</a></span><span class=cB0>;
 <a name="l147"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysRedSea.html#l67"></span><span class=cBD>RedSeaInit</a></span><span class=cB0>(dv);
 <a name="l148"></a>              </span><span class=cB7>}</span><span class=cB0>
 <a name="l149"></a>              </span><span class=cB1>else</span><span class=cB0>
 <a name="l150"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l151"></a>                dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3171"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>;
+<a name="l151"></a>                dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3170"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>;
 <a name="l152"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l24"></span><span class=cBD>FAT32Init</a></span><span class=cB0>(dv);
 <a name="l153"></a>              </span><span class=cB7>}</span><span class=cB0>
 <a name="l154"></a>              </span><span class=cB1>break</span><span class=cB0>;
-<a name="l155"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3188"></span><span class=cB3>MBR_PT_NTFS</a></span><span class=cB0>:
-<a name="l156"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l155"></a>            </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3187"></span><span class=cB3>MBR_PT_NTFS</a></span><span class=cB0>:
+<a name="l156"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l157"></a>              dv-&gt;prt_num=num;
 <a name="l158"></a>              res++;
-<a name="l159"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3173"></span><span class=cB3>FSt_NTFS</a></span><span class=cB0>;
+<a name="l159"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3172"></span><span class=cB3>FSt_NTFS</a></span><span class=cB0>;
 <a name="l160"></a>              </span><span class=cB1>break</span><span class=cB0>;
 <a name="l161"></a>            </span><span class=cB1>case</span><span class=cB0> 5:
 <a name="l162"></a>            </span><span class=cB1>case</span><span class=cB0> 15:
 <a name="l163"></a>              j=i;
 <a name="l164"></a>              </span><span class=cB1>break</span><span class=cB0>;
 <a name="l165"></a>            </span><span class=cB1>default</span><span class=cB0>:
-<a name="l166"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l166"></a>              dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l167"></a>              dv-&gt;prt_num=num;
 <a name="l168"></a>              res++;
-<a name="l169"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3175"></span><span class=cB3>FSt_UNKNOWN</a></span><span class=cB0>;
+<a name="l169"></a>              dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3174"></span><span class=cB3>FSt_UNKNOWN</a></span><span class=cB0>;
 <a name="l170"></a>            }
 <a name="l171"></a>            num++;
 <a name="l172"></a>          </span><span class=cB7>}</span><span class=cB0>
@@ -215,11 +215,11 @@
 <a name="l175"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l176"></a>        </span><span class=cB1>if</span><span class=cB0> (j&lt;0)
 <a name="l177"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l178"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3101"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
+<a name="l178"></a>        </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_OTHER</a></span><span class=cB0>)
 <a name="l179"></a>          </span><span class=cB1>break</span><span class=cB0>;
 <a name="l180"></a>        </span><span class=cB1>if</span><span class=cB0> (!mbr.p[j].</span><span class=cB1>offset</span><span class=cB0>)
 <a name="l181"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l182"></a>        </span><span class=cB1>if</span><span class=cB0> (ext_base==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2445"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
+<a name="l182"></a>        </span><span class=cB1>if</span><span class=cB0> (ext_base==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2444"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
 <a name="l183"></a>        {
 <a name="l184"></a>          </span><span class=cB1>offset</span><span class=cB0>=mbr.p[j].</span><span class=cB1>offset</span><span class=cB0>;
 <a name="l185"></a>          ext_base=</span><span class=cB1>offset</span><span class=cB0>;
@@ -229,12 +229,12 @@
 <a name="l189"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l190"></a>    }
 <a name="l191"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l192"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
-<a name="l193"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
-<a name="l194"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
+<a name="l192"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
+<a name="l193"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
+<a name="l194"></a>    dv-&gt;dv_signature=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3198"></span><span class=cB3>DRV_SIGNATURE_VAL</a></span><span class=cB0>;
 <a name="l195"></a>    dv-&gt;prt_num=num;
 <a name="l196"></a>    res++;
-<a name="l197"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3172"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>; </span><span class=cB2>//Start with this</span><span class=cB0>
+<a name="l197"></a>    dv-&gt;fs_type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3171"></span><span class=cB3>FSt_ISO9660</a></span><span class=cB0>; </span><span class=cB2>//Start with this</span><span class=cB0>
 <a name="l198"></a>    dv-&gt;size=0;
 <a name="l199"></a>    </span><span class=cB1>break</span><span class=cB0>;
 <a name="l200"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -247,9 +247,9 @@
 <a name="l207"></a>
 <a name="l208"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l208"></span><span class=cB5>DrvEnable</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let,</span><span class=cB1>Bool</span><span class=cB0> val)
 <a name="l209"></a>{</span><span class=cB2>//Can unmount or remount, but not mount the first time.</span><span class=cB0>
-<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3200"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
+<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
 <a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB7>(</span><span class=cB0>drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l212"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;dv-&gt;fs_type,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3179"></span><span class=cB3>FStf_DISABLE</a></span><span class=cB0>,!val);
+<a name="l212"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l34"></span><span class=cB5>LBEqu</a></span><span class=cB0>(&amp;dv-&gt;fs_type,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3178"></span><span class=cB3>FStf_DISABLE</a></span><span class=cB0>,!val);
 <a name="l213"></a>  </span><span class=cB1>else</span><span class=cB0>
 <a name="l214"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l215"></a>}
@@ -269,11 +269,11 @@
 <a name="l229"></a>    type=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l198"></span><span class=cB5>Let2BlkDevType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i);
 <a name="l230"></a>    </span><span class=cB1>switch</span><span class=cB0> (type)
 <a name="l231"></a>    {
-<a name="l232"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
-<a name="l233"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>);
+<a name="l232"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>:
+<a name="l233"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3098"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>);
 <a name="l234"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l235"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
-<a name="l236"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>);
+<a name="l235"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>:
+<a name="l236"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>);
 <a name="l237"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l238"></a>    }
 <a name="l239"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -287,11 +287,11 @@
 <a name="l247"></a>    type=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l198"></span><span class=cB5>Let2BlkDevType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i);
 <a name="l248"></a>    </span><span class=cB1>switch</span><span class=cB0> (type)
 <a name="l249"></a>    {
-<a name="l250"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
-<a name="l251"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3094"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>);
+<a name="l250"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3098"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>:
+<a name="l251"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3093"></span><span class=cB3>BDT_ATA</a></span><span class=cB0>);
 <a name="l252"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l253"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
-<a name="l254"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>);
+<a name="l253"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>:
+<a name="l254"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'A'</span><span class=cB0>+i,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>);
 <a name="l255"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l256"></a>    }
 <a name="l257"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -316,7 +316,7 @@
 <a name="l276"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l277"></a>}
 <a name="l278"></a>
-<a name="l279"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l279"></span><span class=cBD>GetBaseUnit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd)
+<a name="l279"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l279"></span><span class=cBD>GetBaseUnit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd)
 <a name="l280"></a>{
 <a name="l281"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
 <a name="l282"></a>  </span><span class=cB1>Bool</span><span class=cB0> probe, legacy, ahci;
@@ -355,86 +355,80 @@
 <a name="l315"></a></span><span class=cB7>}</span><span class=cB0>
 <a name="l316"></a></span><span class=cB1>else</span><span class=cB0>
 <a name="l317"></a></span><span class=cB7>{</span><span class=cB0>
-<a name="l318"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l319"></a>  legacy = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l75"></span><span class=cBD>BootDVDProbeAll</a></span><span class=cB0>(bd);
-<a name="l320"></a>  </span><span class=cB1>if</span><span class=cB0> (!legacy)
-<a name="l321"></a>  {
-<a name="l322"></a>    </span><span class=cB6>&quot;Failed trying AHCI mode...\n&quot;</span><span class=cB0>;
-<a name="l323"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAHCI.html#l906"></span><span class=cB5>AHCIInit</a></span><span class=cB0>;
-<a name="l324"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.ahci_hba)
-<a name="l325"></a>    </span><span class=cB7>{</span><span class=cB0>
-<a name="l326"></a>      </span><span class=cB6>&quot;Failed to find any legacy or AHCI mode devices!\n\n&quot;</span><span class=cB0>;
-<a name="l327"></a>      </span><span class=cB6>&quot;Please Reboot!\n&quot;</span><span class=cB0>;
-<a name="l328"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l329"></a>      {
-<a name="l330"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10000);
-<a name="l331"></a>      }
-<a name="l332"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l333"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l334"></a>    </span><span class=cB7>{</span><span class=cB0>
-<a name="l335"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l260"></span><span class=cB5>SwitchToAHCI</a></span><span class=cB0>;
-<a name="l336"></a>      bd-&gt;type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3100"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>;
-<a name="l337"></a>      ahci=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAHCI.html#l1013"></span><span class=cBD>AHCIBootDVDProbeAll</a></span><span class=cB0>(bd);
-<a name="l338"></a>      </span><span class=cB1>if</span><span class=cB0> (ahci)
-<a name="l339"></a>      {
-<a name="l340"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l341"></a>      }
-<a name="l342"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l343"></a>      {
-<a name="l344"></a>        </span><span class=cB6>&quot;Failed to find any legacy or AHCI mode devices!\n\n&quot;</span><span class=cB0>;
-<a name="l345"></a>        </span><span class=cB6>&quot;Please reboot!\n&quot;</span><span class=cB0>;
-<a name="l346"></a>        </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l347"></a>        </span><span class=cB7>{</span><span class=cB0>
-<a name="l348"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10000);
-<a name="l349"></a>        </span><span class=cB7>}</span><span class=cB0>
-<a name="l350"></a>      }
-<a name="l351"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l352"></a>  }
-<a name="l353"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l354"></a>  {
-<a name="l355"></a>    </span><span class=cB6>&quot;Found IDE device!\n&quot;</span><span class=cB0>;
-<a name="l356"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l357"></a>  }
-<a name="l358"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l359"></a></span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good;
-<a name="l360"></a>}
-<a name="l361"></a>
-<a name="l362"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l362"></span><span class=cB5>MountAuto</a></span><span class=cB0>()
-<a name="l363"></a>{
-<a name="l364"></a>  </span><span class=cB1>Bool</span><span class=cB0> silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l310"></span><span class=cB5>IsSilent</a></span><span class=cB0>;
-<a name="l365"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
-<a name="l366"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l367"></a>    </span><span class=cB1>try</span><span class=cB0>
-<a name="l368"></a>    {
-<a name="l369"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l444"></span><span class=cB5>MountAHCIAuto</a></span><span class=cB0>;
-<a name="l370"></a>    }
-<a name="l371"></a>    </span><span class=cB1>catch</span><span class=cB0>
-<a name="l372"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l373"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l374"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l506"></span><span class=cB5>MountIDEAuto</a></span><span class=cB0>;
-<a name="l375"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l305"></span><span class=cB5>Silent</a></span><span class=cB0>(silent);
-<a name="l376"></a>}
-<a name="l377"></a>
-<a name="l378"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l378"></span><span class=cBD>BlkDevsInitAll</a></span><span class=cB0>()
-<a name="l379"></a>{
-<a name="l380"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd;
-<a name="l381"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l382"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.ahci_hba=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l383"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.blkdevs=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3143"></span><span class=cB9>CBlkDev</a></span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3141"></span><span class=cB3>BLKDEVS_NUM</a></span><span class=cB0>);
-<a name="l384"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.drvs=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3200"></span><span class=cB9>CDrv</a></span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3197"></span><span class=cB3>DRVS_NUM</a></span><span class=cB0>);
-<a name="l385"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3197"></span><span class=cB3>DRVS_NUM</a></span><span class=cB0>; i++)
-<a name="l386"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.let_to_drv[i]=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.drvs[i];
-<a name="l387"></a>#</span><span class=cB1>exe</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l388"></a>  </span><span class=cB1>if</span><span class=cB0> (kernel_cfg-&gt;opts[CFG_AHCI_MODE])
-<a name="l389"></a>    <a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;SwitchToAHCI;&quot;</span><span class=cB0>);
-<a name="l390"></a></span><span class=cB7>}</span><span class=cB0>;
-<a name="l391"></a>#</span><span class=cB1>exe</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l392"></a></span><span class=cB1>if</span><span class=cB0> (kernel_cfg-&gt;opts[CFG_MOUNT_IDE_AUTO])
-<a name="l393"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;MountAuto;&quot;</span><span class=cB0>);
-<a name="l394"></a><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#exe {Option(OPTf_WARN_PAREN,OFF);}&quot;</span><span class=cB0>);
-<a name="l395"></a><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l248"></span><span class=cB5>StreamDoc</a></span><span class=cB0>(kernel_cfg-&gt;add_dev);
-<a name="l396"></a><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#exe {Option(OPTf_WARN_PAREN,ON);}&quot;</span><span class=cB0>);
-<a name="l397"></a></span><span class=cB7>}</span><span class=cB0>;
-<a name="l398"></a>}
+<a name="l318"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAHCI.html#l906"></span><span class=cB5>AHCIInit</a></span><span class=cB0>)
+<a name="l319"></a>  {
+<a name="l320"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l321"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l260"></span><span class=cB5>SwitchToAHCI</a></span><span class=cB0>;
+<a name="l322"></a>    bd-&gt;type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3099"></span><span class=cB3>BDT_AHCI_SATAPI</a></span><span class=cB0>;
+<a name="l323"></a>    ahci=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAHCI.html#l1015"></span><span class=cBD>AHCIBootDVDProbeAll</a></span><span class=cB0>(bd);
+<a name="l324"></a>  }
+<a name="l325"></a>  </span><span class=cB1>if</span><span class=cB0> (!ahci)
+<a name="l326"></a>  {
+<a name="l327"></a>    </span><span class=cB6>&quot;AHCI not detected, trying legacy mode...\n\n&quot;</span><span class=cB0>;
+<a name="l328"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l329"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l272"></span><span class=cB5>SwitchToIDE</a></span><span class=cB0>;
+<a name="l330"></a>    bd-&gt;type=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3096"></span><span class=cB3>BDT_ATAPI</a></span><span class=cB0>;
+<a name="l331"></a>    legacy = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l75"></span><span class=cBD>BootDVDProbeAll</a></span><span class=cB0>(bd);
+<a name="l332"></a>    </span><span class=cB1>if</span><span class=cB0> (!legacy)
+<a name="l333"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l334"></a>      </span><span class=cB6>&quot;Failed to find any legacy or AHCI mode devices!\n\n&quot;</span><span class=cB0>;
+<a name="l335"></a>      </span><span class=cB6>&quot;Please Reboot!\n&quot;</span><span class=cB0>;
+<a name="l336"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l337"></a>      {
+<a name="l338"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10000);
+<a name="l339"></a>      }
+<a name="l340"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l341"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l342"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l343"></a>      </span><span class=cB6>&quot;Found IDE device!\n&quot;</span><span class=cB0>;
+<a name="l344"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l345"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l346"></a>  }
+<a name="l347"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l348"></a>  {
+<a name="l349"></a>    </span><span class=cB6>&quot;Found AHCI device!\n&quot;</span><span class=cB0>;
+<a name="l350"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l351"></a>  }
+<a name="l352"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l353"></a></span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.dvd_boot_is_good;
+<a name="l354"></a>}
+<a name="l355"></a>
+<a name="l356"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l356"></span><span class=cB5>MountAuto</a></span><span class=cB0>()
+<a name="l357"></a>{
+<a name="l358"></a>  </span><span class=cB1>Bool</span><span class=cB0> silent=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l310"></span><span class=cB5>IsSilent</a></span><span class=cB0>;
+<a name="l359"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
+<a name="l360"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l361"></a>    </span><span class=cB1>try</span><span class=cB0>
+<a name="l362"></a>    {
+<a name="l363"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l444"></span><span class=cB5>MountAHCIAuto</a></span><span class=cB0>;
+<a name="l364"></a>    }
+<a name="l365"></a>    </span><span class=cB1>catch</span><span class=cB0>
+<a name="l366"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l367"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l368"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATAId.html#l506"></span><span class=cB5>MountIDEAuto</a></span><span class=cB0>;
+<a name="l369"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l305"></span><span class=cB5>Silent</a></span><span class=cB0>(silent);
+<a name="l370"></a>}
+<a name="l371"></a>
+<a name="l372"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l372"></span><span class=cBD>BlkDevsInitAll</a></span><span class=cB0>()
+<a name="l373"></a>{
+<a name="l374"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd;
+<a name="l375"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l376"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.ahci_hba=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l377"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.blkdevs=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3140"></span><span class=cB3>BLKDEVS_NUM</a></span><span class=cB0>);
+<a name="l378"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.drvs=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB9>CDrv</a></span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3196"></span><span class=cB3>DRVS_NUM</a></span><span class=cB0>);
+<a name="l379"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3196"></span><span class=cB3>DRVS_NUM</a></span><span class=cB0>; i++)
+<a name="l380"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.let_to_drv[i]=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.drvs[i];
+<a name="l381"></a>#</span><span class=cB1>exe</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l382"></a>  </span><span class=cB1>if</span><span class=cB0> (kernel_cfg-&gt;opts[CFG_AHCI_MODE])
+<a name="l383"></a>    <a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;SwitchToAHCI;&quot;</span><span class=cB0>);
+<a name="l384"></a></span><span class=cB7>}</span><span class=cB0>;
+<a name="l385"></a>#</span><span class=cB1>exe</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l386"></a></span><span class=cB1>if</span><span class=cB0> (kernel_cfg-&gt;opts[CFG_MOUNT_IDE_AUTO])
+<a name="l387"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;MountAuto;&quot;</span><span class=cB0>);
+<a name="l388"></a><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#exe {Option(OPTf_WARN_PAREN,OFF);}&quot;</span><span class=cB0>);
+<a name="l389"></a><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l248"></span><span class=cB5>StreamDoc</a></span><span class=cB0>(kernel_cfg-&gt;add_dev);
+<a name="l390"></a><a href="http://tinkeros.github.io/WbGit/Compiler/CMisc.html#l19"></span><span class=cB5>StreamPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#exe {Option(OPTf_WARN_PAREN,ON);}&quot;</span><span class=cB0>);
+<a name="l391"></a></span><span class=cB7>}</span><span class=cB0>;
+<a name="l392"></a>}
 </span></div></pre></body>
 </html>

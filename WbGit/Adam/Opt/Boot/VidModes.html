@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.15">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Video&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l3"></span><span class=cB5>VidModes</a></span><span class=cB0>()
+<a name="l4"></a>{</span><span class=cB2>// List detected video resolutions possible.</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l6"></a>  </span><span class=cB6>&quot;Detected resolution options:\n\n&quot;</span><span class=cB0>;
+<a name="l7"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;32;i++)
+<a name="l8"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l9"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i])
+<a name="l10"></a>    {
+<a name="l11"></a>      </span><span class=cB6>&quot;  %dx%d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[1],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[0];
+<a name="l12"></a>    }
+<a name="l13"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l15"></a>}
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l17"></span><span class=cB5>CheckVidMode</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> width, </span><span class=cB9>I64</span><span class=cB0> height, </span><span class=cB9>I64</span><span class=cB0> scale=1)
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l20"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;32;i++)
+<a name="l21"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l22"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i])
+<a name="l23"></a>    {
+<a name="l24"></a>      </span><span class=cB1>if</span><span class=cB0> (width == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[1]/scale &amp;&amp; height == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[0]/scale)
+<a name="l25"></a>        </span><span class=cB1>return</span><span class=cB0> 1;
+<a name="l26"></a>    }
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l29"></a>}
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l31"></span><span class=cB5>BuildModesDef</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> scale=1)
+<a name="l32"></a>{
+<a name="l33"></a>  </span><span class=cB9>I64</span><span class=cB0> i,w,h;
+<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0> *vid_modes_str=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(32*10);
+<a name="l35"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;32;i++)
+<a name="l36"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i])
+<a name="l38"></a>    {
+<a name="l39"></a>      w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[1]/scale;
+<a name="l40"></a>      h=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l299"></span><span class=cB6>vbe_vid_modes</a></span><span class=cB0>[i].u16[0]/scale;
+<a name="l41"></a>
+<a name="l42"></a>      </span><span class=cB1>if</span><span class=cB0> (w&gt;=640 &amp;&amp; h&gt;=360 &amp;&amp; w%8==0 &amp;&amp; h%4==0)
+<a name="l43"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l44"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(vid_modes_str,</span><span class=cB6>&quot;%dx%d\n&quot;</span><span class=cB0>,w,h);
+<a name="l45"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a>    }
+<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;32*10;i++)
+<a name="l49"></a>    </span><span class=cB1>if</span><span class=cB0> (vid_modes_str[i]==</span><span class=cB6>'\n'</span><span class=cB0>) vid_modes_str[i]=0;
+<a name="l50"></a>  </span><span class=cB1>if</span><span class=cB0> (scale==1)
+<a name="l51"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_VID_MODES&quot;</span><span class=cB0>,vid_modes_str);
+<a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (scale==2)
+<a name="l53"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_VID_MODES2X&quot;</span><span class=cB0>,vid_modes_str);
+<a name="l54"></a>}
+<a name="l55"></a>
+<a name="l56"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l31"></span><span class=cB5>BuildModesDef</a></span><span class=cB0>;
+<a name="l57"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l31"></span><span class=cB5>BuildModesDef</a></span><span class=cB0>(2);
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l59"></span><span class=cB5>ChangeRes</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> scale=1)
+<a name="l60"></a>{</span><span class=cB2>// Change resolution (optionally with scaling)</span><span class=cB0>
+<a name="l61"></a>  </span><span class=cB9>I64</span><span class=cB0> i,w,h;
+<a name="l62"></a>  </span><span class=cB1>U8</span><span class=cB0> *mode_str, *h_str;
+<a name="l63"></a>  </span><span class=cB6>&quot;This will compile and install a new kernel and master boot record, do you wish to continue &quot;</span><span class=cB0>;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'n'</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l65"></a>
+<a name="l66"></a>  </span><span class=cB1>if</span><span class=cB0> (scale==1)
+<a name="l67"></a>    i=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l116"></span><span class=cB5>PopUpPickDefineSub</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_VID_MODES&quot;</span><span class=cB0>);
+<a name="l68"></a>  </span><span class=cB1>if</span><span class=cB0> (scale==2)
+<a name="l69"></a>    i=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l116"></span><span class=cB5>PopUpPickDefineSub</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_VID_MODES2X&quot;</span><span class=cB0>);
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=i&lt;=31)
+<a name="l71"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    </span><span class=cB1>if</span><span class=cB0> (scale==1)
+<a name="l73"></a>      mode_str=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB7>(</span><span class=cB0>i,</span><span class=cB6>&quot;ST_VID_MODES&quot;</span><span class=cB7>)</span><span class=cB0>);
+<a name="l74"></a>    </span><span class=cB1>if</span><span class=cB0> (scale==2)
+<a name="l75"></a>      mode_str=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB7>(</span><span class=cB0>i,</span><span class=cB6>&quot;ST_VID_MODES2X&quot;</span><span class=cB7>)</span><span class=cB0>);
+<a name="l76"></a>    h_str=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l614"></span><span class=cB5>StrFirstOcc</a></span><span class=cB0>(mode_str,</span><span class=cB6>&quot;x&quot;</span><span class=cB0>);
+<a name="l77"></a>    *h_str=0;
+<a name="l78"></a>    w=<a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(mode_str);
+<a name="l79"></a>    h_str=mode_str+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(mode_str)+1;
+<a name="l80"></a>    h=<a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(h_str);
+<a name="l81"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/MakeBoot.html#l3"></span><span class=cB5>MakeAllDef</a></span><span class=cB0>(1,w,h,1,scale);
+<a name="l82"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l83"></a>
+<a name="l84"></a>  </span><span class=cB6>&quot;Reboot &quot;</span><span class=cB0>;
+<a name="l85"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
+<a name="l86"></a>}
+<a name="l87"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>

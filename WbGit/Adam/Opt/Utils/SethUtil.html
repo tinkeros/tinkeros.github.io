@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.14">
+<meta name="generator" content="TinkerOS V5.15">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -37,80 +37,150 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l1"></span><span class=cB5>SethREPL</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> cpu_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)
-<a name="l2"></a>{
-<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (!cpu_num || cpu_num&gt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>)
-<a name="l4"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l5"></a>    </span><span class=cB6>&quot;Not a valid Seth core!\n&quot;</span><span class=cB0>;
-<a name="l6"></a>    </span><span class=cB1>return</span><span class=cB0>;
-<a name="l7"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"></span><span class=cB9>CTask</a></span><span class=cB0> *repl=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l428"></span><span class=cB5>SrvCmdLine</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,cpu_num);
-<a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
-<a name="l10"></a>  repl-&gt;title_src=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3746"></span><span class=cB3>TTS_LOCKED_CONST</a></span><span class=cB0>;
-<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(repl-&gt;task_title,</span><span class=cB6>&quot;Seth REPL&quot;</span><span class=cB0>);
-<a name="l12"></a>  </span><span class=cB1>U8</span><span class=cB0> *line,*cwd,*pmpt;
-<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3670"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpc;
-<a name="l14"></a>  </span><span class=cB1>while</span><span class=cB0> (1)
-<a name="l15"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l16"></a></span><span class=cB2>//TODO get DirCur result from Seth, not here</span><span class=cB0>
-<a name="l17"></a>    </span><span class=cB2>//cwd=DirCur;</span><span class=cB0>
-<a name="l18"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,</span><span class=cB6>&quot;DirCur;&quot;</span><span class=cB0>,0);
-<a name="l19"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
-<a name="l20"></a>    cwd=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(repl-&gt;answer);
-<a name="l21"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,</span><span class=cB6>&quot;Free(Fs-&gt;answer);&quot;</span><span class=cB0>,0);
-<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
-<a name="l23"></a>    </span><span class=cB1>if</span><span class=cB0> (cwd)
-<a name="l24"></a>    {
-<a name="l25"></a>      pmpt=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Seth %d %s&gt; &quot;</span><span class=cB0>,cpu_num,cwd);
-<a name="l26"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cwd);
-<a name="l27"></a>    }
-<a name="l28"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l29"></a>      pmpt=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Seth %d &gt; &quot;</span><span class=cB0>,cpu_num);
-<a name="l30"></a>    line=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(pmpt);
-<a name="l31"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(pmpt);
-<a name="l32"></a>    </span><span class=cB1>if</span><span class=cB0> (!line || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>line</span><span class=cB7>)</span><span class=cB0>&lt;=6 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l317"></span><span class=cB5>StrNICmp</a></span><span class=cB0>(line,</span><span class=cB6>&quot;exit&quot;</span><span class=cB0>,4) ||
-<a name="l33"></a>      !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l317"></span><span class=cB5>StrNICmp</a></span><span class=cB0>(line,</span><span class=cB6>&quot;quit&quot;</span><span class=cB0>,4)</span><span class=cB7>)</span><span class=cB0>)
-<a name="l34"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l35"></a>    </span><span class=cB6>&quot;\nWaiting...&quot;</span><span class=cB0>;
-<a name="l36"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,line,0);
-<a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl); </span><span class=cB2>// TODO how to detect core reset???</span><span class=cB0>
-<a name="l38"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l179"></span><span class=cB5>JobResScan</a></span><span class=cB7>(</span><span class=cB0>tmpc</span><span class=cB7>)</span><span class=cB0>)
-<a name="l39"></a>    {
-<a name="l40"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l41"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l42"></a>    }
-<a name="l43"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocChar.html#l753"></span><span class=cB5>EdLineDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc);
-<a name="l44"></a>    </span><span class=cB6>&quot;$FG$$BG$&quot;</span><span class=cB0>;
-<a name="l45"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Seth&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l3"></span><span class=cB5>GetCPUSlice</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> cpu_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB2>// Make this work like python array</span><span class=cB0>
+<a name="l6"></a>  </span><span class=cB2>// slices when we have lots of CPUs</span><span class=cB0>
+<a name="l7"></a>  </span><span class=cB2>//</span><span class=cB0>    </span><span class=cB2>    so CPU -1 = last core</span><span class=cB0>
+<a name="l8"></a>  </span><span class=cB2>//</span><span class=cB0>    </span><span class=cB2>       CPU -2 = second to last</span><span class=cB0>
+<a name="l9"></a>  </span><span class=cB2>//</span><span class=cB0>    </span><span class=cB2>       etc</span><span class=cB0>
+<a name="l10"></a>  </span><span class=cB2>// When only two everything goes to 1</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>==2) cpu_num=1;
+<a name="l13"></a>  </span><span class=cB1>else</span><span class=cB0> cpu_num = cpu_num % <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;
+<a name="l14"></a>
+<a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (cpu_num&lt;0) cpu_num+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>;
+<a name="l16"></a>
+<a name="l17"></a>  </span><span class=cB1>return</span><span class=cB0> cpu_num;
+<a name="l18"></a>}
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l20"></span><span class=cB5>SethREPL</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> cpu_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1, </span><span class=cB1>U8</span><span class=cB0> *first_cmd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB1>Bool</span><span class=cB0> exit_after_first=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l21"></a>{</span><span class=cB2>//Get a REPL to execute commands on a Seth core.</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB1>if</span><span class=cB0> (cpu_num&gt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0> || !cpu_num)
+<a name="l23"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    </span><span class=cB6>&quot;Not a valid Seth core!\n&quot;</span><span class=cB0>;
+<a name="l25"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>  cpu_num=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l3"></span><span class=cB5>GetCPUSlice</a></span><span class=cB0>(cpu_num);
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"></span><span class=cB9>CTask</a></span><span class=cB0> *repl=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l428"></span><span class=cB5>SrvCmdLine</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,cpu_num);
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
+<a name="l30"></a>  repl-&gt;title_src=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3745"></span><span class=cB3>TTS_LOCKED_CONST</a></span><span class=cB0>;
+<a name="l31"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(repl-&gt;task_title,</span><span class=cB6>&quot;Seth REPL&quot;</span><span class=cB0>);
+<a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> *line,*cwd,*pmpt,cpu_desc[5];
+<a name="l33"></a>  cpu_desc[0]=0;
+<a name="l34"></a>  </span><span class=cB1>if</span><span class=cB0> (cpu_num) <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(cpu_desc,</span><span class=cB6>&quot;Seth&quot;</span><span class=cB0>);
+<a name="l35"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(cpu_desc,</span><span class=cB6>&quot;Adam&quot;</span><span class=cB0>);
+<a name="l36"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3669"></span><span class=cB9>CJob</a></span><span class=cB0> *tmpc;
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (1)
+<a name="l38"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l39"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,</span><span class=cB6>&quot;DirCur;&quot;</span><span class=cB0>,0);
+<a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
+<a name="l41"></a>    cwd=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(repl-&gt;answer);
+<a name="l42"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,</span><span class=cB6>&quot;Free(Fs-&gt;answer);&quot;</span><span class=cB0>,0);
+<a name="l43"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl);
+<a name="l44"></a>
+<a name="l45"></a>    </span><span class=cB1>if</span><span class=cB0> (!first_cmd)
 <a name="l46"></a>    {
-<a name="l47"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(repl-&gt;put_doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
-<a name="l48"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l280"></span><span class=cB5>DocDump</a></span><span class=cB0>(repl-&gt;put_doc);
-<a name="l49"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>(repl-&gt;put_doc);
-<a name="l50"></a>      </span><span class=cB6>&quot;$FG$$BG$&quot;</span><span class=cB0>;
-<a name="l51"></a>      </span><span class=cB1>if</span><span class=cB0> (repl-&gt;new_answer)
-<a name="l52"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l53"></a>        </span><span class=cB1>if</span><span class=cB0> (repl-&gt;answer_type&amp;~1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1691"></span><span class=cB3>RT_I0</a></span><span class=cB0>)
-<a name="l54"></a>        {
-<a name="l55"></a>          </span><span class=cB1>if</span><span class=cB0> (repl-&gt;answer_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1704"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
-<a name="l56"></a>            </span><span class=cB6>&quot;%8.6fs ansf=%15.7g\n&quot;</span><span class=cB0>,repl-&gt;answer_time,repl-&gt;answer;
-<a name="l57"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l58"></a>            </span><span class=cB6>&quot;%8.6fs ans=0x%08X=%d\n&quot;</span><span class=cB0>,repl-&gt;answer_time,repl-&gt;answer,repl-&gt;answer;
-<a name="l59"></a>        }
-<a name="l60"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l61"></a>        {
-<a name="l62"></a>          </span><span class=cB6>&quot;%8.6fs\n&quot;</span><span class=cB0>,repl-&gt;answer_time;
-<a name="l63"></a>          repl-&gt;answer=0;
-<a name="l64"></a>        }
-<a name="l65"></a>        repl-&gt;new_answer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l66"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l67"></a>    }
-<a name="l68"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l47"></a>      </span><span class=cB1>if</span><span class=cB0> (cwd)
+<a name="l48"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l49"></a>        pmpt=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s %d %s&gt; &quot;</span><span class=cB0>,cpu_desc,cpu_num,cwd);
+<a name="l50"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cwd);
+<a name="l51"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l52"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l53"></a>        pmpt=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s %d &gt; &quot;</span><span class=cB0>,cpu_desc,cpu_num);
+<a name="l54"></a>      line=<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(pmpt);
+<a name="l55"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(pmpt);
+<a name="l56"></a>      </span><span class=cB1>if</span><span class=cB0> (!line || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>line</span><span class=cB7>)</span><span class=cB0>&lt;=6 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l317"></span><span class=cB5>StrNICmp</a></span><span class=cB0>(line,</span><span class=cB6>&quot;exit&quot;</span><span class=cB0>,4) ||
+<a name="l57"></a>        !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l317"></span><span class=cB5>StrNICmp</a></span><span class=cB0>(line,</span><span class=cB6>&quot;quit&quot;</span><span class=cB0>,4)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l58"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l59"></a>      </span><span class=cB6>&quot;\nExecuting, waiting for results...&quot;</span><span class=cB0>;
+<a name="l60"></a>      tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,line,0);
+<a name="l61"></a>    }
+<a name="l62"></a>    </span><span class=cB1>else</span><span class=cB0> {
+<a name="l63"></a>      tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,first_cmd,0);
+<a name="l64"></a>      first_cmd=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l65"></a>    }
+<a name="l66"></a>
+<a name="l67"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l244"></span><span class=cB5>TaskWait</a></span><span class=cB0>(repl); </span><span class=cB2>// TODO detect core reset</span><span class=cB0>
+<a name="l68"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l179"></span><span class=cB5>JobResScan</a></span><span class=cB7>(</span><span class=cB0>tmpc</span><span class=cB7>)</span><span class=cB0>)
 <a name="l69"></a>    {
-<a name="l70"></a>      </span><span class=cB6>&quot;Seth REPL task died!\n&quot;</span><span class=cB0>;
-<a name="l71"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l70"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l71"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
 <a name="l72"></a>    }
-<a name="l73"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l74"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"></span><span class=cB5>Kill</a></span><span class=cB0>(repl);
-<a name="l75"></a>}
-</span></div></pre></body>
+<a name="l73"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocChar.html#l753"></span><span class=cB5>EdLineDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc);
+<a name="l74"></a>    </span><span class=cB6>&quot;$FG$$BG$&quot;</span><span class=cB0>;
+<a name="l75"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0>)
+<a name="l76"></a>    {
+<a name="l77"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l168"></span><span class=cB5>DocPrint</a></span><span class=cB0>(repl-&gt;put_doc,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l78"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l280"></span><span class=cB5>DocDump</a></span><span class=cB0>(repl-&gt;put_doc);
+<a name="l79"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>(repl-&gt;put_doc);
+<a name="l80"></a>      </span><span class=cB6>&quot;$FG$$BG$&quot;</span><span class=cB0>;
+<a name="l81"></a>      </span><span class=cB1>if</span><span class=cB0> (repl-&gt;new_answer)
+<a name="l82"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l83"></a>        </span><span class=cB1>if</span><span class=cB0> (repl-&gt;answer_type&amp;~1!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1690"></span><span class=cB3>RT_I0</a></span><span class=cB0>)
+<a name="l84"></a>        {
+<a name="l85"></a>          </span><span class=cB1>if</span><span class=cB0> (repl-&gt;answer_type==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1703"></span><span class=cB3>RT_F64</a></span><span class=cB0>)
+<a name="l86"></a>            </span><span class=cB6>&quot;%8.6fs ansf=%15.7g\n&quot;</span><span class=cB0>,repl-&gt;answer_time,repl-&gt;answer;
+<a name="l87"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l88"></a>            </span><span class=cB6>&quot;%8.6fs ans=0x%08X=%d\n&quot;</span><span class=cB0>,repl-&gt;answer_time,repl-&gt;answer,repl-&gt;answer;
+<a name="l89"></a>        }
+<a name="l90"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l91"></a>        {
+<a name="l92"></a>          </span><span class=cB6>&quot;%8.6fs\n&quot;</span><span class=cB0>,repl-&gt;answer_time;
+<a name="l93"></a>          repl-&gt;answer=0;
+<a name="l94"></a>        }
+<a name="l95"></a>        repl-&gt;new_answer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l96"></a>        </span><span class=cB1>if</span><span class=cB0> (exit_after_first) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l97"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>    }
+<a name="l99"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l100"></a>    {
+<a name="l101"></a>      </span><span class=cB6>&quot;%s REPL task died!?\n&quot;</span><span class=cB0>,cpu_desc;
+<a name="l102"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l103"></a>    }
+<a name="l104"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l105"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>repl</span><span class=cB7>)</span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"></span><span class=cB5>Kill</a></span><span class=cB0>(repl);
+<a name="l106"></a>}
+<a name="l107"></a>
+<a name="l108"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l108"></span><span class=cB5>SethExec</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *include_file, </span><span class=cB9>I64</span><span class=cB0> cpu_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (cpu_num&gt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0> || !cpu_num)
+<a name="l111"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l112"></a>    </span><span class=cB6>&quot;Not a valid Seth core!\n&quot;</span><span class=cB0>;
+<a name="l113"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l114"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l115"></a>  </span><span class=cB1>U8</span><span class=cB0> *first_cmd = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#include \&quot;%s\&quot;\n&quot;</span><span class=cB0>, include_file);
+<a name="l116"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l20"></span><span class=cB5>SethREPL</a></span><span class=cB0>(cpu_num, first_cmd, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l117"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(first_cmd);
+<a name="l118"></a>}
+<a name="l119"></a>
+<a name="l120"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"></span><span class=cB9>CTask</a></span><span class=cB0>* <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l120"></span><span class=cB5>SethFile</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *include_file, </span><span class=cB9>I64</span><span class=cB0> cpu_num=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>-1)
+<a name="l121"></a>{</span><span class=cB2>//Include file on a Seth core (like AdamFile)</span><span class=cB0>
+<a name="l122"></a>  </span><span class=cB1>U8</span><span class=cB0> *first_cmd = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;#include \&quot;%s\&quot;\n\nExit;\n&quot;</span><span class=cB0>, include_file);
+<a name="l123"></a>
+<a name="l124"></a>  </span><span class=cB1>if</span><span class=cB0> (cpu_num&gt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>)
+<a name="l125"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l126"></a>    </span><span class=cB6>&quot;Not a valid Adam or Seth core!\n&quot;</span><span class=cB0>;
+<a name="l127"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l128"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l129"></a>
+<a name="l130"></a>  </span><span class=cB2>// If we only have 1 CPU Adam does it</span><span class=cB0>
+<a name="l131"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>==1)
+<a name="l132"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l133"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(include_file);
+<a name="l134"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>;
+<a name="l135"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l136"></a>
+<a name="l137"></a>  cpu_num=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l3"></span><span class=cB5>GetCPUSlice</a></span><span class=cB0>(cpu_num);
+<a name="l138"></a>
+<a name="l139"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"></span><span class=cB9>CTask</a></span><span class=cB0> *repl=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l428"></span><span class=cB5>SrvCmdLine</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,cpu_num);
+<a name="l140"></a>  repl-&gt;title_src=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3745"></span><span class=cB3>TTS_LOCKED_CONST</a></span><span class=cB0>;
+<a name="l141"></a>  </span><span class=cB2>// TODO StrNCpy</span><span class=cB0>
+<a name="l142"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(repl-&gt;task_title,include_file);
+<a name="l143"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l42"></span><span class=cB5>TaskExe</a></span><span class=cB0>(repl,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>,first_cmd,0);
+<a name="l144"></a>  </span><span class=cB1>return</span><span class=cB0> repl;
+<a name="l145"></a>}
+<a name="l146"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span></div></pre></body>
 </html>

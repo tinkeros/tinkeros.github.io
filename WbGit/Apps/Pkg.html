@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.14">
+<meta name="generator" content="TinkerOS V5.15">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -177,7 +177,7 @@
 <a name="l137"></a></span><span class=cB9>I64</span><span class=cB0> PkgWriteManifest(CPkgInfo* pinf, </span><span class=cB1>U8</span><span class=cB0>* path)
 <a name="l138"></a>{</span><span class=cB2>// TODO: implement</span><span class=cB0>
 <a name="l139"></a>  </span><span class=cB1>no_warn</span><span class=cB0> pinf;
-<a name="l140"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95"></span><span class=cB5>FileWrite</a></span><span class=cB0>(path, </span><span class=cB6>&quot;&quot;</span><span class=cB0>, 0);
+<a name="l140"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB0>(path, </span><span class=cB6>&quot;&quot;</span><span class=cB0>, 0);
 <a name="l141"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l142"></a>}
 <a name="l143"></a>
@@ -307,7 +307,7 @@
 <a name="l267"></a>    </span><span class=cB1>if</span><span class=cB0> (error == 0)
 <a name="l268"></a>    {
 <a name="l269"></a>      </span><span class=cB1>U8</span><span class=cB0>* tmppath = </span><span class=cB6>&quot;::/Tmp/Package.ISO.C&quot;</span><span class=cB0>;
-<a name="l270"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l95"></span><span class=cB5>FileWrite</a></span><span class=cB0>(tmppath, iso_data, iso_size);
+<a name="l270"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB0>(tmppath, iso_data, iso_size);
 <a name="l271"></a>      error = PkgInstallISOC(pinf, tmppath);
 <a name="l272"></a>    }
 <a name="l273"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(iso_data);
@@ -344,7 +344,7 @@
 <a name="l304"></a>  PkgInfoInit(&amp;pinf);
 <a name="l305"></a>  </span><span class=cB2>// Parse manifest</span><span class=cB6>
 <a name="l306"></a>  </span><span class=cB9>I64</span><span class=cB6> manifest_size;
-<a name="l307"></a>  </span><span class=cB1>U8</span><span class=cB6>* manifest_file = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB6>(manifest_path, &amp;manifest_size);
+<a name="l307"></a>  </span><span class=cB1>U8</span><span class=cB6>* manifest_file = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB6>(manifest_path, &amp;manifest_size);
 <a name="l308"></a>  </span><span class=cB2>// This relies on FileRead returning a 0-terminated buffer.</span><span class=cB6>
 <a name="l309"></a>  </span><span class=cB2>// As of v502, this happens for all file systems</span><span class=cB6>
 <a name="l310"></a>  </span><span class=cB9>I64</span><span class=cB6> error = PkgParseManifest(&amp;pinf, manifest_file);
@@ -379,7 +379,7 @@
 <a name="l339"></a></span><span class=cB2>// Install a package from the repository</span><span class=cB0>
 <a name="l340"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> PkgInstall(</span><span class=cB1>U8</span><span class=cB0>* package_name)
 <a name="l341"></a>{
-<a name="l342"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l178"></span><span class=cB5>SocketInit</a></span><span class=cB0>();
+<a name="l342"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l150"></span><span class=cB5>SocketInit</a></span><span class=cB0>();
 <a name="l343"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l190"></span><span class=cB5>DirMk</a></span><span class=cB0>(PKG_LOCAL_REPO);
 <a name="l344"></a>  CPkgInfo pinf;
 <a name="l345"></a>  PkgInfoInit(&amp;pinf);
@@ -429,7 +429,7 @@
 <a name="l389"></a></span><span class=cB2>// List packages available in the repository</span><span class=cB0>
 <a name="l390"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> PkgList()
 <a name="l391"></a>{
-<a name="l392"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l178"></span><span class=cB5>SocketInit</a></span><span class=cB0>();
+<a name="l392"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l150"></span><span class=cB5>SocketInit</a></span><span class=cB0>();
 <a name="l393"></a>  </span><span class=cB1>U8</span><span class=cB0>* url = <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s/packages.list&quot;</span><span class=cB0>, PKG_BASE_URL);
 <a name="l394"></a>  </span><span class=cB1>U8</span><span class=cB0>* list = 0;
 <a name="l395"></a>  </span><span class=cB9>I64</span><span class=cB0> size = 0;
@@ -469,7 +469,7 @@
 <a name="l429"></a>  PkgInfoInit(&amp;pinf);
 <a name="l430"></a>  </span><span class=cB2>// Parse manifest</span><span class=cB0>
 <a name="l431"></a>  </span><span class=cB9>I64</span><span class=cB0> manifest_size;
-<a name="l432"></a>  </span><span class=cB1>U8</span><span class=cB0>* manifest_file = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l1"></span><span class=cB5>FileRead</a></span><span class=cB0>(manifest_path, &amp;manifest_size);
+<a name="l432"></a>  </span><span class=cB1>U8</span><span class=cB0>* manifest_file = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(manifest_path, &amp;manifest_size);
 <a name="l433"></a>  </span><span class=cB2>// This relies on FileRead returning a 0-terminated buffer.</span><span class=cB0>
 <a name="l434"></a>  </span><span class=cB2>// As of v502, this happens for all file systems</span><span class=cB0>
 <a name="l435"></a>  </span><span class=cB9>I64</span><span class=cB0> error = PkgParseManifest(&amp;pinf, manifest_file);

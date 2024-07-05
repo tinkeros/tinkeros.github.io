@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.14">
+<meta name="generator" content="TinkerOS V5.15">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -421,7 +421,7 @@
 <a name="l381"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
 <a name="l382"></a>  </span><span class=cB1>if</span><span class=cB0> (!ode-&gt;slave_tasks)
 <a name="l383"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l384"></a>    ode-&gt;slave_tasks=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"></span><span class=cB9>CTask</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l384"></a>    ode-&gt;slave_tasks=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"></span><span class=cB9>CTask</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
 <a name="l385"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>; i++)
 <a name="l386"></a>      ode-&gt;slave_tasks[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l366"></span><span class=cB5>ODEMPTask</a></span><span class=cB0>,ode,</span><span class=cB6>&quot;ODE Slave&quot;</span><span class=cB0>,i);
 <a name="l387"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -648,9 +648,9 @@
 <a name="l608"></a>
 <a name="l609"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l609"></span><span class=cB6>ode_alloced_factor</a></span><span class=cB0>=0.75;
 <a name="l610"></a>
-<a name="l611"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l611"></span><span class=cB5>ODEsUpdate</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3794"></span><span class=cB9>CTask</a></span><span class=cB0> *task)
+<a name="l611"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AMathODE.html#l611"></span><span class=cB5>ODEsUpdate</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"></span><span class=cB9>CTask</a></span><span class=cB0> *task)
 <a name="l612"></a>{
-<a name="l613"></a>  </span><span class=cB2>/* This routine is called by the </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l54"><span class=cB4>window mgr</span></a><span class=cB2>on a continuous</span><span class=cB0>
+<a name="l613"></a>  </span><span class=cB2>/* This routine is called by the </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l73"><span class=cB4>window mgr</span></a><span class=cB2>on a continuous</span><span class=cB0>
 <a name="l614"></a></span><span class=cB2>  basis to allow real-time simulation.  It is intended</span><span class=cB0>
 <a name="l615"></a></span><span class=cB2>  to provide ress good enough for games.  It uses a runge-kutta</span><span class=cB0>
 <a name="l616"></a></span><span class=cB2>  integrator which is a better algorithm than doing it with Euler.</span><span class=cB0>
@@ -664,9 +664,9 @@
 <a name="l624"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l253"></span><span class=cB9>CMathODE</a></span><span class=cB0> *ode;
 <a name="l625"></a>  </span><span class=cB1>if</span><span class=cB0> (task-&gt;next_ode==&amp;task-&gt;next_ode)
 <a name="l626"></a>    task-&gt;last_ode_time=0;
-<a name="l627"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;win_inhibit,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1582"></span><span class=cB3>WIf_SELF_ODE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l627"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;task-&gt;win_inhibit,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1581"></span><span class=cB3>WIf_SELF_ODE</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l628"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l629"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l115"><span class=cB4>GrUpdateTasks</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l50"><span class=cB4>GrUpdateTaskODEs</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l629"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l134"><span class=cB4>GrUpdateTasks</span></a><span class=cB2>() and </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l69"><span class=cB4>GrUpdateTaskODEs</span></a><span class=cB2>().</span><span class=cB0>
 <a name="l630"></a>    </span><span class=cB2>//We will not pick a time limit based on</span><span class=cB0>
 <a name="l631"></a>    </span><span class=cB2>//how busy the CPU is, what percent of the</span><span class=cB0>
 <a name="l632"></a>    </span><span class=cB2>//last refresh cycle was spent on ODE's</span><span class=cB0>

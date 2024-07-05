@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.14">
+<meta name="generator" content="TinkerOS V5.15">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -178,9 +178,9 @@
 <a name="l139"></a>{
 <a name="l140"></a>  </span><span class=cB1>U8</span><span class=cB0> *lexable_string = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(string);
 <a name="l141"></a>  lexable_string = <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l707"></span><span class=cB5>StrReplace</a></span><span class=cB0>(lexable_string, </span><span class=cB6>&quot;.&quot;</span><span class=cB0>, </span><span class=cB6>&quot;,&quot;</span><span class=cB0>); </span><span class=cB2>// swap dots with commas since Lex is easier with them.</span><span class=cB0>
-<a name="l142"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2306"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc = <a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l32"></span><span class=cB5>CmpCtrlNew</a></span><span class=cB0>(lexable_string);
+<a name="l142"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2305"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc = <a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l32"></span><span class=cB5>CmpCtrlNew</a></span><span class=cB0>(lexable_string);
 <a name="l143"></a>  </span><span class=cB2>//Bts(&amp;cc-&gt;opts, OPTf_DECIMAL_ONLY);</span><span class=cB0>
-<a name="l144"></a>  cc-&gt;opts |= 1 &lt;&lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1673"></span><span class=cB3>OPTf_DECIMAL_ONLY</a></span><span class=cB0>;
+<a name="l144"></a>  cc-&gt;opts |= 1 &lt;&lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1672"></span><span class=cB3>OPTf_DECIMAL_ONLY</a></span><span class=cB0>;
 <a name="l145"></a>  </span><span class=cB9>I64</span><span class=cB0> tk;
 <a name="l146"></a>  </span><span class=cB9>I64</span><span class=cB0> state = IP_PARSE_STATE_NUM;
 <a name="l147"></a>  </span><span class=cB9>U32</span><span class=cB0> temp_destination = 0;
@@ -192,7 +192,7 @@
 <a name="l153"></a>    </span><span class=cB1>case</span><span class=cB0> IP_PARSE_STATE_NUM:
 <a name="l154"></a>      </span><span class=cB1>switch</span><span class=cB0> (tk)
 <a name="l155"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l156"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2212"></span><span class=cB3>TK_I64</a></span><span class=cB0>:
+<a name="l156"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2211"></span><span class=cB3>TK_I64</a></span><span class=cB0>:
 <a name="l157"></a>        </span><span class=cB1>if</span><span class=cB0> (cc-&gt;cur_i64 &gt; 255 || cc-&gt;cur_i64 &lt; 0)
 <a name="l158"></a>        {
 <a name="l159"></a>          NetErr(</span><span class=cB6>&quot;IPV4 ADDRESS PARSE: Invalid value, must be 0 - 255.&quot;</span><span class=cB0>);
@@ -299,11 +299,11 @@
 <a name="l260"></a>
 <a name="l261"></a>CSocket *Socket(</span><span class=cB9>U16</span><span class=cB0> domain, </span><span class=cB9>U16</span><span class=cB0> type)
 <a name="l262"></a>{
-<a name="l263"></a>  CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CSocket</span><span class=cB7>)</span><span class=cB0>);
-<a name="l264"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;domain = domain;
-<a name="l265"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;type = type;
-<a name="l266"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_READY;
-<a name="l267"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>;
+<a name="l263"></a>  CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CSocket</span><span class=cB7>)</span><span class=cB0>);
+<a name="l264"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;domain = domain;
+<a name="l265"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;type = type;
+<a name="l266"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_READY;
+<a name="l267"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>;
 <a name="l268"></a>}
 <a name="l269"></a>
 <a name="l270"></a></span><span class=cB1>U0</span><span class=cB0> SocketStateErr(</span><span class=cB1>U8</span><span class=cB0> *request, </span><span class=cB1>U8</span><span class=cB0> state)
@@ -342,9 +342,9 @@
 <a name="l303"></a>  NetErr(</span><span class=cB6>&quot;Socket attempted %s while in %s state.&quot;</span><span class=cB0>, request, state_string);
 <a name="l304"></a>}
 <a name="l305"></a>
-<a name="l306"></a></span><span class=cB1>Bool</span><span class=cB0> SocketAccept(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l306"></a></span><span class=cB1>Bool</span><span class=cB0> SocketAccept(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l307"></a>{
-<a name="l308"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l308"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l309"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l310"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_LISTENING:
 <a name="l311"></a>    </span><span class=cB2>/*</span><span class=cB0>  </span><span class=cB2>Socket expected to stay listening.</span><span class=cB0>
@@ -352,68 +352,68 @@
 <a name="l313"></a>        </span><span class=cB2>to this one is expected to be made. */</span><span class=cB0>
 <a name="l314"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l315"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l316"></a>    SocketStateErr(</span><span class=cB6>&quot;ACCEPT&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l316"></a>    SocketStateErr(</span><span class=cB6>&quot;ACCEPT&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l317"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l318"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l319"></a>}
 <a name="l320"></a>
-<a name="l321"></a></span><span class=cB1>Bool</span><span class=cB0> SocketClose(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l321"></a></span><span class=cB1>Bool</span><span class=cB0> SocketClose(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l322"></a>{
 <a name="l323"></a>  </span><span class=cB2>/* Sockets attempting close will enter close</span><span class=cB0>
 <a name="l324"></a></span><span class=cB2>  request state before destroying the socket at</span><span class=cB0>
 <a name="l325"></a></span><span class=cB2>  the protocol level. */</span><span class=cB0>
-<a name="l326"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_CLOSE_REQ;
+<a name="l326"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_CLOSE_REQ;
 <a name="l327"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l328"></a>}
 <a name="l329"></a>
-<a name="l330"></a></span><span class=cB1>Bool</span><span class=cB0> SocketBind(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l330"></a></span><span class=cB1>Bool</span><span class=cB0> SocketBind(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l331"></a>{
-<a name="l332"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l332"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l333"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l334"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_READY:
 <a name="l335"></a>    </span><span class=cB2>/*</span><span class=cB0>  </span><span class=cB2>Sockets can only be bound</span><span class=cB0>
 <a name="l336"></a>        </span><span class=cB2>if they are in initial state. */</span><span class=cB0>
-<a name="l337"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_BIND_REQ;
+<a name="l337"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_BIND_REQ;
 <a name="l338"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l339"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l340"></a>    SocketStateErr(</span><span class=cB6>&quot;BIND&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l340"></a>    SocketStateErr(</span><span class=cB6>&quot;BIND&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l341"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l342"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l343"></a>}
 <a name="l344"></a>
-<a name="l345"></a></span><span class=cB1>Bool</span><span class=cB0> SocketConnect(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l345"></a></span><span class=cB1>Bool</span><span class=cB0> SocketConnect(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l346"></a>{
-<a name="l347"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l347"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l348"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l349"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_READY:
 <a name="l350"></a>    </span><span class=cB2>/*</span><span class=cB0>  </span><span class=cB2>Sockets can only be connected</span><span class=cB0>
 <a name="l351"></a>        </span><span class=cB2>if they are in initial state. */</span><span class=cB0>
-<a name="l352"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_CONNECT_REQ;
+<a name="l352"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_CONNECT_REQ;
 <a name="l353"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l354"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l355"></a>    SocketStateErr(</span><span class=cB6>&quot;CONNECT&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l355"></a>    SocketStateErr(</span><span class=cB6>&quot;CONNECT&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l356"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l357"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l358"></a>}
 <a name="l359"></a>
-<a name="l360"></a></span><span class=cB1>Bool</span><span class=cB0> SocketLsten(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l360"></a></span><span class=cB1>Bool</span><span class=cB0> SocketLsten(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l361"></a>{
-<a name="l362"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l362"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l363"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l364"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_BOUND:
 <a name="l365"></a>    </span><span class=cB2>/*</span><span class=cB0>  </span><span class=cB2>A socket must be bound to</span><span class=cB0>
 <a name="l366"></a>        </span><span class=cB2>set it to listening. */</span><span class=cB0>
-<a name="l367"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_LISTEN_REQ;
+<a name="l367"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state = SOCKET_STATE_LISTEN_REQ;
 <a name="l368"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l369"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l370"></a>    SocketStateErr(</span><span class=cB6>&quot;LISTEN&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l370"></a>    SocketStateErr(</span><span class=cB6>&quot;LISTEN&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l371"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l372"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l373"></a>}
 <a name="l374"></a>
-<a name="l375"></a></span><span class=cB1>Bool</span><span class=cB0> SocketReceive(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l375"></a></span><span class=cB1>Bool</span><span class=cB0> SocketReceive(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l376"></a>{
-<a name="l377"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l377"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l378"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l379"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_OPEN:
 <a name="l380"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_BOUND:
@@ -421,14 +421,14 @@
 <a name="l382"></a>        </span><span class=cB2>connected to or bound. */</span><span class=cB0>
 <a name="l383"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l384"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l385"></a>    SocketStateErr(</span><span class=cB6>&quot;RECEIVE&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l385"></a>    SocketStateErr(</span><span class=cB6>&quot;RECEIVE&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l386"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l387"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l388"></a>}
 <a name="l389"></a>
-<a name="l390"></a></span><span class=cB1>Bool</span><span class=cB0> SocketReceiveFrom(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l390"></a></span><span class=cB1>Bool</span><span class=cB0> SocketReceiveFrom(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l391"></a>{
-<a name="l392"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l392"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l393"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l394"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_OPEN:
 <a name="l395"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_BOUND:
@@ -436,28 +436,28 @@
 <a name="l397"></a>        </span><span class=cB2>connected to or bound. */</span><span class=cB0>
 <a name="l398"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l399"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l400"></a>    SocketStateErr(</span><span class=cB6>&quot;RECEIVE FROM&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l400"></a>    SocketStateErr(</span><span class=cB6>&quot;RECEIVE FROM&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l401"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l402"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l403"></a>}
 <a name="l404"></a>
-<a name="l405"></a></span><span class=cB1>Bool</span><span class=cB0> SocketSend(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l405"></a></span><span class=cB1>Bool</span><span class=cB0> SocketSend(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l406"></a>{
-<a name="l407"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l407"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l408"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l409"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_OPEN:
 <a name="l410"></a>    </span><span class=cB2>/*</span><span class=cB0>  </span><span class=cB2>Sockets can only send when</span><span class=cB0>
 <a name="l411"></a>        </span><span class=cB2>they have been connected to. */</span><span class=cB0>
 <a name="l412"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l413"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l414"></a>    SocketStateErr(</span><span class=cB6>&quot;SEND&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l414"></a>    SocketStateErr(</span><span class=cB6>&quot;SEND&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l415"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l416"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l417"></a>}
 <a name="l418"></a>
-<a name="l419"></a></span><span class=cB1>Bool</span><span class=cB0> SocketSendTo(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>)
+<a name="l419"></a></span><span class=cB1>Bool</span><span class=cB0> SocketSendTo(CSocket *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>)
 <a name="l420"></a>{
-<a name="l421"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
+<a name="l421"></a>  </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state)
 <a name="l422"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l423"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_OPEN:
 <a name="l424"></a>  </span><span class=cB1>case</span><span class=cB0> SOCKET_STATE_BOUND:
@@ -469,7 +469,7 @@
 <a name="l430"></a>        </span><span class=cB2>state based on params. */</span><span class=cB0>
 <a name="l431"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l432"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l433"></a>    SocketStateErr(</span><span class=cB6>&quot;SEND TO&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l223"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
+<a name="l433"></a>    SocketStateErr(</span><span class=cB6>&quot;SEND TO&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l183"></span><span class=cB5>socket</a></span><span class=cB0>-&gt;state);
 <a name="l434"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l435"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l436"></a>}
