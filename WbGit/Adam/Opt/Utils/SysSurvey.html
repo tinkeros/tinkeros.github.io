@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.15">
+<meta name="generator" content="TinkerOS V5.16">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -38,222 +38,261 @@
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;OtherTinkerOSFuncs&quot;</span><span class=cB0>
-<a name="l2"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l2"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> enter_default=0)
-<a name="l3"></a>{</span><span class=cB2>//Wait for user to answer Y or N.</span><span class=cB0>
-<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
-<a name="l5"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'y'</span><span class=cB0>
-<a name="l6"></a>      || <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'n'</span><span class=cB0>
-<a name="l7"></a>      || <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'u'</span><span class=cB0>)
-<a name="l8"></a>    </span><span class=cB6>&quot;(y or n, default: %c)? &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB0>(enter_default);
-<a name="l9"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l10"></a>    </span><span class=cB6>&quot;(y,n or u)? &quot;</span><span class=cB0>;
-<a name="l11"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l12"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l13"></a>    ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l204"></span><span class=cB5>GetChar</a></span><span class=cB7>(</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l14"></a>    </span><span class=cB1>if</span><span class=cB0> (enter_default &amp;&amp; ch==</span><span class=cB6>'\n'</span><span class=cB0>)
-<a name="l15"></a>      ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(enter_default);
-<a name="l16"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'Y'</span><span class=cB0>)
-<a name="l17"></a>    {
-<a name="l18"></a>      </span><span class=cB6>&quot;$PT$YES$FG$\n&quot;</span><span class=cB0>;
-<a name="l19"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l20"></a>    }
-<a name="l21"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'N'</span><span class=cB0>)
-<a name="l22"></a>    {
-<a name="l23"></a>      </span><span class=cB6>&quot;$PT$NO$FG$\n&quot;</span><span class=cB0>;
-<a name="l24"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l25"></a>    }
-<a name="l26"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'U'</span><span class=cB0>)
-<a name="l27"></a>    {
-<a name="l28"></a>      </span><span class=cB6>&quot;$PT$UNKNOWN$FG$\n&quot;</span><span class=cB0>;
-<a name="l29"></a>      </span><span class=cB1>return</span><span class=cB0> 2;
-<a name="l30"></a>    }
-<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l32"></a>}
-<a name="l33"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
-<a name="l34"></a>
-<a name="l35"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l35"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *q)
-<a name="l36"></a>{
-<a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> def=q[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(q)+1];
-<a name="l38"></a>  </span><span class=cB6>&quot;%s &quot;</span><span class=cB0>,q;
-<a name="l39"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l2"></span><span class=cB5>YNorU</a></span><span class=cB0>(def);
-<a name="l40"></a>}
-<a name="l41"></a>
-<a name="l42"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l42"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0> 3
-<a name="l43"></a>
-<a name="l44"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l44"></span><span class=cB6>ins_questions</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l42"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>]=
-<a name="l45"></a>{
-<a name="l46"></a>  </span><span class=cB6>&quot;Did the automatic installer work\0u&quot;</span><span class=cB0>,
-<a name="l47"></a>  </span><span class=cB6>&quot;Did you manually partition and format the drive\0u&quot;</span><span class=cB0>,
-<a name="l48"></a>  </span><span class=cB6>&quot;Did you manually have to enter IO port numbers\0u&quot;</span><span class=cB0>,
-<a name="l49"></a>};
-<a name="l50"></a>
-<a name="l51"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l51"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0> 9
-<a name="l52"></a>
-<a name="l53"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l51"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>]=
-<a name="l54"></a>{
-<a name="l55"></a>  </span><span class=cB6>&quot;Is AHCI mode supported in BIOS\0u&quot;</span><span class=cB0>,
-<a name="l56"></a>  </span><span class=cB6>&quot;Is Legacy/IDE mode supported in BIOS\0u&quot;</span><span class=cB0>,
-<a name="l57"></a>  </span><span class=cB6>&quot;Does PS/2 emulation of a USB keyboard work\0u&quot;</span><span class=cB0>,
-<a name="l58"></a>  </span><span class=cB6>&quot;Does PS/2 emulation of a USB mouse work\0u&quot;</span><span class=cB0>,
-<a name="l59"></a>  </span><span class=cB6>&quot;Does your system have a PS/2 mouse or combo port\0u&quot;</span><span class=cB0>,
-<a name="l60"></a>  </span><span class=cB6>&quot;Does your system have a serial port\0u&quot;</span><span class=cB0>,
-<a name="l61"></a>  </span><span class=cB6>&quot;Does your system have a parallel port\0u&quot;</span><span class=cB0>,
-<a name="l62"></a>  </span><span class=cB6>&quot;Can you install and run TempleOS bare metal\0u&quot;</span><span class=cB0>,
-<a name="l63"></a>  </span><span class=cB6>&quot;Can you install and run TinkerOS bare metal\0u&quot;</span><span class=cB0>,
-<a name="l64"></a>};
-<a name="l65"></a>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l3"></span><span class=cB5>GetBootDrvPortInfo</a></span><span class=cB0>()
+<a name="l4"></a>{
+<a name="l5"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3199"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
+<a name="l6"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3142"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd;
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> boot_let=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let;
+<a name="l8"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'C'</span><span class=cB0>&lt;=boot_let&lt;</span><span class=cB6>'F'</span><span class=cB0>)
+<a name="l9"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l10"></a>    dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(boot_let);
+<a name="l11"></a>    </span><span class=cB1>if</span><span class=cB0> (dv &amp;&amp; dv-&gt;bd)
+<a name="l12"></a>    {
+<a name="l13"></a>      bd=dv-&gt;bd;
+<a name="l14"></a>      </span><span class=cB1>if</span><span class=cB0>(bd-&gt;base0)
+<a name="l15"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l16"></a>        </span><span class=cB6>&quot;Boot drive %C IO port info:\n\n&quot;</span><span class=cB0>,boot_let;
+<a name="l17"></a>        </span><span class=cB6>&quot;Base 0: 0x%04x\n&quot;</span><span class=cB0>,bd-&gt;base0;
+<a name="l18"></a>        </span><span class=cB6>&quot;Base 1: 0x%04x\n&quot;</span><span class=cB0>,bd-&gt;base1;
+<a name="l19"></a>        </span><span class=cB6>&quot;Unit  : %d\n\n&quot;</span><span class=cB0>,bd-&gt;unit;
+<a name="l20"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l21"></a>    }
+<a name="l22"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l23"></a>}
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l25"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> enter_default=0)
+<a name="l26"></a>{</span><span class=cB2>//Wait for user to answer Y or N.</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB9>I64</span><span class=cB0> ch;
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'y'</span><span class=cB0>
+<a name="l29"></a>      || <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'n'</span><span class=cB0>
+<a name="l30"></a>      || <a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB7>(</span><span class=cB0>enter_default</span><span class=cB7>)</span><span class=cB0>==</span><span class=cB6>'u'</span><span class=cB0>)
+<a name="l31"></a>    </span><span class=cB6>&quot;(y or n, default: %c)? &quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l3"></span><span class=cB5>ToLower</a></span><span class=cB0>(enter_default);
+<a name="l32"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l33"></a>    </span><span class=cB6>&quot;(y,n or u)? &quot;</span><span class=cB0>;
+<a name="l34"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l204"></span><span class=cB5>GetChar</a></span><span class=cB7>(</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l37"></a>    </span><span class=cB1>if</span><span class=cB0> (enter_default &amp;&amp; ch==</span><span class=cB6>'\n'</span><span class=cB0>)
+<a name="l38"></a>      ch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l58"></span><span class=cB5>ToUpper</a></span><span class=cB0>(enter_default);
+<a name="l39"></a>    </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'Y'</span><span class=cB0>)
+<a name="l40"></a>    {
+<a name="l41"></a>      </span><span class=cB6>&quot;$PT$YES$FG$\n&quot;</span><span class=cB0>;
+<a name="l42"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l43"></a>    }
+<a name="l44"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'N'</span><span class=cB0>)
+<a name="l45"></a>    {
+<a name="l46"></a>      </span><span class=cB6>&quot;$PT$NO$FG$\n&quot;</span><span class=cB0>;
+<a name="l47"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l48"></a>    }
+<a name="l49"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch==</span><span class=cB6>'U'</span><span class=cB0>)
+<a name="l50"></a>    {
+<a name="l51"></a>      </span><span class=cB6>&quot;$PT$UNKNOWN$FG$\n&quot;</span><span class=cB0>;
+<a name="l52"></a>      </span><span class=cB1>return</span><span class=cB0> 2;
+<a name="l53"></a>    }
+<a name="l54"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l55"></a>}
+<a name="l56"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l58"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *q)
+<a name="l59"></a>{
+<a name="l60"></a>  </span><span class=cB9>I64</span><span class=cB0> def=q[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(q)+1];
+<a name="l61"></a>  </span><span class=cB6>&quot;%s &quot;</span><span class=cB0>,q;
+<a name="l62"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l25"></span><span class=cB5>YNorU</a></span><span class=cB0>(def);
+<a name="l63"></a>}
+<a name="l64"></a>
+<a name="l65"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l65"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0> 3
 <a name="l66"></a>
-<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *q, </span><span class=cB9>I64</span><span class=cB0> resp)
+<a name="l67"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB6>ins_questions</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l65"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>]=
 <a name="l68"></a>{
-<a name="l69"></a>  q[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(q)+1]=resp;
-<a name="l70"></a>}
-<a name="l71"></a>
-<a name="l72"></a>
-<a name="l73"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l73"></span><span class=cB5>RunSysSurvey</a></span><span class=cB0>()
-<a name="l74"></a>{
-<a name="l75"></a>  </span><span class=cB1>U8</span><span class=cB0> *notes=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *survey_file;
-<a name="l76"></a>  </span><span class=cB1>Bool</span><span class=cB0> is_laptop,extra_notes,installed,sysrep;
-<a name="l77"></a>  </span><span class=cB9>I64</span><span class=cB0> have_dock,i,resp[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l51"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>], resp_ins[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l42"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>];
-<a name="l78"></a>
-<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l80"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
-<a name="l81"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l185"></span><span class=cB5>DocMax</a></span><span class=cB0>;
-<a name="l82"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>(0);
-<a name="l83"></a>
-<a name="l84"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let != </span><span class=cB6>'B'</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let !=</span><span class=cB6>'T'</span><span class=cB0>) installed=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l85"></a>
-<a name="l86"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[0],</span><span class=cB6>'y'</span><span class=cB0>);
-<a name="l87"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[0],</span><span class=cB6>'n'</span><span class=cB0>);
-<a name="l88"></a>
-<a name="l89"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[1],</span><span class=cB6>'y'</span><span class=cB0>);
+<a name="l69"></a>  </span><span class=cB6>&quot;Did the automatic installer work\0u&quot;</span><span class=cB0>,
+<a name="l70"></a>  </span><span class=cB6>&quot;Did you manually partition and format the drive\0u&quot;</span><span class=cB0>,
+<a name="l71"></a>  </span><span class=cB6>&quot;Did you manually have to enter IO port numbers\0u&quot;</span><span class=cB0>,
+<a name="l72"></a>};
+<a name="l73"></a>
+<a name="l74"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l74"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0> 10
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l74"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>]=
+<a name="l77"></a>{
+<a name="l78"></a>  </span><span class=cB6>&quot;Is AHCI mode supported in BIOS\0u&quot;</span><span class=cB0>,
+<a name="l79"></a>  </span><span class=cB6>&quot;Is Legacy/IDE mode supported in BIOS\0u&quot;</span><span class=cB0>,
+<a name="l80"></a>  </span><span class=cB6>&quot;Does PS/2 emulation of USB both keyboard and mouse work in TinkerOS\0u&quot;</span><span class=cB0>,
+<a name="l81"></a>  </span><span class=cB6>&quot;Does your system have a PS/2 mouse or combo port\0u&quot;</span><span class=cB0>,
+<a name="l82"></a>  </span><span class=cB6>&quot;Does your system have a serial port\0u&quot;</span><span class=cB0>,
+<a name="l83"></a>  </span><span class=cB6>&quot;Does your system have a parallel port\0u&quot;</span><span class=cB0>,
+<a name="l84"></a>  </span><span class=cB6>&quot;Can you install and run TinkerOS bare metal\0u&quot;</span><span class=cB0>,
+<a name="l85"></a>  </span><span class=cB6>&quot;Can you install and run TempleOS bare metal\0u&quot;</span><span class=cB0>,
+<a name="l86"></a>  </span><span class=cB6>&quot;Does PS/2 emulation of USB both keyboard and mouse work in TempleOS\0u&quot;</span><span class=cB0>,
+<a name="l87"></a>  </span><span class=cB6>&quot;Is this a custom built PC / motherboard you installed\0u&quot;</span><span class=cB0>,
+<a name="l88"></a>};
+<a name="l89"></a>
 <a name="l90"></a>
-<a name="l91"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>,</span><span class=cB6>&quot;No\0Yes\0Unknown\0NA\0&quot;</span><span class=cB0>);
-<a name="l92"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l51"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
-<a name="l93"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l94"></a>    resp[i]=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l35"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[i]);
-<a name="l95"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l97"></a>
-<a name="l98"></a>  </span><span class=cB6>&quot;Is your system a laptop &quot;</span><span class=cB0>;
-<a name="l99"></a>  is_laptop=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'n'</span><span class=cB0>);
-<a name="l100"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l101"></a>
-<a name="l102"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop)
-<a name="l103"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l104"></a>    </span><span class=cB6>&quot;Do you have a dock with useful ports (ps/2,serial,parallel) &quot;</span><span class=cB0>;
-<a name="l105"></a>    have_dock=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l2"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB6>'u'</span><span class=cB0>);
-<a name="l106"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l107"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l108"></a>
-<a name="l109"></a>  </span><span class=cB1>if</span><span class=cB0> (installed)
-<a name="l110"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l111"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l42"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
-<a name="l112"></a>    {
-<a name="l113"></a>      resp_ins[i]=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l35"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l44"></span><span class=cB6>ins_questions</a></span><span class=cB0>[i]);
-<a name="l114"></a>      </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l115"></a>    }
-<a name="l116"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l117"></a>
-<a name="l118"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l119"></a>  </span><span class=cB6>&quot;You are able to automatically include important useful\n&quot;</span><span class=cB0>;
-<a name="l120"></a>  </span><span class=cB6>&quot;information on your hardware (serial numbers and other\n&quot;</span><span class=cB0>;
-<a name="l121"></a>  </span><span class=cB6>&quot;identifying personal information is excluded) and you\n&quot;</span><span class=cB0>;
-<a name="l122"></a>  </span><span class=cB6>&quot;can always review and delete anything from the output\n&quot;</span><span class=cB0>;
-<a name="l123"></a>  </span><span class=cB6>&quot;before sending it.\n\n&quot;</span><span class=cB0>;
-<a name="l124"></a>
-<a name="l125"></a>  </span><span class=cB6>&quot;Can I gather this hardware information to include &quot;</span><span class=cB0>;
+<a name="l91"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l91"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *q, </span><span class=cB9>I64</span><span class=cB0> resp)
+<a name="l92"></a>{
+<a name="l93"></a>  q[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(q)+1]=resp;
+<a name="l94"></a>}
+<a name="l95"></a>
+<a name="l96"></a>
+<a name="l97"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l97"></span><span class=cB5>RunSysSurvey</a></span><span class=cB0>()
+<a name="l98"></a>{
+<a name="l99"></a>  </span><span class=cB1>U8</span><span class=cB0> *notes=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *survey_file;
+<a name="l100"></a>  </span><span class=cB1>Bool</span><span class=cB0> is_laptop,extra_notes,installed,sysrep;
+<a name="l101"></a>  </span><span class=cB9>I64</span><span class=cB0> have_kbd_ms,have_expresscard,have_dock,i,resp[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l74"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>], resp_ins[<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l65"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>];
+<a name="l102"></a>
+<a name="l103"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l105"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l185"></span><span class=cB5>DocMax</a></span><span class=cB0>;
+<a name="l106"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>(0);
+<a name="l107"></a>
+<a name="l108"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let != </span><span class=cB6>'B'</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let !=</span><span class=cB6>'T'</span><span class=cB0>) installed=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l109"></a>
+<a name="l110"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l91"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[0],</span><span class=cB6>'y'</span><span class=cB0>);
+<a name="l111"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l91"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[0],</span><span class=cB6>'n'</span><span class=cB0>);
+<a name="l112"></a>
+<a name="l113"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l91"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[1],</span><span class=cB6>'y'</span><span class=cB0>);
+<a name="l114"></a>
+<a name="l115"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l13"></span><span class=cB5>DefineLstLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>,</span><span class=cB6>&quot;No\0Yes\0Unknown\0NA\0&quot;</span><span class=cB0>);
+<a name="l116"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l74"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
+<a name="l117"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l118"></a>    resp[i]=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l58"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[i]);
+<a name="l119"></a>    </span><span class=cB1>if</span><span class=cB0> (i==1 &amp;&amp; resp[i]==0) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l91"></span><span class=cB5>SetDefaultResp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[7],</span><span class=cB6>'n'</span><span class=cB0>);
+<a name="l120"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l121"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l122"></a>
+<a name="l123"></a>  </span><span class=cB6>&quot;Is your system a laptop &quot;</span><span class=cB0>;
+<a name="l124"></a>  is_laptop=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'n'</span><span class=cB0>);
+<a name="l125"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
 <a name="l126"></a>
-<a name="l127"></a>  sysrep=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'y'</span><span class=cB0>);
-<a name="l128"></a>
-<a name="l129"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l130"></a>  </span><span class=cB6>&quot;Any extra notes you would like to share &quot;</span><span class=cB0>;
-<a name="l131"></a>
-<a name="l132"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'n'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l133"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l134"></a>    notes=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l182"></span><span class=cB5>PopUpGetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Please enter extra notes, then press ESC\n&quot;</span><span class=cB0>);
-<a name="l135"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l136"></a>
-<a name="l137"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l138"></a>
-<a name="l139"></a>  </span><span class=cB6>&quot;Survey and System Results:\n\n&quot;</span><span class=cB0>;
-<a name="l140"></a>
-<a name="l141"></a>#</span><span class=cB1>ifdef</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l12"></span><span class=cB3>SCREEN_SAVER_TIMEOUT</a></span><span class=cB0>
-<a name="l142"></a>  </span><span class=cB6>&quot;OS: TinkerOS V%5.3f\t%D %T\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l25"></span><span class=cB6>sys_os_version</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>;
-<a name="l143"></a>#</span><span class=cB1>else</span><span class=cB0>
-<a name="l144"></a>  </span><span class=cB6>&quot;OS: TempleOS V%5.3f\t%D %T\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l25"></span><span class=cB6>sys_os_version</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>;
-<a name="l145"></a>#</span><span class=cB1>endif</span><span class=cB0>
-<a name="l146"></a>
-<a name="l147"></a>  </span><span class=cB6>&quot;Current graphics mode: %d x %d (%d by %d framebuffer)\n\n&quot;</span><span class=cB0>,
-<a name="l148"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>;
-<a name="l149"></a>  </span><span class=cB6>&quot;Current disk mode: &quot;</span><span class=cB0>;
-<a name="l150"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) </span><span class=cB6>&quot;AHCI\n\n&quot;</span><span class=cB0>;
-<a name="l151"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;IDE/Legacy\n\n&quot;</span><span class=cB0>;
-<a name="l152"></a>  </span><span class=cB6>&quot;Current boot drive: %C\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let;
-<a name="l153"></a>
-<a name="l154"></a>
-<a name="l155"></a>  </span><span class=cB6>&quot;Laptop: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(is_laptop,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
-<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop &amp;&amp; have_dock)
-<a name="l157"></a>    </span><span class=cB6>&quot;Dock with useful ports available: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(have_dock,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
-<a name="l158"></a>
-<a name="l159"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l51"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
-<a name="l160"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l161"></a>    </span><span class=cB6>&quot;%s: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l53"></span><span class=cB6>std_questions</a></span><span class=cB0>[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(resp[i],</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
-<a name="l162"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l163"></a>
-<a name="l164"></a>  </span><span class=cB1>if</span><span class=cB0> (installed)
-<a name="l165"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l166"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l42"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
-<a name="l167"></a>    {
-<a name="l168"></a>      </span><span class=cB6>&quot;%s: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l44"></span><span class=cB6>ins_questions</a></span><span class=cB0>[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(resp_ins[i],</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
-<a name="l169"></a>    }
-<a name="l170"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l127"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop)
+<a name="l128"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l129"></a>    </span><span class=cB6>&quot;Do the laptop keyboard and trackpad both work &quot;</span><span class=cB0>;
+<a name="l130"></a>    have_kbd_ms=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l25"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB6>'u'</span><span class=cB0>);
+<a name="l131"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l132"></a>    </span><span class=cB6>&quot;Do you have a dock with useful ports (ps/2,serial,parallel) &quot;</span><span class=cB0>;
+<a name="l133"></a>    have_dock=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l25"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB6>'u'</span><span class=cB0>);
+<a name="l134"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l135"></a>    </span><span class=cB6>&quot;Does your laptop have an expresscard slot &quot;</span><span class=cB0>;
+<a name="l136"></a>    have_expresscard=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l25"></span><span class=cB5>YNorU</a></span><span class=cB0>(</span><span class=cB6>'u'</span><span class=cB0>);
+<a name="l137"></a>    </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l138"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l139"></a>
+<a name="l140"></a>  </span><span class=cB1>if</span><span class=cB0> (installed)
+<a name="l141"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l142"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l65"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
+<a name="l143"></a>    {
+<a name="l144"></a>      resp_ins[i]=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l58"></span><span class=cB5>AskQuestion</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB6>ins_questions</a></span><span class=cB0>[i]);
+<a name="l145"></a>      </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l146"></a>    }
+<a name="l147"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l148"></a>
+<a name="l149"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l150"></a>  </span><span class=cB6>&quot;You are able to automatically include important useful\n&quot;</span><span class=cB0>;
+<a name="l151"></a>  </span><span class=cB6>&quot;information on your hardware (serial numbers and other\n&quot;</span><span class=cB0>;
+<a name="l152"></a>  </span><span class=cB6>&quot;identifying personal information is excluded) and you\n&quot;</span><span class=cB0>;
+<a name="l153"></a>  </span><span class=cB6>&quot;can always review and delete anything from the output\n&quot;</span><span class=cB0>;
+<a name="l154"></a>  </span><span class=cB6>&quot;before sending it.\n\n&quot;</span><span class=cB0>;
+<a name="l155"></a>
+<a name="l156"></a>  </span><span class=cB6>&quot;Can I gather this hardware information to include &quot;</span><span class=cB0>;
+<a name="l157"></a>
+<a name="l158"></a>  sysrep=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'y'</span><span class=cB0>);
+<a name="l159"></a>
+<a name="l160"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l161"></a>  </span><span class=cB6>&quot;Any extra notes you would like to share &quot;</span><span class=cB0>;
+<a name="l162"></a>
+<a name="l163"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'n'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    notes=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l182"></span><span class=cB5>PopUpGetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Please enter extra notes, then press ESC\n&quot;</span><span class=cB0>);
+<a name="l166"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l167"></a>
+<a name="l168"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l169"></a>
+<a name="l170"></a>  </span><span class=cB6>&quot;Survey and System Results:\n\n&quot;</span><span class=cB0>;
 <a name="l171"></a>
-<a name="l172"></a>  </span><span class=cB1>if</span><span class=cB0> (extra_notes) </span><span class=cB6>&quot;Extra notes: \n\n%s\n\n&quot;</span><span class=cB0>,notes;
-<a name="l173"></a>
-<a name="l174"></a>  </span><span class=cB1>if</span><span class=cB0> (sysrep)
-<a name="l175"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l176"></a>    </span><span class=cB6>&quot;Results from SysRepSurvey:\n\n&quot;</span><span class=cB0>;
-<a name="l177"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1580"></span><span class=cB5>SysRepSurvey</a></span><span class=cB0>;
-<a name="l178"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l179"></a>
-<a name="l180"></a>
-<a name="l181"></a>  </span><span class=cB6>&quot;\nHypervisor present: %d\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l428"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>;
-<a name="l182"></a>
-<a name="l183"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l3"></span><span class=cB5>VidModes</a></span><span class=cB0>;
-<a name="l184"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l172"></a>#</span><span class=cB1>ifdef</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l12"></span><span class=cB3>SCREEN_SAVER_TIMEOUT</a></span><span class=cB0>
+<a name="l173"></a>  </span><span class=cB6>&quot;OS: TinkerOS V%5.3f\t%D %T\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l25"></span><span class=cB6>sys_os_version</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>;
+<a name="l174"></a>#</span><span class=cB1>else</span><span class=cB0>
+<a name="l175"></a>  </span><span class=cB6>&quot;OS: TempleOS V%5.3f\t%D %T\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l25"></span><span class=cB6>sys_os_version</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l206"></span><span class=cB6>sys_compile_time</a></span><span class=cB0>;
+<a name="l176"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l177"></a>
+<a name="l178"></a>  </span><span class=cB6>&quot;Current graphics mode: %d x %d (%d by %d framebuffer)\n\n&quot;</span><span class=cB0>,
+<a name="l179"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>;
+<a name="l180"></a>  </span><span class=cB6>&quot;Current disk mode: &quot;</span><span class=cB0>;
+<a name="l181"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>) </span><span class=cB6>&quot;AHCI\n\n&quot;</span><span class=cB0>;
+<a name="l182"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;IDE/Legacy\n\n&quot;</span><span class=cB0>;
+<a name="l183"></a>  </span><span class=cB6>&quot;Current boot drive: %C\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let;
+<a name="l184"></a>
 <a name="l185"></a>
-<a name="l186"></a>  </span><span class=cB1>if</span><span class=cB0> (installed &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let != </span><span class=cB6>'T'</span><span class=cB0>)
-<a name="l187"></a>    survey_file=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/Home/Survey.DD&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let);
-<a name="l188"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l189"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l190"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l190"></span><span class=cB5>DirMk</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/Home&quot;</span><span class=cB0>);
-<a name="l191"></a>    survey_file=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/Home/Survey.DD&quot;</span><span class=cB0>);
-<a name="l192"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l186"></a>  </span><span class=cB6>&quot;Laptop: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(is_laptop,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
+<a name="l187"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop)
+<a name="l188"></a>    </span><span class=cB6>&quot;Dock with useful ports available: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(have_dock,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
+<a name="l189"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop)
+<a name="l190"></a>    </span><span class=cB6>&quot;Expresscard slot available: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(have_expresscard,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
+<a name="l191"></a>  </span><span class=cB1>if</span><span class=cB0> (is_laptop)
+<a name="l192"></a>    </span><span class=cB6>&quot;Do laptop keyboard and trackpad both work: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(have_kbd_ms,</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
 <a name="l193"></a>
-<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc-&gt;filename.name,survey_file);
-<a name="l195"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l191"></span><span class=cB5>DocWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc);
-<a name="l196"></a>
-<a name="l197"></a>  </span><span class=cB6>&quot;\nWrote %s, please transfer to an internet connected PC\n&quot;</span><span class=cB0>,survey_file;
-<a name="l198"></a>  </span><span class=cB6>&quot;and make a github pull request to add your system! This\n&quot;</span><span class=cB0>;
-<a name="l199"></a>  </span><span class=cB6>&quot;will help others know what systems are TOS compatible!\n\n&quot;</span><span class=cB0>;
-<a name="l200"></a>
-<a name="l201"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l32"></span><span class=cB6>SNAIL_COM</a></span><span class=cB0>&gt;0)
-<a name="l202"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l203"></a>    </span><span class=cB6>&quot;Attempt to automatically send survey to TOS server over serial port &quot;</span><span class=cB0>;
-<a name="l204"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l205"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l391"></span><span class=cB5>Fput</a></span><span class=cB0>(survey_file,</span><span class=cB6>&quot;Survey.DD&quot;</span><span class=cB0>);
-<a name="l206"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l207"></a>
-<a name="l208"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(survey_file);
-<a name="l209"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(notes);
-<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>(1);
-<a name="l211"></a>}
-<a name="l212"></a>
-<a name="l213"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;SysInfo&quot;</span><span class=cB0>
-<a name="l214"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l214"></span><span class=cB5>SysSurvey</a></span><span class=cB0>()
-<a name="l215"></a>{</span><span class=cB2>//Run system survey</span><span class=cB0>
-<a name="l216"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l446"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;RunSysSurvey;\n&quot;</span><span class=cB0>);
-<a name="l217"></a>}
-<a name="l218"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l194"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l74"></span><span class=cB3>NUM_STD_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
+<a name="l195"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l196"></a>    </span><span class=cB6>&quot;%s: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l76"></span><span class=cB6>std_questions</a></span><span class=cB0>[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(resp[i],</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
+<a name="l197"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l198"></a>
+<a name="l199"></a>  </span><span class=cB1>if</span><span class=cB0> (installed)
+<a name="l200"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l201"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l65"></span><span class=cB3>NUM_INS_SURVEY_QUESTIONS</a></span><span class=cB0>; i++)
+<a name="l202"></a>    {
+<a name="l203"></a>      </span><span class=cB6>&quot;%s: %s\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l67"></span><span class=cB6>ins_questions</a></span><span class=cB0>[i],<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l60"></span><span class=cB5>DefineSub</a></span><span class=cB0>(resp_ins[i],</span><span class=cB6>&quot;ST_SYS_SURVEY&quot;</span><span class=cB0>);
+<a name="l204"></a>    }
+<a name="l205"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l206"></a>
+<a name="l207"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
+<a name="l208"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l3"></span><span class=cB5>GetBootDrvPortInfo</a></span><span class=cB0>;
+<a name="l209"></a>
+<a name="l210"></a>  </span><span class=cB1>if</span><span class=cB0> (extra_notes) </span><span class=cB6>&quot;Extra notes: \n\n%s\n\n&quot;</span><span class=cB0>,notes;
+<a name="l211"></a>
+<a name="l212"></a>  </span><span class=cB1>if</span><span class=cB0> (sysrep)
+<a name="l213"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l214"></a>    </span><span class=cB6>&quot;Results from SysRepSurvey:\n\n&quot;</span><span class=cB0>;
+<a name="l215"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1579"></span><span class=cB5>SysRepSurvey</a></span><span class=cB0>;
+<a name="l216"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l217"></a>
+<a name="l218"></a>
+<a name="l219"></a>  </span><span class=cB6>&quot;\nHypervisor present: %d\n\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l428"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>;
+<a name="l220"></a>
+<a name="l221"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/VidModes.html#l3"></span><span class=cB5>VidModes</a></span><span class=cB0>;
+<a name="l222"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l223"></a>
+<a name="l224"></a>  </span><span class=cB1>if</span><span class=cB0> (installed &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let != </span><span class=cB6>'T'</span><span class=cB0>)
+<a name="l225"></a>    survey_file=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/Home/Survey.DD&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l29"></span><span class=cB6>blkdev</a></span><span class=cB0>.boot_drv_let);
+<a name="l226"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l227"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l228"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l190"></span><span class=cB5>DirMk</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/Home&quot;</span><span class=cB0>);
+<a name="l229"></a>    survey_file=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/Home/Survey.DD&quot;</span><span class=cB0>);
+<a name="l230"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l231"></a>
+<a name="l232"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc-&gt;filename.name,survey_file);
+<a name="l233"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l191"></span><span class=cB5>DocWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;put_doc);
+<a name="l234"></a>
+<a name="l235"></a>  </span><span class=cB6>&quot;\nWrote %s, please transfer to an internet connected PC\n&quot;</span><span class=cB0>,survey_file;
+<a name="l236"></a>  </span><span class=cB6>&quot;and rename it appropriately and make a github pull\n&quot;</span><span class=cB0>;
+<a name="l237"></a>  </span><span class=cB6>&quot;request to add your system! This will help others\n&quot;</span><span class=cB0>;
+<a name="l238"></a>  </span><span class=cB6>&quot;know what systems are TOS compatible!\n\n&quot;</span><span class=cB0>;
+<a name="l239"></a>
+<a name="l240"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l32"></span><span class=cB6>SNAIL_COM</a></span><span class=cB0>&gt;0)
+<a name="l241"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l242"></a>    </span><span class=cB6>&quot;Attempt to automatically send survey to TOS server over serial port &quot;</span><span class=cB0>;
+<a name="l243"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l244"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l391"></span><span class=cB5>Fput</a></span><span class=cB0>(survey_file,</span><span class=cB6>&quot;Survey.DD&quot;</span><span class=cB0>);
+<a name="l245"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l246"></a>
+<a name="l247"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(survey_file);
+<a name="l248"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(notes);
+<a name="l249"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>(1);
+<a name="l250"></a>}
+<a name="l251"></a>
+<a name="l252"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;SysInfo&quot;</span><span class=cB0>
+<a name="l253"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysSurvey.html#l253"></span><span class=cB5>SysSurvey</a></span><span class=cB0>()
+<a name="l254"></a>{</span><span class=cB2>//Run system survey</span><span class=cB0>
+<a name="l255"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l446"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;RunSysSurvey;\n&quot;</span><span class=cB0>);
+<a name="l256"></a>}
+<a name="l257"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
 </span></div></pre></body>
 </html>

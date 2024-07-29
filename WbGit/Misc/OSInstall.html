@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.15">
+<meta name="generator" content="TinkerOS V5.16">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -781,7 +781,7 @@
 <a name="l742"></a>
 <a name="l743"></a></span><span class=cB1>Bool</span><span class=cB0> DoInstall(</span><span class=cB1>Bool</span><span class=cB0> pmt_reboot)
 <a name="l744"></a>{
-<a name="l745"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,vm_install,default_choice=</span><span class=cB6>'y'</span><span class=cB0>;
+<a name="l745"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,vm_install,default_choice=</span><span class=cB6>'y'</span><span class=cB0>,found_drv=</span><span class=cB6>'n'</span><span class=cB0>;
 <a name="l746"></a>  InstallOptions *cfg;
 <a name="l747"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'C'</span><span class=cB7>)</span><span class=cB0>)
 <a name="l748"></a>  </span><span class=cB7>{</span><span class=cB0>
@@ -800,128 +800,158 @@
 <a name="l761"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n\n&quot;</span><span class=cB0>
 <a name="l762"></a>    </span><span class=cB6>&quot;Note this option will repartition your drive and overwrite any existing data!\n\n&quot;</span><span class=cB0>
 <a name="l763"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n\n&quot;</span><span class=cB0>;
-<a name="l764"></a>    </span><span class=cB6>&quot;\nPerform automated partitioning and install &quot;</span><span class=cB0>;
-<a name="l765"></a>    vm_install=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'y'</span><span class=cB0>);
-<a name="l766"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l767"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l115"></span><span class=cB5>DocBottom</a></span><span class=cB0>;
-<a name="l768"></a>  </span><span class=cB1>if</span><span class=cB0> (vm_install)
-<a name="l769"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l770"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l771"></a>    cfg=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>InstallOptions</span><span class=cB7>)</span><span class=cB0>);
-<a name="l772"></a>    VMInstallSetup(cfg);
-<a name="l773"></a>    VMInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,cfg);
-<a name="l774"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
-<a name="l775"></a>    </span><span class=cB1>if</span><span class=cB0> (!res)
-<a name="l776"></a>    {
-<a name="l777"></a>      </span><span class=cB6>&quot;Looks like standard IDE ports did not\n&quot;</span><span class=cB0>
-<a name="l778"></a>      </span><span class=cB6>&quot;work for installing!\n\n&quot;</span><span class=cB0>
-<a name="l779"></a>      </span><span class=cB6>&quot;I'll try again probing more ports to\n&quot;</span><span class=cB0>
-<a name="l780"></a>      </span><span class=cB6>&quot;find a hard drive...\n\n&quot;</span><span class=cB0>;
-<a name="l781"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l782"></a>      VMInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,cfg);
-<a name="l783"></a>      res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
-<a name="l784"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l785"></a>      </span><span class=cB1>if</span><span class=cB0> (!res)
-<a name="l786"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l787"></a>        </span><span class=cB6>&quot;\nIt looks like for whatever reason\n&quot;</span><span class=cB0>
-<a name="l788"></a>        </span><span class=cB6>&quot;TinkerOS was not able to automatically\n&quot;</span><span class=cB0>
-<a name="l789"></a>        </span><span class=cB6>&quot;install on your hard drive.  You still\n&quot;</span><span class=cB0>
-<a name="l790"></a>        </span><span class=cB6>&quot;may be able to install TinkerOS if it\n&quot;</span><span class=cB0>
-<a name="l791"></a>        </span><span class=cB6>&quot;can detect your hard drive when you\n&quot;</span><span class=cB0>
-<a name="l792"></a>        </span><span class=cB6>&quot;manually supply I/O ports.  These can\n&quot;</span><span class=cB0>
-<a name="l793"></a>        </span><span class=cB6>&quot;be found using lscpi in Linux or might\n&quot;</span><span class=cB0>
-<a name="l794"></a>        </span><span class=cB6>&quot;even be found using the Mount command\n&quot;</span><span class=cB0>
-<a name="l795"></a>        </span><span class=cB6>&quot;within TinkerOS once the drive has\n&quot;</span><span class=cB0>
-<a name="l796"></a>        </span><span class=cB6>&quot;been paritioned.\n\n&quot;</span><span class=cB0>;
-<a name="l797"></a>        </span><span class=cB6>&quot;Please manually parition the drive\n&quot;</span><span class=cB0>
-<a name="l798"></a>        </span><span class=cB6>&quot;with a msdos (not gpt) partition\n&quot;</span><span class=cB0>
-<a name="l799"></a>        </span><span class=cB6>&quot;table and create a primary FAT32\n&quot;</span><span class=cB0>
-<a name="l800"></a>        </span><span class=cB6>&quot;partition to install TinkerOS on.\n&quot;</span><span class=cB0>
-<a name="l801"></a>        </span><span class=cB6>&quot;Then come back instead of choosing\n&quot;</span><span class=cB0>
-<a name="l802"></a>        </span><span class=cB6>&quot;the automatic installer, manually\n&quot;</span><span class=cB0>
-<a name="l803"></a>        </span><span class=cB6>&quot;install to the partition you created\n&quot;</span><span class=cB0>
-<a name="l804"></a>        </span><span class=cB6>&quot;and if possible do not probe, but\n&quot;</span><span class=cB0>
-<a name="l805"></a>        </span><span class=cB6>&quot;manually enter the I/O ports if you\n&quot;</span><span class=cB0>
-<a name="l806"></a>        </span><span class=cB6>&quot;know them.\n\n&quot;</span><span class=cB0>;
-<a name="l807"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l808"></a>    }
-<a name="l809"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cfg);
-<a name="l810"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l811"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l812"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l813"></a>    </span><span class=cB6>&quot;\n\nThis wizard works if you have a partition ready.  &quot;</span><span class=cB0>
-<a name="l814"></a>    </span><span class=cB6>&quot;You can partition the drive or BootHDIns() &quot;</span><span class=cB0>
-<a name="l815"></a>    </span><span class=cB6>&quot;with more options if you do it by hand, not using this wizard.\n\n&quot;</span><span class=cB0>
-<a name="l816"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n&quot;</span><span class=cB0>
-<a name="l817"></a>    </span><span class=cB6>&quot;Continue at your own risk, may cause loss of data!\n&quot;</span><span class=cB0>
-<a name="l818"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n\n&quot;</span><span class=cB0>
-<a name="l819"></a>    </span><span class=cB6>&quot;Continue Install Wizard &quot;</span><span class=cB0>;
-<a name="l820"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l821"></a>    {
-<a name="l822"></a>      </span><span class=cB1>do</span><span class=cB0>
-<a name="l823"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l824"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
-<a name="l825"></a>        {
-<a name="l826"></a>          RegularInstallWizAHCI();
-<a name="l827"></a>        }
-<a name="l828"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l829"></a>        {
-<a name="l830"></a>          RegularInstallWiz();
-<a name="l831"></a>        }
-<a name="l832"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l833"></a>        </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB6>'C'</span><span class=cB0>; i&lt;</span><span class=cB6>'G'</span><span class=cB0>; i++)
-<a name="l834"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>)
-<a name="l835"></a>            last_mounted_hd=i;
-<a name="l836"></a>        </span><span class=cB6>&quot;\nWould you like to run the wizard again to install to another drive &quot;</span><span class=cB0>;
-<a name="l837"></a>        </span><span class=cB1>if</span><span class=cB0> (last_drv_installed == last_mounted_hd) default_choice=</span><span class=cB6>'n'</span><span class=cB0>;
-<a name="l838"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l839"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB0>default_choice</span><span class=cB7>)</span><span class=cB0>);
-<a name="l840"></a>      </span><span class=cB6>&quot;$RED$Install Master Boot loader?$FG$&quot;</span><span class=cB0>;
-<a name="l841"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l842"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l843"></a>        </span><span class=cB6>'\n'</span><span class=cB0>;
-<a name="l844"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l83"></span><span class=cB5>BootMHDIns</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
-<a name="l845"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l846"></a>    }
-<a name="l847"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l848"></a>      pmt_reboot=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l849"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l850"></a>  </span><span class=cB1>if</span><span class=cB0> (pmt_reboot)
-<a name="l851"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l852"></a>    </span><span class=cB6>&quot;Reboot Now &quot;</span><span class=cB0>;
-<a name="l853"></a>    </span><span class=cB1>if</span><span class=cB0> (vm_install)
-<a name="l854"></a>    {
-<a name="l855"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l856"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
-<a name="l857"></a>    }
-<a name="l858"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l859"></a>    {
-<a name="l860"></a>      </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB6>'C'</span><span class=cB0>; i&lt;</span><span class=cB6>'G'</span><span class=cB0>; i++)
-<a name="l861"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>)
-<a name="l862"></a>          last_mounted_hd=i;
-<a name="l863"></a>      </span><span class=cB1>if</span><span class=cB0> (last_drv_installed == last_mounted_hd)
-<a name="l864"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l865"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l866"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
-<a name="l867"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l868"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l869"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l870"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'n'</span><span class=cB7>)</span><span class=cB0>)
-<a name="l871"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
-<a name="l872"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l873"></a>    }
-<a name="l874"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l875"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l876"></a>}
-<a name="l877"></a>
-<a name="l878"></a></span><span class=cB1>Bool</span><span class=cB0> OSInstall(</span><span class=cB1>Bool</span><span class=cB0> pmt_reboot=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l879"></a>{
-<a name="l880"></a>  DoInstructions;
-<a name="l881"></a>  </span><span class=cB1>return</span><span class=cB0> DoInstall(pmt_reboot);
-<a name="l882"></a>}
-<a name="l883"></a>
-<a name="l884"></a>#</span><span class=cB1>if</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2165"></span><span class=cB3>__CMD_LINE__</a></span><span class=cB0>
-<a name="l885"></a>OSInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l886"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l764"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$Select no here if you already setup$FG$$BK, 0$\n&quot;</span><span class=cB0>;
+<a name="l765"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$partitions (such as with clonezilla).$FG$$BK, 0$\n\n&quot;</span><span class=cB0>;
+<a name="l766"></a>    </span><span class=cB6>&quot;\nPerform automated partitioning and install &quot;</span><span class=cB0>;
+<a name="l767"></a>    vm_install=<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB0>(</span><span class=cB6>'y'</span><span class=cB0>);
+<a name="l768"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l769"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l115"></span><span class=cB5>DocBottom</a></span><span class=cB0>;
+<a name="l770"></a>  </span><span class=cB1>if</span><span class=cB0> (vm_install)
+<a name="l771"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l772"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l773"></a>    cfg=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>InstallOptions</span><span class=cB7>)</span><span class=cB0>);
+<a name="l774"></a>    VMInstallSetup(cfg);
+<a name="l775"></a>    VMInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,cfg);
+<a name="l776"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
+<a name="l777"></a>    </span><span class=cB1>if</span><span class=cB0> (!res)
+<a name="l778"></a>    {
+<a name="l779"></a>      </span><span class=cB6>&quot;Looks like standard IDE ports did not\n&quot;</span><span class=cB0>
+<a name="l780"></a>      </span><span class=cB6>&quot;work for installing!\n\n&quot;</span><span class=cB0>
+<a name="l781"></a>      </span><span class=cB6>&quot;I'll try again probing more ports to\n&quot;</span><span class=cB0>
+<a name="l782"></a>      </span><span class=cB6>&quot;find a hard drive...\n\n&quot;</span><span class=cB0>;
+<a name="l783"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l784"></a>      VMInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,cfg);
+<a name="l785"></a>      res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
+<a name="l786"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l787"></a>      </span><span class=cB1>if</span><span class=cB0> (!res)
+<a name="l788"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l789"></a>        </span><span class=cB6>&quot;\nIt looks like for whatever reason\n&quot;</span><span class=cB0>
+<a name="l790"></a>        </span><span class=cB6>&quot;TinkerOS was not able to automatically\n&quot;</span><span class=cB0>
+<a name="l791"></a>        </span><span class=cB6>&quot;install on your hard drive.  You still\n&quot;</span><span class=cB0>
+<a name="l792"></a>        </span><span class=cB6>&quot;may be able to install TinkerOS if it\n&quot;</span><span class=cB0>
+<a name="l793"></a>        </span><span class=cB6>&quot;can detect your hard drive when you\n&quot;</span><span class=cB0>
+<a name="l794"></a>        </span><span class=cB6>&quot;manually supply I/O ports.  These can\n&quot;</span><span class=cB0>
+<a name="l795"></a>        </span><span class=cB6>&quot;be found using lscpi in Linux or might\n&quot;</span><span class=cB0>
+<a name="l796"></a>        </span><span class=cB6>&quot;even be found using the Mount command\n&quot;</span><span class=cB0>
+<a name="l797"></a>        </span><span class=cB6>&quot;within TinkerOS once the drive has\n&quot;</span><span class=cB0>
+<a name="l798"></a>        </span><span class=cB6>&quot;been paritioned.\n\n&quot;</span><span class=cB0>;
+<a name="l799"></a>        </span><span class=cB6>&quot;Please manually parition the drive\n&quot;</span><span class=cB0>
+<a name="l800"></a>        </span><span class=cB6>&quot;with a msdos (not gpt) partition\n&quot;</span><span class=cB0>
+<a name="l801"></a>        </span><span class=cB6>&quot;table and create a primary FAT32\n&quot;</span><span class=cB0>
+<a name="l802"></a>        </span><span class=cB6>&quot;partition to install TinkerOS on.\n&quot;</span><span class=cB0>
+<a name="l803"></a>        </span><span class=cB6>&quot;Then come back instead of choosing\n&quot;</span><span class=cB0>
+<a name="l804"></a>        </span><span class=cB6>&quot;the automatic installer, manually\n&quot;</span><span class=cB0>
+<a name="l805"></a>        </span><span class=cB6>&quot;install to the partition you created\n&quot;</span><span class=cB0>
+<a name="l806"></a>        </span><span class=cB6>&quot;and if possible do not probe, but\n&quot;</span><span class=cB0>
+<a name="l807"></a>        </span><span class=cB6>&quot;manually enter the I/O ports if you\n&quot;</span><span class=cB0>
+<a name="l808"></a>        </span><span class=cB6>&quot;know them.\n\n&quot;</span><span class=cB0>;
+<a name="l809"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l810"></a>    }
+<a name="l811"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cfg);
+<a name="l812"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l813"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l814"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l815"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'C'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l816"></a>    {
+<a name="l817"></a>      </span><span class=cB6>&quot;\n\nThis wizard works if you already have partition(s) ready.  &quot;</span><span class=cB0>
+<a name="l818"></a>      </span><span class=cB6>&quot;\n\nThe partition table should be MSDOS\n&quot;</span><span class=cB0>
+<a name="l819"></a>      </span><span class=cB6>&quot;(NOT GPT) with FAT32 partitions on a\n&quot;</span><span class=cB0>
+<a name="l820"></a>      </span><span class=cB6>&quot;IDE or SATA drive (not M.2/NVME!)\n&quot;</span><span class=cB0>
+<a name="l821"></a>      </span><span class=cB6>&quot;\n\nIf you have already prepared partitions\n&quot;</span><span class=cB0>
+<a name="l822"></a>      </span><span class=cB6>&quot;to install to using clonezilla or\n&quot;</span><span class=cB0>
+<a name="l823"></a>      </span><span class=cB6>&quot;another partitioning tool you can try\n&quot;</span><span class=cB0>
+<a name="l824"></a>      </span><span class=cB6>&quot;to auto mount them now if they are\n&quot;</span><span class=cB0>
+<a name="l825"></a>      </span><span class=cB6>&quot;FAT32 formatted.\n&quot;</span><span class=cB0>
+<a name="l826"></a>      </span><span class=cB6>&quot;\nRun MountAuto &quot;</span><span class=cB0>;
+<a name="l827"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l828"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l356"></span><span class=cB5>MountAuto</a></span><span class=cB0>;
+<a name="l829"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'C'</span><span class=cB7>)</span><span class=cB0>&amp;&amp;!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'D'</span><span class=cB7>)</span><span class=cB0>&amp;&amp;!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'E'</span><span class=cB7>)</span><span class=cB0>&amp;&amp;!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'F'</span><span class=cB7>)</span><span class=cB0>&amp;&amp;!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
+<a name="l830"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l831"></a>        </span><span class=cB6>&quot;\n\n$BK, 1$$RED$Performing extended probing...$FG$$BK, 0$\n&quot;</span><span class=cB0>;
+<a name="l832"></a>        </span><span class=cB6>&quot;$BK, 1$$RED$If system locks, reboot and do manual mount.$FG$$BK, 0$\n\n&quot;</span><span class=cB0>;
+<a name="l833"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(500);
+<a name="l834"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l356"></span><span class=cB5>MountAuto</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l835"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l836"></a>    }
+<a name="l837"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'C'</span><span class=cB7>)</span><span class=cB0>||<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'D'</span><span class=cB7>)</span><span class=cB0>||<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'E'</span><span class=cB7>)</span><span class=cB0>||<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'F'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l838"></a>    {
+<a name="l839"></a>      </span><span class=cB6>&quot;Drive(s) have been detected!\n\n&quot;</span><span class=cB0>;
+<a name="l840"></a>      found_drv=</span><span class=cB6>'y'</span><span class=cB0>;
+<a name="l841"></a>    }
+<a name="l842"></a>    </span><span class=cB1>else</span><span class=cB0> {
+<a name="l843"></a>      </span><span class=cB6>&quot;\n$BK, 1$$RED$Did you mount drives first? If not, exit.$FG$$BK, 0$\n\n&quot;</span><span class=cB0>;
+<a name="l844"></a>    }
+<a name="l845"></a>
+<a name="l846"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n&quot;</span><span class=cB0>
+<a name="l847"></a>    </span><span class=cB6>&quot;Continue at your own risk, may cause loss of data!\n&quot;</span><span class=cB0>
+<a name="l848"></a>    </span><span class=cB6>&quot;$BK, 1$$RED$WARNING WARNING WARNING WARNING WARNING$FG$$BK, 0$\n\n&quot;</span><span class=cB0>
+<a name="l849"></a>    </span><span class=cB6>&quot;Continue Install Wizard &quot;</span><span class=cB0>;
+<a name="l850"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB0>found_drv</span><span class=cB7>)</span><span class=cB0>)
+<a name="l851"></a>    {
+<a name="l852"></a>      </span><span class=cB1>do</span><span class=cB0>
+<a name="l853"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l854"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l55"></span><span class=cB6>AHCIMode</a></span><span class=cB0>)
+<a name="l855"></a>        {
+<a name="l856"></a>          RegularInstallWizAHCI();
+<a name="l857"></a>        }
+<a name="l858"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l859"></a>        {
+<a name="l860"></a>          RegularInstallWiz();
+<a name="l861"></a>        }
+<a name="l862"></a>        res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l863"></a>        </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB6>'C'</span><span class=cB0>; i&lt;</span><span class=cB6>'G'</span><span class=cB0>; i++)
+<a name="l864"></a>          </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l865"></a>            last_mounted_hd=i;
+<a name="l866"></a>        </span><span class=cB6>&quot;\nWould you like to run the wizard again to install to another drive &quot;</span><span class=cB0>;
+<a name="l867"></a>        </span><span class=cB1>if</span><span class=cB0> (last_drv_installed == last_mounted_hd) default_choice=</span><span class=cB6>'n'</span><span class=cB0>;
+<a name="l868"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l869"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB0>default_choice</span><span class=cB7>)</span><span class=cB0>);
+<a name="l870"></a>      </span><span class=cB6>&quot;$RED$Install Master Boot loader?$FG$&quot;</span><span class=cB0>;
+<a name="l871"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l872"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l873"></a>        </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l874"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootMHDIns.html#l83"></span><span class=cB5>BootMHDIns</a></span><span class=cB0>(</span><span class=cB6>'C'</span><span class=cB0>);
+<a name="l875"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l876"></a>    }
+<a name="l877"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l878"></a>      pmt_reboot=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l879"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l880"></a>  </span><span class=cB1>if</span><span class=cB0> (pmt_reboot)
+<a name="l881"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l882"></a>    </span><span class=cB6>&quot;Reboot Now &quot;</span><span class=cB0>;
+<a name="l883"></a>    </span><span class=cB1>if</span><span class=cB0> (vm_install)
+<a name="l884"></a>    {
+<a name="l885"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l886"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
+<a name="l887"></a>    }
+<a name="l888"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l889"></a>    {
+<a name="l890"></a>      </span><span class=cB1>for</span><span class=cB0> (i=</span><span class=cB6>'C'</span><span class=cB0>; i&lt;</span><span class=cB6>'G'</span><span class=cB0>; i++)
+<a name="l891"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB0>i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l892"></a>          last_mounted_hd=i;
+<a name="l893"></a>      </span><span class=cB1>if</span><span class=cB0> (last_drv_installed == last_mounted_hd)
+<a name="l894"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l895"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'y'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l896"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
+<a name="l897"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l898"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l899"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l900"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/StrC.html#l11"></span><span class=cB5>YorN</a></span><span class=cB7>(</span><span class=cB6>'n'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l901"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMain.html#l121"></span><span class=cB5>Reboot</a></span><span class=cB0>;
+<a name="l902"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l903"></a>    }
+<a name="l904"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l905"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l906"></a>}
+<a name="l907"></a>
+<a name="l908"></a></span><span class=cB1>Bool</span><span class=cB0> OSInstall(</span><span class=cB1>Bool</span><span class=cB0> pmt_reboot=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l909"></a>{
+<a name="l910"></a>  DoInstructions;
+<a name="l911"></a>  </span><span class=cB1>return</span><span class=cB0> DoInstall(pmt_reboot);
+<a name="l912"></a>}
+<a name="l913"></a>
+<a name="l914"></a>#</span><span class=cB1>if</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2165"></span><span class=cB3>__CMD_LINE__</a></span><span class=cB0>
+<a name="l915"></a>OSInstall(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l916"></a>#</span><span class=cB1>endif</span><span class=cB0>
 </span></div></pre></body>
 </html>

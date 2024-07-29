@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.15">
+<meta name="generator" content="TinkerOS V5.16">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -1090,7 +1090,7 @@
 <a name="l1050"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, sys_info-&gt;product_name);
 <a name="l1051"></a>      </span><span class=cB6>&quot;Version:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
 <a name="l1052"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, sys_info-&gt;version);
-<a name="l1053"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
+<a name="l1053"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2)
 <a name="l1054"></a>      {
 <a name="l1055"></a>        </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
 <a name="l1056"></a>        </span><span class=cB1>break</span><span class=cB0>;
@@ -1111,516 +1111,515 @@
 <a name="l1071"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
 <a name="l1072"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l1073"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l10"></span><span class=cB3>SMBIOSt_ENCLOSURE</a></span><span class=cB0>:
-<a name="l1074"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1075"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1076"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l96"></span><span class=cB9>CSMBIOSEnclosureInfo</a></span><span class=cB0> *info = header;
-<a name="l1077"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Enclosure\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1078"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1079"></a>      </span><span class=cB6>&quot;$ID,3$Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1080"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;manufacturer);
-<a name="l1081"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1082"></a>      , info-&gt;type &amp; 0x7F, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_TYPES&quot;</span><span class=cB0>,
-<a name="l1083"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;info-&gt;type, 7), </span><span class=cB6>&quot; \0, Lock Present&quot;</span><span class=cB0>;
-<a name="l1084"></a>      </span><span class=cB6>&quot;Version:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1085"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;version);
-<a name="l1086"></a>      </span><span class=cB6>&quot;Bootup State:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1087"></a>      , info-&gt;bootup_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
-<a name="l1088"></a>      </span><span class=cB6>&quot;Thermal State:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1089"></a>      , info-&gt;thermal_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
-<a name="l1090"></a>      </span><span class=cB6>&quot;Power Supply:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1091"></a>      , info-&gt;power_supply_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
-<a name="l1092"></a>      </span><span class=cB6>&quot;Security Status:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1093"></a>      , info-&gt;security_status, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_SECURITY_STATUSES&quot;</span><span class=cB0>;
-<a name="l1094"></a>      </span><span class=cB6>&quot;Height:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1095"></a>      </span><span class=cB2>//height is in 'U' units. 1 'U' is 1.75 inches or 4.445 cm.</span><span class=cB0>
-<a name="l1096"></a>      </span><span class=cB1>if</span><span class=cB0> (info-&gt;height)
-<a name="l1097"></a>        </span><span class=cB6>&quot;%0.2f\&quot;$FG$\n&quot;</span><span class=cB0>, info-&gt;height * 1.75;
-<a name="l1098"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1099"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1100"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;serial_number);
-<a name="l1101"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1102"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;asset_tag);
-<a name="l1103"></a>      </span><span class=cB6>&quot;Power Cord Count:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1104"></a>      </span><span class=cB1>if</span><span class=cB0> (info-&gt;power_cord_cnt)
-<a name="l1105"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, info-&gt;power_cord_cnt;
-<a name="l1106"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1107"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1108"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1109"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l11"></span><span class=cB3>SMBIOSt_PROCESSOR</a></span><span class=cB0>:
-<a name="l1110"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l123"></span><span class=cB9>CSMBIOSProcessorInfo</a></span><span class=cB0> *p_info = header;
-<a name="l1111"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l705"></span><span class=cB9>CRAXRBXRCXRDX</a></span><span class=cB0> regs;
-<a name="l1112"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l265"></span><span class=cB5>CPUId</a></span><span class=cB0>(1, &amp;regs);
-<a name="l1113"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Processor\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1114"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1115"></a>      </span><span class=cB6>&quot;$ID,3$Socket Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1116"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;name);
-<a name="l1117"></a>      </span><span class=cB6>&quot;Processor Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1118"></a>      , p_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_TYPES&quot;</span><span class=cB0>;
-<a name="l1119"></a>      </span><span class=cB6>&quot;Status:$BLACK$%z, %z$FG$\n&quot;</span><span class=cB0>
-<a name="l1120"></a>      , p_info-&gt;status &gt;&gt; 6, </span><span class=cB6>&quot;Socket Unpopulated\0Socket Populated&quot;</span><span class=cB0>,
-<a name="l1121"></a>        p_info-&gt;status &amp; 7, </span><span class=cB6>&quot;Unknown\0CPU Enabled\0CPU Disabled through BIOS Setup\0&quot;</span><span class=cB0>
-<a name="l1122"></a>      </span><span class=cB6>&quot;CPU Disabled by BIOS (POST Error)\0CPU Idle, Waiting to be Enabled\0 \0 \0Other&quot;</span><span class=cB0>;
-<a name="l1123"></a>      </span><span class=cB6>&quot;Core Count:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
-<a name="l1124"></a>      , p_info-&gt;core_cnt;
-<a name="l1125"></a>      </span><span class=cB6>&quot;Cores Enabled:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
-<a name="l1126"></a>      , p_info-&gt;cores_enabled;
-<a name="l1127"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1128"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;manufacturer);
-<a name="l1129"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1130"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;version);
-<a name="l1131"></a>      </span><span class=cB6>&quot;Family:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1132"></a>      </span><span class=cB1>if</span><span class=cB0> (regs.rax &gt;&gt; 8 &amp; 0xF &lt; 0xF)
-<a name="l1133"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, regs.rax &gt;&gt; 8 &amp; 0xF;
-<a name="l1134"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1135"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, 0xF + regs.rax &gt;&gt; 20 &amp; 0xFF;
-<a name="l1136"></a>      </span><span class=cB6>&quot;Model:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1137"></a>      </span><span class=cB1>if</span><span class=cB0> (regs.rax &gt;&gt; 4 &amp; 0xF &lt; 0xF)
-<a name="l1138"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, regs.rax &gt;&gt; 4 &amp; 0xF;
-<a name="l1139"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1140"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, (regs.rax &gt;&gt; 4 &amp; 0xF) &lt;&lt; 4 | regs.rax &gt;&gt; 16 &amp; 0xF;
-<a name="l1141"></a>      </span><span class=cB6>&quot;Stepping:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
-<a name="l1142"></a>      , regs.rax &amp; 0xF;
-<a name="l1143"></a>      </span><span class=cB6>&quot;Current Speed:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1144"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;current_speed)
-<a name="l1145"></a>        </span><span class=cB6>&quot;%0.1f GHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;current_speed / 1000.0;
-<a name="l1146"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1147"></a>      </span><span class=cB6>&quot;Max Speed:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1148"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;max_speed)
-<a name="l1149"></a>        </span><span class=cB6>&quot;%0.1f GHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;max_speed / 1000.0;
-<a name="l1150"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1151"></a>      </span><span class=cB6>&quot;Socket:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1152"></a>      , p_info-&gt;upgrade, </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_UPGRADES&quot;</span><span class=cB0>;
-<a name="l1153"></a>      </span><span class=cB6>&quot;Voltage:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1154"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;p_info-&gt;voltage, 7</span><span class=cB7>)</span><span class=cB0>)
-<a name="l1155"></a>        </span><span class=cB6>&quot;%0.1fV$FG$\n&quot;</span><span class=cB0>, (p_info-&gt;voltage &amp; 0x7F) / 10.0;
-<a name="l1156"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1157"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(p_info-&gt;voltage), </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_VOLTAGE_LEVELS&quot;</span><span class=cB0>;
-<a name="l1158"></a>      </span><span class=cB6>&quot;External Clock:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1159"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;external_clock)
-<a name="l1160"></a>        </span><span class=cB6>&quot;%d MHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;external_clock;
-<a name="l1161"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1162"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2)
-<a name="l1163"></a>      {
-<a name="l1164"></a>        </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1165"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1166"></a>      }
-<a name="l1167"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
-<a name="l1168"></a>      {
-<a name="l1169"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1170"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;serial_number);
-<a name="l1171"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1172"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;asset_tag);
-<a name="l1173"></a>      </span><span class=cB6>&quot;Part Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1174"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;part_number);
-<a name="l1175"></a>      }
-<a name="l1176"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, p_info-&gt;characteristics,
-<a name="l1177"></a>          show_all_flags, 9);
-<a name="l1178"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
-<a name="l1179"></a>      </span><span class=cB6>&quot;$TR,\&quot;Processor Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1180"></a>      , str;
-<a name="l1181"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_CPUID_1_EDX_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, regs.rdx, show_all_flags, 32);
-<a name="l1182"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB7>(</span><span class=cB0>buffer2, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_CPUID_1_ECX_FLAGS&quot;</span><span class=cB0>), regs.rcx,
-<a name="l1183"></a>              show_all_flags, 31</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1184"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
-<a name="l1185"></a>      </span><span class=cB6>&quot;$TR,\&quot;CPUID 0x1 Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1186"></a>      , str;
-<a name="l1187"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
-<a name="l1188"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l1_cache_handle &amp;&amp; p_info-&gt;l1_cache_handle != 0xFFFF)
-<a name="l1189"></a>      {
-<a name="l1190"></a>        </span><span class=cB6>&quot;$TR,\&quot;L1 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1191"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l1_cache_handle, show_all_flags);
-<a name="l1192"></a>      }
-<a name="l1193"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l2_cache_handle &amp;&amp; p_info-&gt;l2_cache_handle != 0xFFFF)
-<a name="l1194"></a>      {
-<a name="l1195"></a>        </span><span class=cB6>&quot;$TR,\&quot;L2 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1196"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l2_cache_handle, show_all_flags);
-<a name="l1197"></a>      }
-<a name="l1198"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l3_cache_handle &amp;&amp; p_info-&gt;l3_cache_handle != 0xFFFF)
-<a name="l1199"></a>      {
-<a name="l1200"></a>        </span><span class=cB6>&quot;$TR,\&quot;L3 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1201"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l3_cache_handle, show_all_flags);
-<a name="l1202"></a>      }
-<a name="l1203"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1204"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1205"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l12"></span><span class=cB3>SMBIOSt_CACHE</a></span><span class=cB0>:
-<a name="l1206"></a>      </span><span class=cB1>if</span><span class=cB0> (!handle)
-<a name="l1207"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1208"></a>      </span><span class=cB1>if</span><span class=cB0> (cache_cnt++ &gt; 0)
-<a name="l1209"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1210"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1211"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l150"></span><span class=cB9>CSMBIOSCacheInfo</a></span><span class=cB0> *c_info = header;
-<a name="l1212"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1213"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1214"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1215"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, c_info-&gt;name);
-<a name="l1216"></a>      </span><span class=cB6>&quot;Status:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1217"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;c_info-&gt;config, 7), </span><span class=cB6>&quot;Disabled\0Enabled&quot;</span><span class=cB0>;
-<a name="l1218"></a>      </span><span class=cB6>&quot;Mode:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1219"></a>      , c_info-&gt;config &gt;&gt; 8 &amp; 3,
-<a name="l1220"></a>          </span><span class=cB6>&quot;Write-Through\0Write-Back\0Varies with Memory Address\0Unknown&quot;</span><span class=cB0>;
-<a name="l1221"></a>      </span><span class=cB6>&quot;Type:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1222"></a>      , c_info-&gt;cache_type, </span><span class=cB6>&quot; \0Other\0Unknown\0Instruction\0Data\0Unified&quot;</span><span class=cB0>;
-<a name="l1223"></a>      </span><span class=cB6>&quot;Location:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1224"></a>      , c_info-&gt;config &gt;&gt; 5 &amp; 3, </span><span class=cB6>&quot;CPU Internal\0External\0 \0Unknown&quot;</span><span class=cB0>;
-<a name="l1225"></a>      </span><span class=cB6>&quot;Socketed:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1226"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;c_info-&gt;config, 3), </span><span class=cB6>&quot;No\0Yes&quot;</span><span class=cB0>;
-<a name="l1227"></a>      </span><span class=cB6>&quot;Max Cache Size:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1228"></a>      </span><span class=cB2>//if Bit 15 is 1 then granularity is 64K else 1K</span><span class=cB0>
-<a name="l1229"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c_info-&gt;max_size, 15</span><span class=cB7>)</span><span class=cB0>)
-<a name="l1230"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, (c_info-&gt;max_size &amp; 0x7FFF) * 64;
-<a name="l1231"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1232"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, c_info-&gt;max_size &amp; 0x7FFF;
-<a name="l1233"></a>      </span><span class=cB6>&quot;Installed Size:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1234"></a>      </span><span class=cB2>//if Bit 15 is 1 then granularity is 64K else 1K</span><span class=cB0>
-<a name="l1235"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c_info-&gt;installed_size, 15</span><span class=cB7>)</span><span class=cB0>)
-<a name="l1236"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, (c_info-&gt;installed_size &amp; 0x7FFF) * 64;
-<a name="l1237"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1238"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, c_info-&gt;installed_size &amp; 0x7FFF;
-<a name="l1239"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_CACHE_SRAM_TYPES&quot;</span><span class=cB7>)</span><span class=cB0>,
-<a name="l1240"></a>        c_info-&gt;supported_sram_type);
-<a name="l1241"></a>      str = <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l707"></span><span class=cB5>StrReplace</a></span><span class=cB0>(buffer, </span><span class=cB6>&quot;+&quot;</span><span class=cB0>, </span><span class=cB6>&quot;, &quot;</span><span class=cB0>);
-<a name="l1242"></a>      </span><span class=cB6>&quot;Supported SRAM Types:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1243"></a>      , str + 2;
-<a name="l1244"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
-<a name="l1245"></a>      </span><span class=cB6>&quot;Installed SRAM Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1246"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(c_info-&gt;installed_sram_type), </span><span class=cB6>&quot;ST_SMBIOS_CACHE_SRAM_TYPES&quot;</span><span class=cB0>;
-<a name="l1247"></a>      </span><span class=cB6>&quot;Cache Speed:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1248"></a>      </span><span class=cB1>if</span><span class=cB0> (c_info-&gt;cache_speed)
-<a name="l1249"></a>        </span><span class=cB6>&quot;%d nS$FG$\n&quot;</span><span class=cB0>, c_info-&gt;cache_speed;
-<a name="l1250"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1251"></a>      </span><span class=cB6>&quot;ECC type:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1252"></a>      , c_info-&gt;error_correction_type,
-<a name="l1253"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0None\0Parity\0Single-bit ECC\0Multi-bit ECC&quot;</span><span class=cB0>;
-<a name="l1254"></a>      </span><span class=cB6>&quot;Associativity:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1255"></a>      , c_info-&gt;associativity, </span><span class=cB6>&quot;ST_SMBIOS_CACHE_ASSOCIATIVITY&quot;</span><span class=cB0>;
-<a name="l1256"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1257"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1258"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l17"></span><span class=cB3>SMBIOSt_PHYMEM</a></span><span class=cB0>:
-<a name="l1259"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l191"></span><span class=cB9>CSMBIOSMemArrayInfo</a></span><span class=cB0> *ma_info = header;
-<a name="l1260"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Memory Array\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1261"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1262"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1263"></a>      </span><span class=cB6>&quot;Location:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1264"></a>      , ma_info-&gt;location, </span><span class=cB6>&quot;ST_SMBIOS_PHYMEM_LOCATIONS&quot;</span><span class=cB0>;
-<a name="l1265"></a>      </span><span class=cB6>&quot;Use:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1266"></a>      , ma_info-&gt;use, </span><span class=cB6>&quot;ST_SMBIOS_PHYMEM_USES&quot;</span><span class=cB0>;
-<a name="l1267"></a>      </span><span class=cB6>&quot;Error Correction:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1268"></a>      , ma_info-&gt;use,
-<a name="l1269"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0None\0Parity\0Single-bit ECC\0Multi-bit ECC\0CRC&quot;</span><span class=cB0>;
-<a name="l1270"></a>      </span><span class=cB6>&quot;Max Capacity:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1271"></a>      </span><span class=cB1>if</span><span class=cB0> (ma_info-&gt;max_capacity == 0x80000000)
-<a name="l1272"></a>        </span><span class=cB6>&quot;%d MB$FG$\n&quot;</span><span class=cB0>, ma_info-&gt;extended_max_capacity / 1024;
-<a name="l1273"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1274"></a>        </span><span class=cB6>&quot;%d MB$FG$\n&quot;</span><span class=cB0>, ma_info-&gt;max_capacity / 1024;
-<a name="l1275"></a>      </span><span class=cB6>&quot;Mem Device Count:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
-<a name="l1276"></a>      , ma_info-&gt;mem_device_cnt;
-<a name="l1277"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2)
-<a name="l1278"></a>      {
-<a name="l1279"></a>        </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1280"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1281"></a>      }
-<a name="l1282"></a>      </span><span class=cB6>&quot;$TR,\&quot;Memory Devices\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1283"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1284"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>, handle, show_all_flags, ma_info-&gt;header.handle);
+<a name="l1074"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1075"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l96"></span><span class=cB9>CSMBIOSEnclosureInfo</a></span><span class=cB0> *info = header;
+<a name="l1076"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Enclosure\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1077"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1078"></a>      </span><span class=cB6>&quot;$ID,3$Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1079"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;manufacturer);
+<a name="l1080"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1081"></a>      , info-&gt;type &amp; 0x7F, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_TYPES&quot;</span><span class=cB0>,
+<a name="l1082"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;info-&gt;type, 7), </span><span class=cB6>&quot; \0, Lock Present&quot;</span><span class=cB0>;
+<a name="l1083"></a>      </span><span class=cB6>&quot;Version:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1084"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;version);
+<a name="l1085"></a>      </span><span class=cB6>&quot;Bootup State:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1086"></a>      , info-&gt;bootup_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
+<a name="l1087"></a>      </span><span class=cB6>&quot;Thermal State:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1088"></a>      , info-&gt;thermal_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
+<a name="l1089"></a>      </span><span class=cB6>&quot;Power Supply:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1090"></a>      , info-&gt;power_supply_state, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_STATES&quot;</span><span class=cB0>;
+<a name="l1091"></a>      </span><span class=cB6>&quot;Security Status:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1092"></a>      , info-&gt;security_status, </span><span class=cB6>&quot;ST_SMBIOS_ENCLOSURE_SECURITY_STATUSES&quot;</span><span class=cB0>;
+<a name="l1093"></a>      </span><span class=cB6>&quot;Height:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1094"></a>      </span><span class=cB2>//height is in 'U' units. 1 'U' is 1.75 inches or 4.445 cm.</span><span class=cB0>
+<a name="l1095"></a>      </span><span class=cB1>if</span><span class=cB0> (info-&gt;height)
+<a name="l1096"></a>        </span><span class=cB6>&quot;%0.2f\&quot;$FG$\n&quot;</span><span class=cB0>, info-&gt;height * 1.75;
+<a name="l1097"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1098"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1099"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;serial_number);
+<a name="l1100"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1101"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, info-&gt;asset_tag);
+<a name="l1102"></a>      </span><span class=cB6>&quot;Power Cord Count:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1103"></a>      </span><span class=cB1>if</span><span class=cB0> (info-&gt;power_cord_cnt)
+<a name="l1104"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, info-&gt;power_cord_cnt;
+<a name="l1105"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1106"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1107"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1108"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l11"></span><span class=cB3>SMBIOSt_PROCESSOR</a></span><span class=cB0>:
+<a name="l1109"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l123"></span><span class=cB9>CSMBIOSProcessorInfo</a></span><span class=cB0> *p_info = header;
+<a name="l1110"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l705"></span><span class=cB9>CRAXRBXRCXRDX</a></span><span class=cB0> regs;
+<a name="l1111"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l265"></span><span class=cB5>CPUId</a></span><span class=cB0>(1, &amp;regs);
+<a name="l1112"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Processor\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1113"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1114"></a>      </span><span class=cB6>&quot;$ID,3$Socket Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1115"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;name);
+<a name="l1116"></a>      </span><span class=cB6>&quot;Processor Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1117"></a>      , p_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_TYPES&quot;</span><span class=cB0>;
+<a name="l1118"></a>      </span><span class=cB6>&quot;Status:$BLACK$%z, %z$FG$\n&quot;</span><span class=cB0>
+<a name="l1119"></a>      , p_info-&gt;status &gt;&gt; 6, </span><span class=cB6>&quot;Socket Unpopulated\0Socket Populated&quot;</span><span class=cB0>,
+<a name="l1120"></a>        p_info-&gt;status &amp; 7, </span><span class=cB6>&quot;Unknown\0CPU Enabled\0CPU Disabled through BIOS Setup\0&quot;</span><span class=cB0>
+<a name="l1121"></a>      </span><span class=cB6>&quot;CPU Disabled by BIOS (POST Error)\0CPU Idle, Waiting to be Enabled\0 \0 \0Other&quot;</span><span class=cB0>;
+<a name="l1122"></a>      </span><span class=cB6>&quot;Core Count:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
+<a name="l1123"></a>      , p_info-&gt;core_cnt;
+<a name="l1124"></a>      </span><span class=cB6>&quot;Cores Enabled:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
+<a name="l1125"></a>      , p_info-&gt;cores_enabled;
+<a name="l1126"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1127"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;manufacturer);
+<a name="l1128"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1129"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;version);
+<a name="l1130"></a>      </span><span class=cB6>&quot;Family:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1131"></a>      </span><span class=cB1>if</span><span class=cB0> (regs.rax &gt;&gt; 8 &amp; 0xF &lt; 0xF)
+<a name="l1132"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, regs.rax &gt;&gt; 8 &amp; 0xF;
+<a name="l1133"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1134"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, 0xF + regs.rax &gt;&gt; 20 &amp; 0xFF;
+<a name="l1135"></a>      </span><span class=cB6>&quot;Model:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1136"></a>      </span><span class=cB1>if</span><span class=cB0> (regs.rax &gt;&gt; 4 &amp; 0xF &lt; 0xF)
+<a name="l1137"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, regs.rax &gt;&gt; 4 &amp; 0xF;
+<a name="l1138"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1139"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, (regs.rax &gt;&gt; 4 &amp; 0xF) &lt;&lt; 4 | regs.rax &gt;&gt; 16 &amp; 0xF;
+<a name="l1140"></a>      </span><span class=cB6>&quot;Stepping:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
+<a name="l1141"></a>      , regs.rax &amp; 0xF;
+<a name="l1142"></a>      </span><span class=cB6>&quot;Current Speed:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1143"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;current_speed)
+<a name="l1144"></a>        </span><span class=cB6>&quot;%0.1f GHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;current_speed / 1000.0;
+<a name="l1145"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1146"></a>      </span><span class=cB6>&quot;Max Speed:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1147"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;max_speed)
+<a name="l1148"></a>        </span><span class=cB6>&quot;%0.1f GHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;max_speed / 1000.0;
+<a name="l1149"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1150"></a>      </span><span class=cB6>&quot;Socket:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1151"></a>      , p_info-&gt;upgrade, </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_UPGRADES&quot;</span><span class=cB0>;
+<a name="l1152"></a>      </span><span class=cB6>&quot;Voltage:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1153"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;p_info-&gt;voltage, 7</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1154"></a>        </span><span class=cB6>&quot;%0.1fV$FG$\n&quot;</span><span class=cB0>, (p_info-&gt;voltage &amp; 0x7F) / 10.0;
+<a name="l1155"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1156"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(p_info-&gt;voltage), </span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_VOLTAGE_LEVELS&quot;</span><span class=cB0>;
+<a name="l1157"></a>      </span><span class=cB6>&quot;External Clock:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1158"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;external_clock)
+<a name="l1159"></a>        </span><span class=cB6>&quot;%d MHz$FG$\n&quot;</span><span class=cB0>, p_info-&gt;external_clock;
+<a name="l1160"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1161"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2)
+<a name="l1162"></a>      {
+<a name="l1163"></a>        </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1164"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1165"></a>      }
+<a name="l1166"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
+<a name="l1167"></a>      {
+<a name="l1168"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1169"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;serial_number);
+<a name="l1170"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1171"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;asset_tag);
+<a name="l1172"></a>      </span><span class=cB6>&quot;Part Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1173"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, p_info-&gt;part_number);
+<a name="l1174"></a>      }
+<a name="l1175"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_PROCESSOR_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, p_info-&gt;characteristics,
+<a name="l1176"></a>          show_all_flags, 9);
+<a name="l1177"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
+<a name="l1178"></a>      </span><span class=cB6>&quot;$TR,\&quot;Processor Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1179"></a>      , str;
+<a name="l1180"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_CPUID_1_EDX_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, regs.rdx, show_all_flags, 32);
+<a name="l1181"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB7>(</span><span class=cB0>buffer2, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_CPUID_1_ECX_FLAGS&quot;</span><span class=cB0>), regs.rcx,
+<a name="l1182"></a>              show_all_flags, 31</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1183"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
+<a name="l1184"></a>      </span><span class=cB6>&quot;$TR,\&quot;CPUID 0x1 Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1185"></a>      , str;
+<a name="l1186"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
+<a name="l1187"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l1_cache_handle &amp;&amp; p_info-&gt;l1_cache_handle != 0xFFFF)
+<a name="l1188"></a>      {
+<a name="l1189"></a>        </span><span class=cB6>&quot;$TR,\&quot;L1 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1190"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l1_cache_handle, show_all_flags);
+<a name="l1191"></a>      }
+<a name="l1192"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l2_cache_handle &amp;&amp; p_info-&gt;l2_cache_handle != 0xFFFF)
+<a name="l1193"></a>      {
+<a name="l1194"></a>        </span><span class=cB6>&quot;$TR,\&quot;L2 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1195"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l2_cache_handle, show_all_flags);
+<a name="l1196"></a>      }
+<a name="l1197"></a>      </span><span class=cB1>if</span><span class=cB0> (p_info-&gt;l3_cache_handle &amp;&amp; p_info-&gt;l3_cache_handle != 0xFFFF)
+<a name="l1198"></a>      {
+<a name="l1199"></a>        </span><span class=cB6>&quot;$TR,\&quot;L3 Cache Info\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1200"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,p_info-&gt;l3_cache_handle, show_all_flags);
+<a name="l1201"></a>      }
+<a name="l1202"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1203"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1204"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l12"></span><span class=cB3>SMBIOSt_CACHE</a></span><span class=cB0>:
+<a name="l1205"></a>      </span><span class=cB1>if</span><span class=cB0> (!handle)
+<a name="l1206"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1207"></a>      </span><span class=cB1>if</span><span class=cB0> (cache_cnt++ &gt; 0)
+<a name="l1208"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1209"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1210"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l150"></span><span class=cB9>CSMBIOSCacheInfo</a></span><span class=cB0> *c_info = header;
+<a name="l1211"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1212"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1213"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1214"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, c_info-&gt;name);
+<a name="l1215"></a>      </span><span class=cB6>&quot;Status:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1216"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;c_info-&gt;config, 7), </span><span class=cB6>&quot;Disabled\0Enabled&quot;</span><span class=cB0>;
+<a name="l1217"></a>      </span><span class=cB6>&quot;Mode:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1218"></a>      , c_info-&gt;config &gt;&gt; 8 &amp; 3,
+<a name="l1219"></a>          </span><span class=cB6>&quot;Write-Through\0Write-Back\0Varies with Memory Address\0Unknown&quot;</span><span class=cB0>;
+<a name="l1220"></a>      </span><span class=cB6>&quot;Type:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1221"></a>      , c_info-&gt;cache_type, </span><span class=cB6>&quot; \0Other\0Unknown\0Instruction\0Data\0Unified&quot;</span><span class=cB0>;
+<a name="l1222"></a>      </span><span class=cB6>&quot;Location:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1223"></a>      , c_info-&gt;config &gt;&gt; 5 &amp; 3, </span><span class=cB6>&quot;CPU Internal\0External\0 \0Unknown&quot;</span><span class=cB0>;
+<a name="l1224"></a>      </span><span class=cB6>&quot;Socketed:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1225"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;c_info-&gt;config, 3), </span><span class=cB6>&quot;No\0Yes&quot;</span><span class=cB0>;
+<a name="l1226"></a>      </span><span class=cB6>&quot;Max Cache Size:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1227"></a>      </span><span class=cB2>//if Bit 15 is 1 then granularity is 64K else 1K</span><span class=cB0>
+<a name="l1228"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c_info-&gt;max_size, 15</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1229"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, (c_info-&gt;max_size &amp; 0x7FFF) * 64;
+<a name="l1230"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1231"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, c_info-&gt;max_size &amp; 0x7FFF;
+<a name="l1232"></a>      </span><span class=cB6>&quot;Installed Size:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1233"></a>      </span><span class=cB2>//if Bit 15 is 1 then granularity is 64K else 1K</span><span class=cB0>
+<a name="l1234"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c_info-&gt;installed_size, 15</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1235"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, (c_info-&gt;installed_size &amp; 0x7FFF) * 64;
+<a name="l1236"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1237"></a>        </span><span class=cB6>&quot;%d KB$FG$\n&quot;</span><span class=cB0>, c_info-&gt;installed_size &amp; 0x7FFF;
+<a name="l1238"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_CACHE_SRAM_TYPES&quot;</span><span class=cB7>)</span><span class=cB0>,
+<a name="l1239"></a>        c_info-&gt;supported_sram_type);
+<a name="l1240"></a>      str = <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l707"></span><span class=cB5>StrReplace</a></span><span class=cB0>(buffer, </span><span class=cB6>&quot;+&quot;</span><span class=cB0>, </span><span class=cB6>&quot;, &quot;</span><span class=cB0>);
+<a name="l1241"></a>      </span><span class=cB6>&quot;Supported SRAM Types:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1242"></a>      , str + 2;
+<a name="l1243"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
+<a name="l1244"></a>      </span><span class=cB6>&quot;Installed SRAM Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1245"></a>      , <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB0>(c_info-&gt;installed_sram_type), </span><span class=cB6>&quot;ST_SMBIOS_CACHE_SRAM_TYPES&quot;</span><span class=cB0>;
+<a name="l1246"></a>      </span><span class=cB6>&quot;Cache Speed:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1247"></a>      </span><span class=cB1>if</span><span class=cB0> (c_info-&gt;cache_speed)
+<a name="l1248"></a>        </span><span class=cB6>&quot;%d nS$FG$\n&quot;</span><span class=cB0>, c_info-&gt;cache_speed;
+<a name="l1249"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1250"></a>      </span><span class=cB6>&quot;ECC type:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1251"></a>      , c_info-&gt;error_correction_type,
+<a name="l1252"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0None\0Parity\0Single-bit ECC\0Multi-bit ECC&quot;</span><span class=cB0>;
+<a name="l1253"></a>      </span><span class=cB6>&quot;Associativity:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1254"></a>      , c_info-&gt;associativity, </span><span class=cB6>&quot;ST_SMBIOS_CACHE_ASSOCIATIVITY&quot;</span><span class=cB0>;
+<a name="l1255"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1256"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1257"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l17"></span><span class=cB3>SMBIOSt_PHYMEM</a></span><span class=cB0>:
+<a name="l1258"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l191"></span><span class=cB9>CSMBIOSMemArrayInfo</a></span><span class=cB0> *ma_info = header;
+<a name="l1259"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Memory Array\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1260"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1261"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1262"></a>      </span><span class=cB6>&quot;Location:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1263"></a>      , ma_info-&gt;location, </span><span class=cB6>&quot;ST_SMBIOS_PHYMEM_LOCATIONS&quot;</span><span class=cB0>;
+<a name="l1264"></a>      </span><span class=cB6>&quot;Use:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1265"></a>      , ma_info-&gt;use, </span><span class=cB6>&quot;ST_SMBIOS_PHYMEM_USES&quot;</span><span class=cB0>;
+<a name="l1266"></a>      </span><span class=cB6>&quot;Error Correction:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1267"></a>      , ma_info-&gt;use,
+<a name="l1268"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0None\0Parity\0Single-bit ECC\0Multi-bit ECC\0CRC&quot;</span><span class=cB0>;
+<a name="l1269"></a>      </span><span class=cB6>&quot;Max Capacity:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1270"></a>      </span><span class=cB1>if</span><span class=cB0> (ma_info-&gt;max_capacity == 0x80000000)
+<a name="l1271"></a>        </span><span class=cB6>&quot;%d MB$FG$\n&quot;</span><span class=cB0>, ma_info-&gt;extended_max_capacity / 1024;
+<a name="l1272"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1273"></a>        </span><span class=cB6>&quot;%d MB$FG$\n&quot;</span><span class=cB0>, ma_info-&gt;max_capacity / 1024;
+<a name="l1274"></a>      </span><span class=cB6>&quot;Mem Device Count:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
+<a name="l1275"></a>      , ma_info-&gt;mem_device_cnt;
+<a name="l1276"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2)
+<a name="l1277"></a>      {
+<a name="l1278"></a>        </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1279"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1280"></a>      }
+<a name="l1281"></a>      </span><span class=cB6>&quot;$TR,\&quot;Memory Devices\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1282"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1283"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>, handle, show_all_flags, ma_info-&gt;header.handle);
+<a name="l1284"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
 <a name="l1285"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1286"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1287"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1288"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>:
-<a name="l1289"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l203"></span><span class=cB9>CSMBIOSMemDeviceInfo</a></span><span class=cB0> *mem_info = header;
-<a name="l1290"></a>      </span><span class=cB1>if</span><span class=cB0> (type != <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>)
-<a name="l1291"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1292"></a>      </span><span class=cB1>if</span><span class=cB0> (memdev_handle != 0xFFFF &amp;&amp; memdev_handle != mem_info-&gt;memory_array_handle)
-<a name="l1293"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1294"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1295"></a>      </span><span class=cB6>&quot;$TR,\&quot;Memory Device\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1296"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1297"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1298"></a>      </span><span class=cB6>&quot;Device Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1299"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;device_locator);
-<a name="l1300"></a>      </span><span class=cB6>&quot;Bank Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1301"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;bank_locator);
-<a name="l1302"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1303"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;manufacturer);
-<a name="l1304"></a>      </span><span class=cB6>&quot;Size:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1305"></a>      </span><span class=cB1>if</span><span class=cB0> (!mem_info-&gt;size)
-<a name="l1306"></a>        </span><span class=cB6>&quot;No Device Installed$FG$\n&quot;</span><span class=cB0>;
-<a name="l1307"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;size == 0xFFFF)
-<a name="l1308"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1309"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;size == 0x7FFF)
-<a name="l1310"></a>        </span><span class=cB6>&quot;%d GB$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;extended_size;
-<a name="l1311"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1312"></a>        </span><span class=cB6>&quot;%d %zB$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;size &amp; 0x7FFF, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;mem_info-&gt;size, 15), </span><span class=cB6>&quot;M\0K&quot;</span><span class=cB0>;
-<a name="l1313"></a>      </span><span class=cB1>if</span><span class=cB0> (entry-&gt;major_version &gt;= 2 &amp;&amp; entry-&gt;minor_version &gt;= 8)
-<a name="l1314"></a>      {
-<a name="l1315"></a>        </span><span class=cB6>&quot;Min Voltage:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1316"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;min_voltage)
-<a name="l1317"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;min_voltage;
-<a name="l1318"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l1319"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1320"></a>        </span><span class=cB6>&quot;Max Voltage:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1321"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;max_voltage)
-<a name="l1322"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;max_voltage;
-<a name="l1323"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l1324"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1325"></a>        </span><span class=cB6>&quot;Configured Volt.:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1326"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;configured_voltage)
-<a name="l1327"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;configured_voltage;
-<a name="l1328"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l1329"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1330"></a>      }
-<a name="l1331"></a>      </span><span class=cB6>&quot;Total Width:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1332"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;total_width != 0xFFFF)
-<a name="l1333"></a>        </span><span class=cB6>&quot;%d bits$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;total_width;
-<a name="l1334"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1335"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1336"></a>      </span><span class=cB6>&quot;Data Width:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1337"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;data_width != 0xFFFF)
-<a name="l1338"></a>        </span><span class=cB6>&quot;%d bits$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;data_width;
-<a name="l1339"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1340"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1341"></a>      </span><span class=cB6>&quot;Max Speed:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1342"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;speed)
-<a name="l1343"></a>      {
-<a name="l1344"></a>        </span><span class=cB6>&quot;%d </span><span class=cB9><u>MT/s</u></span><span class=cB6>$FG$\n&quot;</span><span class=cB0>,
-<a name="l1345"></a>          mem_info-&gt;speed;
-<a name="l1346"></a>      }
-<a name="l1347"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1348"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1349"></a>      </span><span class=cB6>&quot;Configured Speed:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1350"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;configured_speed)
-<a name="l1351"></a>      {
-<a name="l1352"></a>        </span><span class=cB6>&quot;%d </span><span class=cB9><u>MT/s</u></span><span class=cB6>$FG$\n&quot;</span><span class=cB0>,
-<a name="l1353"></a>          mem_info-&gt;configured_speed;
-<a name="l1354"></a>      }
-<a name="l1355"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1356"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1357"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
-<a name="l1358"></a>      {
-<a name="l1359"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1360"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;serial_number);
-<a name="l1361"></a>      }
-<a name="l1362"></a>      </span><span class=cB6>&quot;Part Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1363"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;part_number);
-<a name="l1364"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1365"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;asset_tag);
-<a name="l1366"></a>      </span><span class=cB6>&quot;Form Factor:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1367"></a>      , mem_info-&gt;form_factor, </span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_FORM_FACTORS&quot;</span><span class=cB0>;
-<a name="l1368"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1369"></a>      , mem_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_TYPES&quot;</span><span class=cB0>;
-<a name="l1370"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_TYPE_DETAILS&quot;</span><span class=cB7>)</span><span class=cB0>,
-<a name="l1371"></a>        mem_info-&gt;type_detail, show_all_flags, 16);
-<a name="l1372"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
-<a name="l1373"></a>      </span><span class=cB6>&quot;$TR,\&quot;Type Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1374"></a>      , str;
-<a name="l1375"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
-<a name="l1376"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1377"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1378"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l9"></span><span class=cB3>SMBIOSt_BASEBOARD</a></span><span class=cB0>:
-<a name="l1379"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l80"></span><span class=cB9>CSMBIOSBaseboardInfo</a></span><span class=cB0> *b_info = header;
-<a name="l1380"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1381"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Baseboard\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1382"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1383"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1384"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1385"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;manufacturer);
-<a name="l1386"></a>      </span><span class=cB6>&quot;Product:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1387"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;product);
-<a name="l1388"></a>      </span><span class=cB6>&quot;Version:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1389"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;version);
-<a name="l1390"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
-<a name="l1391"></a>      {
-<a name="l1392"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1393"></a>        , b_info-&gt;board_type, </span><span class=cB6>&quot;ST_SMBIOS_BASEBOARD_TYPES&quot;</span><span class=cB0>;
-<a name="l1394"></a>      </span><span class=cB6>&quot;Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1395"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;chassis_location, </span><span class=cB6>&quot;Not Specified&quot;</span><span class=cB0>);
-<a name="l1396"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1397"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;serial_number);
-<a name="l1398"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1399"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;asset_tag);
-<a name="l1400"></a>      </span><span class=cB6>&quot;$TR,\&quot;Flags\&quot;$&quot;</span><span class=cB0>;
-<a name="l1401"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_BASEBOARD_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, b_info-&gt;feature_flags,
-<a name="l1402"></a>            show_all_flags, 5);
-<a name="l1403"></a>        str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
-<a name="l1404"></a>      </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1405"></a>        , str;
-<a name="l1406"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
-<a name="l1407"></a>      }
-<a name="l1408"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1409"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1410"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l13"></span><span class=cB3>SMBIOSt_CONNECTOR</a></span><span class=cB0>:
-<a name="l1411"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l165"></span><span class=cB9>CSMBIOSConnectorInfo</a></span><span class=cB0> *con_info = header;
-<a name="l1412"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1413"></a>      </span><span class=cB6>&quot;$TR,\&quot;Port Connector\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1414"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1415"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1416"></a>      </span><span class=cB6>&quot;Port Type:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1417"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;port_type == 0xFF)
-<a name="l1418"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
-<a name="l1419"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1420"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;port_type, </span><span class=cB6>&quot;ST_SMBIOS_PORT_TYPES&quot;</span><span class=cB0>;
-<a name="l1421"></a>      </span><span class=cB6>&quot;External Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1422"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, con_info-&gt;external_name);
-<a name="l1423"></a>      </span><span class=cB6>&quot;Internal Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1424"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, con_info-&gt;internal_name);
-<a name="l1425"></a>      </span><span class=cB6>&quot;External Type:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1426"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;external_type == 0xFF)
-<a name="l1427"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
-<a name="l1428"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1429"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;external_type, </span><span class=cB6>&quot;ST_SMBIOS_CONNECTOR_TYPES&quot;</span><span class=cB0>;
-<a name="l1430"></a>      </span><span class=cB6>&quot;Internal Type:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1431"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;internal_type == 0xFF)
-<a name="l1432"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
-<a name="l1433"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1434"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;internal_type, </span><span class=cB6>&quot;ST_SMBIOS_CONNECTOR_TYPES&quot;</span><span class=cB0>;
-<a name="l1435"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1436"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1437"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l20"></span><span class=cB3>SMBIOSt_BATTERY</a></span><span class=cB0>:
-<a name="l1438"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l230"></span><span class=cB9>CSMBIOSBatteryInfo</a></span><span class=cB0> *bat_info = header;
-<a name="l1439"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1440"></a>      </span><span class=cB6>&quot;$TR,\&quot;Battery\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1441"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1442"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1443"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1444"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;name);
-<a name="l1445"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1446"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacturer);
-<a name="l1447"></a>      </span><span class=cB6>&quot;</span><span class=cB9><u>
+<a name="l1286"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1287"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>:
+<a name="l1288"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l203"></span><span class=cB9>CSMBIOSMemDeviceInfo</a></span><span class=cB0> *mem_info = header;
+<a name="l1289"></a>      </span><span class=cB1>if</span><span class=cB0> (type != <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l18"></span><span class=cB3>SMBIOSt_MEM_DEVICE</a></span><span class=cB0>)
+<a name="l1290"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1291"></a>      </span><span class=cB1>if</span><span class=cB0> (memdev_handle != 0xFFFF &amp;&amp; memdev_handle != mem_info-&gt;memory_array_handle)
+<a name="l1292"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1293"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1294"></a>      </span><span class=cB6>&quot;$TR,\&quot;Memory Device\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1295"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1296"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1297"></a>      </span><span class=cB6>&quot;Device Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1298"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;device_locator);
+<a name="l1299"></a>      </span><span class=cB6>&quot;Bank Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1300"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;bank_locator);
+<a name="l1301"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1302"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;manufacturer);
+<a name="l1303"></a>      </span><span class=cB6>&quot;Size:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1304"></a>      </span><span class=cB1>if</span><span class=cB0> (!mem_info-&gt;size)
+<a name="l1305"></a>        </span><span class=cB6>&quot;No Device Installed$FG$\n&quot;</span><span class=cB0>;
+<a name="l1306"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;size == 0xFFFF)
+<a name="l1307"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1308"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;size == 0x7FFF)
+<a name="l1309"></a>        </span><span class=cB6>&quot;%d GB$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;extended_size;
+<a name="l1310"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1311"></a>        </span><span class=cB6>&quot;%d %zB$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;size &amp; 0x7FFF, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;mem_info-&gt;size, 15), </span><span class=cB6>&quot;M\0K&quot;</span><span class=cB0>;
+<a name="l1312"></a>      </span><span class=cB1>if</span><span class=cB0> (entry-&gt;major_version &gt;= 2 &amp;&amp; entry-&gt;minor_version &gt;= 8)
+<a name="l1313"></a>      {
+<a name="l1314"></a>        </span><span class=cB6>&quot;Min Voltage:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1315"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;min_voltage)
+<a name="l1316"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;min_voltage;
+<a name="l1317"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1318"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1319"></a>        </span><span class=cB6>&quot;Max Voltage:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1320"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;max_voltage)
+<a name="l1321"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;max_voltage;
+<a name="l1322"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1323"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1324"></a>        </span><span class=cB6>&quot;Configured Volt.:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1325"></a>        </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;configured_voltage)
+<a name="l1326"></a>          </span><span class=cB6>&quot;%d mV$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;configured_voltage;
+<a name="l1327"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1328"></a>          </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1329"></a>      }
+<a name="l1330"></a>      </span><span class=cB6>&quot;Total Width:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1331"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;total_width != 0xFFFF)
+<a name="l1332"></a>        </span><span class=cB6>&quot;%d bits$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;total_width;
+<a name="l1333"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1334"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1335"></a>      </span><span class=cB6>&quot;Data Width:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1336"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;data_width != 0xFFFF)
+<a name="l1337"></a>        </span><span class=cB6>&quot;%d bits$FG$\n&quot;</span><span class=cB0>, mem_info-&gt;data_width;
+<a name="l1338"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1339"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1340"></a>      </span><span class=cB6>&quot;Max Speed:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1341"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;speed)
+<a name="l1342"></a>      {
+<a name="l1343"></a>        </span><span class=cB6>&quot;%d </span><span class=cB9><u>MT/s</u></span><span class=cB6>$FG$\n&quot;</span><span class=cB0>,
+<a name="l1344"></a>          mem_info-&gt;speed;
+<a name="l1345"></a>      }
+<a name="l1346"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1347"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1348"></a>      </span><span class=cB6>&quot;Configured Speed:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1349"></a>      </span><span class=cB1>if</span><span class=cB0> (mem_info-&gt;configured_speed)
+<a name="l1350"></a>      {
+<a name="l1351"></a>        </span><span class=cB6>&quot;%d </span><span class=cB9><u>MT/s</u></span><span class=cB6>$FG$\n&quot;</span><span class=cB0>,
+<a name="l1352"></a>          mem_info-&gt;configured_speed;
+<a name="l1353"></a>      }
+<a name="l1354"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1355"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1356"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose==2)
+<a name="l1357"></a>      {
+<a name="l1358"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1359"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;serial_number);
+<a name="l1360"></a>      }
+<a name="l1361"></a>      </span><span class=cB6>&quot;Part Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1362"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;part_number);
+<a name="l1363"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1364"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, mem_info-&gt;asset_tag);
+<a name="l1365"></a>      </span><span class=cB6>&quot;Form Factor:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1366"></a>      , mem_info-&gt;form_factor, </span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_FORM_FACTORS&quot;</span><span class=cB0>;
+<a name="l1367"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1368"></a>      , mem_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_TYPES&quot;</span><span class=cB0>;
+<a name="l1369"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_MEMDEV_TYPE_DETAILS&quot;</span><span class=cB7>)</span><span class=cB0>,
+<a name="l1370"></a>        mem_info-&gt;type_detail, show_all_flags, 16);
+<a name="l1371"></a>      str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
+<a name="l1372"></a>      </span><span class=cB6>&quot;$TR,\&quot;Type Flags\&quot;$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1373"></a>      , str;
+<a name="l1374"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
+<a name="l1375"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1376"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1377"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l9"></span><span class=cB3>SMBIOSt_BASEBOARD</a></span><span class=cB0>:
+<a name="l1378"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l80"></span><span class=cB9>CSMBIOSBaseboardInfo</a></span><span class=cB0> *b_info = header;
+<a name="l1379"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1380"></a>      </span><span class=cB6>&quot;$TR-C,\&quot;Baseboard\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1381"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1382"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1383"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1384"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;manufacturer);
+<a name="l1385"></a>      </span><span class=cB6>&quot;Product:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1386"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;product);
+<a name="l1387"></a>      </span><span class=cB6>&quot;Version:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1388"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;version);
+<a name="l1389"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose==2)
+<a name="l1390"></a>      {
+<a name="l1391"></a>      </span><span class=cB6>&quot;Type:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1392"></a>        , b_info-&gt;board_type, </span><span class=cB6>&quot;ST_SMBIOS_BASEBOARD_TYPES&quot;</span><span class=cB0>;
+<a name="l1393"></a>      </span><span class=cB6>&quot;Location:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1394"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;chassis_location, </span><span class=cB6>&quot;Not Specified&quot;</span><span class=cB0>);
+<a name="l1395"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1396"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;serial_number);
+<a name="l1397"></a>      </span><span class=cB6>&quot;Asset Tag:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1398"></a>        , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, b_info-&gt;asset_tag);
+<a name="l1399"></a>      </span><span class=cB6>&quot;$TR,\&quot;Flags\&quot;$&quot;</span><span class=cB0>;
+<a name="l1400"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_BASEBOARD_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>, b_info-&gt;feature_flags,
+<a name="l1401"></a>            show_all_flags, 5);
+<a name="l1402"></a>        str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
+<a name="l1403"></a>      </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1404"></a>        , str;
+<a name="l1405"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
+<a name="l1406"></a>      }
+<a name="l1407"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1408"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1409"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l13"></span><span class=cB3>SMBIOSt_CONNECTOR</a></span><span class=cB0>:
+<a name="l1410"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l165"></span><span class=cB9>CSMBIOSConnectorInfo</a></span><span class=cB0> *con_info = header;
+<a name="l1411"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1412"></a>      </span><span class=cB6>&quot;$TR,\&quot;Port Connector\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1413"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1414"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1415"></a>      </span><span class=cB6>&quot;Port Type:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1416"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;port_type == 0xFF)
+<a name="l1417"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
+<a name="l1418"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1419"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;port_type, </span><span class=cB6>&quot;ST_SMBIOS_PORT_TYPES&quot;</span><span class=cB0>;
+<a name="l1420"></a>      </span><span class=cB6>&quot;External Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1421"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, con_info-&gt;external_name);
+<a name="l1422"></a>      </span><span class=cB6>&quot;Internal Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1423"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, con_info-&gt;internal_name);
+<a name="l1424"></a>      </span><span class=cB6>&quot;External Type:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1425"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;external_type == 0xFF)
+<a name="l1426"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
+<a name="l1427"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1428"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;external_type, </span><span class=cB6>&quot;ST_SMBIOS_CONNECTOR_TYPES&quot;</span><span class=cB0>;
+<a name="l1429"></a>      </span><span class=cB6>&quot;Internal Type:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1430"></a>      </span><span class=cB1>if</span><span class=cB0> (con_info-&gt;internal_type == 0xFF)
+<a name="l1431"></a>        </span><span class=cB6>&quot;Other$FG$\n&quot;</span><span class=cB0>;
+<a name="l1432"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1433"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, con_info-&gt;internal_type, </span><span class=cB6>&quot;ST_SMBIOS_CONNECTOR_TYPES&quot;</span><span class=cB0>;
+<a name="l1434"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1435"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1436"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l20"></span><span class=cB3>SMBIOSt_BATTERY</a></span><span class=cB0>:
+<a name="l1437"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l230"></span><span class=cB9>CSMBIOSBatteryInfo</a></span><span class=cB0> *bat_info = header;
+<a name="l1438"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1439"></a>      </span><span class=cB6>&quot;$TR,\&quot;Battery\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1440"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1441"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1442"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1443"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;name);
+<a name="l1444"></a>      </span><span class=cB6>&quot;Manufacturer:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1445"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacturer);
+<a name="l1446"></a>      </span><span class=cB6>&quot;</span><span class=cB9><u>
 SBDS</u></span><span class=cB6> Version:</span><span class=cB0>
-<a name="l1448"></a></span><span class=cB6>      $BLACK$%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacturer);
-<a name="l1449"></a>      </span><span class=cB6>&quot;Manufacture Date:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1450"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;manufacture_date)
-<a name="l1451"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacture_date);
-<a name="l1452"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1453"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;sbds_manufacture_date);
-<a name="l1454"></a>      </span><span class=cB6>&quot;Chemistry:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1455"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;chemistry)
-<a name="l1456"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;chemistry);
-<a name="l1457"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1458"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;sbds_chemistry);
-<a name="l1459"></a>      </span><span class=cB6>&quot;Capacity:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1460"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;capacity)
-<a name="l1461"></a>        </span><span class=cB6>&quot;%d Milliwatt-Hours$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;capacity * bat_info-&gt;capacity_multiplier;
-<a name="l1462"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1463"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1464"></a>      </span><span class=cB6>&quot;Voltage:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1465"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;voltage)
-<a name="l1466"></a>        </span><span class=cB6>&quot;%d Millivolts$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;voltage;
-<a name="l1467"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1468"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1469"></a>      </span><span class=cB6>&quot;Max Data Error:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1470"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;max_battery_data_error != 0xFF)
-<a name="l1471"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;max_battery_data_error;
-<a name="l1472"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1473"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
-<a name="l1474"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose)
-<a name="l1475"></a>      {
-<a name="l1476"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1477"></a>        </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;serial_number)
-<a name="l1478"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;serial_number);
-<a name="l1479"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l1480"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;sbds_serial_number;
-<a name="l1481"></a>      }
-<a name="l1482"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1483"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1484"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l15"></span><span class=cB3>SMBIOSt_OEM_STRINGS</a></span><span class=cB0>:
-<a name="l1485"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l16"></span><span class=cB3>SMBIOSt_SYS_CONFIG_OPTIONS</a></span><span class=cB0>:
-<a name="l1486"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1487"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1488"></a>      </span><span class=cB1>if</span><span class=cB0> (header-&gt;type == <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l15"></span><span class=cB3>SMBIOSt_OEM_STRINGS</a></span><span class=cB0>)
-<a name="l1489"></a>        </span><span class=cB6>&quot;$TR,\&quot;OEM Strings\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1490"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1491"></a>        </span><span class=cB6>&quot;$TR,\&quot;Sys Config Strings\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1492"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1493"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1494"></a>      str = *(header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0> + </span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l26"></span><span class=cB9>CSMBIOSHeader</a></span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>//using str to hold the string cnt</span><span class=cB0>
-<a name="l1495"></a>      </span><span class=cB1>for</span><span class=cB0> (i = 1; i &lt;= str; i++)
-<a name="l1496"></a>        </span><span class=cB6>&quot;:$BLACK$%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, i);
-<a name="l1497"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1498"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1499"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l14"></span><span class=cB3>SMBIOSt_SLOT</a></span><span class=cB0>:
-<a name="l1500"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l175"></span><span class=cB9>CSMBIOSSlotInfo</a></span><span class=cB0> *slot_info = header;
-<a name="l1501"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1502"></a>      </span><span class=cB6>&quot;$TR,\&quot;Slot\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1503"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
-<a name="l1504"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
-<a name="l1505"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1506"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, slot_info-&gt;name);
-<a name="l1507"></a>      </span><span class=cB6>&quot;Type:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1508"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;type &gt;= 0xA0)
-<a name="l1509"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;type - 0xA0, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_TYPES2&quot;</span><span class=cB0>;
-<a name="l1510"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1511"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_TYPES1&quot;</span><span class=cB0>;
-<a name="l1512"></a>      </span><span class=cB6>&quot;Data Bus Width:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
-<a name="l1513"></a>      , slot_info-&gt;data_bus_width, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_DATA_BUS_WIDTHS&quot;</span><span class=cB0>;
-<a name="l1514"></a>      </span><span class=cB6>&quot;Current Usage:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1515"></a>      , slot_info-&gt;current_usage, </span><span class=cB6>&quot; \0Other\0Unknown\0Available\0In Use\0Unavailable&quot;</span><span class=cB0>;
-<a name="l1516"></a>      </span><span class=cB6>&quot;Slot Length:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
-<a name="l1517"></a>      , slot_info-&gt;length,
-<a name="l1518"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0Short\0Long\02.5\&quot; Drive Form Factor\03.5\&quot; Drive Form Factor&quot;</span><span class=cB0>;
-<a name="l1519"></a>      </span><span class=cB6>&quot;Segment Group:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1520"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;segment_group_number != 0xFF)
-<a name="l1521"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;segment_group_number;
-<a name="l1522"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1523"></a>        </span><span class=cB6>&quot;None$FG$\n&quot;</span><span class=cB0>;
-<a name="l1524"></a>      </span><span class=cB6>&quot;Bus:$BLACK$&quot;</span><span class=cB0>;
-<a name="l1525"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;bus_number != 0xFF)
-<a name="l1526"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;bus_number;
-<a name="l1527"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1528"></a>        </span><span class=cB6>&quot;None$FG$\n&quot;</span><span class=cB0>;
-<a name="l1529"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;device_function_number != 0xFF)
-<a name="l1530"></a>      {
-<a name="l1531"></a>        </span><span class=cB6>&quot;Device:$BLACK$%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;device_function_number &gt;&gt; 3;
-<a name="l1532"></a>        </span><span class=cB6>&quot;Function:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
-<a name="l1533"></a>        , slot_info-&gt;device_function_number &amp; 7;
-<a name="l1534"></a>      }
-<a name="l1535"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1536"></a>        </span><span class=cB6>&quot;Device:$BLACK$None$FG$\nFunction:$BLACK$None$FG$\n&quot;</span><span class=cB0>;
-<a name="l1537"></a>      </span><span class=cB6>&quot;$TR,\&quot;Flags\&quot;$&quot;</span><span class=cB0>;
-<a name="l1538"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;slot_info-&gt;flags1, 0</span><span class=cB7>)</span><span class=cB0>)
-<a name="l1539"></a>      {
-<a name="l1540"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_SLOT_FLAGS1&quot;</span><span class=cB7>)</span><span class=cB0>,
-<a name="l1541"></a>          slot_info-&gt;flags1, show_all_flags, 8);
-<a name="l1542"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB7>(</span><span class=cB0>buffer2, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_SMBIOS_SLOT_FLAGS2&quot;</span><span class=cB0>),
-<a name="l1543"></a>                slot_info-&gt;flags2, show_all_flags, 4</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1544"></a>        str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
-<a name="l1545"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>
-<a name="l1546"></a>        , str;
-<a name="l1547"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
-<a name="l1548"></a>      }
-<a name="l1549"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
-<a name="l1550"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1551"></a>    </span><span class=cB1>case</span><span class=cB0> 28:
-<a name="l1552"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&gt;1)
-<a name="l1553"></a>        </span><span class=cB6>&quot;$TR,\&quot;Temperature Probe\&quot;$\n&quot;</span><span class=cB0>;
-<a name="l1554"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1555"></a></span><span class=cB1>end</span><span class=cB0>:
-<a name="l1556"></a>      structure_cnt++;
-<a name="l1557"></a>    </span><span class=cB7>}</span><span class=cB0>
-<a name="l1558"></a>loop_end:
-<a name="l1559"></a>    header = header(</span><span class=cB1>U8</span><span class=cB0> *) + header-&gt;length;
-<a name="l1560"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 1; header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>[i - 1] || header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>[i]; i++);
-<a name="l1561"></a>    header = header(</span><span class=cB1>U8</span><span class=cB0> *) + i + 1;
-<a name="l1562"></a>  }
-<a name="l1563"></a>  </span><span class=cB1>if</span><span class=cB0> (!handle)
-<a name="l1564"></a>    </span><span class=cB6>&quot;$FD,BLUE$&quot;</span><span class=cB0>;
-<a name="l1565"></a>  </span><span class=cB1>return</span><span class=cB0> structure_cnt;
-<a name="l1566"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l1567"></a>
-<a name="l1568"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1568"></span><span class=cB5>SysRepLite</a></span><span class=cB0>()
-<a name="l1569"></a></span><span class=cB7>{</span><span class=cB2>//Show minimal system info.</span><span class=cB0>
-<a name="l1570"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l22"></span><span class=cB3>SMBIOSt_ALL</a></span><span class=cB0>, 0, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>, 0xFFFF, 0);
-<a name="l1571"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l1572"></a>
-<a name="l1573"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1573"></span><span class=cB5>BIOSRep</a></span><span class=cB0>()
-<a name="l1574"></a></span><span class=cB7>{</span><span class=cB2>//Wrapper around </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"><span class=cB4>SysRep</span></a><span class=cB2>() to only show BIOS info.</span><span class=cB0>
-<a name="l1575"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l7"></span><span class=cB3>SMBIOSt_BIOS</a></span><span class=cB0>);
-<a name="l1576"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l1577"></a>
-<a name="l1578"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
-<a name="l1579"></a>
-<a name="l1580"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1580"></span><span class=cB5>SysRepSurvey</a></span><span class=cB0>()
-<a name="l1581"></a></span><span class=cB7>{</span><span class=cB2>//Display system info excluding sensative info</span><span class=cB0>
-<a name="l1582"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,,,, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l1583"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l1447"></a></span><span class=cB6>      $BLACK$%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacturer);
+<a name="l1448"></a>      </span><span class=cB6>&quot;Manufacture Date:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1449"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;manufacture_date)
+<a name="l1450"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;manufacture_date);
+<a name="l1451"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1452"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;sbds_manufacture_date);
+<a name="l1453"></a>      </span><span class=cB6>&quot;Chemistry:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1454"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;chemistry)
+<a name="l1455"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;chemistry);
+<a name="l1456"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1457"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;sbds_chemistry);
+<a name="l1458"></a>      </span><span class=cB6>&quot;Capacity:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1459"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;capacity)
+<a name="l1460"></a>        </span><span class=cB6>&quot;%d Milliwatt-Hours$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;capacity * bat_info-&gt;capacity_multiplier;
+<a name="l1461"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1462"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1463"></a>      </span><span class=cB6>&quot;Voltage:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1464"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;voltage)
+<a name="l1465"></a>        </span><span class=cB6>&quot;%d Millivolts$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;voltage;
+<a name="l1466"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1467"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1468"></a>      </span><span class=cB6>&quot;Max Data Error:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1469"></a>      </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;max_battery_data_error != 0xFF)
+<a name="l1470"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;max_battery_data_error;
+<a name="l1471"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1472"></a>        </span><span class=cB6>&quot;Unknown$FG$\n&quot;</span><span class=cB0>;
+<a name="l1473"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose==2)
+<a name="l1474"></a>      {
+<a name="l1475"></a>      </span><span class=cB6>&quot;Serial Number:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1476"></a>        </span><span class=cB1>if</span><span class=cB0> (bat_info-&gt;serial_number)
+<a name="l1477"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, bat_info-&gt;serial_number);
+<a name="l1478"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1479"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, bat_info-&gt;sbds_serial_number;
+<a name="l1480"></a>      }
+<a name="l1481"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1482"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1483"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l15"></span><span class=cB3>SMBIOSt_OEM_STRINGS</a></span><span class=cB0>:
+<a name="l1484"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l16"></span><span class=cB3>SMBIOSt_SYS_CONFIG_OPTIONS</a></span><span class=cB0>:
+<a name="l1485"></a>      </span><span class=cB1>if</span><span class=cB0> (!verbose) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1486"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1487"></a>      </span><span class=cB1>if</span><span class=cB0> (header-&gt;type == <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l15"></span><span class=cB3>SMBIOSt_OEM_STRINGS</a></span><span class=cB0>)
+<a name="l1488"></a>        </span><span class=cB6>&quot;$TR,\&quot;OEM Strings\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1489"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1490"></a>        </span><span class=cB6>&quot;$TR,\&quot;Sys Config Strings\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1491"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1492"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1493"></a>      str = *(header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0> + </span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l26"></span><span class=cB9>CSMBIOSHeader</a></span><span class=cB7>)</span><span class=cB0>); </span><span class=cB2>//using str to hold the string cnt</span><span class=cB0>
+<a name="l1494"></a>      </span><span class=cB1>for</span><span class=cB0> (i = 1; i &lt;= str; i++)
+<a name="l1495"></a>        </span><span class=cB6>&quot;:$BLACK$%s$FG$\n&quot;</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, i);
+<a name="l1496"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1497"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1498"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l14"></span><span class=cB3>SMBIOSt_SLOT</a></span><span class=cB0>:
+<a name="l1499"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l175"></span><span class=cB9>CSMBIOSSlotInfo</a></span><span class=cB0> *slot_info = header;
+<a name="l1500"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&lt;2) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1501"></a>      </span><span class=cB6>&quot;$TR,\&quot;Slot\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1502"></a>      </span><span class=cB6>&quot;$FD,CYAN$&quot;</span><span class=cB0>;
+<a name="l1503"></a>      </span><span class=cB6>&quot;$ID,3$&quot;</span><span class=cB0>;
+<a name="l1504"></a>      </span><span class=cB6>&quot;Name:$BLACK$%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1505"></a>      , <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l872"></span><span class=cB5>SMBIOSStr</a></span><span class=cB0>(header, slot_info-&gt;name);
+<a name="l1506"></a>      </span><span class=cB6>&quot;Type:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1507"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;type &gt;= 0xA0)
+<a name="l1508"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;type - 0xA0, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_TYPES2&quot;</span><span class=cB0>;
+<a name="l1509"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1510"></a>        </span><span class=cB6>&quot;%Z$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;type, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_TYPES1&quot;</span><span class=cB0>;
+<a name="l1511"></a>      </span><span class=cB6>&quot;Data Bus Width:$BLACK$%Z$FG$\n&quot;</span><span class=cB0>
+<a name="l1512"></a>      , slot_info-&gt;data_bus_width, </span><span class=cB6>&quot;ST_SMBIOS_SLOT_DATA_BUS_WIDTHS&quot;</span><span class=cB0>;
+<a name="l1513"></a>      </span><span class=cB6>&quot;Current Usage:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1514"></a>      , slot_info-&gt;current_usage, </span><span class=cB6>&quot; \0Other\0Unknown\0Available\0In Use\0Unavailable&quot;</span><span class=cB0>;
+<a name="l1515"></a>      </span><span class=cB6>&quot;Slot Length:$BLACK$%z$FG$\n&quot;</span><span class=cB0>
+<a name="l1516"></a>      , slot_info-&gt;length,
+<a name="l1517"></a>      </span><span class=cB6>&quot; \0Other\0Unknown\0Short\0Long\02.5\&quot; Drive Form Factor\03.5\&quot; Drive Form Factor&quot;</span><span class=cB0>;
+<a name="l1518"></a>      </span><span class=cB6>&quot;Segment Group:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1519"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;segment_group_number != 0xFF)
+<a name="l1520"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;segment_group_number;
+<a name="l1521"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1522"></a>        </span><span class=cB6>&quot;None$FG$\n&quot;</span><span class=cB0>;
+<a name="l1523"></a>      </span><span class=cB6>&quot;Bus:$BLACK$&quot;</span><span class=cB0>;
+<a name="l1524"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;bus_number != 0xFF)
+<a name="l1525"></a>        </span><span class=cB6>&quot;%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;bus_number;
+<a name="l1526"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1527"></a>        </span><span class=cB6>&quot;None$FG$\n&quot;</span><span class=cB0>;
+<a name="l1528"></a>      </span><span class=cB1>if</span><span class=cB0> (slot_info-&gt;device_function_number != 0xFF)
+<a name="l1529"></a>      {
+<a name="l1530"></a>        </span><span class=cB6>&quot;Device:$BLACK$%d$FG$\n&quot;</span><span class=cB0>, slot_info-&gt;device_function_number &gt;&gt; 3;
+<a name="l1531"></a>        </span><span class=cB6>&quot;Function:$BLACK$%d$FG$\n&quot;</span><span class=cB0>
+<a name="l1532"></a>        , slot_info-&gt;device_function_number &amp; 7;
+<a name="l1533"></a>      }
+<a name="l1534"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1535"></a>        </span><span class=cB6>&quot;Device:$BLACK$None$FG$\nFunction:$BLACK$None$FG$\n&quot;</span><span class=cB0>;
+<a name="l1536"></a>      </span><span class=cB6>&quot;$TR,\&quot;Flags\&quot;$&quot;</span><span class=cB0>;
+<a name="l1537"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;slot_info-&gt;flags1, 0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1538"></a>      {
+<a name="l1539"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_SMBIOS_SLOT_FLAGS1&quot;</span><span class=cB7>)</span><span class=cB0>,
+<a name="l1540"></a>          slot_info-&gt;flags1, show_all_flags, 8);
+<a name="l1541"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(buffer, <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l177"></span><span class=cB5>StrPrintFlags</a></span><span class=cB7>(</span><span class=cB0>buffer2, <a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB0>(</span><span class=cB6>&quot;ST_SMBIOS_SLOT_FLAGS2&quot;</span><span class=cB0>),
+<a name="l1542"></a>                slot_info-&gt;flags2, show_all_flags, 4</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1543"></a>        str = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l915"></span><span class=cB5>SysRepFlagsMk</a></span><span class=cB0>(buffer);
+<a name="l1544"></a>        </span><span class=cB6>&quot;%s$FG$\n&quot;</span><span class=cB0>
+<a name="l1545"></a>        , str;
+<a name="l1546"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(str);
+<a name="l1547"></a>      }
+<a name="l1548"></a>      </span><span class=cB6>&quot;$ID,-3$&quot;</span><span class=cB0>;
+<a name="l1549"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1550"></a>    </span><span class=cB1>case</span><span class=cB0> 28:
+<a name="l1551"></a>      </span><span class=cB1>if</span><span class=cB0> (verbose&gt;1)
+<a name="l1552"></a>        </span><span class=cB6>&quot;$TR,\&quot;Temperature Probe\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l1553"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1554"></a></span><span class=cB1>end</span><span class=cB0>:
+<a name="l1555"></a>      structure_cnt++;
+<a name="l1556"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l1557"></a>loop_end:
+<a name="l1558"></a>    header = header(</span><span class=cB1>U8</span><span class=cB0> *) + header-&gt;length;
+<a name="l1559"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 1; header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>[i - 1] || header</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>[i]; i++);
+<a name="l1560"></a>    header = header(</span><span class=cB1>U8</span><span class=cB0> *) + i + 1;
+<a name="l1561"></a>  }
+<a name="l1562"></a>  </span><span class=cB1>if</span><span class=cB0> (!handle)
+<a name="l1563"></a>    </span><span class=cB6>&quot;$FD,BLUE$&quot;</span><span class=cB0>;
+<a name="l1564"></a>  </span><span class=cB1>return</span><span class=cB0> structure_cnt;
+<a name="l1565"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l1566"></a>
+<a name="l1567"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1567"></span><span class=cB5>SysRepLite</a></span><span class=cB0>()
+<a name="l1568"></a></span><span class=cB7>{</span><span class=cB2>//Show minimal system info.</span><span class=cB0>
+<a name="l1569"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l22"></span><span class=cB3>SMBIOSt_ALL</a></span><span class=cB0>, 0, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>, 0xFFFF, 0);
+<a name="l1570"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l1571"></a>
+<a name="l1572"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1572"></span><span class=cB5>BIOSRep</a></span><span class=cB0>()
+<a name="l1573"></a></span><span class=cB7>{</span><span class=cB2>//Wrapper around </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"><span class=cB4>SysRep</span></a><span class=cB2>() to only show BIOS info.</span><span class=cB0>
+<a name="l1574"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l7"></span><span class=cB3>SMBIOSt_BIOS</a></span><span class=cB0>);
+<a name="l1575"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l1576"></a>
+<a name="l1577"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l1578"></a>
+<a name="l1579"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l1579"></span><span class=cB5>SysRepSurvey</a></span><span class=cB0>()
+<a name="l1580"></a></span><span class=cB7>{</span><span class=cB2>//Display system info excluding sensative info</span><span class=cB0>
+<a name="l1581"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SysRep.html#l929"></span><span class=cB5>SysRep</a></span><span class=cB0>(,,,,1);
+<a name="l1582"></a></span><span class=cB7>}</span><span class=cB0>
 </span></div></pre></body>
 </html>

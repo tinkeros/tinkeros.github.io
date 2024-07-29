@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.15">
+<meta name="generator" content="TinkerOS V5.16">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -248,5 +248,30 @@
 <a name="l207"></a>  *ptr = *ptr &gt;&gt; 16 &lt;&lt; 4 + *ptr &amp; 0xFFFF;
 <a name="l208"></a>  </span><span class=cB1>return</span><span class=cB0> *ptr;
 <a name="l209"></a>}
+<a name="l210"></a>
+<a name="l211"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l211"></span><span class=cB5>MixedInU8</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mmio, </span><span class=cB9>I64</span><span class=cB0> port)
+<a name="l212"></a>{</span><span class=cB2>//Dual function to support MMIO/IO space reading</span><span class=cB0>
+<a name="l213"></a>  </span><span class=cB1>U8</span><span class=cB0> *mmio_ptr=mmio;
+<a name="l214"></a>  </span><span class=cB1>if</span><span class=cB0> (mmio)
+<a name="l215"></a>    </span><span class=cB1>return</span><span class=cB0> *mmio_ptr;
+<a name="l216"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l217"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(port);
+<a name="l218"></a>}
+<a name="l219"></a>
+<a name="l220"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l220"></span><span class=cB5>MixedOutU8</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mmio, </span><span class=cB9>I64</span><span class=cB0> port, </span><span class=cB9>I64</span><span class=cB0> val)
+<a name="l221"></a>{</span><span class=cB2>//Dual function to support MMIO/IO space writing</span><span class=cB0>
+<a name="l222"></a>  </span><span class=cB1>U8</span><span class=cB0> *mmio_ptr=mmio;
+<a name="l223"></a>  </span><span class=cB1>if</span><span class=cB0> (mmio)
+<a name="l224"></a>    *mmio_ptr=val;
+<a name="l225"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l226"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(port,val);
+<a name="l227"></a>}
+<a name="l228"></a>
+<a name="l229"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MemPhysical.html#l229"></span><span class=cB5>MakeAddrUncached</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> mmio_addr)
+<a name="l230"></a>{</span><span class=cB2>//Make address uncached</span><span class=cB0>
+<a name="l231"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(mmio_addr)=*<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(mmio_addr)&amp;~0x18 |0x11;
+<a name="l232"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(mmio_addr+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l287"></span><span class=cB6>mem_page_size</a></span><span class=cB0>)=*<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(mmio_addr+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l287"></span><span class=cB6>mem_page_size</a></span><span class=cB0>)&amp;~0x18 |0x11;
+<a name="l233"></a>}
+<a name="l234"></a>
 </span></div></pre></body>
 </html>
