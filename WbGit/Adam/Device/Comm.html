@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.17">
+<meta name="generator" content="TinkerOS V5.18">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -436,39 +436,41 @@
 <a name="l397"></a>    }
 <a name="l398"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l399"></a>}
-<a name="l400"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l371"></span><span class=cB5>CommInit</a></span><span class=cB0>;
-<a name="l401"></a>
-<a name="l402"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l402"></span><span class=cB5>CommRep</a></span><span class=cB0>()
-<a name="l403"></a>{
-<a name="l404"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l405"></a>  </span><span class=cB6>&quot;COMM 1-4 are standard IO ports, the actual ports themselves may or may not exist.\n&quot;</span><span class=cB0>;
-<a name="l406"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1; i&lt;=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l6"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
-<a name="l407"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l408"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base)
-<a name="l409"></a>    {
-<a name="l410"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].poll)
-<a name="l411"></a>        </span><span class=cB6>&quot;COM %d - base 0x%08x (polled)\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base;
-<a name="l412"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l413"></a>        </span><span class=cB6>&quot;COM %d - base 0x%08x\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base;
-<a name="l414"></a>    }
-<a name="l415"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l416"></a>}
-<a name="l417"></a>
-<a name="l418"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l418"></span><span class=cB5>CommGetFifoCnt</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> port)
-<a name="l419"></a>{
-<a name="l420"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l29"></span><span class=cB9>CComm</a></span><span class=cB0> *c;
-<a name="l421"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
-<a name="l422"></a>  </span><span class=cB9>I64</span><span class=cB0> cnt=0;
-<a name="l423"></a>  c=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port];
-<a name="l424"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l20"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l425"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l426"></a>    f=c-&gt;RX_fifo;
-<a name="l427"></a>    </span><span class=cB1>if</span><span class=cB0> (f-&gt;out_ptr&gt;f-&gt;in_ptr)
-<a name="l428"></a>      cnt+=f-&gt;mask+1-(f-&gt;out_ptr-f-&gt;in_ptr);
-<a name="l429"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l430"></a>      cnt+=f-&gt;in_ptr-f-&gt;out_ptr;
-<a name="l431"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l432"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;
-<a name="l433"></a>}
+<a name="l400"></a></span><span class=cB2>// Disable by default for now, user can run if they need/want it.</span><span class=cB0>
+<a name="l401"></a></span><span class=cB2>// Disabling speeds boot on some systems.</span><span class=cB0>
+<a name="l402"></a></span><span class=cB2>//CommInit;</span><span class=cB0>
+<a name="l403"></a>
+<a name="l404"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l404"></span><span class=cB5>CommRep</a></span><span class=cB0>()
+<a name="l405"></a>{
+<a name="l406"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l407"></a>  </span><span class=cB6>&quot;COMM 1-4 are standard IO ports, the actual ports themselves may or may not exist.\n&quot;</span><span class=cB0>;
+<a name="l408"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1; i&lt;=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l6"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
+<a name="l409"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l410"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base)
+<a name="l411"></a>    {
+<a name="l412"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].poll)
+<a name="l413"></a>        </span><span class=cB6>&quot;COM %d - base 0x%08x (polled)\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base;
+<a name="l414"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l415"></a>        </span><span class=cB6>&quot;COM %d - base 0x%08x\n&quot;</span><span class=cB0>,i,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base;
+<a name="l416"></a>    }
+<a name="l417"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l418"></a>}
+<a name="l419"></a>
+<a name="l420"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l420"></span><span class=cB5>CommGetFifoCnt</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> port)
+<a name="l421"></a>{
+<a name="l422"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l29"></span><span class=cB9>CComm</a></span><span class=cB0> *c;
+<a name="l423"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
+<a name="l424"></a>  </span><span class=cB9>I64</span><span class=cB0> cnt=0;
+<a name="l425"></a>  c=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port];
+<a name="l426"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l20"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l427"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l428"></a>    f=c-&gt;RX_fifo;
+<a name="l429"></a>    </span><span class=cB1>if</span><span class=cB0> (f-&gt;out_ptr&gt;f-&gt;in_ptr)
+<a name="l430"></a>      cnt+=f-&gt;mask+1-(f-&gt;out_ptr-f-&gt;in_ptr);
+<a name="l431"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l432"></a>      cnt+=f-&gt;in_ptr-f-&gt;out_ptr;
+<a name="l433"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l434"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;
+<a name="l435"></a>}
 </span></div></pre></body>
 </html>
