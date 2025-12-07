@@ -1,0 +1,307 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[6] = {0x00, 0x33, 0x66, 0x99, 0xCC, 0xFF};
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l3"></span><span class=cB5>GrSetRGB</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> color_num,</span><span class=cB1>U8</span><span class=cB0> r, </span><span class=cB1>U8</span><span class=cB0> g, </span><span class=cB1>U8</span><span class=cB0> b)
+<a name="l4"></a>{ </span><span class=cB2>// Sets color from r,g,b values 0-255</span><span class=cB0>
+<a name="l5"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[color_num].r=r;
+<a name="l6"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[color_num].g=g;
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[color_num].b=b;
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l9"></a>}
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l11"></span><span class=cB5>GrSetExtPalette</a></span><span class=cB0>() {
+<a name="l12"></a></span><span class=cB2>// Adds extra 214 web-safe colors not already in CGA palette</span><span class=cB0>
+<a name="l13"></a>    </span><span class=cB9>I64</span><span class=cB0> r,g,b,cnt = 16;
+<a name="l14"></a>    </span><span class=cB9>U32</span><span class=cB0> color;
+<a name="l15"></a>
+<a name="l16"></a>    </span><span class=cB1>for</span><span class=cB0> (r = 0; r &lt; 6; r++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>        </span><span class=cB1>for</span><span class=cB0> (g = 0; g &lt; 6; g++) {
+<a name="l18"></a>            </span><span class=cB1>for</span><span class=cB0> (b = 0; b &lt; 6; b++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>                color = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[r] &lt;&lt; 16 | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[g] &lt;&lt; 8 | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[b];
+<a name="l20"></a>
+<a name="l21"></a>                </span><span class=cB2>// Skip pure black and pure white, they are in CGA palette</span><span class=cB0>
+<a name="l22"></a>                </span><span class=cB1>if</span><span class=cB0> (color != 0x000000 &amp;&amp; color != 0xFFFFFF)
+<a name="l23"></a>                  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l3"></span><span class=cB5>GrSetRGB</a></span><span class=cB0>(cnt++,<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[r], <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[g], <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l1"></span><span class=cB6>steps</a></span><span class=cB0>[b]);
+<a name="l24"></a>            </span><span class=cB7>}</span><span class=cB0>
+<a name="l25"></a>        }
+<a name="l26"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[6] = {0x00, 0x33, 0x66, 0x99, 0xCC, 0xFF};
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> value)
+<a name="l33"></a>{ </span><span class=cB2>// Map r,g,b 255 value to nearest index in {0x00, 0x33, ..., 0xFF}</span><span class=cB0>
+<a name="l34"></a>    </span><span class=cB9>I64</span><span class=cB0> i, closest_index = 0, diff, min_diff = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(value - <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[0]);
+<a name="l35"></a>
+<a name="l36"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 1; i &lt; 6; i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l37"></a>        diff = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(value - <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[i]);
+<a name="l38"></a>        </span><span class=cB1>if</span><span class=cB0> (diff &lt; min_diff) {
+<a name="l39"></a>            min_diff = diff;
+<a name="l40"></a>            closest_index = i;
+<a name="l41"></a>        }
+<a name="l42"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l43"></a>
+<a name="l44"></a>    </span><span class=cB1>return</span><span class=cB0> closest_index;
+<a name="l45"></a>}
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l47"></span><span class=cB5>GetColorNum</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> r, </span><span class=cB1>U8</span><span class=cB0> g, </span><span class=cB1>U8</span><span class=cB0> b)
+<a name="l48"></a>{ </span><span class=cB2>// Return index (0..215) of nearest web-safe color</span><span class=cB0>
+<a name="l49"></a>
+<a name="l50"></a>    </span><span class=cB9>I64</span><span class=cB0> val, ri, gi, bi;
+<a name="l51"></a>    ri = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(r);
+<a name="l52"></a>    gi = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(g);
+<a name="l53"></a>    bi = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(b);
+<a name="l54"></a>
+<a name="l55"></a>    val = ri * 36 + gi * 6 + bi;
+<a name="l56"></a>
+<a name="l57"></a>    </span><span class=cB1>if</span><span class=cB0> (!val) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l58"></a>    </span><span class=cB1>if</span><span class=cB0> (val == 215) </span><span class=cB1>return</span><span class=cB0> 15;
+<a name="l59"></a>    </span><span class=cB1>return</span><span class=cB0> val + 15;
+<a name="l60"></a>}
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> r, </span><span class=cB1>U8</span><span class=cB0> g, </span><span class=cB1>U8</span><span class=cB0> b)
+<a name="l63"></a>{</span><span class=cB2>// Get neartest TinkerOS color</span><span class=cB0>
+<a name="l64"></a>    </span><span class=cB9>I64</span><span class=cB0> i, val, ri, gi, bi, safe_diff, tos_diff;
+<a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr;
+<a name="l66"></a>    ri = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(r);
+<a name="l67"></a>    gi = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(g);
+<a name="l68"></a>    bi = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l32"></span><span class=cB5>NearestLvlIdx</a></span><span class=cB0>(b);
+<a name="l69"></a>
+<a name="l70"></a>    val = ri * 36 + gi * 6 + bi;
+<a name="l71"></a>
+<a name="l72"></a>    safe_diff  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(r - <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[ri]);
+<a name="l73"></a>    safe_diff += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(g - <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[gi]);
+<a name="l74"></a>    safe_diff += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(b - <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l30"></span><span class=cB6>safe_levels</a></span><span class=cB0>[bi]);
+<a name="l75"></a>
+<a name="l76"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;16;i++)
+<a name="l77"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l78"></a>      tmp_clr = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(i);
+<a name="l79"></a>      tos_diff  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(r - tmp_clr.r.u8[1]);
+<a name="l80"></a>      tos_diff += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(g - tmp_clr.g.u8[1]);
+<a name="l81"></a>      tos_diff += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(b - tmp_clr.b.u8[1]);
+<a name="l82"></a>      </span><span class=cB1>if</span><span class=cB0> (tos_diff&lt;safe_diff) </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l83"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l84"></a>
+<a name="l85"></a>    </span><span class=cB1>if</span><span class=cB0> (!val) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l86"></a>    </span><span class=cB1>if</span><span class=cB0> (val == 215) </span><span class=cB1>return</span><span class=cB0> 15;
+<a name="l87"></a>    </span><span class=cB1>return</span><span class=cB0> val + 15;
+<a name="l88"></a>}
+<a name="l89"></a>
+<a name="l90"></a></span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l90"></span><span class=cB5>FMod</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> x, </span><span class=cB1>F64</span><span class=cB0> y)
+<a name="l91"></a>{
+<a name="l92"></a>  </span><span class=cB1>if</span><span class=cB0> (y==0.0) </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l93"></a>
+<a name="l94"></a>  </span><span class=cB1>F64</span><span class=cB0> r, q = x /y;
+<a name="l95"></a>  </span><span class=cB9>I64</span><span class=cB0> qi = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(q);
+<a name="l96"></a>
+<a name="l97"></a>  r = x - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(qi)*y;
+<a name="l98"></a>
+<a name="l99"></a>  </span><span class=cB1>return</span><span class=cB0> r;
+<a name="l100"></a>}
+<a name="l101"></a>
+<a name="l102"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l102"></span><span class=cB5>HSV2RGB</a></span><span class=cB0>(</span><span class=cB1>F64</span><span class=cB0> h, </span><span class=cB1>F64</span><span class=cB0> s, </span><span class=cB1>F64</span><span class=cB0> v, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> *color) {
+<a name="l103"></a>    </span><span class=cB1>F64</span><span class=cB0> c = v * s, x, m, r, g, b;
+<a name="l104"></a>    x = c * (1 - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l90"></span><span class=cB5>FMod</a></span><span class=cB0>(h / 60.0, 2) - 1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l105"></a>    m = v - c;
+<a name="l106"></a> 
+<a name="l107"></a>    </span><span class=cB1>if</span><span class=cB0> (h &lt; 60) </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>        r = c; g = x; b = 0;
+<a name="l109"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (h &lt; 120) </span><span class=cB7>{</span><span class=cB0>
+<a name="l110"></a>        r = x; g = c; b = 0;
+<a name="l111"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (h &lt; 180) </span><span class=cB7>{</span><span class=cB0>
+<a name="l112"></a>        r = 0; g = c; b = x;
+<a name="l113"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (h &lt; 240) </span><span class=cB7>{</span><span class=cB0>
+<a name="l114"></a>        r = 0; g = x; b = c;
+<a name="l115"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (h &lt; 300) </span><span class=cB7>{</span><span class=cB0>
+<a name="l116"></a>        r = x; g = 0; b = c;
+<a name="l117"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l118"></a>        r = c; g = 0; b = x;
+<a name="l119"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a> 
+<a name="l121"></a>    color-&gt;r.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l127"></span><span class=cB5>ClampU64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>(r + m) * 255</span><span class=cB7>)</span><span class=cB0>,0,255);
+<a name="l122"></a>    color-&gt;g.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l127"></span><span class=cB5>ClampU64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>(g + m) * 255</span><span class=cB7>)</span><span class=cB0>,0,255);
+<a name="l123"></a>    color-&gt;b.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l127"></span><span class=cB5>ClampU64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>(b + m) * 255</span><span class=cB7>)</span><span class=cB0>,0,255);
+<a name="l124"></a>}
+<a name="l125"></a>
+<a name="l126"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l126"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> *color, </span><span class=cB1>F64</span><span class=cB0> *h, </span><span class=cB1>F64</span><span class=cB0> *s, </span><span class=cB1>F64</span><span class=cB0> *v)
+<a name="l127"></a>{
+<a name="l128"></a>    </span><span class=cB1>F64</span><span class=cB0> r,g,b,delta,maxc,minc;
+<a name="l129"></a>
+<a name="l130"></a>    r = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(color-&gt;r.u8[1]) / 255.0;
+<a name="l131"></a>    g = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(color-&gt;g.u8[1]) / 255.0;
+<a name="l132"></a>    b = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(color-&gt;b.u8[1]) / 255.0;
+<a name="l133"></a>    minc = maxc = r;
+<a name="l134"></a>
+<a name="l135"></a>    </span><span class=cB1>if</span><span class=cB0> (g &gt; maxc) maxc = g;
+<a name="l136"></a>    </span><span class=cB1>if</span><span class=cB0> (b &gt; maxc) maxc = b;
+<a name="l137"></a>
+<a name="l138"></a>    </span><span class=cB1>if</span><span class=cB0> (g &lt; minc) minc = g;
+<a name="l139"></a>    </span><span class=cB1>if</span><span class=cB0> (b &lt; minc) minc = b;
+<a name="l140"></a>
+<a name="l141"></a>    delta = maxc - minc;
+<a name="l142"></a>
+<a name="l143"></a>    </span><span class=cB2>// Value</span><span class=cB0>
+<a name="l144"></a>    *v = maxc;
+<a name="l145"></a>
+<a name="l146"></a>    </span><span class=cB2>// Saturation</span><span class=cB0>
+<a name="l147"></a>    </span><span class=cB1>if</span><span class=cB0> (maxc == 0.0)
+<a name="l148"></a>        *s = 0.0;
+<a name="l149"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l150"></a>        *s = delta / maxc;
+<a name="l151"></a>
+<a name="l152"></a>    </span><span class=cB2>// Hue</span><span class=cB0>
+<a name="l153"></a>    </span><span class=cB1>if</span><span class=cB0> (delta == 0.0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l154"></a>        *h = 0.0; </span><span class=cB2>// Undefined hue, return 0</span><span class=cB0>
+<a name="l155"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l156"></a>        </span><span class=cB1>if</span><span class=cB0> (maxc == r) {
+<a name="l157"></a>            *h = 60.0 * <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l90"></span><span class=cB5>FMod</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>g - b</span><span class=cB7>)</span><span class=cB0> / delta, 6.0);
+<a name="l158"></a>        } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (maxc == g) {
+<a name="l159"></a>            *h = 60.0 * (</span><span class=cB7>(</span><span class=cB0>b - r</span><span class=cB7>)</span><span class=cB0> / delta + 2.0);
+<a name="l160"></a>        } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l161"></a>            *h = 60.0 * (</span><span class=cB7>(</span><span class=cB0>r - g</span><span class=cB7>)</span><span class=cB0> / delta + 4.0);
+<a name="l162"></a>        }
+<a name="l163"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l164"></a>
+<a name="l165"></a>    </span><span class=cB2>// Ensure hue is positive</span><span class=cB0>
+<a name="l166"></a>    </span><span class=cB1>if</span><span class=cB0> (*h &lt; 0.0)
+<a name="l167"></a>        *h += 360.0;
+<a name="l168"></a>}
+<a name="l169"></a>
+<a name="l170"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l170"></span><span class=cB5>AdjColorBrightness</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l171"></a>{</span><span class=cB2>// change color brightness</span><span class=cB0>
+<a name="l172"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=32;
+<a name="l173"></a>    </span><span class=cB1>F64</span><span class=cB0> h,s,v;
+<a name="l174"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l175"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l126"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(&amp;tmp_clr,&amp;h,&amp;s,&amp;v);
+<a name="l176"></a>    new_color=color;
+<a name="l177"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l178"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l179"></a>      cnt--;
+<a name="l180"></a>      v+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(dir)/64.0;
+<a name="l181"></a>      v=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(v,0.0,1.0);
+<a name="l182"></a> 
+<a name="l183"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l102"></span><span class=cB5>HSV2RGB</a></span><span class=cB0>(h, s, v, &amp;tmp_clr);
+<a name="l184"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l185"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l186"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l187"></a>}
+<a name="l188"></a>
+<a name="l189"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l189"></span><span class=cB5>AdjColorSat</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l190"></a>{</span><span class=cB2>// change color saturation</span><span class=cB0>
+<a name="l191"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=32;
+<a name="l192"></a>    </span><span class=cB1>F64</span><span class=cB0> h,s,v;
+<a name="l193"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l194"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l126"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(&amp;tmp_clr,&amp;h,&amp;s,&amp;v);
+<a name="l195"></a>    new_color=color;
+<a name="l196"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l197"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l198"></a>      cnt--;
+<a name="l199"></a>      s+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(dir)/64.0;
+<a name="l200"></a>      s=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(s,0.0,1.0);
+<a name="l201"></a>
+<a name="l202"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l102"></span><span class=cB5>HSV2RGB</a></span><span class=cB0>(h, s, v, &amp;tmp_clr);
+<a name="l203"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l204"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l205"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l206"></a>}
+<a name="l207"></a>
+<a name="l208"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l208"></span><span class=cB5>AdjColorHue</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l209"></a>{</span><span class=cB2>// change color hue</span><span class=cB0>
+<a name="l210"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=64;
+<a name="l211"></a>    </span><span class=cB1>F64</span><span class=cB0> h,s,v;
+<a name="l212"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l213"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l126"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(&amp;tmp_clr,&amp;h,&amp;s,&amp;v);
+<a name="l214"></a>    new_color=color;
+<a name="l215"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l216"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l217"></a>      cnt--;
+<a name="l218"></a>      h+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(dir);
+<a name="l219"></a>      h=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(h,0.0,360.0);
+<a name="l220"></a>
+<a name="l221"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l102"></span><span class=cB5>HSV2RGB</a></span><span class=cB0>(h, s, v, &amp;tmp_clr);
+<a name="l222"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l223"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l224"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l225"></a>}
+<a name="l226"></a>
+<a name="l227"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l227"></span><span class=cB5>AdjColorR</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l228"></a>{</span><span class=cB2>// change color R value</span><span class=cB0>
+<a name="l229"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=16;
+<a name="l230"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l231"></a>    new_color=color;
+<a name="l232"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l233"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l234"></a>      cnt--;
+<a name="l235"></a>      tmp_clr.r.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(tmp_clr.r.u8[1]+16*dir,0,255);
+<a name="l236"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l237"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l238"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l239"></a>}
+<a name="l240"></a>
+<a name="l241"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l241"></span><span class=cB5>AdjColorG</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l242"></a>{</span><span class=cB2>// change color G value</span><span class=cB0>
+<a name="l243"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=16;
+<a name="l244"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l245"></a>    new_color=color;
+<a name="l246"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l247"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l248"></a>      cnt--;
+<a name="l249"></a>      tmp_clr.g.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(tmp_clr.g.u8[1]+16*dir,0,255);
+<a name="l250"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l251"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l252"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l253"></a>}
+<a name="l254"></a>
+<a name="l255"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l255"></span><span class=cB5>AdjColorB</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> color, </span><span class=cB9>I64</span><span class=cB0> dir=1)
+<a name="l256"></a>{</span><span class=cB2>// change color B value</span><span class=cB0>
+<a name="l257"></a>    </span><span class=cB9>I64</span><span class=cB0> new_color, cnt=16;
+<a name="l258"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3464"></span><span class=cB9>CBGR48</a></span><span class=cB0> tmp_clr=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l72"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color);
+<a name="l259"></a>    new_color=color;
+<a name="l260"></a>    </span><span class=cB1>while</span><span class=cB0> (cnt &amp;&amp; new_color==color)
+<a name="l261"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l262"></a>      cnt--;
+<a name="l263"></a>      tmp_clr.b.u8[1]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(tmp_clr.b.u8[1]+16*dir,0,255);
+<a name="l264"></a>      new_color=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l62"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp_clr.r.u8[1],tmp_clr.g.u8[1],tmp_clr.b.u8[1]);
+<a name="l265"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l266"></a>    </span><span class=cB1>return</span><span class=cB0> new_color;
+<a name="l267"></a>}
+</span></div></pre></body>
+</html>

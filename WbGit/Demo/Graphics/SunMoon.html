@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.19">
+<meta name="generator" content="TinkerOS V5.20">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -38,7 +38,7 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB2>/*</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4456"><span class=cB4>gr.dc</span></a><span class=cB2> is the persistent layer.  You can access</span><span class=cB0>
+<a name="l1"></a><span class=cB2>/*</span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"><span class=cB4>gr.dc</span></a><span class=cB2> is the persistent layer.  You can access</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>it directly but two tasks accessing it simultaneously</span><span class=cB0>
 <a name="l3"></a></span><span class=cB2>with no </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"><span class=cB4>DCAlias</span></a><span class=cB2>() will screw-up color and stuff.</span><span class=cB0>
 <a name="l4"></a></span><span class=cB2>*/</span><span class=cB0>
@@ -47,29 +47,29 @@
 <a name="l7"></a>{
 <a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x,y,radius;
 <a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l320"></span><span class=cB5>AutoComplete</a></span><span class=cB0>; </span><span class=cB2>//AutoComplete Off</span><span class=cB0>
-<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l592"></span><span class=cB5>WinBorder</a></span><span class=cB0>;    </span><span class=cB2>//No Border</span><span class=cB0>
-<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l578"></span><span class=cB5>WinMax</a></span><span class=cB0>;       </span><span class=cB2>//Maximize window</span><span class=cB0>
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l610"></span><span class=cB5>WinBorder</a></span><span class=cB0>;    </span><span class=cB2>//No Border</span><span class=cB0>
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l580"></span><span class=cB5>WinMax</a></span><span class=cB0>;       </span><span class=cB2>//Maximize window</span><span class=cB0>
 <a name="l12"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;     </span><span class=cB2>//Clear command-line text</span><span class=cB0>
-<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3425"></span><span class=cB3>BLACK</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3440"></span><span class=cB3>WHITE</a></span><span class=cB0>; </span><span class=cB2>//Current </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3793"><span class=cB4>CTask</span></a><span class=cB2> is Fs segment register.</span><span class=cB0>
+<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3427"></span><span class=cB3>BLACK</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3442"></span><span class=cB3>WHITE</a></span><span class=cB0>; </span><span class=cB2>//Current </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3795"><span class=cB4>CTask</span></a><span class=cB2> is Fs segment register.</span><span class=cB0>
 <a name="l14"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;0x8000; i+=0x200)
 <a name="l15"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l16"></a></span><span class=cB2>//Sun</span><span class=cB0>
 <a name="l17"></a>    x=0.2*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>;
 <a name="l18"></a>    y=0.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>;
 <a name="l19"></a>    radius=120;
-<a name="l20"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3433"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l20"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3435"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
 <a name="l21"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l659"></span><span class=cB5>GrCircle</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,x,y,radius);
-<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3420"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3429"></span><span class=cB3>RED</a></span><span class=cB0>&lt;&lt;16+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3439"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3422"></span><span class=cB3>ROPF_DITHER</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3431"></span><span class=cB3>RED</a></span><span class=cB0>&lt;&lt;16+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3441"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
 <a name="l23"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l259"></span><span class=cB5>GrFloodFill</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,x,y);
 <a name="l24"></a>    </span><span class=cB2>//Moon</span><span class=cB0>
 <a name="l25"></a>    x=0.8*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>-i/0x200;
 <a name="l26"></a>    y=0.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>;
 <a name="l27"></a>    radius=75;
-<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3433"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3435"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
 <a name="l29"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l659"></span><span class=cB5>GrCircle</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,x,y,radius);
 <a name="l30"></a></span><span class=cB2>//&lt;CTRL-ALT-a&gt; for the &quot;pi&quot; character.</span><span class=cB0>
 <a name="l31"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l659"></span><span class=cB5>GrCircle</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,x+0.5*radius,y,1.2*radius,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>-.31*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>,0.62*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>);
-<a name="l32"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3421"></span><span class=cB3>ROPF_PROBABILITY_DITHER</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3432"></span><span class=cB3>LTGRAY</a></span><span class=cB0>&lt;&lt;16+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3425"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l32"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3423"></span><span class=cB3>ROPF_PROBABILITY_DITHER</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3434"></span><span class=cB3>LTGRAY</a></span><span class=cB0>&lt;&lt;16+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3427"></span><span class=cB3>BLACK</a></span><span class=cB0>;
 <a name="l33"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;dither_probability_u16=i;    </span><span class=cB2>//U16 can be [0,65535]</span><span class=cB0>
 <a name="l34"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l259"></span><span class=cB5>GrFloodFill</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc,x+0.5*radius,y);
 <a name="l35"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;dither_probability_u16=2*i;  </span><span class=cB2>//U16 can be [0,65535]</span><span class=cB0>
@@ -77,7 +77,7 @@
 <a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l36"></span><span class=cB5>Refresh</a></span><span class=cB0>; </span><span class=cB2>//Typically 30 fps</span><span class=cB0>
 <a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>;
 <a name="l39"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l290"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3440"></span><span class=cB3>WHITE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>BLUE</a></span><span class=cB0>;
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3442"></span><span class=cB3>WHITE</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3428"></span><span class=cB3>BLUE</a></span><span class=cB0>;
 <a name="l41"></a>}
 <a name="l42"></a>
 <a name="l43"></a>SunMoon;

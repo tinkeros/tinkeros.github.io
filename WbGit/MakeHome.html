@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.19">
+<meta name="generator" content="TinkerOS V5.20">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -35,7 +35,7 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2169"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
+<a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2170"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
 <a name="l2"></a>
 <a name="l3"></a></span><span class=cB2>//If these are not present in /Home, it uses the version in the root dir.  You</span><span class=cB0>
 <a name="l4"></a></span><span class=cB2>//can make your own, modified, version of these files in your /Home directory.</span><span class=cB0>
@@ -48,30 +48,52 @@
 <a name="l11"></a></span><span class=cB2>// Comment this if you do not want autocomplete</span><span class=cB0>
 <a name="l12"></a><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Adam/AutoComplete/DoACInit&quot;</span><span class=cB0>);
 <a name="l13"></a>
-<a name="l14"></a></span><span class=cB2>// Misc helper functions</span><span class=cB0>
-<a name="l15"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Home/MakeHome.html#l15"></span><span class=cB5>AutoHome</a></span><span class=cB0>()
-<a name="l16"></a>{
-<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l356"></span><span class=cB5>MountAuto</a></span><span class=cB0>(1);
-<a name="l18"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l14"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB6>&quot;C:/Home&quot;</span><span class=cB0>);
-<a name="l19"></a>}
+<a name="l14"></a></span><span class=cB2>// Comment this if you don't want Ed to pop-up warnings</span><span class=cB0>
+<a name="l15"></a></span><span class=cB2>// to help prevent overwriting already changed file.</span><span class=cB0>
+<a name="l16"></a><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocLink.html#l61"></span><span class=cB6>doc_ed_warn_overwrite</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l17"></a></span><span class=cB2>// Comment this if you don't want Ed to pop-up warnings</span><span class=cB0>
+<a name="l18"></a></span><span class=cB2>// to help prevent opening the same file twice.</span><span class=cB0>
+<a name="l19"></a><a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocLink.html#l62"></span><span class=cB6>doc_ed_warn_already_open</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l20"></a>
-<a name="l21"></a></span><span class=cB2>// Experimental FM 801 sound card OPL support</span><span class=cB0>
-<a name="l22"></a></span><span class=cB2>// #include &quot;/Demo/Snd/FM801&quot;</span><span class=cB0>
-<a name="l23"></a>
-<a name="l24"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l435"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) {
-<a name="l25"></a>  </span><span class=cB2>// AC97 sound support</span><span class=cB0>
-<a name="l26"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/AC97&quot;</span><span class=cB0>);
-<a name="l27"></a>  </span><span class=cB2>// Enable experimental Virtualbox guest additions if detected</span><span class=cB0>
-<a name="l28"></a>  </span><span class=cB2>// SethFile(&quot;/Demo/VM/VBoxAdd&quot;,-2);</span><span class=cB0>
-<a name="l29"></a>  </span><span class=cB2>// Try enabling ISA OPL sounds if VM detected</span><span class=cB0>
-<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
-<a name="l31"></a>}
-<a name="l32"></a>
-<a name="l33"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeWrappers&quot;</span><span class=cB0>
-<a name="l34"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Kernel/Kernel&quot;</span><span class=cB0>);
-<a name="l35"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Compiler/Compiler&quot;</span><span class=cB0>);
-<a name="l36"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeKeyPlugIns&quot;</span><span class=cB0>
-<a name="l37"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeSys&quot;</span><span class=cB0>
-<a name="l38"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);;
+<a name="l21"></a></span><span class=cB2>// Misc helper functions</span><span class=cB0>
+<a name="l22"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Home/MakeHome.html#l22"></span><span class=cB5>AutoHome</a></span><span class=cB0>()
+<a name="l23"></a>{
+<a name="l24"></a>#</span><span class=cB1>ifdef</span><span class=cB0> UEFI_BOOT
+<a name="l25"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l262"></span><span class=cB5>SwitchToAHCI</a></span><span class=cB0>;
+<a name="l26"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l364"></span><span class=cB5>MountAuto</a></span><span class=cB0>(0,1);
+<a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l14"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB6>&quot;C:/Home&quot;</span><span class=cB0>);
+<a name="l28"></a>#</span><span class=cB1>else</span><span class=cB0>
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l364"></span><span class=cB5>MountAuto</a></span><span class=cB0>(1);
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l14"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB6>&quot;C:/Home&quot;</span><span class=cB0>);
+<a name="l31"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l32"></a>}
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB2>// Experimental FM 801 sound card OPL support</span><span class=cB0>
+<a name="l35"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;/Demo/Snd/FM801&quot;</span><span class=cB0>
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l435"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) {
+<a name="l38"></a>  </span><span class=cB2>// AC97 sound support</span><span class=cB0>
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/AC97&quot;</span><span class=cB0>);
+<a name="l40"></a>  </span><span class=cB2>// Enable experimental Virtualbox guest additions if detected</span><span class=cB0>
+<a name="l41"></a>  </span><span class=cB2>// SethFile(&quot;/Demo/VM/VBoxAdd&quot;,-2);</span><span class=cB0>
+<a name="l42"></a>  </span><span class=cB2>//</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB2>// Enable VMW mouse if detected</span><span class=cB0>
+<a name="l44"></a>  </span><span class=cB2>// Better mouse performance, but breaks raw mouse mode</span><span class=cB0>
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/VMMouse&quot;</span><span class=cB0>);
+<a name="l46"></a>  </span><span class=cB2>// Try enabling ISA OPL sounds if VM detected</span><span class=cB0>
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
+<a name="l48"></a>}
+<a name="l49"></a></span><span class=cB1>else</span><span class=cB0> {
+<a name="l50"></a>#</span><span class=cB1>ifdef</span><span class=cB0> FM801_OPL_BASE
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
+<a name="l52"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l53"></a>}
+<a name="l54"></a>
+<a name="l55"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeWrappers&quot;</span><span class=cB0>
+<a name="l56"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Kernel/Kernel&quot;</span><span class=cB0>);
+<a name="l57"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Compiler/Compiler&quot;</span><span class=cB0>);
+<a name="l58"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeKeyPlugIns&quot;</span><span class=cB0>
+<a name="l59"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeSys&quot;</span><span class=cB0>
+<a name="l60"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);;
 </span></div></pre></body>
 </html>
