@@ -37,19 +37,19 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB9>I64</span><span class=cB0> Ping(</span><span class=cB1>U8</span><span class=cB0> *hostname, </span><span class=cB9>I64</span><span class=cB0> timeout=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> Ping(</span><span class=cB1>U8</span><span class=cB0> *hostname, </span><span class=cB9>I64</span><span class=cB0> timeout=<a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
 <a name="l2"></a>{
 <a name="l3"></a>  </span><span class=cB9>U32</span><span class=cB0>                    addr;
 <a name="l4"></a>  CAddressInfo      *current;
-<a name="l5"></a>  CAddressInfo      *result = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l5"></a>  CAddressInfo      *result = <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0>                    error;
-<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0>                    i = 0, t, delay, sent = 0, min_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>, max_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0>, sum_delay = 0;
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0>                    i = 0, t, delay, sent = 0, min_delay = <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>, max_delay = <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0>, sum_delay = 0;
 <a name="l8"></a>  CSocketAddressIPV4    *ipv4_address;
-<a name="l9"></a>  </span><span class=cB9>U16</span><span class=cB0>                    sequence_number = 1, identifier = <a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>, cnt = 0;
+<a name="l9"></a>  </span><span class=cB9>U16</span><span class=cB0>                    sequence_number = 1, identifier = <a href="http://www.templeos.org/Wb/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>, cnt = 0;
 <a name="l10"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *payload;
 <a name="l11"></a>  </span><span class=cB1>if</span><span class=cB0> (!IPV4AddressPrs</span><span class=cB7>(</span><span class=cB0>hostname, &amp;addr</span><span class=cB7>)</span><span class=cB0>)
 <a name="l12"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l13"></a>    error = DNSAddressInfoGet(hostname, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, &amp;result);
+<a name="l13"></a>    error = DNSAddressInfoGet(hostname, <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, &amp;result);
 <a name="l14"></a>    </span><span class=cB1>if</span><span class=cB0> (error &lt; 0)
 <a name="l15"></a>    {
 <a name="l16"></a>      NetErr(</span><span class=cB6>&quot;Ping: Failed at DNS Get Address Info.&quot;</span><span class=cB0>);
@@ -58,10 +58,10 @@
 <a name="l19"></a>    current = result;
 <a name="l20"></a>    </span><span class=cB1>while</span><span class=cB0> (current)
 <a name="l21"></a>    {
-<a name="l22"></a>      </span><span class=cB1>if</span><span class=cB0> (current-&gt;family == <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>)
+<a name="l22"></a>      </span><span class=cB1>if</span><span class=cB0> (current-&gt;family == <a href="http://www.templeos.org/Wb/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>)
 <a name="l23"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l24"></a>        ipv4_address = current-&gt;address;
-<a name="l25"></a>        addr = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(ipv4_address-&gt;address); </span><span class=cB2>// why does it need EndianU32</span><span class=cB0>
+<a name="l25"></a>        addr = <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l15"></span><span class=cB5>EndianU32</a></span><span class=cB0>(ipv4_address-&gt;address); </span><span class=cB2>// why does it need EndianU32</span><span class=cB0>
 <a name="l26"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l27"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l28"></a>      current = current-&gt;next;
@@ -73,40 +73,40 @@
 <a name="l34"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
 <a name="l35"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l36"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l121"></span><span class=cB5>ScanChar</a></span><span class=cB0>)
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (!<a href="http://www.templeos.org/Wb/Kernel/SerialDev/Message.html#l121"></span><span class=cB5>ScanChar</a></span><span class=cB0>)
 <a name="l38"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l39"></a>    payload = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(64);
+<a name="l39"></a>    payload = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(64);
 <a name="l40"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 64; i++)
-<a name="l41"></a>      payload[i] = <a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>;
+<a name="l41"></a>      payload[i] = <a href="http://www.templeos.org/Wb/Kernel/KMathB.html#l91"></span><span class=cB5>RandU16</a></span><span class=cB0>;
 <a name="l42"></a>    </span><span class=cB6>&quot;Sending Ping request #%d\n&quot;</span><span class=cB0>
 <a name="l43"></a>    , sequence_number;
-<a name="l44"></a>    ICMPRequestSend(addr, identifier, <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>, payload, 64);
+<a name="l44"></a>    ICMPRequestSend(addr, identifier, <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>, payload, 64);
 <a name="l45"></a>    sent++;
-<a name="l46"></a>    t = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
-<a name="l47"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + timeout)
+<a name="l46"></a>    t = <a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
+<a name="l47"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + timeout)
 <a name="l48"></a>    {
-<a name="l49"></a>      </span><span class=cB1>if</span><span class=cB0> (icmp_reply.identifier == identifier &amp;&amp; icmp_reply.sequence_number == <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>)
+<a name="l49"></a>      </span><span class=cB1>if</span><span class=cB0> (icmp_reply.identifier == identifier &amp;&amp; icmp_reply.sequence_number == <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB7>(</span><span class=cB0>sequence_number</span><span class=cB7>)</span><span class=cB0>)
 <a name="l50"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l51"></a>        delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies - t;
-<a name="l52"></a>        min_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(min_delay, delay);
-<a name="l53"></a>        max_delay = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(max_delay, delay);
+<a name="l51"></a>        delay = <a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies - t;
+<a name="l52"></a>        min_delay = <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(min_delay, delay);
+<a name="l53"></a>        max_delay = <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(max_delay, delay);
 <a name="l54"></a>        sum_delay += delay; </span><span class=cB2>// sum up delays, divide through by cnt during stat report to get average</span><span class=cB0>
 <a name="l55"></a>        cnt++;
 <a name="l56"></a>        </span><span class=cB6>&quot;\tReceived reply, delay: %dms\n&quot;</span><span class=cB0>
 <a name="l57"></a>        , delay;
 <a name="l58"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l59"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l60"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l60"></a>      <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
 <a name="l61"></a>    }
-<a name="l62"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
-<a name="l63"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l62"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KGlbls.html#l30"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies &lt; t + <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>)
+<a name="l63"></a>      <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
 <a name="l64"></a>    sequence_number++;
-<a name="l65"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(payload);
+<a name="l65"></a>    <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(payload);
 <a name="l66"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l67"></a>  </span><span class=cB6>&quot;\nPing Statistics:\n&quot;</span><span class=cB0>;
 <a name="l68"></a>  </span><span class=cB6>&quot;\tSent: %d, Received: %d, Lost: %d (%0.02f %%)\n&quot;</span><span class=cB0>
 <a name="l69"></a>  , sent, cnt, sent - cnt, 100.0 - 100.0 * cnt / sent;
-<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (min_delay != <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; max_delay != <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0> &amp;&amp; sum_delay != 0)
+<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (min_delay != <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; max_delay != <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l38"></span><span class=cB3>I64_MIN</a></span><span class=cB0> &amp;&amp; sum_delay != 0)
 <a name="l71"></a>    </span><span class=cB6>&quot;\tMin: %dms, Max: %dms, Avg: %dms\n&quot;</span><span class=cB0>, min_delay, max_delay, sum_delay / cnt;
 <a name="l72"></a>  </span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
 <a name="l73"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;

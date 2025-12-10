@@ -134,8 +134,8 @@
 <a name="l95"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_ptr = 0;
 <a name="l96"></a></span><span class=cB9>I64</span><span class=cB0> rx_buffer_cnt = 255;
 <a name="l97"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_cnt = 256;
-<a name="l98"></a></span><span class=cB9>U64</span><span class=cB0> rx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * rx_buffer_cnt);
-<a name="l99"></a></span><span class=cB9>U64</span><span class=cB0> tx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * tx_buffer_cnt);
+<a name="l98"></a></span><span class=cB9>U64</span><span class=cB0> rx_buffers = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * rx_buffer_cnt);
+<a name="l99"></a></span><span class=cB9>U64</span><span class=cB0> tx_buffers = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * tx_buffer_cnt);
 <a name="l100"></a>
 <a name="l101"></a></span><span class=cB1>class</span><span class=cB0> @virtio_net
 <a name="l102"></a>{
@@ -164,9 +164,9 @@
 <a name="l125"></a>};
 <a name="l126"></a>
 <a name="l127"></a>@virtio_net VirtioNet;
-<a name="l128"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;VirtioNet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net</span><span class=cB7>)</span><span class=cB0>);
+<a name="l128"></a><a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;VirtioNet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net</span><span class=cB7>)</span><span class=cB0>);
 <a name="l129"></a>
-<a name="l130"></a>@virtio_net_header *def_pkt_hdr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l130"></a>@virtio_net_header *def_pkt_hdr = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
 <a name="l131"></a>
 <a name="l132"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> @virtio_net_alloc_tx_packet(</span><span class=cB1>U8</span><span class=cB0> **buffer_out, </span><span class=cB9>I64</span><span class=cB0> length</span><span class=cB2>/*, I64 flags*/</span><span class=cB0>)
 <a name="l133"></a>{</span><span class=cB2>// FIXME: validate length</span><span class=cB0>
@@ -182,7 +182,7 @@
 <a name="l143"></a>  VirtioNet.sq-&gt;buffers[sq_idx2 * 2].next = (sq_idx2 * 2) + 1;
 <a name="l144"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].address = *buffer_out;
 <a name="l145"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].length = length;
-<a name="l146"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].flags = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l146"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].flags = <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l147"></a>  VirtioNet.sq-&gt;buffers[(sq_idx2 * 2) + 1].next = 0;
 <a name="l148"></a>  VirtioNet.sq-&gt;available.ring[sq_idx] = sq_idx2 * 2;
 <a name="l149"></a>  VirtioNet.sq-&gt;available.index++;
@@ -193,11 +193,11 @@
 <a name="l154"></a>
 <a name="l155"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> @virtio_net_finish_tx_packet(</span><span class=cB9>I64</span><span class=cB0>)
 <a name="l156"></a>{
-<a name="l157"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 1);
+<a name="l157"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 1);
 <a name="l158"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l159"></a>}
 <a name="l160"></a>
-<a name="l161"></a></span><span class=cB1>U8</span><span class=cB0> *loopback_frame = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
+<a name="l161"></a></span><span class=cB1>U8</span><span class=cB0> *loopback_frame = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
 <a name="l162"></a></span><span class=cB9>I64</span><span class=cB0> loopback_length = 0;
 <a name="l163"></a>
 <a name="l164"></a></span><span class=cB9>I64</span><span class=cB0> EthernetFrameAllocate(</span><span class=cB1>U8</span><span class=cB0> **buffer_out, </span><span class=cB1>U8</span><span class=cB0> *src_addr, </span><span class=cB1>U8</span><span class=cB0> *dst_addr,
@@ -209,11 +209,11 @@
 <a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (length &lt; 46)
 <a name="l171"></a>    length = 46;
 <a name="l172"></a>  </span><span class=cB9>I64</span><span class=cB0> index;
-<a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>dst_addr, &amp;VirtioNet.mac, 6</span><span class=cB7>)</span><span class=cB0>)
+<a name="l173"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>dst_addr, &amp;VirtioNet.mac, 6</span><span class=cB7>)</span><span class=cB0>)
 <a name="l174"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l175"></a>    frame = loopback_frame;
 <a name="l176"></a>    loopback_length = length;
-<a name="l177"></a>    index = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
+<a name="l177"></a>    index = <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
 <a name="l178"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l179"></a>  </span><span class=cB1>else</span><span class=cB0>
 <a name="l180"></a>  </span><span class=cB7>{</span><span class=cB0>
@@ -221,8 +221,8 @@
 <a name="l182"></a>    </span><span class=cB1>if</span><span class=cB0> (index &lt; 0)
 <a name="l183"></a>      </span><span class=cB1>return</span><span class=cB0> index;
 <a name="l184"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l185"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 0, dst_addr, 6);
-<a name="l186"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 6, src_addr, 6);
+<a name="l185"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 0, dst_addr, 6);
+<a name="l186"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(frame + 6, src_addr, 6);
 <a name="l187"></a>  frame[12] = (ethertype &gt;&gt; 8);
 <a name="l188"></a>  frame[13] = (ethertype &amp; 0xff);
 <a name="l189"></a>  *buffer_out = frame + 14;
@@ -231,7 +231,7 @@
 <a name="l192"></a>
 <a name="l193"></a></span><span class=cB9>I64</span><span class=cB0> EthernetFrameFinish(</span><span class=cB9>I64</span><span class=cB0> index)
 <a name="l194"></a>{
-<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (index == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; loopback_frame &amp;&amp; loopback_length)
+<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (index == <a href="http://www.templeos.org/Wb/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0> &amp;&amp; loopback_frame &amp;&amp; loopback_length)
 <a name="l196"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l197"></a>    NetQuePush(loopback_frame, loopback_length);
 <a name="l198"></a>    loopback_length = 0;
@@ -249,40 +249,40 @@
 <a name="l210"></a>{
 <a name="l211"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j;
 <a name="l212"></a>  </span><span class=cB2>// Scan for device</span><span class=cB0>
-<a name="l213"></a>  j = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l84"></span><span class=cB5>PCIClassFind</a></span><span class=cB0>(0x020000, 0);
+<a name="l213"></a>  j = <a href="http://www.templeos.org/Wb/Kernel/PCI.html#l84"></span><span class=cB5>PCIClassFind</a></span><span class=cB0>(0x020000, 0);
 <a name="l214"></a>  </span><span class=cB1>if</span><span class=cB0> (j &lt; 0)
 <a name="l215"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l216"></a>    </span><span class=cB6>&quot;\nVirtio-net device not found.\n&quot;</span><span class=cB0>;
 <a name="l217"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
 <a name="l218"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l219"></a>  VirtioNet.port = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(j.u8[2], j.u8[1], j.u8[0], 0x10) &amp; 0xFFFFFFFC;
+<a name="l219"></a>  VirtioNet.port = <a href="http://www.templeos.org/Wb/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(j.u8[2], j.u8[1], j.u8[0], 0x10) &amp; 0xFFFFFFFC;
 <a name="l220"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 6; i++)
 <a name="l221"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l222"></a>    VirtioNet.mac[i] = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_CONFIG + i);
+<a name="l222"></a>    VirtioNet.mac[i] = <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_CONFIG + i);
 <a name="l223"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l224"></a>  </span><span class=cB2>// Rst Device</span><span class=cB0>
-<a name="l225"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS, 0);
+<a name="l225"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS, 0);
 <a name="l226"></a>  </span><span class=cB2>// Found Driver</span><span class=cB0>
-<a name="l227"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
-<a name="l228"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_ACKNOWLEDGE |
+<a name="l227"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
+<a name="l228"></a>        <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_ACKNOWLEDGE |
 <a name="l229"></a>        VIRTIO_CONFIG_S_DRIVER);
 <a name="l230"></a>  </span><span class=cB2>// Set up receive queue</span><span class=cB0>
-<a name="l231"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 0);
-<a name="l232"></a>  VirtioNet.rq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
-<a name="l233"></a>  VirtioNet.rq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
-<a name="l234"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.rq / 4096);
+<a name="l231"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 0);
+<a name="l232"></a>  VirtioNet.rq_size = <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
+<a name="l233"></a>  VirtioNet.rq = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l234"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.rq / 4096);
 <a name="l235"></a>  </span><span class=cB2>// Set up send queue</span><span class=cB0>
-<a name="l236"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 1);
-<a name="l237"></a>  VirtioNet.sq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
-<a name="l238"></a>  VirtioNet.sq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
-<a name="l239"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.sq / 4096);
+<a name="l236"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 1);
+<a name="l237"></a>  VirtioNet.sq_size = <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
+<a name="l238"></a>  VirtioNet.sq = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l239"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.sq / 4096);
 <a name="l240"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 128; i++)
 <a name="l241"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l242"></a>    VirtioNet.rq-&gt;buffers[i * 2].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l242"></a>    VirtioNet.rq-&gt;buffers[i * 2].address = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
 <a name="l243"></a>    VirtioNet.rq-&gt;buffers[i * 2].length = </span><span class=cB1>sizeof</span><span class=cB0>(@virtio_net_header);
 <a name="l244"></a>    VirtioNet.rq-&gt;buffers[i * 2].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
 <a name="l245"></a>    VirtioNet.rq-&gt;buffers[i * 2].next = (i * 2) + 1;
-<a name="l246"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
+<a name="l246"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].address = <a href="http://www.templeos.org/Wb/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
 <a name="l247"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].length = ETHERNET_FRAME_SIZE;
 <a name="l248"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].flags = VRING_DESC_F_WRITE;
 <a name="l249"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].next = 0;
@@ -291,9 +291,9 @@
 <a name="l252"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l253"></a>  VirtioNet.rq-&gt;available.index = 1;
 <a name="l254"></a>  </span><span class=cB2>// Init OK</span><span class=cB0>
-<a name="l255"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
-<a name="l256"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_DRIVER_OK);
-<a name="l257"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+<a name="l255"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_STATUS,
+<a name="l256"></a>        <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l77"></span><span class=cB5>InU8</a></span><span class=cB7>(</span><span class=cB0>VirtioNet.port + VIRTIO_PCI_STATUS</span><span class=cB7>)</span><span class=cB0> | VIRTIO_CONFIG_S_DRIVER_OK);
+<a name="l257"></a>  <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
 <a name="l258"></a>  </span><span class=cB6>&quot;\x1b[33mVirtio-net device detected, MAC address &quot;</span><span class=cB0>
 <a name="l259"></a>  </span><span class=cB6>&quot;%02x:%02x:%02x:%02x:%02x:%02x\x1b[0m\n&quot;</span><span class=cB0>
 <a name="l260"></a>  ,
@@ -352,19 +352,19 @@
 <a name="l313"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l314"></a>      VirtioNet.rq_index = idx_used % 0x10000;
 <a name="l315"></a>      VirtioNet.rq-&gt;available.index += j;
-<a name="l316"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
+<a name="l316"></a>      <a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_NOTIFY, 0);
 <a name="l317"></a>    }
-<a name="l318"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num)
-<a name="l319"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
+<a name="l318"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num)
+<a name="l319"></a>      <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
 <a name="l320"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l321"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(30);
+<a name="l321"></a>      <a href="http://www.templeos.org/Wb/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(30);
 <a name="l322"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l323"></a>}
 <a name="l324"></a>
-<a name="l325"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
-<a name="l326"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;@virtio_net_hndlr_task,, </span><span class=cB6>&quot;Virtio-net&quot;</span><span class=cB0>,1);
+<a name="l325"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://www.templeos.org/Wb/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
+<a name="l326"></a>  <a href="http://www.templeos.org/Wb/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;@virtio_net_hndlr_task,, </span><span class=cB6>&quot;Virtio-net&quot;</span><span class=cB0>,1);
 <a name="l327"></a></span><span class=cB1>else</span><span class=cB0>
-<a name="l328"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;@virtio_net_hndlr_task,, </span><span class=cB6>&quot;Virtio-net&quot;</span><span class=cB0>);
+<a name="l328"></a>  <a href="http://www.templeos.org/Wb/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;@virtio_net_hndlr_task,, </span><span class=cB6>&quot;Virtio-net&quot;</span><span class=cB0>);
 <a name="l329"></a>
 </span></div></pre></body>
 </html>
