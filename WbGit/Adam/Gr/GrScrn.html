@@ -711,197 +711,199 @@
 <a name="l670"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l671"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l672"></a>    }
-<a name="l673"></a>    src_start = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body;
-<a name="l674"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l675"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_zoom == 1)
-<a name="l676"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l677"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver)
-<a name="l678"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_image-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;height/8);
-<a name="l679"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l743"></span><span class=cB3>SEMA_FLUSH_VGA_IMAGE</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
-<a name="l680"></a>    {
-<a name="l681"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal == <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
-<a name="l682"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l683"></a>        size = src_start + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
-<a name="l684"></a>        src = src_start;
-<a name="l685"></a>        </span><span class=cB1>while</span><span class=cB0> (src &lt; size)
-<a name="l686"></a>          *dst++ = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] &lt;&lt; 32;
-<a name="l687"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l688"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l689"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l690"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>; i++)
-<a name="l691"></a>        {
-<a name="l692"></a>          src = src_start + i*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
-<a name="l693"></a>          dst2 = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image + i*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>;
-<a name="l694"></a>          </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>; j++)
-<a name="l695"></a>            dst2[j]=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[src[j] &amp; 0xff];
-<a name="l696"></a>        }
-<a name="l697"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l698"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l597"></span><span class=cB5>GrUpdateCache</a></span><span class=cB0>(src_start);
-<a name="l699"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
-<a name="l700"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/8);
-<a name="l701"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l702"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l703"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
-<a name="l704"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l530"></span><span class=cB5>GrDoFinalScaling</a></span><span class=cB0>;
-<a name="l705"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l706"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l506"></span><span class=cB5>GrDoLetterBox</a></span><span class=cB0>;
-<a name="l707"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
-<a name="l708"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
-<a name="l709"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l710"></a>    }
-<a name="l711"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l712"></a>    {
-<a name="l713"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
-<a name="l714"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l576"></span><span class=cB5>GrPartialUpdate</a></span><span class=cB0>(src_start);
-<a name="l715"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l716"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l717"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
-<a name="l718"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l402"></span><span class=cB5>GrPartialUpdateScaling</a></span><span class=cB0>(src_start);
-<a name="l719"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l720"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l433"></span><span class=cB5>GrPartialUpdateLetterbox</a></span><span class=cB0>(src_start);
-<a name="l721"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
-<a name="l722"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
-<a name="l723"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l724"></a>    }
-<a name="l725"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l726"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l727"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l728"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/GrZoom.html#l33"></span><span class=cB5>GrZoomInScrn</a></span><span class=cB0>;
-<a name="l729"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_image-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;height/8);
-<a name="l730"></a>    src = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body;
-<a name="l731"></a>    size = src + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
-<a name="l732"></a>    </span><span class=cB1>while</span><span class=cB0> (src &lt; size)
-<a name="l733"></a>      *dst++ = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] &lt;&lt; 32;
-<a name="l734"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.screen_cache,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/32);
-<a name="l735"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
-<a name="l736"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/8);
-<a name="l737"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l738"></a>    {
-<a name="l739"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
-<a name="l740"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l530"></span><span class=cB5>GrDoFinalScaling</a></span><span class=cB0>;
-<a name="l741"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l742"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l506"></span><span class=cB5>GrDoLetterBox</a></span><span class=cB0>;
-<a name="l743"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
-<a name="l744"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
-<a name="l745"></a>    }
-<a name="l746"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
-<a name="l747"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l748"></a>}
-<a name="l749"></a>
-<a name="l750"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l750"></span><span class=cB5>GrUpdateScrn</a></span><span class=cB0>()
-<a name="l751"></a>{</span><span class=cB2>//Called by the Window Manager HERE, 30 times a second.</span><span class=cB0>
-<a name="l752"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc;
-<a name="l753"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperSema</a></span><span class=cB0>++;
-<a name="l754"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l579"></span><span class=cB3>RLf_VGA</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB2>//if text mode</span><span class=cB0>
-<a name="l755"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l139"></span><span class=cB5>GrUpdateTasks</a></span><span class=cB0>;
-<a name="l756"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l757"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l758"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l183"></span><span class=cB5>GrUpdateTextBG</a></span><span class=cB0>;
-<a name="l759"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l277"></span><span class=cB5>GrUpdateTextFG</a></span><span class=cB0>;
-<a name="l760"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l139"></span><span class=cB5>GrUpdateTasks</a></span><span class=cB0>;
-<a name="l761"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l75"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>)
-<a name="l762"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l556"></span><span class=cB5>DCBlotColor8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc);
-<a name="l763"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l764"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l556"></span><span class=cB5>DCBlotColor8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l75"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>);
-<a name="l765"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l766"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"></span><span class=cB5>DCAlias</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
-<a name="l767"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4126"></span><span class=cB3>DCF_ON_TOP</a></span><span class=cB0>;
-<a name="l768"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.fp_final_scrn_update)
-<a name="l769"></a>    (*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.fp_final_scrn_update)(dc);
-<a name="l770"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
-<a name="l771"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l579"></span><span class=cB3>RLf_VGA</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB2>//if text mode</span><span class=cB0>
-<a name="l772"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l356"></span><span class=cB5>GrUpdateTextModeText</a></span><span class=cB0>;
-<a name="l773"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l774"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l775"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/GrAsm.html#l299"></span><span class=cB5>DCBlotColor4</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc_cache-&gt;body,
-<a name="l776"></a>                 <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal&gt;&gt;3);
-<a name="l777"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l620"></span><span class=cB5>GrUpdateVGAGraphics</a></span><span class=cB0>;
-<a name="l778"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l779"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperSema</a></span><span class=cB0>=0;
-<a name="l780"></a>}
-<a name="l781"></a>
-<a name="l782"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l782"></span><span class=cB5>ToggleBlink</a></span><span class=cB0>()
-<a name="l783"></a>{</span><span class=cB2>// Toggles blinking</span><span class=cB0>
-<a name="l784"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l9"></span><span class=cB6>blink_master_flag</a></span><span class=cB0>^=1;
-<a name="l785"></a>}
-<a name="l786"></a>
-<a name="l787"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l787"></span><span class=cB5>ToggleScroll</a></span><span class=cB0>()
-<a name="l788"></a>{</span><span class=cB2>// Toggles scrolling</span><span class=cB0>
-<a name="l789"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l10"></span><span class=cB6>scroll_master_flag</a></span><span class=cB0>^=1;
-<a name="l790"></a>}
-<a name="l791"></a>
-<a name="l792"></a></span><span class=cB1>interrupt</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l792"></span><span class=cB5>DCBlotColor8Irq</a></span><span class=cB0>()
-<a name="l793"></a>{
-<a name="l794"></a>  </span><span class=cB9>U64</span><span class=cB0> b,j,*src=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;body,*b0=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body;
-<a name="l795"></a>  </span><span class=cB9>I64</span><span class=cB0> k,d0=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;height/8;
-<a name="l796"></a>  </span><span class=cB1>for</span><span class=cB0> (k=</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num-1</span><span class=cB7>)</span><span class=cB0>*d0/<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperCnt</a></span><span class=cB0>; k&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num*d0/<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperCnt</a></span><span class=cB0>; k++)
-<a name="l797"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l798"></a>    j=*src++;
-<a name="l799"></a>    </span><span class=cB1>if</span><span class=cB0> (j!=0xFFFFFFFFFFFFFFFF)
-<a name="l800"></a>    {
-<a name="l801"></a>      b=*b0;
-<a name="l802"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[0]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[0]=j.u8[0];
-<a name="l803"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[1]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[1]=j.u8[1];
-<a name="l804"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[2]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[2]=j.u8[2];
-<a name="l805"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[3]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[3]=j.u8[3];
-<a name="l806"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[4]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[4]=j.u8[4];
-<a name="l807"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[5]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[5]=j.u8[5];
-<a name="l808"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[6]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[6]=j.u8[6];
-<a name="l809"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[7]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[7]=j.u8[7];
-<a name="l810"></a>      b0++;
-<a name="l811"></a>    }
-<a name="l812"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l813"></a>    {
-<a name="l814"></a>      b0++;
-<a name="l815"></a>    }
-<a name="l816"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l817"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>BlotGlblCnt</a></span><span class=cB0>++;
-<a name="l818"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l630"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0> *)=0;
-<a name="l819"></a>}
-<a name="l820"></a>
-<a name="l821"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l17"></span><span class=cB3>I_BLOT</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l792"></span><span class=cB5>DCBlotColor8Irq</a></span><span class=cB0>);
-<a name="l822"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l18"></span><span class=cB3>I_REDRAW</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l474"></span><span class=cB5>GrPartialUpdatePartIrq</a></span><span class=cB0>);
-<a name="l823"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l16"></span><span class=cB3>I_UPDATE_CACHE</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l496"></span><span class=cB5>GrUpdateCacheIrq</a></span><span class=cB0>);
-<a name="l824"></a>
-<a name="l825"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;ScreenSaver&quot;</span><span class=cB0>
-<a name="l826"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l826"></span><span class=cB5>SetScreenSaverTimeout</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> new_timeout)
-<a name="l827"></a>{</span><span class=cB2>//Set timeout value for screen saver in seconds</span><span class=cB0>
-<a name="l828"></a>  </span><span class=cB1>if</span><span class=cB0> (new_timeout&lt;1)
-<a name="l829"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver_timeout=0;
-<a name="l830"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l831"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver_timeout=new_timeout;
-<a name="l832"></a>}
-<a name="l833"></a>
-<a name="l834"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Video&quot;</span><span class=cB0>
-<a name="l835"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l835"></span><span class=cB5>SetFPS</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> new_fps)
-<a name="l836"></a>{</span><span class=cB2>//Sets target frame rate</span><span class=cB0>
-<a name="l837"></a>  </span><span class=cB1>if</span><span class=cB0> (new_fps&lt;1)
-<a name="l838"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l839"></a>    </span><span class=cB1>lock</span><span class=cB0>
-<a name="l840"></a>    {
-<a name="l841"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=1;
-<a name="l842"></a>    }
-<a name="l843"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l844"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (new_fps&gt;999)
-<a name="l845"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l846"></a>    </span><span class=cB1>lock</span><span class=cB0>
-<a name="l847"></a>    {
-<a name="l848"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=999;
-<a name="l849"></a>    }
-<a name="l850"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l851"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l852"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l853"></a>    </span><span class=cB1>lock</span><span class=cB0>
-<a name="l854"></a>    {
-<a name="l855"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=new_fps;
-<a name="l856"></a>    }
-<a name="l857"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l858"></a>}
-<a name="l859"></a>
-<a name="l860"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l860"></span><span class=cB5>GetFPS</a></span><span class=cB0>()
-<a name="l861"></a>{</span><span class=cB2>//Return current target video FPS</span><span class=cB0>
-<a name="l862"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>;
-<a name="l863"></a>}
-<a name="l864"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l673"></a>    </span><span class=cB2>// Restore default ext. palette in case screen saver changed it.</span><span class=cB0>
+<a name="l674"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l11"></span><span class=cB5>GrSetExtPalette</a></span><span class=cB0>;
+<a name="l675"></a>    src_start = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body;
+<a name="l676"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l677"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_zoom == 1)
+<a name="l678"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l679"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver)
+<a name="l680"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_image-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;height/8);
+<a name="l681"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l244"></span><span class=cB6>sys_semas</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l743"></span><span class=cB3>SEMA_FLUSH_VGA_IMAGE</a></span><span class=cB0>],0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l682"></a>    {
+<a name="l683"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal == <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>)
+<a name="l684"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l685"></a>        size = src_start + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
+<a name="l686"></a>        src = src_start;
+<a name="l687"></a>        </span><span class=cB1>while</span><span class=cB0> (src &lt; size)
+<a name="l688"></a>          *dst++ = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] &lt;&lt; 32;
+<a name="l689"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l690"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l691"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l692"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>; i++)
+<a name="l693"></a>        {
+<a name="l694"></a>          src = src_start + i*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
+<a name="l695"></a>          dst2 = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image + i*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>;
+<a name="l696"></a>          </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>; j++)
+<a name="l697"></a>            dst2[j]=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[src[j] &amp; 0xff];
+<a name="l698"></a>        }
+<a name="l699"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l700"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l597"></span><span class=cB5>GrUpdateCache</a></span><span class=cB0>(src_start);
+<a name="l701"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
+<a name="l702"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/8);
+<a name="l703"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l704"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l705"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
+<a name="l706"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l530"></span><span class=cB5>GrDoFinalScaling</a></span><span class=cB0>;
+<a name="l707"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l708"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l506"></span><span class=cB5>GrDoLetterBox</a></span><span class=cB0>;
+<a name="l709"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
+<a name="l710"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
+<a name="l711"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l712"></a>    }
+<a name="l713"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l714"></a>    {
+<a name="l715"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
+<a name="l716"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l576"></span><span class=cB5>GrPartialUpdate</a></span><span class=cB0>(src_start);
+<a name="l717"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l718"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l719"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
+<a name="l720"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l402"></span><span class=cB5>GrPartialUpdateScaling</a></span><span class=cB0>(src_start);
+<a name="l721"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l722"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l433"></span><span class=cB5>GrPartialUpdateLetterbox</a></span><span class=cB0>(src_start);
+<a name="l723"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
+<a name="l724"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
+<a name="l725"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l726"></a>    }
+<a name="l727"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l728"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l729"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l730"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/GrZoom.html#l33"></span><span class=cB5>GrZoomInScrn</a></span><span class=cB0>;
+<a name="l731"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_image-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;height/8);
+<a name="l732"></a>    src = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body;
+<a name="l733"></a>    size = src + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal;
+<a name="l734"></a>    </span><span class=cB1>while</span><span class=cB0> (src &lt; size)
+<a name="l735"></a>      *dst++ = <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] | <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l5"></span><span class=cB6>gr_palette</a></span><span class=cB0>[*src++ &amp; 0xFF] &lt;&lt; 32;
+<a name="l736"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.screen_cache,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.zoomed_dc-&gt;body, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/32);
+<a name="l737"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l11"></span><span class=cB3>LETTER_BOX</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l6"></span><span class=cB3>FB_WIDTH</a></span><span class=cB0>*4==<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.pitch)
+<a name="l738"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_image, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.buffer_size/8);
+<a name="l739"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l740"></a>    {
+<a name="l741"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l10"></span><span class=cB3>DO_SCALING</a></span><span class=cB0>)
+<a name="l742"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l530"></span><span class=cB5>GrDoFinalScaling</a></span><span class=cB0>;
+<a name="l743"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l744"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l506"></span><span class=cB5>GrDoLetterBox</a></span><span class=cB0>;
+<a name="l745"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>output_dst2</a></span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
+<a name="l746"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l171"></span><span class=cB5>MemCpy64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l40"></span><span class=cB6>text</a></span><span class=cB0>.raw_scrn_img2, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>/8);
+<a name="l747"></a>    }
+<a name="l748"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l749"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l750"></a>}
+<a name="l751"></a>
+<a name="l752"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l752"></span><span class=cB5>GrUpdateScrn</a></span><span class=cB0>()
+<a name="l753"></a>{</span><span class=cB2>//Called by the Window Manager HERE, 30 times a second.</span><span class=cB0>
+<a name="l754"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc;
+<a name="l755"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperSema</a></span><span class=cB0>++;
+<a name="l756"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l579"></span><span class=cB3>RLf_VGA</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB2>//if text mode</span><span class=cB0>
+<a name="l757"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l139"></span><span class=cB5>GrUpdateTasks</a></span><span class=cB0>;
+<a name="l758"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l759"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l760"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l183"></span><span class=cB5>GrUpdateTextBG</a></span><span class=cB0>;
+<a name="l761"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l277"></span><span class=cB5>GrUpdateTextFG</a></span><span class=cB0>;
+<a name="l762"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l139"></span><span class=cB5>GrUpdateTasks</a></span><span class=cB0>;
+<a name="l763"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l75"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>)
+<a name="l764"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l556"></span><span class=cB5>DCBlotColor8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc);
+<a name="l765"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l766"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l556"></span><span class=cB5>DCBlotColor8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l75"></span><span class=cB6>gr_alt_scrn</a></span><span class=cB0>);
+<a name="l767"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l768"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"></span><span class=cB5>DCAlias</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
+<a name="l769"></a>  dc-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4126"></span><span class=cB3>DCF_ON_TOP</a></span><span class=cB0>;
+<a name="l770"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.fp_final_scrn_update)
+<a name="l771"></a>    (*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.fp_final_scrn_update)(dc);
+<a name="l772"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l773"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l579"></span><span class=cB3>RLf_VGA</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB2>//if text mode</span><span class=cB0>
+<a name="l774"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l356"></span><span class=cB5>GrUpdateTextModeText</a></span><span class=cB0>;
+<a name="l775"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l776"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l777"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/GrAsm.html#l299"></span><span class=cB5>DCBlotColor4</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc1-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc_cache-&gt;body,
+<a name="l778"></a>                 <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;height*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;width_internal&gt;&gt;3);
+<a name="l779"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l620"></span><span class=cB5>GrUpdateVGAGraphics</a></span><span class=cB0>;
+<a name="l780"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l781"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperSema</a></span><span class=cB0>=0;
+<a name="l782"></a>}
+<a name="l783"></a>
+<a name="l784"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l784"></span><span class=cB5>ToggleBlink</a></span><span class=cB0>()
+<a name="l785"></a>{</span><span class=cB2>// Toggles blinking</span><span class=cB0>
+<a name="l786"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l9"></span><span class=cB6>blink_master_flag</a></span><span class=cB0>^=1;
+<a name="l787"></a>}
+<a name="l788"></a>
+<a name="l789"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l789"></span><span class=cB5>ToggleScroll</a></span><span class=cB0>()
+<a name="l790"></a>{</span><span class=cB2>// Toggles scrolling</span><span class=cB0>
+<a name="l791"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l10"></span><span class=cB6>scroll_master_flag</a></span><span class=cB0>^=1;
+<a name="l792"></a>}
+<a name="l793"></a>
+<a name="l794"></a></span><span class=cB1>interrupt</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l794"></span><span class=cB5>DCBlotColor8Irq</a></span><span class=cB0>()
+<a name="l795"></a>{
+<a name="l796"></a>  </span><span class=cB9>U64</span><span class=cB0> b,j,*src=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;body,*b0=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc2-&gt;body;
+<a name="l797"></a>  </span><span class=cB9>I64</span><span class=cB0> k,d0=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;width_internal*<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.dc-&gt;height/8;
+<a name="l798"></a>  </span><span class=cB1>for</span><span class=cB0> (k=</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num-1</span><span class=cB7>)</span><span class=cB0>*d0/<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperCnt</a></span><span class=cB0>; k&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num*d0/<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>GrSethHelperCnt</a></span><span class=cB0>; k++)
+<a name="l799"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l800"></a>    j=*src++;
+<a name="l801"></a>    </span><span class=cB1>if</span><span class=cB0> (j!=0xFFFFFFFFFFFFFFFF)
+<a name="l802"></a>    {
+<a name="l803"></a>      b=*b0;
+<a name="l804"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[0]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[0]=j.u8[0];
+<a name="l805"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[1]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[1]=j.u8[1];
+<a name="l806"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[2]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[2]=j.u8[2];
+<a name="l807"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[3]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[3]=j.u8[3];
+<a name="l808"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[4]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[4]=j.u8[4];
+<a name="l809"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[5]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[5]=j.u8[5];
+<a name="l810"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[6]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[6]=j.u8[6];
+<a name="l811"></a>      </span><span class=cB1>if</span><span class=cB0> (j.u8[7]!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3426"></span><span class=cB3>TRANSPARENT</a></span><span class=cB0>) b.u8[7]=j.u8[7];
+<a name="l812"></a>      b0++;
+<a name="l813"></a>    }
+<a name="l814"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l815"></a>    {
+<a name="l816"></a>      b0++;
+<a name="l817"></a>    }
+<a name="l818"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l819"></a>  </span><span class=cB1>lock</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l23"></span><span class=cB6>BlotGlblCnt</a></span><span class=cB0>++;
+<a name="l820"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l630"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0> *)=0;
+<a name="l821"></a>}
+<a name="l822"></a>
+<a name="l823"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l17"></span><span class=cB3>I_BLOT</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l794"></span><span class=cB5>DCBlotColor8Irq</a></span><span class=cB0>);
+<a name="l824"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l18"></span><span class=cB3>I_REDRAW</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l474"></span><span class=cB5>GrPartialUpdatePartIrq</a></span><span class=cB0>);
+<a name="l825"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l16"></span><span class=cB3>I_UPDATE_CACHE</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l496"></span><span class=cB5>GrUpdateCacheIrq</a></span><span class=cB0>);
+<a name="l826"></a>
+<a name="l827"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;ScreenSaver&quot;</span><span class=cB0>
+<a name="l828"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l828"></span><span class=cB5>SetScreenSaverTimeout</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> new_timeout)
+<a name="l829"></a>{</span><span class=cB2>//Set timeout value for screen saver in seconds</span><span class=cB0>
+<a name="l830"></a>  </span><span class=cB1>if</span><span class=cB0> (new_timeout&lt;1)
+<a name="l831"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver_timeout=0;
+<a name="l832"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l833"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l15"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_saver_timeout=new_timeout;
+<a name="l834"></a>}
+<a name="l835"></a>
+<a name="l836"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Video&quot;</span><span class=cB0>
+<a name="l837"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l837"></span><span class=cB5>SetFPS</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> new_fps)
+<a name="l838"></a>{</span><span class=cB2>//Sets target frame rate</span><span class=cB0>
+<a name="l839"></a>  </span><span class=cB1>if</span><span class=cB0> (new_fps&lt;1)
+<a name="l840"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l841"></a>    </span><span class=cB1>lock</span><span class=cB0>
+<a name="l842"></a>    {
+<a name="l843"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=1;
+<a name="l844"></a>    }
+<a name="l845"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l846"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (new_fps&gt;999)
+<a name="l847"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l848"></a>    </span><span class=cB1>lock</span><span class=cB0>
+<a name="l849"></a>    {
+<a name="l850"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=999;
+<a name="l851"></a>    }
+<a name="l852"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l853"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l854"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l855"></a>    </span><span class=cB1>lock</span><span class=cB0>
+<a name="l856"></a>    {
+<a name="l857"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>=new_fps;
+<a name="l858"></a>    }
+<a name="l859"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l860"></a>}
+<a name="l861"></a>
+<a name="l862"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l862"></span><span class=cB5>GetFPS</a></span><span class=cB0>()
+<a name="l863"></a>{</span><span class=cB2>//Return current target video FPS</span><span class=cB0>
+<a name="l864"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l8"></span><span class=cB6>fps_master</a></span><span class=cB0>;
+<a name="l865"></a>}
+<a name="l866"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
 </span></div></pre></body>
 </html>
