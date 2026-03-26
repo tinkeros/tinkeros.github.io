@@ -69,13 +69,13 @@
 <a name="l30"></a></span><span class=cB9>I64</span><span class=cB0> FTPReplyPassivePrs(CTCPSocket *message_socket, CSocketAddressIPV4 *dest_addr_out)
 <a name="l31"></a>{</span><span class=cB2>// Prs an FTP reply message to the PASV command, destination written to arg.</span><span class=cB0>
 <a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[8192], *str;
-<a name="l33"></a>  </span><span class=cB9>I64</span><span class=cB0> tk, cur_section = 0, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0> = 0, recv_sum = 0, res;
+<a name="l33"></a>  </span><span class=cB9>I64</span><span class=cB0> tk, cur_section = 0, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0> = 0, recv_sum = 0, res;
 <a name="l34"></a>  </span><span class=cB9>U32</span><span class=cB0> ip_addr = 0;
 <a name="l35"></a>  </span><span class=cB9>U16</span><span class=cB0> port = 0;
 <a name="l36"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2306"></span><span class=cB9>CCmpCtrl</a></span><span class=cB0> *cc;
-<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0> = TCPSocketReceive(message_socket, buf + recv_sum, 8192 - recv_sum)</span><span class=cB7>)</span><span class=cB0> &gt; 0)
+<a name="l37"></a>  </span><span class=cB1>while</span><span class=cB0> (</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0> = TCPSocketReceive(message_socket, buf + recv_sum, 8192 - recv_sum)</span><span class=cB7>)</span><span class=cB0> &gt; 0)
 <a name="l38"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l39"></a>    recv_sum += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l39"></a>    recv_sum += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
 <a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l41"></a>  str = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(buf);
 <a name="l42"></a>  cc = <a href="http://tinkeros.github.io/WbGit/Compiler/Lex.html#l32"></span><span class=cB5>CmpCtrlNew</a></span><span class=cB0>(str);
@@ -125,7 +125,7 @@
 <a name="l86"></a></span><span class=cB9>I64</span><span class=cB0> FTPFileDownload(CTCPSocket *data_socket, </span><span class=cB1>U8</span><span class=cB0> *dest)
 <a name="l87"></a>{
 <a name="l88"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3276"></span><span class=cB9>CFile</a></span><span class=cB0> *f;
-<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> data_len = 0, recv_sum = 0, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> data_len = 0, recv_sum = 0, <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
 <a name="l90"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2442"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>];
 <a name="l91"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l229"></span><span class=cB6>progress4</a></span><span class=cB0> = 0;
 <a name="l92"></a>  f = <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l9"></span><span class=cB5>FOpen</a></span><span class=cB0>(dest, </span><span class=cB6>&quot;w&quot;</span><span class=cB0>);
@@ -136,21 +136,21 @@
 <a name="l97"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l98"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
 <a name="l99"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l100"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0> = TCPSocketReceive(data_socket, buf + data_len, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>buf</span><span class=cB7>)</span><span class=cB0> - data_len);
-<a name="l101"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0> &lt;= 0)
+<a name="l100"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0> = TCPSocketReceive(data_socket, buf + data_len, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>buf</span><span class=cB7>)</span><span class=cB0> - data_len);
+<a name="l101"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0> &lt;= 0)
 <a name="l102"></a>    {
-<a name="l103"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0> &lt; 0)
+<a name="l103"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0> &lt; 0)
 <a name="l104"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3986"></span><span class=cB3>ST_ERR_ST</a></span><span class=cB0> </span><span class=cB6>&quot;Failed to receive TCP data\n&quot;</span><span class=cB0>;
 <a name="l105"></a>      </span><span class=cB1>if</span><span class=cB0> (data_len != 0 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l205"></span><span class=cB5>FBlkWrite</a></span><span class=cB7>(</span><span class=cB0>f, buf</span><span class=cB7>)</span><span class=cB0>)
 <a name="l106"></a>        </span><span class=cB1>break</span><span class=cB0>;
 <a name="l107"></a>      f-&gt;de.size = recv_sum;
 <a name="l108"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l82"></span><span class=cB5>FClose</a></span><span class=cB0>(f);
 <a name="l109"></a>      TCPSocketClose(data_socket);
-<a name="l110"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l110"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
 <a name="l111"></a>    }
-<a name="l112"></a>    data_len += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
-<a name="l113"></a>    recv_sum += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
-<a name="l114"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l229"></span><span class=cB6>progress4</a></span><span class=cB0> += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l219"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l112"></a>    data_len += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l113"></a>    recv_sum += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
+<a name="l114"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l229"></span><span class=cB6>progress4</a></span><span class=cB0> += <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l292"></span><span class=cB5>recv</a></span><span class=cB0>;
 <a name="l115"></a>    </span><span class=cB1>if</span><span class=cB0> (data_len == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2442"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>)
 <a name="l116"></a>    {
 <a name="l117"></a>      </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCFile.html#l205"></span><span class=cB5>FBlkWrite</a></span><span class=cB7>(</span><span class=cB0>f, buf</span><span class=cB7>)</span><span class=cB0>)
