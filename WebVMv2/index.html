@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+
+<head>
+    <title>Alec's Old TempleOS Playground Backup</title>
+    <link href="style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="term_wrap">
+        <h2>Alec's Old TempleOS Playground Backup</h2>
+        <div id="snd_on"></div>
+        <div id="snd_off"></div>
+        <div id="snd_toggle" onclick="toggle_sound()"></div>
+        <div id="copyright">Powered by <a href="https://bellard.org/jslinux/index.html">JSLinux</a> - <div
+                id="copy_symbol"></div> 2011-2026 Fabrice Bellard</div>
+        <div id="term_container">
+        </div>
+        <div id="term_bar">
+            <label>
+                <img title="Upload files" src="images/upload-icon.png"><input type="file" id="files" multiple
+                    onchange="tools_upload_files()">
+                <div class="uploadlabel">Upload files to <span class="tooltitle">/Home</span> directory</div>
+            </label>
+            <div class="spacer"></div>
+            <progress id="net_progress">
+            </progress>
+        </div>
+    </div>
+    <div id="tools_wrap">
+        <div id="tools_container" style="display:none">
+            <div class="tooltitle">Memory</div>
+            <input id="vmem_addr" type="text" placeholder="addr" autocomplete="off" size="12">
+            <input id="vmem_value" type="text" placeholder="value" autocomplete="off" size="20">
+            <!-- FIXME: Support 64 bit poke -->
+            <select id="vmem_mode">
+                <option value="64" selected>U64</option>
+                <option value="32">U32</option>
+                <option value="16">U16</option>
+                <option value="8">U8</option>
+            </select>
+            <button onclick="tools_peek()">Peek</button>
+            <button id="vmem_poke" onclick="tools_poke()">Poke</button>
+            <button class="ctrl" onclick="os.helper.cmd(OS_CMD_DBG)">Dbg</button>
+            <div class="spacer"></div>
+            <div class="tooltitle">Tweaks</div>
+            <div class="tweak">
+                <button id="btn_acinit" class="ctrl" onclick="tools_acinit()" style="display:block">ACInit</button>
+        <button id="btn_screenshot" onclick="tools_screenshot()">Screenshot</button><br />
+            </div>
+            <div class="tweak">
+                <input id="cb_15_fps_mode" type="checkbox" onchange="tools_toggle_15_fps_mode()" class="tweak_cb">
+                <div class="tweak_desc">15 fps mode <em>(reboot on
+                        toggle)</em></div>
+            </div>
+            </div>
+            <div class="spacer"></div>
+            <div class="tooltitle">Clipboard</div>
+            <textarea id="clip_text" type="text"></textarea>
+            <div class="ctrls">
+                <button class="ctrl ctrl-vbtn" onclick="tools_clip_send()">Send</button>
+                <button class="ctrl ctrl-vbtn" onclick="tools_clip_recv()">Recv</button>
+                <button class="ctrl ctrl-vbtn" onclick="clip_text.value=''">Clear</button>
+            </div>
+            <div class="spacer"></div>
+            <div class="tooltitle">Disk Image</div>
+            <select class="ctrl" id="isoc_disk_image">
+                <option value="" selected>-- Select a disk image --</option>
+                <option value="/isoc/MuJS.ISO.C">MuJS.ISO.C</option>
+            </select>
+            <button id="btn_attach" class="ctrl" onclick="tools_disk_image_attach()">Attach</button>
+            <input class="ctrl" id="cb_autorun" type="checkbox" checked>AutoRun
+            <div class="spacer"></div>
+            <div class="tooltitle">File Browser</div>
+            <div id="tools_tree_view">
+            </div>
+            <div class="ctrls">
+                <button class="ctrl ctrl-vbtn" onclick="tools_refresh_tree_view()">Reload</button>
+            </div>
+            <div class="spacer"></div>
+            <div class="tooltitle">Notes</div>
+            <div class="notes">
+                <br />
+                - AutoComplete widget is disabled by default to improve performance. Click the <strong>ACInit</strong>
+                button to re-enable.
+            </div>
+
+        </div>
+    </div>
+    <script type="text/javascript" src="term.js"></script>
+    <script type="text/javascript" src="jslinux.js"></script>
+    <script type="text/javascript" src="templeos.js"></script>
