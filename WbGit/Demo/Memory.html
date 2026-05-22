@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// TempleOS specific memory allocations</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB2>// Global scoped array</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>// - Can be initialized with values</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>// - Stays in heap, memory not released until task exit</span><span class=cB0>
+<a name="l6"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> globalScopeArray[4]={1,2,3,4};
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>U0</span><span class=cB0> LocalArray()
+<a name="l9"></a>{
+<a name="l10"></a>  </span><span class=cB2>// Function scoped array</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB2>// Cannot be initialized with values</span><span class=cB0>
+<a name="l12"></a>  </span><span class=cB2>// Lives on stack, no free needed</span><span class=cB0>
+<a name="l13"></a>  </span><span class=cB2>// Memory released when function returns</span><span class=cB0>
+<a name="l14"></a>  </span><span class=cB9>I64</span><span class=cB0> localArray[4];
+<a name="l15"></a>  </span><span class=cB1>no_warn</span><span class=cB0> localArray;
+<a name="l16"></a>}
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> HeapArray()
+<a name="l19"></a>{
+<a name="l20"></a>  </span><span class=cB2>// Heap stored arrays</span><span class=cB0>
+<a name="l21"></a>  </span><span class=cB2>// Cannot be initialized with values (except 0 with CAlloc).</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB2>// Lives on heap</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB2>// Cleaned up when function returns</span><span class=cB0>
+<a name="l24"></a>
+<a name="l25"></a>  </span><span class=cB2>// Uninitialized values</span><span class=cB0>
+<a name="l26"></a>  </span><span class=cB9>I64</span><span class=cB0> *heapArray=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(4*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l27"></a>  </span><span class=cB2>// Do stuff with it</span><span class=cB0>
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(heapArray); </span><span class=cB2>// Free to release heap memory</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a>  </span><span class=cB2>// values initialized to 0</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB9>I64</span><span class=cB0> *heapArray2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(4*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l32"></a>  </span><span class=cB2>// Do stuff with it</span><span class=cB0>
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(heapArray2); </span><span class=cB2>// Free to release heap memory</span><span class=cB0>
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB2>// TinkerOS extensions for heap arrays</span><span class=cB0>
+<a name="l37"></a></span><span class=cB1>class</span><span class=cB0> testClass {
+<a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,z;
+<a name="l39"></a>};
+<a name="l40"></a>
+<a name="l41"></a>testClass *arr;
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB1>U0</span><span class=cB0> ArrayInfo(</span><span class=cB1>U8</span><span class=cB0> *ptr, </span><span class=cB1>U8</span><span class=cB0> *str=</span><span class=cB1>lastclass</span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> s_elem=</span><span class=cB1>firstsize</span><span class=cB0>)
+<a name="l44"></a>{
+<a name="l45"></a>  </span><span class=cB6>&quot;This array can hold %d \&quot;%s\&quot;&quot;</span><span class=cB0>
+<a name="l46"></a>  </span><span class=cB6>&quot; objects each with size of %d bytes.\n&quot;</span><span class=cB0>,
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l416"></span><span class=cB5>MSize</a></span><span class=cB0>(ptr)/s_elem,
+<a name="l48"></a>  str,
+<a name="l49"></a>  s_elem;
+<a name="l50"></a>}
+<a name="l51"></a>
+<a name="l52"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l203"></span><span class=cB5>ArrayMAlloc</a></span><span class=cB0>(&amp;arr,10);
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB6>&quot;The array can hold %d entries.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr);
+<a name="l55"></a></span><span class=cB6>&quot;The array can hold %d bytes of space for data.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l416"></span><span class=cB5>MSize</a></span><span class=cB0>(arr);
+<a name="l56"></a></span><span class=cB6>&quot;The array (data+overhead) consumes %d bytes of heap space.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l417"></span><span class=cB5>MSize2</a></span><span class=cB0>(arr);
+<a name="l57"></a>
+<a name="l58"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l217"></span><span class=cB5>ArrayReAlloc</a></span><span class=cB0>(&amp;arr,20);
+<a name="l59"></a>
+<a name="l60"></a></span><span class=cB6>&quot;This array can now hold %d entries\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr);
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB2>// Array Info (demos lastclass and firstsize)</span><span class=cB0>
+<a name="l63"></a>ArrayInfo(arr);
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB2>// Test with global array statically allocated</span><span class=cB0>
+<a name="l66"></a></span><span class=cB1>static</span><span class=cB0> testClass arr_static[25];
+<a name="l67"></a></span><span class=cB6>&quot;The array can hold %d entries.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr_static);
+<a name="l68"></a>
+</span></div></pre></body>
+</html>
