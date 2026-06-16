@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// See /Demo/BitField.HC</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *x)
+<a name="l4"></a>{</span><span class=cB2>// Gets bitfield value from class.member</span><span class=cB0>
+<a name="l5"></a>  </span><span class=cB1>U8</span><span class=cB0> *var_name,*class_name,*member,*ptr;
+<a name="l6"></a>  </span><span class=cB9>I64</span><span class=cB0> mask;
+<a name="l7"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l927"></span><span class=cB9>CMemberLst</a></span><span class=cB0> *ml;
+<a name="l8"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l963"></span><span class=cB9>CHashClass</a></span><span class=cB0> *tmpc;
+<a name="l9"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1003"></span><span class=cB9>CHashGlblVar</a></span><span class=cB0> *hp;
+<a name="l10"></a>
+<a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l250"></span><span class=cB5>StrScan</a></span><span class=cB0>(x,</span><span class=cB6>&quot;%s.%s&quot;</span><span class=cB0>,&amp;var_name,&amp;member);
+<a name="l12"></a> 
+<a name="l13"></a>  hp=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(var_name,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l814"></span><span class=cB3>HTT_GLBL_VAR</a></span><span class=cB0>);
+<a name="l14"></a>
+<a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (hp &amp;&amp; hp-&gt;var_class &amp;&amp; hp-&gt;var_class-&gt;str)
+<a name="l16"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>    ptr=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l9"></span><span class=cB5>HashVal</a></span><span class=cB0>(hp);
+<a name="l18"></a>    class_name=hp-&gt;var_class-&gt;str;
+<a name="l19"></a>
+<a name="l20"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(class_name,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l815"></span><span class=cB3>HTT_CLASS</a></span><span class=cB0>);
+<a name="l21"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpc)
+<a name="l22"></a>    {
+<a name="l23"></a>      ml=tmpc-&gt;member_lst_and_root;
+<a name="l24"></a>      </span><span class=cB1>while</span><span class=cB0> (ml)
+<a name="l25"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l26"></a>        </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>member,ml-&gt;str</span><span class=cB7>)</span><span class=cB0>&amp;&amp;ml-&gt;bf_size)
+<a name="l27"></a>        {
+<a name="l28"></a>          mask = (</span><span class=cB7>(</span><span class=cB0>1&lt;&lt;ml-&gt;bf_size</span><span class=cB7>)</span><span class=cB0>-1);
+<a name="l29"></a>          ptr+=ml-&gt;</span><span class=cB1>offset</span><span class=cB0>;
+<a name="l30"></a>          </span><span class=cB1>switch</span><span class=cB0> (ml-&gt;size) </span><span class=cB7>{</span><span class=cB0>
+<a name="l31"></a>            </span><span class=cB1>case</span><span class=cB0> 1:
+<a name="l32"></a>              </span><span class=cB1>return</span><span class=cB0> (*ptr&gt;&gt;ml-&gt;bf_offset)&amp;mask;
+<a name="l33"></a>            </span><span class=cB1>case</span><span class=cB0> 2:
+<a name="l34"></a>              </span><span class=cB1>return</span><span class=cB0> (*</span><span class=cB7>(</span><span class=cB0>ptr(</span><span class=cB9>U16</span><span class=cB0>*)</span><span class=cB7>)</span><span class=cB0>&gt;&gt;ml-&gt;bf_offset)&amp;mask;
+<a name="l35"></a>            </span><span class=cB1>case</span><span class=cB0> 4:
+<a name="l36"></a>              </span><span class=cB1>return</span><span class=cB0> (*</span><span class=cB7>(</span><span class=cB0>ptr(</span><span class=cB9>U32</span><span class=cB0>*)</span><span class=cB7>)</span><span class=cB0>&gt;&gt;ml-&gt;bf_offset)&amp;mask;
+<a name="l37"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l38"></a>              </span><span class=cB1>return</span><span class=cB0> (*</span><span class=cB7>(</span><span class=cB0>ptr(</span><span class=cB9>U64</span><span class=cB0>*)</span><span class=cB7>)</span><span class=cB0>&gt;&gt;ml-&gt;bf_offset)&amp;mask;
+<a name="l39"></a>        }
+<a name="l40"></a>        ml=ml-&gt;next;
+<a name="l41"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l42"></a>    }
+<a name="l43"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BADCLASS'</span><span class=cB0>);
+<a name="l45"></a>}
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *x, </span><span class=cB9>U64</span><span class=cB0> val)
+<a name="l48"></a>{</span><span class=cB2>// Sets bitfield value from class.member</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB1>U8</span><span class=cB0> *var_name,*class_name,*member,*ptr;
+<a name="l50"></a>  </span><span class=cB9>I64</span><span class=cB0> mask;
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l927"></span><span class=cB9>CMemberLst</a></span><span class=cB0> *ml;
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l963"></span><span class=cB9>CHashClass</a></span><span class=cB0> *tmpc;
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1003"></span><span class=cB9>CHashGlblVar</a></span><span class=cB0> *hp;
+<a name="l54"></a>
+<a name="l55"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l250"></span><span class=cB5>StrScan</a></span><span class=cB0>(x,</span><span class=cB6>&quot;%s.%s&quot;</span><span class=cB0>,&amp;var_name,&amp;member);
+<a name="l56"></a> 
+<a name="l57"></a>  hp=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(var_name,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l814"></span><span class=cB3>HTT_GLBL_VAR</a></span><span class=cB0>);
+<a name="l58"></a>
+<a name="l59"></a>  </span><span class=cB1>if</span><span class=cB0> (hp &amp;&amp; hp-&gt;var_class &amp;&amp; hp-&gt;var_class-&gt;str)
+<a name="l60"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l61"></a>    ptr=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashB.html#l9"></span><span class=cB5>HashVal</a></span><span class=cB0>(hp);
+<a name="l62"></a>    class_name=hp-&gt;var_class-&gt;str;
+<a name="l63"></a>
+<a name="l64"></a>    tmpc=<a href="http://tinkeros.github.io/WbGit/Kernel/KHashA.html#l255"></span><span class=cB5>HashFind</a></span><span class=cB0>(class_name,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;hash_table,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l815"></span><span class=cB3>HTT_CLASS</a></span><span class=cB0>);
+<a name="l65"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpc)
+<a name="l66"></a>    {
+<a name="l67"></a>      ml=tmpc-&gt;member_lst_and_root;
+<a name="l68"></a>      </span><span class=cB1>while</span><span class=cB0> (ml)
+<a name="l69"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>        </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>member,ml-&gt;str</span><span class=cB7>)</span><span class=cB0>&amp;&amp;ml-&gt;bf_size)
+<a name="l71"></a>        {
+<a name="l72"></a>          mask = (</span><span class=cB7>(</span><span class=cB0>1&lt;&lt;ml-&gt;bf_size</span><span class=cB7>)</span><span class=cB0>-1);
+<a name="l73"></a>          ptr+=ml-&gt;</span><span class=cB1>offset</span><span class=cB0>;
+<a name="l74"></a>          </span><span class=cB1>switch</span><span class=cB0> (ml-&gt;size) </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>            </span><span class=cB1>case</span><span class=cB0> 1:
+<a name="l76"></a>              *ptr &amp;= ~(mask &lt;&lt; ml-&gt;bf_offset);
+<a name="l77"></a>              *ptr |= (</span><span class=cB7>(</span><span class=cB0>val &amp; mask</span><span class=cB7>)</span><span class=cB0> &lt;&lt; ml-&gt;bf_offset);
+<a name="l78"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l79"></a>            </span><span class=cB1>case</span><span class=cB0> 2:
+<a name="l80"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) &amp;= ~(mask &lt;&lt; ml-&gt;bf_offset);
+<a name="l81"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U16</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) |= (</span><span class=cB7>(</span><span class=cB0>val &amp; mask</span><span class=cB7>)</span><span class=cB0> &lt;&lt; ml-&gt;bf_offset);
+<a name="l82"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l83"></a>            </span><span class=cB1>case</span><span class=cB0> 4:
+<a name="l84"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U32</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) &amp;= ~(mask &lt;&lt; ml-&gt;bf_offset);
+<a name="l85"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U32</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) |= (</span><span class=cB7>(</span><span class=cB0>val &amp; mask</span><span class=cB7>)</span><span class=cB0> &lt;&lt; ml-&gt;bf_offset);
+<a name="l86"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l87"></a>            </span><span class=cB1>case</span><span class=cB0> 8:
+<a name="l88"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U64</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) &amp;= ~(mask &lt;&lt; ml-&gt;bf_offset);
+<a name="l89"></a>              *(ptr</span><span class=cB7>(</span><span class=cB9>U64</span><span class=cB0>*</span><span class=cB7>)</span><span class=cB0>) |= (</span><span class=cB7>(</span><span class=cB0>val &amp; mask</span><span class=cB7>)</span><span class=cB0> &lt;&lt; ml-&gt;bf_offset);
+<a name="l90"></a>              </span><span class=cB1>break</span><span class=cB0>;
+<a name="l91"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l92"></a>          </span><span class=cB1>return</span><span class=cB0>;
+<a name="l93"></a>        }
+<a name="l94"></a>        ml=ml-&gt;next;
+<a name="l95"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>    }
+<a name="l97"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'BADCLASS'</span><span class=cB0>);
+<a name="l99"></a>}
+<a name="l100"></a>
+</span></div></pre></body>
+</html>

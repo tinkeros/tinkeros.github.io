@@ -159,116 +159,85 @@
 <a name="l119"></a>  </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
 <a name="l120"></a>}
 <a name="l121"></a>
-<a name="l122"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l122"></span><span class=cB5>MemMove</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB1>U8</span><span class=cB0> *src, </span><span class=cB9>I64</span><span class=cB0> n)
-<a name="l123"></a>{
-<a name="l124"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l125"></a>  </span><span class=cB1>U8</span><span class=cB0> *d = dst, *s = src;
-<a name="l126"></a>
-<a name="l127"></a>  </span><span class=cB1>if</span><span class=cB0> (d == s || n == 0)
-<a name="l128"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l129"></a>    </span><span class=cB1>return</span><span class=cB0> dst;
-<a name="l130"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l131"></a>
-<a name="l132"></a>  </span><span class=cB1>if</span><span class=cB0> (d &lt; s)
-<a name="l133"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l134"></a>    </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; n; i++)
-<a name="l135"></a>    {
-<a name="l136"></a>      d[i] = s[i];
-<a name="l137"></a>    }
-<a name="l138"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l139"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l140"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l141"></a>    </span><span class=cB1>for</span><span class=cB0> (i = n; i &gt; 0; i--)
-<a name="l142"></a>    {
-<a name="l143"></a>      d[i - 1] = s[i - 1];
-<a name="l144"></a>    }
-<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l146"></a>
-<a name="l147"></a>  </span><span class=cB1>return</span><span class=cB0> dst;
-<a name="l148"></a>}
-<a name="l149"></a>
-<a name="l150"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l150"></span><span class=cB5>REalloc</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr, </span><span class=cB9>I64</span><span class=cB0> size)
-<a name="l151"></a>{
-<a name="l152"></a>  </span><span class=cB1>U8</span><span class=cB0> *ptr2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(size);
-<a name="l153"></a>  </span><span class=cB1>if</span><span class=cB0> (!size &amp;&amp; ptr) <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ptr);
-<a name="l154"></a>  </span><span class=cB1>if</span><span class=cB0> (ptr2)
-<a name="l155"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l156"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ptr2,ptr,size);
-<a name="l157"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ptr);
-<a name="l158"></a>    </span><span class=cB1>return</span><span class=cB0> ptr2;
-<a name="l159"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l160"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l161"></a>}
-<a name="l162"></a>
-<a name="l163"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l163"></span><span class=cB5>REallocArray</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr, </span><span class=cB9>I64</span><span class=cB0> n_elem, </span><span class=cB9>I64</span><span class=cB0> bytes_per_elem)
-<a name="l164"></a>{
-<a name="l165"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l150"></span><span class=cB5>REalloc</a></span><span class=cB0>(ptr, n_elem*bytes_per_elem);
-<a name="l166"></a>}
-<a name="l167"></a>
-<a name="l168"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l168"></span><span class=cB5>SizeofArray</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *ptr, </span><span class=cB9>I64</span><span class=cB0> bytes_per_elem)
-<a name="l169"></a>{
-<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (!ptr) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l416"></span><span class=cB5>MSize</a></span><span class=cB0>(ptr)/bytes_per_elem;
-<a name="l171"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l172"></a>}
-<a name="l173"></a>
-<a name="l174"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l174"></span><span class=cB5>MemZero</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB9>I64</span><span class=cB0> cnt)
-<a name="l175"></a>{
-<a name="l176"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(dst,0,cnt);
-<a name="l177"></a>}
-<a name="l178"></a>
-<a name="l179"></a></span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l179"></span><span class=cB5>ThisFunc</a></span><span class=cB0>()
-<a name="l180"></a>{</span><span class=cB2>// Returns start address of caller function</span><span class=cB0>
-<a name="l181"></a>  </span><span class=cB9>U32</span><span class=cB0> final_addr;
-<a name="l182"></a>  </span><span class=cB9>I64</span><span class=cB0> **ptr,of;
-<a name="l183"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l888"></span><span class=cB9>CHashExport</a></span><span class=cB0> *tmpex;
-<a name="l184"></a>
-<a name="l185"></a>  </span><span class=cB1>U8</span><span class=cB0> **rbp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l255"></span><span class=cB5>GetRBP</a></span><span class=cB0>;
-<a name="l186"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3796"></span><span class=cB9>CTask</a></span><span class=cB0> *task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
-<a name="l187"></a>
-<a name="l188"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l35"></span><span class=cB5>ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>)
-<a name="l189"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l190"></a>    ptr=rbp+1;
-<a name="l191"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpex=<a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l65"></span><span class=cB5>FunSegFind</a></span><span class=cB7>(</span><span class=cB0>*ptr,&amp;of</span><span class=cB7>)</span><span class=cB0>)
-<a name="l192"></a>    {
-<a name="l193"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l817"></span><span class=cB3>HTT_FUN</a></span><span class=cB0>)
-<a name="l194"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l195"></a>        final_addr=*ptr;
-<a name="l196"></a>        final_addr-=of;
-<a name="l197"></a>        </span><span class=cB1>return</span><span class=cB0> final_addr;
-<a name="l198"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l199"></a>    }
-<a name="l200"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
-<a name="l201"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l202"></a>    rbp=*rbp;
-<a name="l203"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l204"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l205"></a>}
-<a name="l206"></a>
-<a name="l207"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l207"></span><span class=cB5>ThisFuncName</a></span><span class=cB0>()
-<a name="l208"></a>{</span><span class=cB2>// Returns string name of caller function</span><span class=cB0>
-<a name="l209"></a>  </span><span class=cB9>I64</span><span class=cB0> **ptr,of;
-<a name="l210"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l888"></span><span class=cB9>CHashExport</a></span><span class=cB0> *tmpex;
-<a name="l211"></a>
-<a name="l212"></a>  </span><span class=cB1>U8</span><span class=cB0> **rbp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l255"></span><span class=cB5>GetRBP</a></span><span class=cB0>;
-<a name="l213"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3796"></span><span class=cB9>CTask</a></span><span class=cB0> *task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
-<a name="l214"></a>
-<a name="l215"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l35"></span><span class=cB5>ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>)
-<a name="l216"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l217"></a>    ptr=rbp+1;
-<a name="l218"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpex=<a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l65"></span><span class=cB5>FunSegFind</a></span><span class=cB7>(</span><span class=cB0>*ptr,&amp;of</span><span class=cB7>)</span><span class=cB0>)
-<a name="l219"></a>    {
-<a name="l220"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l817"></span><span class=cB3>HTT_FUN</a></span><span class=cB0>)
-<a name="l221"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l222"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;str)
-<a name="l223"></a>          </span><span class=cB1>return</span><span class=cB0> tmpex-&gt;str;
-<a name="l224"></a>        </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l225"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l226"></a>    }
-<a name="l227"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
-<a name="l228"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l229"></a>    rbp=*rbp;
-<a name="l230"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l231"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
-<a name="l232"></a>}
+<a name="l122"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l122"></span><span class=cB5>MemMove</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB1>U8</span><span class=cB0> *src, </span><span class=cB9>I64</span><span class=cB0> n) {
+<a name="l123"></a>    </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l124"></a>    </span><span class=cB1>U8</span><span class=cB0> *d = dst, *s = src;
+<a name="l125"></a>
+<a name="l126"></a>    </span><span class=cB1>if</span><span class=cB0> (d == s || n == 0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l127"></a>        </span><span class=cB1>return</span><span class=cB0> dst;
+<a name="l128"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l129"></a>
+<a name="l130"></a>    </span><span class=cB1>if</span><span class=cB0> (d &lt; s) </span><span class=cB7>{</span><span class=cB0>
+<a name="l131"></a>        </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; n; i++) {
+<a name="l132"></a>            d[i] = s[i];
+<a name="l133"></a>        }
+<a name="l134"></a>    </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l135"></a>        </span><span class=cB1>for</span><span class=cB0> (i = n; i &gt; 0; i--) {
+<a name="l136"></a>            d[i - 1] = s[i - 1];
+<a name="l137"></a>        }
+<a name="l138"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l139"></a>
+<a name="l140"></a>    </span><span class=cB1>return</span><span class=cB0> dst;
+<a name="l141"></a>}
+<a name="l142"></a>
+<a name="l143"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l143"></span><span class=cB5>MemZero</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l144"></a>{
+<a name="l145"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(dst,0,cnt);
+<a name="l146"></a>}
+<a name="l147"></a>
+<a name="l148"></a></span><span class=cB9>U64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l148"></span><span class=cB5>ThisFunc</a></span><span class=cB0>()
+<a name="l149"></a>{</span><span class=cB2>// Returns start address of caller function</span><span class=cB0>
+<a name="l150"></a>  </span><span class=cB9>U32</span><span class=cB0> final_addr;
+<a name="l151"></a>  </span><span class=cB9>I64</span><span class=cB0> **ptr,of;
+<a name="l152"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l888"></span><span class=cB9>CHashExport</a></span><span class=cB0> *tmpex;
+<a name="l153"></a>
+<a name="l154"></a>  </span><span class=cB1>U8</span><span class=cB0> **rbp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l255"></span><span class=cB5>GetRBP</a></span><span class=cB0>;
+<a name="l155"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3796"></span><span class=cB9>CTask</a></span><span class=cB0> *task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
+<a name="l156"></a>
+<a name="l157"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l35"></span><span class=cB5>ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l158"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l159"></a>    ptr=rbp+1;
+<a name="l160"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpex=<a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l65"></span><span class=cB5>FunSegFind</a></span><span class=cB7>(</span><span class=cB0>*ptr,&amp;of</span><span class=cB7>)</span><span class=cB0>)
+<a name="l161"></a>    {
+<a name="l162"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l817"></span><span class=cB3>HTT_FUN</a></span><span class=cB0>)
+<a name="l163"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l164"></a>        final_addr=*ptr;
+<a name="l165"></a>        final_addr-=of;
+<a name="l166"></a>        </span><span class=cB1>return</span><span class=cB0> final_addr;
+<a name="l167"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l168"></a>    }
+<a name="l169"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
+<a name="l170"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l171"></a>    rbp=*rbp;
+<a name="l172"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l173"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l174"></a>}
+<a name="l175"></a>
+<a name="l176"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l176"></span><span class=cB5>ThisFuncName</a></span><span class=cB0>()
+<a name="l177"></a>{</span><span class=cB2>// Returns string name of caller function</span><span class=cB0>
+<a name="l178"></a>  </span><span class=cB9>I64</span><span class=cB0> **ptr,of;
+<a name="l179"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l888"></span><span class=cB9>CHashExport</a></span><span class=cB0> *tmpex;
+<a name="l180"></a>
+<a name="l181"></a>  </span><span class=cB1>U8</span><span class=cB0> **rbp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l255"></span><span class=cB5>GetRBP</a></span><span class=cB0>;
+<a name="l182"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3796"></span><span class=cB9>CTask</a></span><span class=cB0> *task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
+<a name="l183"></a>
+<a name="l184"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KDbg.html#l35"></span><span class=cB5>ChkOnStk</a></span><span class=cB7>(</span><span class=cB0>rbp,task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l185"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l186"></a>    ptr=rbp+1;
+<a name="l187"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpex=<a href="http://tinkeros.github.io/WbGit/Kernel/FunSeg.html#l65"></span><span class=cB5>FunSegFind</a></span><span class=cB7>(</span><span class=cB0>*ptr,&amp;of</span><span class=cB7>)</span><span class=cB0>)
+<a name="l188"></a>    {
+<a name="l189"></a>      </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;type&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l817"></span><span class=cB3>HTT_FUN</a></span><span class=cB0>)
+<a name="l190"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l191"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpex-&gt;str)
+<a name="l192"></a>          </span><span class=cB1>return</span><span class=cB0> tmpex-&gt;str;
+<a name="l193"></a>        </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l194"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>    }
+<a name="l196"></a>    </span><span class=cB1>if</span><span class=cB0> (rbp&gt;=*rbp)
+<a name="l197"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l198"></a>    rbp=*rbp;
+<a name="l199"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l200"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l201"></a>}
 </span></div></pre></body>
 </html>

@@ -7,9 +7,11 @@
 <meta name="generator" content="TinkerOS V5.20">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
 .cF1{color:#0000aa;background-color:#ffffff;}
@@ -34,27 +36,91 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB0>
-<a name="l2"></a>
-<a name="l3"></a>
-<a name="l4"></a></span><span class=cB9>I64</span><span class=cB0> my_bitfield=0;
-<a name="l5"></a>
-<a name="l6"></a></span><span class=cB2>// Use the 4 high bits as an integer</span><span class=cB0>
-<a name="l7"></a></span><span class=cB2>// whose size is 4 bits with value 15</span><span class=cB0>
-<a name="l8"></a>
-<a name="l9"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l419"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4, 15);
-<a name="l10"></a>
-<a name="l11"></a></span><span class=cB2>// Show high bits are now 4 ones in</span><span class=cB0>
-<a name="l12"></a></span><span class=cB2>// binary</span><span class=cB0>
-<a name="l13"></a>
-<a name="l14"></a></span><span class=cB6>&quot;%b\n&quot;</span><span class=cB0>
-<a name="l15"></a>,my_bitfield;
-<a name="l16"></a>
-<a name="l17"></a></span><span class=cB2>// Get the value of the 4-bit integer</span><span class=cB0>
-<a name="l18"></a></span><span class=cB2>// stored in the bitfield</span><span class=cB0>
-<a name="l19"></a>
-<a name="l20"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l426"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4);
-<a name="l21"></a>
-<a name="l22"></a>
+<a name="l1"></a><span class=cB1>class</span><span class=cB0> BFtest {
+<a name="l2"></a></span><span class=cB2>// bitfield variables should be a union!</span><span class=cB0>
+<a name="l3"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l4"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_0 : 1;
+<a name="l5"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_1 : 1;
+<a name="l6"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_2 : 1;
+<a name="l7"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_3 : 1;
+<a name="l8"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_4 : 1;
+<a name="l9"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_5 : 1;
+<a name="l10"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_6 : 1;
+<a name="l11"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_7 : 1;
+<a name="l12"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l13"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l14"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_0 : 4;
+<a name="l15"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_1 : 4;
+<a name="l16"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_2 : 4;
+<a name="l17"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_3 : 4;
+<a name="l18"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l19"></a>};
+<a name="l20"></a>
+<a name="l21"></a>BFtest bftest;
+<a name="l22"></a></span><span class=cB2>// Normal HolyC behaves like default, has no awareness of bitfields</span><span class=cB0>
+<a name="l23"></a>bftest.bit_0=0x55;  </span><span class=cB2>// sets full U8 union to 0x55</span><span class=cB0>
+<a name="l24"></a>bftest.nibble_0=0xf0f0; </span><span class=cB2>// sets full U16 union to 0xff00</span><span class=cB0>
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB6>&quot;The normal value of bftest.bit_0 is %02x\n&quot;</span><span class=cB0>,bftest.bit_0;
+<a name="l27"></a></span><span class=cB6>&quot;The normal value of bftest.nibble_0 is %04x\n&quot;</span><span class=cB0>,bftest.nibble_0;
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB2>// TinkerOS extension to read/write bitfield values via CBFG/CBFS</span><span class=cB0>
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB6>&quot;The bitfield value of bit_0 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_0&quot;</span><span class=cB0>);
+<a name="l32"></a></span><span class=cB6>&quot;The bitfield value of bit_1 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_1&quot;</span><span class=cB0>);
+<a name="l33"></a></span><span class=cB6>&quot;The bitfield value of bit_2 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_2&quot;</span><span class=cB0>);
+<a name="l34"></a></span><span class=cB6>&quot;The bitfield value of bit_3 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_3&quot;</span><span class=cB0>);
+<a name="l35"></a></span><span class=cB6>&quot;The bitfield value of bit_4 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_4&quot;</span><span class=cB0>);
+<a name="l36"></a></span><span class=cB6>&quot;The bitfield value of bit_5 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_5&quot;</span><span class=cB0>);
+<a name="l37"></a></span><span class=cB6>&quot;The bitfield value of bit_6 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_6&quot;</span><span class=cB0>);
+<a name="l38"></a></span><span class=cB6>&quot;The bitfield value of bit_7 is %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_7&quot;</span><span class=cB0>);
+<a name="l39"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l40"></a></span><span class=cB6>&quot;The bitfield value of nibble_0 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_0&quot;</span><span class=cB0>);
+<a name="l41"></a></span><span class=cB6>&quot;The bitfield value of nibble_1 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_1&quot;</span><span class=cB0>);
+<a name="l42"></a></span><span class=cB6>&quot;The bitfield value of nibble_2 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_2&quot;</span><span class=cB0>);
+<a name="l43"></a></span><span class=cB6>&quot;The bitfield value of nibble_3 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_3&quot;</span><span class=cB0>);
+<a name="l44"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l45"></a></span><span class=cB6>&quot;Setting bit 1 to 1\n&quot;</span><span class=cB0>;
+<a name="l46"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.bit_1&quot;</span><span class=cB0>,1);
+<a name="l47"></a></span><span class=cB6>&quot;Setting nibbles to their index with CBFS\n&quot;</span><span class=cB0>;
+<a name="l48"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_0&quot;</span><span class=cB0>,0);
+<a name="l49"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_1&quot;</span><span class=cB0>,1);
+<a name="l50"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_2&quot;</span><span class=cB0>,2);
+<a name="l51"></a><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l47"></span><span class=cB5>CBFS</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_3&quot;</span><span class=cB0>,3);
+<a name="l52"></a></span><span class=cB6>&quot;Now the bitfield value of nibble_0 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_0&quot;</span><span class=cB0>);
+<a name="l53"></a></span><span class=cB6>&quot;Now the bitfield value of nibble_1 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_1&quot;</span><span class=cB0>);
+<a name="l54"></a></span><span class=cB6>&quot;Now the bitfield value of nibble_2 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_2&quot;</span><span class=cB0>);
+<a name="l55"></a></span><span class=cB6>&quot;Now the bitfield value of nibble_3 is %01X\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/BitField.html#l3"></span><span class=cB5>CBFG</a></span><span class=cB0>(</span><span class=cB6>&quot;bftest.nibble_3&quot;</span><span class=cB0>);
+<a name="l56"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB2>// Accessing with normal HolyC</span><span class=cB0>
+<a name="l59"></a></span><span class=cB2>// shows full changed value of</span><span class=cB0>
+<a name="l60"></a></span><span class=cB2>// all nibbles of the full U16</span><span class=cB0>
+<a name="l61"></a></span><span class=cB6>&quot;The normal value of bftest.bit_0 is now %02x\n&quot;</span><span class=cB0>,bftest.bit_0;
+<a name="l62"></a></span><span class=cB6>&quot;The normal value of bftest.nibble_0 is now %04x\n&quot;</span><span class=cB0>,bftest.nibble_0;
+<a name="l63"></a>
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB2>// TinkerOS laso has functions to use a I64</span><span class=cB0>
+<a name="l66"></a></span><span class=cB2>// as a simple 64-bit bitfield as done below.</span><span class=cB0>
+<a name="l67"></a>
+<a name="l68"></a></span><span class=cB9>I64</span><span class=cB0> my_bitfield=0;
+<a name="l69"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l70"></a></span><span class=cB6>&quot;my_bitfield in binary is %b\n\n&quot;</span><span class=cB0>,my_bitfield;
+<a name="l71"></a></span><span class=cB6>&quot;Setting 4 high bits to 4-bit integer 15.\n\n&quot;</span><span class=cB0>;
+<a name="l72"></a>
+<a name="l73"></a></span><span class=cB2>// Use the 4 high bits as an integer</span><span class=cB0>
+<a name="l74"></a></span><span class=cB2>// whose size is 4 bits with value 15</span><span class=cB0>
+<a name="l75"></a>
+<a name="l76"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l419"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4, 15);
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB2>// Show high bits are now 4 ones in</span><span class=cB0>
+<a name="l79"></a></span><span class=cB2>// binary</span><span class=cB0>
+<a name="l80"></a></span><span class=cB6>&quot;my_bitfield in binary is now %b\n\n&quot;</span><span class=cB0>,my_bitfield;
+<a name="l81"></a>
+<a name="l82"></a></span><span class=cB2>// Get the value of the 4-bit integer</span><span class=cB0>
+<a name="l83"></a></span><span class=cB2>// stored in the bitfield</span><span class=cB0>
+<a name="l84"></a>
+<a name="l85"></a></span><span class=cB6>&quot;The four high bits as a 4-bit bitfield = %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l426"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4);
+<a name="l86"></a>
 </span></div></pre></body>
 </html>

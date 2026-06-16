@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB1>Bool</span><span class=cB0> ConnectSerial()
+<a name="l2"></a>{
+<a name="l3"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l40"></span><span class=cB6>comm_ports</a></span><span class=cB0>[1].base) <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l374"></span><span class=cB5>CommInit</a></span><span class=cB0>;
+<a name="l4"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l34"></span><span class=cB6>SNAIL_COM</a></span><span class=cB0>&lt;0) <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l318"></span><span class=cB5>ProbeComm</a></span><span class=cB0>;
+<a name="l5"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l34"></span><span class=cB6>SNAIL_COM</a></span><span class=cB0>&lt;0)
+<a name="l6"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l7"></a>    </span><span class=cB6>&quot;No TOS server found over serial to backup to!\n&quot;</span><span class=cB0>;
+<a name="l8"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l10"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l11"></a>}
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB1>Bool</span><span class=cB0> SerialBackup(</span><span class=cB1>U8</span><span class=cB0> drv=</span><span class=cB6>'C'</span><span class=cB0>)
+<a name="l14"></a>{</span><span class=cB2>// Backup drive to folder eg: C:\ -&gt; folder C</span><span class=cB0>
+<a name="l15"></a>  </span><span class=cB9>I64</span><span class=cB0> my_cpu=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num;
+<a name="l16"></a>  </span><span class=cB1>U8</span><span class=cB0> *tmp,dst[2];
+<a name="l17"></a>
+<a name="l18"></a>  </span><span class=cB1>if</span><span class=cB0> (!ConnectSerial) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l19"></a>  </span><span class=cB6>&quot;Running serial backup on CPU %d\n&quot;</span><span class=cB0>,my_cpu;
+<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(500);
+<a name="l21"></a>
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l178"></span><span class=cB5>RouteIrq</a></span><span class=cB0>(3,my_cpu);
+<a name="l23"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l178"></span><span class=cB5>RouteIrq</a></span><span class=cB0>(4,my_cpu);
+<a name="l24"></a>
+<a name="l25"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmp);
+<a name="l26"></a>  tmp=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/&quot;</span><span class=cB0>,drv);
+<a name="l27"></a>  dst[0]=drv;
+<a name="l28"></a>  dst[1]=0;
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l640"></span><span class=cB5>Dsync</a></span><span class=cB0>(tmp,dst,1,1);
+<a name="l30"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmp);
+<a name="l31"></a>
+<a name="l32"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l178"></span><span class=cB5>RouteIrq</a></span><span class=cB0>(3,0);
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l178"></span><span class=cB5>RouteIrq</a></span><span class=cB0>(4,0);
+<a name="l34"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l35"></a>}
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>U0</span><span class=cB0> SethBackup(</span><span class=cB1>U8</span><span class=cB0> drv=</span><span class=cB6>'C'</span><span class=cB0>)
+<a name="l38"></a>{
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l137"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l40"></a>  Seth(</span><span class=cB6>&quot;SerialBackup(\'%C\');\n&quot;</span><span class=cB0>,drv);
+<a name="l41"></a>}
+</span></div></pre></body>
+</html>
