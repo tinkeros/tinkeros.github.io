@@ -76,7 +76,7 @@
 <a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,z;
 <a name="l39"></a>};
 <a name="l40"></a>
-<a name="l41"></a>testClass *arr;
+<a name="l41"></a>testClass *arr,*old_ptr;
 <a name="l42"></a>
 <a name="l43"></a></span><span class=cB1>U0</span><span class=cB0> ArrayInfo(</span><span class=cB1>U8</span><span class=cB0> *ptr, </span><span class=cB1>U8</span><span class=cB0> *str=</span><span class=cB1>lastclass</span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> s_elem=</span><span class=cB1>firstsize</span><span class=cB0>)
 <a name="l44"></a>{
@@ -93,16 +93,48 @@
 <a name="l55"></a></span><span class=cB6>&quot;The array can hold %d bytes of space for data.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l416"></span><span class=cB5>MSize</a></span><span class=cB0>(arr);
 <a name="l56"></a></span><span class=cB6>&quot;The array (data+overhead) consumes %d bytes of heap space.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l417"></span><span class=cB5>MSize2</a></span><span class=cB0>(arr);
 <a name="l57"></a>
-<a name="l58"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l217"></span><span class=cB5>ArrayReAlloc</a></span><span class=cB0>(&amp;arr,20);
+<a name="l58"></a></span><span class=cB6>&quot;Setting test values arr[i].x=i, .y=i+1, .z=i+2\n&quot;</span><span class=cB0>;
 <a name="l59"></a>
-<a name="l60"></a></span><span class=cB6>&quot;This array can now hold %d entries\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr);
-<a name="l61"></a>
-<a name="l62"></a></span><span class=cB2>// Array Info (demos lastclass and firstsize)</span><span class=cB0>
-<a name="l63"></a>ArrayInfo(arr);
-<a name="l64"></a>
-<a name="l65"></a></span><span class=cB2>// Test with global array statically allocated</span><span class=cB0>
-<a name="l66"></a></span><span class=cB1>static</span><span class=cB0> testClass arr_static[25];
-<a name="l67"></a></span><span class=cB6>&quot;The array can hold %d entries.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr_static);
-<a name="l68"></a>
+<a name="l60"></a></span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l61"></a></span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB7>(</span><span class=cB0>arr</span><span class=cB7>)</span><span class=cB0>;i++)
+<a name="l62"></a>{
+<a name="l63"></a>  arr[i].x=i;
+<a name="l64"></a>  arr[i].y=i+1;
+<a name="l65"></a>  arr[i].z=i+2;
+<a name="l66"></a>}
+<a name="l67"></a>
+<a name="l68"></a></span><span class=cB6>&quot;arr[0]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[0]);
+<a name="l69"></a></span><span class=cB6>&quot;arr[9]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[9]);
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB2>// Save before realloc</span><span class=cB0>
+<a name="l72"></a>old_ptr=arr;
+<a name="l73"></a>
+<a name="l74"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l217"></span><span class=cB5>ArrayReAlloc</a></span><span class=cB0>(&amp;arr,20);
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB1>if</span><span class=cB0> (old_ptr!=arr) </span><span class=cB6>&quot;ArrayReAlloc successful!\n&quot;</span><span class=cB0>;
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB6>&quot;This array can now hold %d entries\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr);
+<a name="l79"></a>
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB6>&quot;Test values still exist in new array:\n&quot;</span><span class=cB0>;
+<a name="l82"></a>
+<a name="l83"></a></span><span class=cB6>&quot;arr[0]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[0]);
+<a name="l84"></a></span><span class=cB6>&quot;arr[9]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[9]);
+<a name="l85"></a>
+<a name="l86"></a></span><span class=cB2>// Array Info (demos lastclass and firstsize)</span><span class=cB0>
+<a name="l87"></a>ArrayInfo(arr);
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB2>// Test with global array statically allocated</span><span class=cB0>
+<a name="l90"></a></span><span class=cB1>static</span><span class=cB0> testClass arr_static[25];
+<a name="l91"></a></span><span class=cB6>&quot;The array can hold %d entries.\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMem.html#l227"></span><span class=cB5>ArraySize</a></span><span class=cB0>(arr_static);
+<a name="l92"></a>
+<a name="l93"></a></span><span class=cB2>// Test ZeroClass</span><span class=cB0>
+<a name="l94"></a></span><span class=cB6>&quot;Calling ZeroClass on arr[0]\n&quot;</span><span class=cB0>;
+<a name="l95"></a></span><span class=cB6>&quot;Now values are:\n&quot;</span><span class=cB0>;
+<a name="l96"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l157"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(&amp;arr[0]);
+<a name="l97"></a>
+<a name="l98"></a></span><span class=cB6>&quot;arr[0]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[0]);
+<a name="l99"></a></span><span class=cB6>&quot;arr[9]=\n&quot;</span><span class=cB0>;<a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;arr[9]);
+<a name="l100"></a>
 </span></div></pre></body>
 </html>

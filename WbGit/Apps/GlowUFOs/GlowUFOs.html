@@ -1,0 +1,1899 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// GlowUFOs for TempleOS/TinkerOS</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
+<a name="l4"></a>
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> WORLD_W  2048
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> GY       438
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> TOP      22
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> MH       20
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_UFO  16
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_KUFO 10
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_GLOW 10
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_BUL  8
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_EXP  16
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> N_STARS  36
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> UFO_SEARCH  0
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> UFO_DESCEND 1
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> UFO_CARRY   2
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> ST_PLAY  0
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> ST_DEAD  1
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> ST_OVER  2
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> ST_NEXT  3
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> KING_ROUND     250
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_BK         3
+<a name="l24"></a>#</span><span class=cB1>define</span><span class=cB0> SHASTA_MUL     1.6
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> MAX_PICK     4
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> PICK_GRAB    16.0
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> ITEM_BK      0
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> ITEM_SHASTA  1
+<a name="l29"></a>#</span><span class=cB1>define</span><span class=cB0> BIRD_PTS       500
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>F64</span><span class=cB0> px, py, pvx, pvy, bird_x, bird_y, bird_yphase, bird_flap;
+<a name="l32"></a></span><span class=cB9>I64</span><span class=cB0> pface, plr_inv, star_x[N_STARS], star_y[N_STARS], score, hi, lives, wave, state,
+<a name="l33"></a>     dead_t, total_frames, scroll, bk_boosts, n_ufo, n_kufo, n_glow, bonus_life, bonus_bk,
+<a name="l34"></a>     bonus_shasta, bonus_wave, bonus_hyper, bonus_king, bonus_total, terry, terry_face,
+<a name="l35"></a>     terry_caps, ufo_caps, pick_msg, pick_who, pick_item, shasta_items, shasta_timer, bk_msg,
+<a name="l36"></a>     bird_face, bird_timer, bird_msg;
+<a name="l37"></a></span><span class=cB1>Bool</span><span class=cB0> plr_alive, knext, next_armed, kbk, used_bk, used_shasta, bird_caught, had_kufo,
+<a name="l38"></a>     kufo_respawned, terry_lost, hyper_avail, bird_act, bird_killed, bird_scared, kl, kr, ku,
+<a name="l39"></a>     kd, kfire;
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB1>class</span><span class=cB0> UFO
+<a name="l42"></a>{
+<a name="l43"></a>  </span><span class=cB1>Bool</span><span class=cB0> act, conv;
+<a name="l44"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y;
+<a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> state, target, anim, drop;
+<a name="l46"></a>} ufo[MAX_UFO];
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>class</span><span class=cB0> KUFO
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB1>Bool</span><span class=cB0> act;
+<a name="l51"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y;
+<a name="l52"></a>  </span><span class=cB9>I64</span><span class=cB0> anim, drop;
+<a name="l53"></a>} kufo[MAX_KUFO];
+<a name="l54"></a>
+<a name="l55"></a></span><span class=cB1>class</span><span class=cB0> Glowie
+<a name="l56"></a>{
+<a name="l57"></a>  </span><span class=cB1>Bool</span><span class=cB0> act, carried;
+<a name="l58"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y;
+<a name="l59"></a>  </span><span class=cB9>I64</span><span class=cB0> carrier;
+<a name="l60"></a>} glow[MAX_GLOW];
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB1>class</span><span class=cB0> Bullet
+<a name="l63"></a>{
+<a name="l64"></a>  </span><span class=cB1>Bool</span><span class=cB0> act;
+<a name="l65"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y, vx;
+<a name="l66"></a>  </span><span class=cB9>I64</span><span class=cB0> timer;
+<a name="l67"></a>} bul[MAX_BUL];
+<a name="l68"></a>
+<a name="l69"></a></span><span class=cB1>class</span><span class=cB0> Explosion
+<a name="l70"></a>{
+<a name="l71"></a>  </span><span class=cB1>Bool</span><span class=cB0> act;
+<a name="l72"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y;
+<a name="l73"></a>  </span><span class=cB9>I64</span><span class=cB0> t;
+<a name="l74"></a>} xpl[MAX_EXP];
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB1>class</span><span class=cB0> Pickup
+<a name="l77"></a>{
+<a name="l78"></a>  </span><span class=cB1>Bool</span><span class=cB0> act;
+<a name="l79"></a>  </span><span class=cB1>F64</span><span class=cB0> x, y, vy;
+<a name="l80"></a>  </span><span class=cB9>I64</span><span class=cB0> type;
+<a name="l81"></a>} pu[MAX_PICK];
+<a name="l82"></a>
+<a name="l83"></a><a href="http://tinkeros.github.io/WbGit/Adam/ARegistry.html#l21"></span><span class=cB5>RegDft</a></span><span class=cB0>(</span><span class=cB6>&quot;TinkerOS/GlowUFOs&quot;</span><span class=cB0>,</span><span class=cB6>&quot;hi=0;\n&quot;</span><span class=cB0>);
+<a name="l84"></a><a href="http://tinkeros.github.io/WbGit/Adam/ARegistry.html#l48"></span><span class=cB5>RegExe</a></span><span class=cB0>(</span><span class=cB6>&quot;TinkerOS/GlowUFOs&quot;</span><span class=cB0>);
+<a name="l85"></a>
+<a name="l86"></a></span><span class=cB9>I64</span><span class=cB0> WX(</span><span class=cB1>F64</span><span class=cB0> wx)
+<a name="l87"></a>{
+<a name="l88"></a>  </span><span class=cB9>I64</span><span class=cB0> sx;
+<a name="l89"></a>  sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(wx) - scroll;
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (sx &gt; WORLD_W / 2) sx -= WORLD_W;
+<a name="l91"></a>  </span><span class=cB1>if</span><span class=cB0> (sx &lt; -WORLD_W / 2) sx += WORLD_W;
+<a name="l92"></a>  </span><span class=cB1>return</span><span class=cB0> sx;
+<a name="l93"></a>}
+<a name="l94"></a>
+<a name="l95"></a></span><span class=cB1>Bool</span><span class=cB0> OnScreen(</span><span class=cB1>F64</span><span class=cB0> wx, </span><span class=cB9>I64</span><span class=cB0> margin, </span><span class=cB9>I64</span><span class=cB0> *sx)
+<a name="l96"></a>{
+<a name="l97"></a>  *sx = WX(wx);
+<a name="l98"></a>  </span><span class=cB1>return</span><span class=cB0> *sx &gt;= -margin &amp;&amp; *sx &lt;= 640 + margin;
+<a name="l99"></a>}
+<a name="l100"></a>
+<a name="l101"></a></span><span class=cB1>F64</span><span class=cB0> WrapX(</span><span class=cB1>F64</span><span class=cB0> x)
+<a name="l102"></a>{
+<a name="l103"></a>  </span><span class=cB1>if</span><span class=cB0> (x &lt; 0.0) x += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l104"></a>  </span><span class=cB1>if</span><span class=cB0> (x &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>WORLD_W</span><span class=cB7>)</span><span class=cB0>) x -= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l105"></a>  </span><span class=cB1>return</span><span class=cB0> x;
+<a name="l106"></a>}
+<a name="l107"></a>
+<a name="l108"></a></span><span class=cB1>F64</span><span class=cB0> DeltaX(</span><span class=cB1>F64</span><span class=cB0> a, </span><span class=cB1>F64</span><span class=cB0> b)
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB1>F64</span><span class=cB0> d = a - b;
+<a name="l111"></a>  </span><span class=cB1>if</span><span class=cB0> (d &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>WORLD_W</span><span class=cB7>)</span><span class=cB0> / 2.0) d -= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l112"></a>  </span><span class=cB1>if</span><span class=cB0> (d &lt; -<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>WORLD_W</span><span class=cB7>)</span><span class=cB0> / 2.0) d += <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l113"></a>  </span><span class=cB1>return</span><span class=cB0> d;
+<a name="l114"></a>}
+<a name="l115"></a>
+<a name="l116"></a></span><span class=cB1>U0</span><span class=cB0> Explode(</span><span class=cB1>F64</span><span class=cB0> wx, </span><span class=cB1>F64</span><span class=cB0> wy)
+<a name="l117"></a>{
+<a name="l118"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l119"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_EXP; i++)
+<a name="l120"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l121"></a>    </span><span class=cB1>if</span><span class=cB0> (!xpl[i].act)
+<a name="l122"></a>    {
+<a name="l123"></a>      xpl[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l124"></a>      xpl[i].x = wx;
+<a name="l125"></a>      xpl[i].y = wy;
+<a name="l126"></a>      xpl[i].t = 18;
+<a name="l127"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l128"></a>    }
+<a name="l129"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l130"></a>}
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>U0</span><span class=cB0> SpawnPickup(</span><span class=cB1>F64</span><span class=cB0> wx, </span><span class=cB1>F64</span><span class=cB0> wy, </span><span class=cB9>I64</span><span class=cB0> type)
+<a name="l133"></a>{
+<a name="l134"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l135"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_PICK; i++)
+<a name="l136"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l137"></a>    </span><span class=cB1>if</span><span class=cB0> (!pu[i].act)
+<a name="l138"></a>    {
+<a name="l139"></a>      pu[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l140"></a>      pu[i].x = wx;
+<a name="l141"></a>      pu[i].y = wy;
+<a name="l142"></a>      pu[i].vy = 0.0;
+<a name="l143"></a>      pu[i].type = type;
+<a name="l144"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l145"></a>    }
+<a name="l146"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l147"></a>}
+<a name="l148"></a>
+<a name="l149"></a></span><span class=cB1>U0</span><span class=cB0> KillPlayer()
+<a name="l150"></a>{
+<a name="l151"></a>  </span><span class=cB1>if</span><span class=cB0> (state == ST_OVER) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l152"></a>  </span><span class=cB1>if</span><span class=cB0> (plr_inv &gt; 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l153"></a>  plr_alive = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l154"></a>  lives--;
+<a name="l155"></a>  shasta_timer = 0;
+<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (lives &lt;= 0) state = ST_OVER;
+<a name="l157"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l158"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l159"></a>    state = ST_DEAD;
+<a name="l160"></a>    dead_t = 90;
+<a name="l161"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l162"></a>}
+<a name="l163"></a>
+<a name="l164"></a></span><span class=cB1>U0</span><span class=cB0> KillUFO(</span><span class=cB9>I64</span><span class=cB0> idx)
+<a name="l165"></a>{
+<a name="l166"></a>  </span><span class=cB9>I64</span><span class=cB0> h;
+<a name="l167"></a>  </span><span class=cB1>if</span><span class=cB0> (!ufo[idx].act) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l168"></a>  h = ufo[idx].target;
+<a name="l169"></a>  </span><span class=cB1>if</span><span class=cB0> (ufo[idx].state == UFO_CARRY &amp;&amp; h &gt;= 0 &amp;&amp; glow[h].act)
+<a name="l170"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l171"></a>    glow[h].carried = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l172"></a>    glow[h].carrier = -1;
+<a name="l173"></a>    glow[h].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l174"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l175"></a>  Explode(ufo[idx].x, ufo[idx].y);
+<a name="l176"></a>  </span><span class=cB1>if</span><span class=cB0> (ufo[idx].drop &gt;= 0)
+<a name="l177"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l178"></a>    SpawnPickup(ufo[idx].x, ufo[idx].y, ufo[idx].drop);
+<a name="l179"></a>    ufo[idx].drop = -1;
+<a name="l180"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l181"></a>  ufo[idx].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l182"></a>  n_ufo--;
+<a name="l183"></a>  score += 150;
+<a name="l184"></a>}
+<a name="l185"></a>
+<a name="l186"></a></span><span class=cB1>U0</span><span class=cB0> KillKUFO(</span><span class=cB9>I64</span><span class=cB0> idx)
+<a name="l187"></a>{
+<a name="l188"></a>  </span><span class=cB1>if</span><span class=cB0> (!kufo[idx].act) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l189"></a>  Explode(kufo[idx].x, kufo[idx].y);
+<a name="l190"></a>  </span><span class=cB1>if</span><span class=cB0> (kufo[idx].drop &gt;= 0)
+<a name="l191"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l192"></a>    SpawnPickup(kufo[idx].x, kufo[idx].y, kufo[idx].drop);
+<a name="l193"></a>    kufo[idx].drop = -1;
+<a name="l194"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>  kufo[idx].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l196"></a>  n_kufo--;
+<a name="l197"></a>  score += 250;
+<a name="l198"></a>}
+<a name="l199"></a>
+<a name="l200"></a></span><span class=cB9>I64</span><span class=cB0> SpawnKUFO(</span><span class=cB1>F64</span><span class=cB0> wx, </span><span class=cB1>F64</span><span class=cB0> wy)
+<a name="l201"></a>{
+<a name="l202"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l203"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l204"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>    </span><span class=cB1>if</span><span class=cB0> (!kufo[i].act)
+<a name="l206"></a>    {
+<a name="l207"></a>      kufo[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l208"></a>      kufo[i].x = wx;
+<a name="l209"></a>      kufo[i].y = wy;
+<a name="l210"></a>      kufo[i].anim = 0;
+<a name="l211"></a>      kufo[i].drop = -1;
+<a name="l212"></a>      n_kufo++;
+<a name="l213"></a>      had_kufo = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l214"></a>      </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l215"></a>    }
+<a name="l216"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l217"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l218"></a>}
+<a name="l219"></a>
+<a name="l220"></a></span><span class=cB1>U0</span><span class=cB0> Init()
+<a name="l221"></a>{
+<a name="l222"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j, tries, d_tot, d_r1, d_r2;
+<a name="l223"></a>  </span><span class=cB1>F64</span><span class=cB0> cand, ddx;
+<a name="l224"></a>  </span><span class=cB1>Bool</span><span class=cB0> ok;
+<a name="l225"></a>
+<a name="l226"></a>  px = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W / 4);
+<a name="l227"></a>  py = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>TOP + GY</span><span class=cB7>)</span><span class=cB0> / 2);
+<a name="l228"></a>  pvx = 0.0;
+<a name="l229"></a>  pvy = 0.0;
+<a name="l230"></a>  pface = 0;
+<a name="l231"></a>  plr_alive = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l232"></a>  plr_inv = 90;
+<a name="l233"></a>
+<a name="l234"></a>  scroll = (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>px</span><span class=cB7>)</span><span class=cB0> - 320 + WORLD_W * 4) % WORLD_W;
+<a name="l235"></a>
+<a name="l236"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_UFO; i++)
+<a name="l237"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l238"></a>    ufo[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l239"></a>    ufo[i].target = -1;
+<a name="l240"></a>    ufo[i].drop = -1;
+<a name="l241"></a>    ufo[i].conv = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l242"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l243"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l244"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l245"></a>    kufo[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l246"></a>    kufo[i].drop = -1;
+<a name="l247"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l248"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_BUL; i++) bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l249"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_EXP; i++) xpl[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l250"></a>  n_kufo = 0;
+<a name="l251"></a>
+<a name="l252"></a>  n_glow = MAX_GLOW;
+<a name="l253"></a>  terry = 0;
+<a name="l254"></a>  terry_face = 0;
+<a name="l255"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_GLOW; i++)
+<a name="l256"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l257"></a>    glow[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l258"></a>    glow[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l259"></a>    glow[i].carried = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l260"></a>    glow[i].carrier = -1;
+<a name="l261"></a>    tries = 0;
+<a name="l262"></a>    </span><span class=cB1>do</span><span class=cB0>
+<a name="l263"></a>    {
+<a name="l264"></a>      cand = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % WORLD_W);
+<a name="l265"></a>      ok = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l266"></a>      </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; i; j++)
+<a name="l267"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l268"></a>        ddx = DeltaX(glow[j].x, cand);
+<a name="l269"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 120.0)
+<a name="l270"></a>        {
+<a name="l271"></a>          ok = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l272"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l273"></a>        }
+<a name="l274"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l275"></a>    }
+<a name="l276"></a>    </span><span class=cB1>while</span><span class=cB0> (!ok &amp;&amp; ++tries &lt; 100);
+<a name="l277"></a>    glow[i].x = cand;
+<a name="l278"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l279"></a>
+<a name="l280"></a>  n_ufo = 4 + wave * 2;
+<a name="l281"></a>  </span><span class=cB1>if</span><span class=cB0> (n_ufo &gt; MAX_UFO) n_ufo = MAX_UFO;
+<a name="l282"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; n_ufo; i++)
+<a name="l283"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l284"></a>    ufo[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l285"></a>    ufo[i].x = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % WORLD_W);
+<a name="l286"></a>    ufo[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP + <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % </span><span class=cB7>(</span><span class=cB0>(GY - TOP) / 3</span><span class=cB7>)</span><span class=cB0>);
+<a name="l287"></a>    ufo[i].state = UFO_SEARCH;
+<a name="l288"></a>    ufo[i].target = -1;
+<a name="l289"></a>    ufo[i].anim = 0;
+<a name="l290"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l291"></a>
+<a name="l292"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_PICK; i++) pu[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l293"></a>  d_tot = n_ufo + n_kufo;
+<a name="l294"></a>  d_r1 = -1;
+<a name="l295"></a>  </span><span class=cB1>if</span><span class=cB0> (d_tot &gt;= 1 &amp;&amp; bk_boosts &lt; MAX_BK)
+<a name="l296"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l297"></a>    d_r1 = <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % d_tot;
+<a name="l298"></a>    </span><span class=cB1>if</span><span class=cB0> (d_r1 &lt; n_ufo) ufo[d_r1].drop = ITEM_BK;
+<a name="l299"></a>    </span><span class=cB1>else</span><span class=cB0> kufo[d_r1 - n_ufo].drop = ITEM_BK;
+<a name="l300"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l301"></a>  </span><span class=cB1>if</span><span class=cB0> (d_tot &gt;= 1 &amp;&amp; shasta_items &lt; 3 &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>d_tot == 1 &amp;&amp; d_r1 == 0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l302"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l303"></a>    d_r2 = <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % d_tot;
+<a name="l304"></a>    </span><span class=cB1>while</span><span class=cB0> (d_r2 == d_r1) d_r2 = <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % d_tot;
+<a name="l305"></a>    </span><span class=cB1>if</span><span class=cB0> (d_r2 &lt; n_ufo) ufo[d_r2].drop = ITEM_SHASTA;
+<a name="l306"></a>    </span><span class=cB1>else</span><span class=cB0> kufo[d_r2 - n_ufo].drop = ITEM_SHASTA;
+<a name="l307"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l308"></a>  pick_msg = 0;
+<a name="l309"></a>  bk_msg = 0;
+<a name="l310"></a>
+<a name="l311"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; N_STARS; i++)
+<a name="l312"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l313"></a>    star_x[i] = <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % WORLD_W;
+<a name="l314"></a>    star_y[i] = TOP + 4 + <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % (GY - TOP - 8);
+<a name="l315"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l316"></a>
+<a name="l317"></a>  state = ST_PLAY;
+<a name="l318"></a>  dead_t = 0;
+<a name="l319"></a>  total_frames = 0;
+<a name="l320"></a>  kbk = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l321"></a>  knext = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l322"></a>  kl = kr = ku = kd = kfire = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l323"></a>  used_bk = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l324"></a>  used_shasta = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l325"></a>  bird_caught = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l326"></a>  had_kufo = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l327"></a>  kufo_respawned = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l328"></a>  bird_act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l329"></a>  bird_msg = 0;
+<a name="l330"></a>  bird_killed = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l331"></a>  bird_scared = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l332"></a>  bird_timer = 150 + <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % 450;
+<a name="l333"></a>}
+<a name="l334"></a>
+<a name="l335"></a></span><span class=cB1>U0</span><span class=cB0> FireBullet()
+<a name="l336"></a>{
+<a name="l337"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l338"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_BUL; i++)
+<a name="l339"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l340"></a>    </span><span class=cB1>if</span><span class=cB0> (!bul[i].act)
+<a name="l341"></a>    {
+<a name="l342"></a>      bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l343"></a>      bul[i].x = px;
+<a name="l344"></a>      bul[i].y = py;
+<a name="l345"></a>      </span><span class=cB1>if</span><span class=cB0> (pface == 0) bul[i].vx = 14.0;
+<a name="l346"></a>      </span><span class=cB1>else</span><span class=cB0> bul[i].vx = -14.0;
+<a name="l347"></a>      bul[i].timer = 52;
+<a name="l348"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l349"></a>    }
+<a name="l350"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l351"></a>}
+<a name="l352"></a>
+<a name="l353"></a></span><span class=cB1>U0</span><span class=cB0> UpdatePlayer()
+<a name="l354"></a>{
+<a name="l355"></a>  </span><span class=cB1>F64</span><span class=cB0> thr = 0.32, mvx = 7.5, mvy = 4.5;
+<a name="l356"></a>
+<a name="l357"></a>  </span><span class=cB1>if</span><span class=cB0> (!plr_alive) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l358"></a>  </span><span class=cB1>if</span><span class=cB0> (plr_inv &gt; 0) plr_inv--;
+<a name="l359"></a>
+<a name="l360"></a>  </span><span class=cB1>if</span><span class=cB0> (shasta_timer &gt; 0)
+<a name="l361"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l362"></a>    thr *= SHASTA_MUL;
+<a name="l363"></a>    mvx *= SHASTA_MUL;
+<a name="l364"></a>    mvy *= SHASTA_MUL;
+<a name="l365"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l366"></a>
+<a name="l367"></a>  </span><span class=cB1>if</span><span class=cB0> (kl)
+<a name="l368"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l369"></a>    pvx -= thr;
+<a name="l370"></a>    pface = 1;
+<a name="l371"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l372"></a>  </span><span class=cB1>if</span><span class=cB0> (kr)
+<a name="l373"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l374"></a>    pvx += thr;
+<a name="l375"></a>    pface = 0;
+<a name="l376"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l377"></a>  </span><span class=cB1>if</span><span class=cB0> (ku) pvy -= thr;
+<a name="l378"></a>  </span><span class=cB1>if</span><span class=cB0> (kd) pvy += thr;
+<a name="l379"></a>
+<a name="l380"></a>  pvx *= 0.88;
+<a name="l381"></a>  pvy *= 0.88;
+<a name="l382"></a>
+<a name="l383"></a>  </span><span class=cB1>if</span><span class=cB0> (pvx &gt; mvx) pvx = mvx;
+<a name="l384"></a>  </span><span class=cB1>if</span><span class=cB0> (pvx &lt; -mvx) pvx = -mvx;
+<a name="l385"></a>  </span><span class=cB1>if</span><span class=cB0> (pvy &gt; mvy) pvy = mvy;
+<a name="l386"></a>  </span><span class=cB1>if</span><span class=cB0> (pvy &lt; -mvy) pvy = -mvy;
+<a name="l387"></a>
+<a name="l388"></a>  px += pvx;
+<a name="l389"></a>  py += pvy;
+<a name="l390"></a>
+<a name="l391"></a>  px = WrapX(px);
+<a name="l392"></a>
+<a name="l393"></a>  </span><span class=cB1>if</span><span class=cB0> (py &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP + 6</span><span class=cB7>)</span><span class=cB0>)
+<a name="l394"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l395"></a>    py = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP + 6);
+<a name="l396"></a>    pvy = 0.0;
+<a name="l397"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l398"></a>  </span><span class=cB1>if</span><span class=cB0> (py &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - 20</span><span class=cB7>)</span><span class=cB0>)
+<a name="l399"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l400"></a>    py = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY - 20);
+<a name="l401"></a>    pvy = 0.0;
+<a name="l402"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l403"></a>
+<a name="l404"></a>  scroll = (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>px</span><span class=cB7>)</span><span class=cB0> - 320 + WORLD_W * 4) % WORLD_W;
+<a name="l405"></a>
+<a name="l406"></a>  </span><span class=cB1>if</span><span class=cB0> (kfire) FireBullet();
+<a name="l407"></a>}
+<a name="l408"></a>
+<a name="l409"></a></span><span class=cB1>U0</span><span class=cB0> TerryAbducted()
+<a name="l410"></a>{
+<a name="l411"></a>  bird_scared = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l412"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_caught)
+<a name="l413"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l414"></a>    bird_caught = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l415"></a>    bird_act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l416"></a>    bird_timer = 150 + <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % 450;
+<a name="l417"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l418"></a>}
+<a name="l419"></a>
+<a name="l420"></a></span><span class=cB1>F64</span><span class=cB0> WaveSpeedMul()
+<a name="l421"></a>{
+<a name="l422"></a>  </span><span class=cB1>F64</span><span class=cB0> m = 1.0 + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(wave - 5) * 0.03;
+<a name="l423"></a>  </span><span class=cB1>if</span><span class=cB0> (wave &lt;= 5) </span><span class=cB1>return</span><span class=cB0> 1.0;
+<a name="l424"></a>  </span><span class=cB1>if</span><span class=cB0> (m &gt; 1.5) m = 1.5;
+<a name="l425"></a>  </span><span class=cB1>return</span><span class=cB0> m;
+<a name="l426"></a>}
+<a name="l427"></a>
+<a name="l428"></a></span><span class=cB1>U0</span><span class=cB0> UpdateUFOs()
+<a name="l429"></a>{
+<a name="l430"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j, best_glow, terry_idx, pick;
+<a name="l431"></a>  </span><span class=cB1>F64</span><span class=cB0> best_dist, ddx, ddy, tx, terry_dist, pick_dist, spd = WaveSpeedMul();
+<a name="l432"></a>
+<a name="l433"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_UFO; i++)
+<a name="l434"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l435"></a>    </span><span class=cB1>if</span><span class=cB0> (!ufo[i].act) </span><span class=cB1>goto</span><span class=cB0> ufo_i_next;
+<a name="l436"></a>    ufo[i].anim = (total_frames / 8) &amp; 3;
+<a name="l437"></a>
+<a name="l438"></a>    </span><span class=cB1>if</span><span class=cB0> (ufo[i].state == UFO_SEARCH)
+<a name="l439"></a>    {
+<a name="l440"></a>      ufo[i].y += 0.4 * spd;
+<a name="l441"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>(total_frames + i * 17) / 40</span><span class=cB7>)</span><span class=cB0> &amp; 1) ufo[i].x += 0.6;
+<a name="l442"></a>      </span><span class=cB1>else</span><span class=cB0> ufo[i].x -= 0.6;
+<a name="l443"></a>      ufo[i].x = WrapX(ufo[i].x);
+<a name="l444"></a>
+<a name="l445"></a>      best_glow = terry_idx = pick = -1;
+<a name="l446"></a>      best_dist = terry_dist = pick_dist = 250.0;
+<a name="l447"></a>      </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l448"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l449"></a>        </span><span class=cB1>if</span><span class=cB0> (!glow[j].act || glow[j].carried) </span><span class=cB1>goto</span><span class=cB0> ufo_j_next;
+<a name="l450"></a>        ddx = DeltaX(ufo[i].x, glow[j].x);
+<a name="l451"></a>        </span><span class=cB1>if</span><span class=cB0> (j == terry)
+<a name="l452"></a>        {
+<a name="l453"></a>          terry_dist = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ddx);
+<a name="l454"></a>          terry_idx = j;
+<a name="l455"></a>        }
+<a name="l456"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; best_dist)
+<a name="l457"></a>        {
+<a name="l458"></a>          best_dist = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ddx);
+<a name="l459"></a>          best_glow = j;
+<a name="l460"></a>        }
+<a name="l461"></a>ufo_j_next:
+<a name="l462"></a>        ;
+<a name="l463"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l464"></a>
+<a name="l465"></a>      </span><span class=cB1>if</span><span class=cB0> (best_glow &gt;= 0 &amp;&amp; best_dist &lt; 60.0)
+<a name="l466"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l467"></a>        pick = best_glow;
+<a name="l468"></a>        pick_dist = best_dist;
+<a name="l469"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l470"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (terry_idx &gt;= 0 &amp;&amp; terry_dist &lt; best_dist)
+<a name="l471"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l472"></a>        pick = terry_idx;
+<a name="l473"></a>        pick_dist = terry_dist;
+<a name="l474"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l475"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (best_glow &gt;= 0)
+<a name="l476"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l477"></a>        pick = best_glow;
+<a name="l478"></a>        pick_dist = best_dist;
+<a name="l479"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l480"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (terry_idx &gt;= 0)
+<a name="l481"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l482"></a>        pick = terry_idx;
+<a name="l483"></a>        pick_dist = terry_dist;
+<a name="l484"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l485"></a>
+<a name="l486"></a>      </span><span class=cB1>if</span><span class=cB0> (pick &gt;= 0 &amp;&amp; pick_dist &lt; 180.0)
+<a name="l487"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l488"></a>        ufo[i].state = UFO_DESCEND;
+<a name="l489"></a>        ufo[i].target = pick;
+<a name="l490"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l491"></a>
+<a name="l492"></a>      </span><span class=cB1>if</span><span class=cB0> (ufo[i].y &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY</span><span class=cB7>)</span><span class=cB0>) ufo[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP) + 20.0;
+<a name="l493"></a>
+<a name="l494"></a>    }
+<a name="l495"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ufo[i].state == UFO_DESCEND)
+<a name="l496"></a>    {
+<a name="l497"></a>      j = ufo[i].target;
+<a name="l498"></a>      </span><span class=cB1>if</span><span class=cB0> (j &lt; 0 || !glow[j].act)
+<a name="l499"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l500"></a>        ufo[i].state = UFO_SEARCH;
+<a name="l501"></a>        ufo[i].target = -1;
+<a name="l502"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l503"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (glow[j].carried)
+<a name="l504"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l505"></a>        ufo[i].state = UFO_SEARCH;
+<a name="l506"></a>        ufo[i].target = -1;
+<a name="l507"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l508"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l509"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l510"></a>        tx = glow[j].x;
+<a name="l511"></a>        ddx = DeltaX(tx, ufo[i].x);
+<a name="l512"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &gt; 1.5)
+<a name="l513"></a>        {
+<a name="l514"></a>          </span><span class=cB1>if</span><span class=cB0> (ddx &gt; 0.0) ufo[i].x += 1.4 * spd;
+<a name="l515"></a>          </span><span class=cB1>else</span><span class=cB0> ufo[i].x -= 1.4 * spd;
+<a name="l516"></a>        }
+<a name="l517"></a>        ufo[i].y += 1.2 * spd;
+<a name="l518"></a>        </span><span class=cB1>if</span><span class=cB0> (ufo[i].y &gt; glow[j].y) ufo[i].y = glow[j].y;
+<a name="l519"></a>        ufo[i].x = WrapX(ufo[i].x);
+<a name="l520"></a>
+<a name="l521"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 10.0 &amp;&amp; ufo[i].y &gt;= glow[j].y)
+<a name="l522"></a>        {
+<a name="l523"></a>          </span><span class=cB1>if</span><span class=cB0> (j == terry &amp;&amp; used_bk &amp;&amp; used_shasta &amp;&amp; bird_caught)
+<a name="l524"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l525"></a>            KillUFO(i);
+<a name="l526"></a>            </span><span class=cB1>goto</span><span class=cB0> ufo_i_next;
+<a name="l527"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l528"></a>          ufo[i].state = UFO_CARRY;
+<a name="l529"></a>          glow[j].carried = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l530"></a>          glow[j].carrier = i;
+<a name="l531"></a>          ufo[i].y = glow[j].y;
+<a name="l532"></a>          </span><span class=cB1>if</span><span class=cB0> (j == terry) TerryAbducted();
+<a name="l533"></a>        }
+<a name="l534"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l535"></a>    }
+<a name="l536"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ufo[i].state == UFO_CARRY)
+<a name="l537"></a>    {
+<a name="l538"></a>      j = ufo[i].target;
+<a name="l539"></a>      ufo[i].y -= 1.4 * spd;
+<a name="l540"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>(total_frames + i * 7) / 30</span><span class=cB7>)</span><span class=cB0> &amp; 1) ufo[i].x += 0.5;
+<a name="l541"></a>      </span><span class=cB1>else</span><span class=cB0> ufo[i].x -= 0.5;
+<a name="l542"></a>      ufo[i].x = WrapX(ufo[i].x);
+<a name="l543"></a>      </span><span class=cB1>if</span><span class=cB0> (j &gt;= 0 &amp;&amp; glow[j].act)
+<a name="l544"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l545"></a>        glow[j].x = ufo[i].x;
+<a name="l546"></a>        glow[j].y = ufo[i].y + 14.0;
+<a name="l547"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l548"></a>      </span><span class=cB1>if</span><span class=cB0> (ufo[i].y &lt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP</span><span class=cB7>)</span><span class=cB0>)
+<a name="l549"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l550"></a>        </span><span class=cB1>if</span><span class=cB0> (j &gt;= 0 &amp;&amp; glow[j].act)
+<a name="l551"></a>        {
+<a name="l552"></a>          glow[j].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l553"></a>          n_glow--;
+<a name="l554"></a>          </span><span class=cB1>if</span><span class=cB0> (j == terry)
+<a name="l555"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l556"></a>            terry = -1;
+<a name="l557"></a>            terry_lost = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l558"></a>            state = ST_OVER;
+<a name="l559"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l560"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l561"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l562"></a>            ufo_caps++;
+<a name="l563"></a>            score = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(score - 200, 0, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>);
+<a name="l564"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l565"></a>        }
+<a name="l566"></a>        </span><span class=cB9>I64</span><span class=cB0> nm = SpawnKUFO(ufo[i].x, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP</span><span class=cB7>)</span><span class=cB0> + 10.0);
+<a name="l567"></a>        </span><span class=cB1>if</span><span class=cB0> (nm &gt;= 0 &amp;&amp; ufo[i].drop &gt;= 0) kufo[nm].drop = ufo[i].drop;
+<a name="l568"></a>        ufo[i].drop = -1;
+<a name="l569"></a>        ufo[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l570"></a>        ufo[i].conv = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l571"></a>        n_ufo--;
+<a name="l572"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l573"></a>    }
+<a name="l574"></a>
+<a name="l575"></a>    </span><span class=cB1>if</span><span class=cB0> (plr_alive &amp;&amp; plr_inv == 0)
+<a name="l576"></a>    {
+<a name="l577"></a>      ddx = DeltaX(ufo[i].x, px);
+<a name="l578"></a>      ddy = ufo[i].y - py;
+<a name="l579"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 18.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 12.0) KillPlayer();
+<a name="l580"></a>    }
+<a name="l581"></a>ufo_i_next:
+<a name="l582"></a>    ;
+<a name="l583"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l584"></a>}
+<a name="l585"></a>
+<a name="l586"></a></span><span class=cB1>U0</span><span class=cB0> UpdateKUFOs()
+<a name="l587"></a>{
+<a name="l588"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l589"></a>  </span><span class=cB1>F64</span><span class=cB0> ddx, ddy, dist, kspd = 1.8 * WaveSpeedMul();
+<a name="l590"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l591"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l592"></a>    </span><span class=cB1>if</span><span class=cB0> (!kufo[i].act) </span><span class=cB1>goto</span><span class=cB0> kufo_i_next;
+<a name="l593"></a>    kufo[i].anim = (total_frames / 6) &amp; 3;
+<a name="l594"></a>
+<a name="l595"></a>    ddx = DeltaX(px, kufo[i].x);
+<a name="l596"></a>    ddy = py - kufo[i].y;
+<a name="l597"></a>    dist = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(ddx*ddx + ddy*ddy);
+<a name="l598"></a>    </span><span class=cB1>if</span><span class=cB0> (dist &gt; 0.5)
+<a name="l599"></a>    {
+<a name="l600"></a>      kufo[i].x += ddx / dist * kspd;
+<a name="l601"></a>      kufo[i].y += ddy / dist * kspd;
+<a name="l602"></a>    }
+<a name="l603"></a>
+<a name="l604"></a>    kufo[i].x = WrapX(kufo[i].x);
+<a name="l605"></a>    </span><span class=cB1>if</span><span class=cB0> (kufo[i].y &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP</span><span class=cB7>)</span><span class=cB0>) kufo[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP);
+<a name="l606"></a>    </span><span class=cB1>if</span><span class=cB0> (kufo[i].y &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY</span><span class=cB7>)</span><span class=cB0>) kufo[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l607"></a>
+<a name="l608"></a>    </span><span class=cB1>if</span><span class=cB0> (plr_alive &amp;&amp; plr_inv == 0)
+<a name="l609"></a>    {
+<a name="l610"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 14.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 12.0) KillPlayer();
+<a name="l611"></a>    }
+<a name="l612"></a>kufo_i_next:
+<a name="l613"></a>    ;
+<a name="l614"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l615"></a>}
+<a name="l616"></a>
+<a name="l617"></a></span><span class=cB1>U0</span><span class=cB0> UpdateBullets()
+<a name="l618"></a>{
+<a name="l619"></a>  </span><span class=cB9>I64</span><span class=cB0> i, j;
+<a name="l620"></a>  </span><span class=cB1>F64</span><span class=cB0> ddx, ddy;
+<a name="l621"></a>
+<a name="l622"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_BUL; i++)
+<a name="l623"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l624"></a>    </span><span class=cB1>if</span><span class=cB0> (!bul[i].act) </span><span class=cB1>goto</span><span class=cB0> bul_i_next;
+<a name="l625"></a>    bul[i].x += bul[i].vx;
+<a name="l626"></a>    bul[i].x = WrapX(bul[i].x);
+<a name="l627"></a>    bul[i].timer--;
+<a name="l628"></a>    </span><span class=cB1>if</span><span class=cB0> (bul[i].timer &lt;= 0)
+<a name="l629"></a>    {
+<a name="l630"></a>      bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l631"></a>      </span><span class=cB1>goto</span><span class=cB0> bul_i_next;
+<a name="l632"></a>    }
+<a name="l633"></a>
+<a name="l634"></a>    </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_UFO; j++)
+<a name="l635"></a>    {
+<a name="l636"></a>      </span><span class=cB1>if</span><span class=cB0> (!ufo[j].act) </span><span class=cB1>goto</span><span class=cB0> bul_ufo_j_next;
+<a name="l637"></a>      ddx = DeltaX(bul[i].x, ufo[j].x);
+<a name="l638"></a>      ddy = bul[i].y - ufo[j].y;
+<a name="l639"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 14.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 10.0)
+<a name="l640"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l641"></a>        KillUFO(j);
+<a name="l642"></a>        bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l643"></a>        j = MAX_UFO;
+<a name="l644"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l645"></a>bul_ufo_j_next:
+<a name="l646"></a>      ;
+<a name="l647"></a>    }
+<a name="l648"></a>    </span><span class=cB1>if</span><span class=cB0> (!bul[i].act) </span><span class=cB1>goto</span><span class=cB0> bul_i_next;
+<a name="l649"></a>
+<a name="l650"></a>    </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_KUFO; j++)
+<a name="l651"></a>    {
+<a name="l652"></a>      </span><span class=cB1>if</span><span class=cB0> (!kufo[j].act) </span><span class=cB1>goto</span><span class=cB0> bul_kufo_j_next;
+<a name="l653"></a>      ddx = DeltaX(bul[i].x, kufo[j].x);
+<a name="l654"></a>      ddy = bul[i].y - kufo[j].y;
+<a name="l655"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 12.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 10.0)
+<a name="l656"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l657"></a>        KillKUFO(j);
+<a name="l658"></a>        bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l659"></a>        j = MAX_KUFO;
+<a name="l660"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l661"></a>bul_kufo_j_next:
+<a name="l662"></a>      ;
+<a name="l663"></a>    }
+<a name="l664"></a>    </span><span class=cB1>if</span><span class=cB0> (!bul[i].act) </span><span class=cB1>goto</span><span class=cB0> bul_i_next;
+<a name="l665"></a>
+<a name="l666"></a>    </span><span class=cB1>if</span><span class=cB0> (bird_act)
+<a name="l667"></a>    {
+<a name="l668"></a>      ddx = DeltaX(bul[i].x, bird_x);
+<a name="l669"></a>      ddy = bul[i].y - bird_y;
+<a name="l670"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 14.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 10.0)
+<a name="l671"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l672"></a>        Explode(bird_x, bird_y);
+<a name="l673"></a>        bird_act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l674"></a>        bird_killed = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l675"></a>        bird_msg = 60;
+<a name="l676"></a>        score = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(score - BIRD_PTS, 0, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>);
+<a name="l677"></a>        bul[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l678"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l679"></a>    }
+<a name="l680"></a>bul_i_next:
+<a name="l681"></a>    ;
+<a name="l682"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l683"></a>}
+<a name="l684"></a>
+<a name="l685"></a></span><span class=cB1>U0</span><span class=cB0> UpdateExplosions()
+<a name="l686"></a>{
+<a name="l687"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l688"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_EXP; i++)
+<a name="l689"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l690"></a>    </span><span class=cB1>if</span><span class=cB0> (xpl[i].act)
+<a name="l691"></a>    {
+<a name="l692"></a>      xpl[i].t--;
+<a name="l693"></a>      </span><span class=cB1>if</span><span class=cB0> (xpl[i].t &lt;= 0) xpl[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l694"></a>    }
+<a name="l695"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l696"></a>}
+<a name="l697"></a>
+<a name="l698"></a></span><span class=cB1>U0</span><span class=cB0> FireBKBoost()
+<a name="l699"></a>{
+<a name="l700"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx;
+<a name="l701"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_UFO; i++)
+<a name="l702"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l703"></a>    </span><span class=cB1>if</span><span class=cB0> (!ufo[i].act) </span><span class=cB1>goto</span><span class=cB0> smb_ufo_i_next;
+<a name="l704"></a>    </span><span class=cB1>if</span><span class=cB0> (OnScreen</span><span class=cB7>(</span><span class=cB0>ufo[i].x, 50, &amp;sx</span><span class=cB7>)</span><span class=cB0>) KillUFO(i);
+<a name="l705"></a>smb_ufo_i_next:
+<a name="l706"></a>    ;
+<a name="l707"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l708"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l709"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l710"></a>    </span><span class=cB1>if</span><span class=cB0> (!kufo[i].act) </span><span class=cB1>goto</span><span class=cB0> smb_kufo_i_next;
+<a name="l711"></a>    </span><span class=cB1>if</span><span class=cB0> (OnScreen</span><span class=cB7>(</span><span class=cB0>kufo[i].x, 50, &amp;sx</span><span class=cB7>)</span><span class=cB0>) KillKUFO(i);
+<a name="l712"></a>smb_kufo_i_next:
+<a name="l713"></a>    ;
+<a name="l714"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l715"></a>}
+<a name="l716"></a>
+<a name="l717"></a></span><span class=cB1>U0</span><span class=cB0> HyperJump()
+<a name="l718"></a>{
+<a name="l719"></a>  </span><span class=cB9>I64</span><span class=cB0> c;
+<a name="l720"></a>  </span><span class=cB1>F64</span><span class=cB0> ty;
+<a name="l721"></a>
+<a name="l722"></a>  </span><span class=cB1>if</span><span class=cB0> (!hyper_avail || !plr_alive) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l723"></a>  </span><span class=cB1>if</span><span class=cB0> (terry &lt; 0 || !glow[terry].act || !glow[terry].carried) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l724"></a>
+<a name="l725"></a>  c = glow[terry].carrier;
+<a name="l726"></a>  </span><span class=cB1>if</span><span class=cB0> (c &gt;= 0 &amp;&amp; ufo[c].act)
+<a name="l727"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l728"></a>    px = ufo[c].x - 70.0;
+<a name="l729"></a>    ty = ufo[c].y;
+<a name="l730"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l731"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l732"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l733"></a>    px = glow[terry].x - 70.0;
+<a name="l734"></a>    ty = glow[terry].y;
+<a name="l735"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l736"></a>  px = WrapX(px);
+<a name="l737"></a>
+<a name="l738"></a>  </span><span class=cB1>if</span><span class=cB0> (ty &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP + 6</span><span class=cB7>)</span><span class=cB0>) ty = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP + 6);
+<a name="l739"></a>  </span><span class=cB1>if</span><span class=cB0> (ty &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - 20</span><span class=cB7>)</span><span class=cB0>) ty = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY - 20);
+<a name="l740"></a>  py = ty;
+<a name="l741"></a>
+<a name="l742"></a>  pvx = 0.0;
+<a name="l743"></a>  pvy = 0.0;
+<a name="l744"></a>  pface = 0;
+<a name="l745"></a>  plr_inv = 36;
+<a name="l746"></a>  scroll = (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>px</span><span class=cB7>)</span><span class=cB0> - 320 + WORLD_W * 4) % WORLD_W;
+<a name="l747"></a>
+<a name="l748"></a>  Explode(px, py);
+<a name="l749"></a>
+<a name="l750"></a>  hyper_avail = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l751"></a>  score = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(score - 100, 0, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>);
+<a name="l752"></a>}
+<a name="l753"></a>
+<a name="l754"></a></span><span class=cB1>U0</span><span class=cB0> UpdateTerry()
+<a name="l755"></a>{
+<a name="l756"></a>  </span><span class=cB9>I64</span><span class=cB0> j, best;
+<a name="l757"></a>  </span><span class=cB1>F64</span><span class=cB0> ddx, bestd, step, tx, tspd = 1.1;
+<a name="l758"></a>  </span><span class=cB1>Bool</span><span class=cB0> target_is_item, target_is_ufo;
+<a name="l759"></a>
+<a name="l760"></a>  </span><span class=cB1>if</span><span class=cB0> (terry &lt; 0 || !glow[terry].act) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l761"></a>  </span><span class=cB1>if</span><span class=cB0> (glow[terry].carried) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l762"></a>
+<a name="l763"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l764"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l765"></a>    </span><span class=cB1>if</span><span class=cB0> (j == terry || !glow[j].act || glow[j].carried) </span><span class=cB1>goto</span><span class=cB0> terry_grab_next;
+<a name="l766"></a>    ddx = DeltaX(glow[j].x, glow[terry].x);
+<a name="l767"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt;= 12.0)
+<a name="l768"></a>    {
+<a name="l769"></a>      glow[j].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l770"></a>      n_glow--;
+<a name="l771"></a>      terry_caps++;
+<a name="l772"></a>      score += 100;
+<a name="l773"></a>    }
+<a name="l774"></a>terry_grab_next:
+<a name="l775"></a>    ;
+<a name="l776"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l777"></a>
+<a name="l778"></a>  best = -1;
+<a name="l779"></a>  bestd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l780"></a>  target_is_item = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l781"></a>  target_is_ufo = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l782"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_PICK; j++)
+<a name="l783"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l784"></a>    </span><span class=cB1>if</span><span class=cB0> (!pu[j].act) </span><span class=cB1>goto</span><span class=cB0> terry_item_next;
+<a name="l785"></a>    ddx = DeltaX(pu[j].x, glow[terry].x);
+<a name="l786"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; bestd)
+<a name="l787"></a>    {
+<a name="l788"></a>      bestd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ddx);
+<a name="l789"></a>      best = j;
+<a name="l790"></a>      target_is_item = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l791"></a>    }
+<a name="l792"></a>terry_item_next:
+<a name="l793"></a>    ;
+<a name="l794"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l795"></a>  </span><span class=cB1>if</span><span class=cB0> (best &lt; 0)
+<a name="l796"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l797"></a>    </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l798"></a>    {
+<a name="l799"></a>      </span><span class=cB1>if</span><span class=cB0> (j == terry || !glow[j].act || glow[j].carried) </span><span class=cB1>goto</span><span class=cB0> terry_j_next;
+<a name="l800"></a>      ddx = DeltaX(glow[j].x, glow[terry].x);
+<a name="l801"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; bestd)
+<a name="l802"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l803"></a>        bestd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ddx);
+<a name="l804"></a>        best = j;
+<a name="l805"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l806"></a>terry_j_next:
+<a name="l807"></a>      ;
+<a name="l808"></a>    }
+<a name="l809"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l810"></a>  </span><span class=cB1>if</span><span class=cB0> (best &lt; 0)
+<a name="l811"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l812"></a>    </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_UFO; j++)
+<a name="l813"></a>    {
+<a name="l814"></a>      </span><span class=cB1>if</span><span class=cB0> (!ufo[j].act) </span><span class=cB1>goto</span><span class=cB0> terry_ufo_next;
+<a name="l815"></a>      ddx = DeltaX(ufo[j].x, glow[terry].x);
+<a name="l816"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; bestd)
+<a name="l817"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l818"></a>        bestd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(ddx);
+<a name="l819"></a>        best = j;
+<a name="l820"></a>        target_is_ufo = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l821"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l822"></a>terry_ufo_next:
+<a name="l823"></a>      ;
+<a name="l824"></a>    }
+<a name="l825"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l826"></a>  </span><span class=cB1>if</span><span class=cB0> (best &lt; 0)
+<a name="l827"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l828"></a>    glow[terry].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l829"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l830"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l831"></a>
+<a name="l832"></a>  </span><span class=cB1>if</span><span class=cB0> (target_is_item) tx = pu[best].x;
+<a name="l833"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (target_is_ufo) tx = ufo[best].x;
+<a name="l834"></a>  </span><span class=cB1>else</span><span class=cB0> tx = glow[best].x;
+<a name="l835"></a>  ddx = DeltaX(tx, glow[terry].x);
+<a name="l836"></a>
+<a name="l837"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &gt; 12.0)
+<a name="l838"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l839"></a>    </span><span class=cB1>if</span><span class=cB0> (shasta_timer &gt; 0) tspd *= SHASTA_MUL;
+<a name="l840"></a>    </span><span class=cB1>if</span><span class=cB0> (ddx &gt; 0.0)
+<a name="l841"></a>    {
+<a name="l842"></a>      step = tspd;
+<a name="l843"></a>      terry_face = 0;
+<a name="l844"></a>    }
+<a name="l845"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l846"></a>    {
+<a name="l847"></a>      step = -tspd;
+<a name="l848"></a>      terry_face = 1;
+<a name="l849"></a>    }
+<a name="l850"></a>    glow[terry].x += step;
+<a name="l851"></a>    glow[terry].x = WrapX(glow[terry].x);
+<a name="l852"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l853"></a>  glow[terry].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l854"></a>}
+<a name="l855"></a>
+<a name="l856"></a></span><span class=cB1>U0</span><span class=cB0> CollectPickup(</span><span class=cB9>I64</span><span class=cB0> i, </span><span class=cB9>I64</span><span class=cB0> who)
+<a name="l857"></a>{
+<a name="l858"></a>  </span><span class=cB1>if</span><span class=cB0> (pu[i].type == ITEM_BK &amp;&amp; bk_boosts &lt; MAX_BK) bk_boosts++;
+<a name="l859"></a>  </span><span class=cB1>if</span><span class=cB0> (pu[i].type == ITEM_SHASTA &amp;&amp; shasta_items &lt; 3) shasta_items++;
+<a name="l860"></a>  pick_item = pu[i].type;
+<a name="l861"></a>  pu[i].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l862"></a>  pick_msg = 50;
+<a name="l863"></a>  pick_who = who;
+<a name="l864"></a>}
+<a name="l865"></a>
+<a name="l866"></a></span><span class=cB1>U0</span><span class=cB0> UseShastaBoost()
+<a name="l867"></a>{
+<a name="l868"></a>  </span><span class=cB1>if</span><span class=cB0> (shasta_items &lt;= 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l869"></a>  shasta_items--;
+<a name="l870"></a>  used_shasta = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l871"></a>  shasta_timer = 900;
+<a name="l872"></a>}
+<a name="l873"></a>
+<a name="l874"></a></span><span class=cB1>U0</span><span class=cB0> UpdatePickups()
+<a name="l875"></a>{
+<a name="l876"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l877"></a>  </span><span class=cB1>F64</span><span class=cB0> ddx, ddy;
+<a name="l878"></a>
+<a name="l879"></a>  </span><span class=cB1>if</span><span class=cB0> (pick_msg &gt; 0) pick_msg--;
+<a name="l880"></a>
+<a name="l881"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_PICK; i++)
+<a name="l882"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l883"></a>    </span><span class=cB1>if</span><span class=cB0> (!pu[i].act) </span><span class=cB1>goto</span><span class=cB0> pick_i_next;
+<a name="l884"></a>
+<a name="l885"></a>    </span><span class=cB1>if</span><span class=cB0> (pu[i].y &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY</span><span class=cB7>)</span><span class=cB0>)
+<a name="l886"></a>    {
+<a name="l887"></a>      pu[i].vy += 0.15;
+<a name="l888"></a>      </span><span class=cB1>if</span><span class=cB0> (pu[i].vy &gt; 2.6) pu[i].vy = 2.6;
+<a name="l889"></a>      pu[i].y += pu[i].vy;
+<a name="l890"></a>      </span><span class=cB1>if</span><span class=cB0> (pu[i].y &gt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY</span><span class=cB7>)</span><span class=cB0>)
+<a name="l891"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l892"></a>        pu[i].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(GY);
+<a name="l893"></a>        pu[i].vy = 0.0;
+<a name="l894"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l895"></a>    }
+<a name="l896"></a>
+<a name="l897"></a>    </span><span class=cB1>if</span><span class=cB0> (plr_alive)
+<a name="l898"></a>    {
+<a name="l899"></a>      ddx = DeltaX(pu[i].x, px);
+<a name="l900"></a>      ddy = pu[i].y - py;
+<a name="l901"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; PICK_GRAB &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; PICK_GRAB)
+<a name="l902"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l903"></a>        CollectPickup(i, 0);
+<a name="l904"></a>        </span><span class=cB1>goto</span><span class=cB0> pick_i_next;
+<a name="l905"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l906"></a>    }
+<a name="l907"></a>
+<a name="l908"></a>    </span><span class=cB1>if</span><span class=cB0> (pu[i].y &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY</span><span class=cB7>)</span><span class=cB0> - 8) </span><span class=cB1>goto</span><span class=cB0> pick_i_next;
+<a name="l909"></a>
+<a name="l910"></a>    </span><span class=cB1>if</span><span class=cB0> (terry &gt;= 0 &amp;&amp; glow[terry].act &amp;&amp; !glow[terry].carried)
+<a name="l911"></a>    {
+<a name="l912"></a>      ddx = DeltaX(pu[i].x, glow[terry].x);
+<a name="l913"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; PICK_GRAB)
+<a name="l914"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l915"></a>        CollectPickup(i, 1);
+<a name="l916"></a>        </span><span class=cB1>goto</span><span class=cB0> pick_i_next;
+<a name="l917"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l918"></a>    }
+<a name="l919"></a>
+<a name="l920"></a>    </span><span class=cB1>if</span><span class=cB0> (plr_alive &amp;&amp; py &gt;= <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - 45</span><span class=cB7>)</span><span class=cB0>)
+<a name="l921"></a>    {
+<a name="l922"></a>      ddx = DeltaX(pu[i].x, px);
+<a name="l923"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; PICK_GRAB)
+<a name="l924"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l925"></a>        CollectPickup(i, 0);
+<a name="l926"></a>        </span><span class=cB1>goto</span><span class=cB0> pick_i_next;
+<a name="l927"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l928"></a>    }
+<a name="l929"></a>pick_i_next:
+<a name="l930"></a>    ;
+<a name="l931"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l932"></a>}
+<a name="l933"></a>
+<a name="l934"></a></span><span class=cB1>U0</span><span class=cB0> SpawnBird()
+<a name="l935"></a>{
+<a name="l936"></a>  bird_x = WrapX(px + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>WORLD_W / 2</span><span class=cB7>)</span><span class=cB0> + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % 200 - 100</span><span class=cB7>)</span><span class=cB0>);
+<a name="l937"></a>  bird_yphase = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % 628) / 100.0;
+<a name="l938"></a>  bird_y = (</span><span class=cB7>(</span><span class=cB0>TOP + GY</span><span class=cB7>)</span><span class=cB0> / 2.0) + (</span><span class=cB7>(</span><span class=cB0>GY - TOP</span><span class=cB7>)</span><span class=cB0> / 7.0) * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(bird_yphase);
+<a name="l939"></a>  bird_flap = 0.0;
+<a name="l940"></a>  bird_act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l941"></a>}
+<a name="l942"></a>
+<a name="l943"></a></span><span class=cB1>U0</span><span class=cB0> UpdateBird()
+<a name="l944"></a>{
+<a name="l945"></a>  </span><span class=cB1>F64</span><span class=cB0> ddx, ddy, bspd, mul;
+<a name="l946"></a>
+<a name="l947"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_msg &gt; 0) bird_msg--;
+<a name="l948"></a>
+<a name="l949"></a>  </span><span class=cB1>if</span><span class=cB0> (!bird_act)
+<a name="l950"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l951"></a>    </span><span class=cB1>if</span><span class=cB0> (bird_caught || bird_killed) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l952"></a>    bird_timer--;
+<a name="l953"></a>    </span><span class=cB1>if</span><span class=cB0> (bird_timer &lt;= 0) SpawnBird();
+<a name="l954"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l955"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l956"></a>
+<a name="l957"></a>  mul = 1.0;
+<a name="l958"></a>  </span><span class=cB1>if</span><span class=cB0> (wave &gt; 15)
+<a name="l959"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l960"></a>    mul = 1.0 + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(wave - 15) * 0.01;
+<a name="l961"></a>    </span><span class=cB1>if</span><span class=cB0> (mul &gt; 1.1) mul = 1.1;
+<a name="l962"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l963"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_scared) mul *= 1.1;
+<a name="l964"></a>  bspd = 1.8 * mul;
+<a name="l965"></a>
+<a name="l966"></a>  ddx = DeltaX(bird_x, px);
+<a name="l967"></a>  </span><span class=cB1>if</span><span class=cB0> (ddx &gt;= 0.0)
+<a name="l968"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l969"></a>    bird_x += bspd;
+<a name="l970"></a>    bird_face = 0;
+<a name="l971"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l972"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l973"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l974"></a>    bird_x -= bspd;
+<a name="l975"></a>    bird_face = 1;
+<a name="l976"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l977"></a>  bird_x = WrapX(bird_x);
+<a name="l978"></a>
+<a name="l979"></a>  bird_yphase += 0.05;
+<a name="l980"></a>  bird_y = (</span><span class=cB7>(</span><span class=cB0>TOP + GY</span><span class=cB7>)</span><span class=cB0> / 2.0) + (</span><span class=cB7>(</span><span class=cB0>GY - TOP</span><span class=cB7>)</span><span class=cB0> / 7.0) * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(bird_yphase);
+<a name="l981"></a>  bird_flap += 0.30;
+<a name="l982"></a>
+<a name="l983"></a>  ddy = bird_y - py;
+<a name="l984"></a>  </span><span class=cB1>if</span><span class=cB0> (plr_alive &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddx</span><span class=cB7>)</span><span class=cB0> &lt; 16.0 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>ddy</span><span class=cB7>)</span><span class=cB0> &lt; 16.0)
+<a name="l985"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l986"></a>    score += BIRD_PTS;
+<a name="l987"></a>    Explode(bird_x, bird_y);
+<a name="l988"></a>    bird_caught = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l989"></a>    bird_act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l990"></a>    bird_msg = 60;
+<a name="l991"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l992"></a>}
+<a name="l993"></a>
+<a name="l994"></a></span><span class=cB9>I64</span><span class=cB0> GlowiesLeft()
+<a name="l995"></a>{
+<a name="l996"></a>  </span><span class=cB9>I64</span><span class=cB0> j, n = 0;
+<a name="l997"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l998"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l999"></a>    </span><span class=cB1>if</span><span class=cB0> (j == terry || !glow[j].act) </span><span class=cB1>goto</span><span class=cB0> left_next;
+<a name="l1000"></a>    n++;
+<a name="l1001"></a>left_next:
+<a name="l1002"></a>    ;
+<a name="l1003"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1004"></a>  </span><span class=cB1>return</span><span class=cB0> n;
+<a name="l1005"></a>}
+<a name="l1006"></a>
+<a name="l1007"></a></span><span class=cB1>U0</span><span class=cB0> RespawnUFO()
+<a name="l1008"></a>{
+<a name="l1009"></a>  </span><span class=cB9>I64</span><span class=cB0> j, n, who, slot;
+<a name="l1010"></a>
+<a name="l1011"></a>  n = 0;
+<a name="l1012"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l1013"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1014"></a>    </span><span class=cB1>if</span><span class=cB0> (j == terry || !glow[j].act || glow[j].carried) </span><span class=cB1>goto</span><span class=cB0> rl_cnt_next;
+<a name="l1015"></a>    n++;
+<a name="l1016"></a>rl_cnt_next:
+<a name="l1017"></a>    ;
+<a name="l1018"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1019"></a>  </span><span class=cB1>if</span><span class=cB0> (n &lt;= 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1020"></a>  who = -1;
+<a name="l1021"></a>  n = <a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % n;
+<a name="l1022"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_GLOW; j++)
+<a name="l1023"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1024"></a>    </span><span class=cB1>if</span><span class=cB0> (j == terry || !glow[j].act || glow[j].carried) </span><span class=cB1>goto</span><span class=cB0> rl_pick_next;
+<a name="l1025"></a>    </span><span class=cB1>if</span><span class=cB0> (n == 0)
+<a name="l1026"></a>    {
+<a name="l1027"></a>      who = j;
+<a name="l1028"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1029"></a>    }
+<a name="l1030"></a>    n--;
+<a name="l1031"></a>rl_pick_next:
+<a name="l1032"></a>    ;
+<a name="l1033"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1034"></a>  </span><span class=cB1>if</span><span class=cB0> (who &lt; 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1035"></a>
+<a name="l1036"></a>  slot = -1;
+<a name="l1037"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; MAX_UFO; j++)
+<a name="l1038"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1039"></a>    </span><span class=cB1>if</span><span class=cB0> (!ufo[j].act &amp;&amp; !ufo[j].conv)
+<a name="l1040"></a>    {
+<a name="l1041"></a>      slot = j;
+<a name="l1042"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1043"></a>    }
+<a name="l1044"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1045"></a>  </span><span class=cB1>if</span><span class=cB0> (slot &lt; 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1046"></a>
+<a name="l1047"></a>  ufo[slot].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1048"></a>  ufo[slot].x = glow[who].x;
+<a name="l1049"></a>  ufo[slot].y = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP);
+<a name="l1050"></a>  ufo[slot].state = UFO_DESCEND;
+<a name="l1051"></a>  ufo[slot].target = who;
+<a name="l1052"></a>  ufo[slot].anim = 0;
+<a name="l1053"></a>  ufo[slot].drop = -1;
+<a name="l1054"></a>  n_ufo++;
+<a name="l1055"></a>}
+<a name="l1056"></a>
+<a name="l1057"></a></span><span class=cB1>U0</span><span class=cB0> RespawnKUFO()
+<a name="l1058"></a>{
+<a name="l1059"></a>  SpawnKUFO(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/AMath.html#l167"></span><span class=cB5>RandU16</a></span><span class=cB0> % WORLD_W</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>TOP + 10</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1060"></a>}
+<a name="l1061"></a>
+<a name="l1062"></a></span><span class=cB1>U0</span><span class=cB0> NewGame()
+<a name="l1063"></a>{
+<a name="l1064"></a>  score = 0;
+<a name="l1065"></a>  lives = 3;
+<a name="l1066"></a>  wave = 1;
+<a name="l1067"></a>  bk_boosts = 1;
+<a name="l1068"></a>  shasta_items = 1;
+<a name="l1069"></a>  shasta_timer = 0;
+<a name="l1070"></a>  terry_caps = 0;
+<a name="l1071"></a>  ufo_caps = 0;
+<a name="l1072"></a>  terry_lost = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1073"></a>  hyper_avail = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1074"></a>  Init();
+<a name="l1075"></a>}
+<a name="l1076"></a>
+<a name="l1077"></a></span><span class=cB1>U0</span><span class=cB0> ResumeWave(</span><span class=cB1>Bool</span><span class=cB0> advance)
+<a name="l1078"></a>{
+<a name="l1079"></a>  </span><span class=cB9>I64</span><span class=cB0> nwave = wave, nbk = bk_boosts;
+<a name="l1080"></a>  </span><span class=cB1>if</span><span class=cB0> (advance)
+<a name="l1081"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1082"></a>    nwave = wave + 1;
+<a name="l1083"></a>    nbk = bk_boosts + 1;
+<a name="l1084"></a>    </span><span class=cB1>if</span><span class=cB0> (nbk &gt; MAX_BK) nbk = MAX_BK;
+<a name="l1085"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1086"></a>  Init();
+<a name="l1087"></a>  wave = nwave;
+<a name="l1088"></a>  bk_boosts = nbk;
+<a name="l1089"></a>  </span><span class=cB1>if</span><span class=cB0> (advance)
+<a name="l1090"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1091"></a>    hyper_avail = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1092"></a>    shasta_timer = 0;
+<a name="l1093"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1094"></a>}
+<a name="l1095"></a>
+<a name="l1096"></a></span><span class=cB1>U0</span><span class=cB0> Update()
+<a name="l1097"></a>{
+<a name="l1098"></a>  </span><span class=cB9>I64</span><span class=cB0> bi;
+<a name="l1099"></a>
+<a name="l1100"></a>  total_frames++;
+<a name="l1101"></a>
+<a name="l1102"></a>  </span><span class=cB1>if</span><span class=cB0> (kbk)
+<a name="l1103"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1104"></a>    kbk = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1105"></a>    </span><span class=cB1>if</span><span class=cB0> (bk_boosts &gt; 0)
+<a name="l1106"></a>    {
+<a name="l1107"></a>      bk_boosts--;
+<a name="l1108"></a>      used_bk = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1109"></a>      FireBKBoost();
+<a name="l1110"></a>      bk_msg = 60;
+<a name="l1111"></a>    }
+<a name="l1112"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1113"></a>
+<a name="l1114"></a>  </span><span class=cB1>if</span><span class=cB0> (state == ST_PLAY)
+<a name="l1115"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1116"></a>    </span><span class=cB1>if</span><span class=cB0> (shasta_timer &gt; 0) shasta_timer--;
+<a name="l1117"></a>    </span><span class=cB1>if</span><span class=cB0> (bk_msg &gt; 0) bk_msg--;
+<a name="l1118"></a>    UpdatePlayer();
+<a name="l1119"></a>    UpdateUFOs();
+<a name="l1120"></a>    UpdateTerry();
+<a name="l1121"></a>    UpdateKUFOs();
+<a name="l1122"></a>    UpdateBullets();
+<a name="l1123"></a>    UpdatePickups();
+<a name="l1124"></a>    UpdateBird();
+<a name="l1125"></a>    UpdateExplosions();
+<a name="l1126"></a>    </span><span class=cB1>if</span><span class=cB0> (state == ST_PLAY &amp;&amp; n_ufo &lt;= 0 &amp;&amp; n_kufo &lt;= 0 &amp;&amp;
+<a name="l1127"></a>        GlowiesLeft</span><span class=cB7>()</span><span class=cB0> &gt; 0)
+<a name="l1128"></a>    {
+<a name="l1129"></a>      RespawnUFO();
+<a name="l1130"></a>      </span><span class=cB1>if</span><span class=cB0> (wave &gt; 19 &amp;&amp; GlowiesLeft</span><span class=cB7>()</span><span class=cB0> == 1 &amp;&amp; had_kufo &amp;&amp; !kufo_respawned)
+<a name="l1131"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1132"></a>        RespawnKUFO();
+<a name="l1133"></a>        kufo_respawned = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1134"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1135"></a>    }
+<a name="l1136"></a>
+<a name="l1137"></a>    </span><span class=cB1>if</span><span class=cB0> (state == ST_PLAY &amp;&amp; n_ufo &lt;= 0 &amp;&amp; n_kufo &lt;= 0 &amp;&amp;
+<a name="l1138"></a>        GlowiesLeft</span><span class=cB7>()</span><span class=cB0> &lt;= 0)
+<a name="l1139"></a>    {
+<a name="l1140"></a>      state = ST_NEXT;
+<a name="l1141"></a>      knext = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1142"></a>      shasta_timer = 0;
+<a name="l1143"></a>      plr_alive = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1144"></a>      </span><span class=cB1>for</span><span class=cB0> (bi = 0; bi &lt; MAX_BUL; bi++) bul[bi].act = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1145"></a>      next_armed = !kfire;
+<a name="l1146"></a>      bonus_life = lives * 100;
+<a name="l1147"></a>      bonus_bk = bk_boosts * 50;
+<a name="l1148"></a>      bonus_shasta = shasta_items * 50;
+<a name="l1149"></a>      bonus_wave = wave * 250;
+<a name="l1150"></a>      bonus_hyper = 0;
+<a name="l1151"></a>      </span><span class=cB1>if</span><span class=cB0> (hyper_avail) bonus_hyper = 200;
+<a name="l1152"></a>      bonus_king = 0;
+<a name="l1153"></a>      </span><span class=cB1>if</span><span class=cB0> (used_bk &amp;&amp; used_shasta &amp;&amp; bird_caught)
+<a name="l1154"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1155"></a>        bonus_king = 500 + 100 * wave;
+<a name="l1156"></a>        </span><span class=cB1>if</span><span class=cB0> (hyper_avail) bonus_king += 250;
+<a name="l1157"></a>        bonus_king = (bonus_king + KING_ROUND - 1) / KING_ROUND * KING_ROUND;
+<a name="l1158"></a>        </span><span class=cB1>if</span><span class=cB0> (bonus_king &gt; 5000) bonus_king = 5000;
+<a name="l1159"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1160"></a>      bonus_total = bonus_life + bonus_bk + bonus_shasta +
+<a name="l1161"></a>          bonus_wave + bonus_hyper + bonus_king;
+<a name="l1162"></a>      score += bonus_total;
+<a name="l1163"></a>    }
+<a name="l1164"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1165"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (state == ST_DEAD)
+<a name="l1166"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1167"></a>    UpdateExplosions();
+<a name="l1168"></a>    dead_t--;
+<a name="l1169"></a>    </span><span class=cB1>if</span><span class=cB0> (dead_t &lt;= 0) ResumeWave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l1170"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1171"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (state == ST_NEXT)
+<a name="l1172"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1173"></a>    UpdateExplosions();
+<a name="l1174"></a>    </span><span class=cB1>if</span><span class=cB0> (knext)
+<a name="l1175"></a>    {
+<a name="l1176"></a>      knext = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1177"></a>      ResumeWave(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l1178"></a>    }
+<a name="l1179"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1180"></a>
+<a name="l1181"></a>  </span><span class=cB1>if</span><span class=cB0> (score &gt; hi) hi = score;
+<a name="l1182"></a>}
+<a name="l1183"></a>
+<a name="l1184"></a></span><span class=cB1>U0</span><span class=cB0> DrawBackground(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1185"></a>{
+<a name="l1186"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx;
+<a name="l1187"></a>  dc-&gt;color = 1;
+<a name="l1188"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 0, TOP, 640, GY - TOP);
+<a name="l1189"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1190"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 0, GY, 640, 480 - GY);
+<a name="l1191"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l1192"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1977"></span><span class=cB5>GrHLine</a></span><span class=cB0>(dc, 0, 640, GY);
+<a name="l1193"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1194"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1977"></span><span class=cB5>GrHLine</a></span><span class=cB0>(dc, 0, 640, GY + 1);
+<a name="l1195"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1196"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; N_STARS; i++)
+<a name="l1197"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1198"></a>    sx = WX(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>star_x[i]</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1199"></a>    </span><span class=cB1>if</span><span class=cB0> (sx &gt;= 0 &amp;&amp; sx &lt; 640) <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, star_y[i], 1, 1);
+<a name="l1200"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1201"></a>}
+<a name="l1202"></a>
+<a name="l1203"></a></span><span class=cB1>U0</span><span class=cB0> DrawPlayer(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1204"></a>{
+<a name="l1205"></a>  </span><span class=cB9>I64</span><span class=cB0> sy;
+<a name="l1206"></a>  </span><span class=cB1>if</span><span class=cB0> (!plr_alive) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1207"></a>  </span><span class=cB1>if</span><span class=cB0> (plr_inv &gt; 0 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1208"></a>  sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(py);
+<a name="l1209"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3391"></span><span class=cB3>LTCYAN</a></span><span class=cB0>;
+<a name="l1210"></a>  </span><span class=cB1>if</span><span class=cB0> (pface == 0)
+<a name="l1211"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1212"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 310, sy - 5, 332, sy);
+<a name="l1213"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 310, sy + 5, 332, sy);
+<a name="l1214"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 310, sy - 5, 310, sy + 5);
+<a name="l1215"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1216"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 305, sy - 3, 6, 6);
+<a name="l1217"></a>    </span><span class=cB1>if</span><span class=cB0> (kr || kl)
+<a name="l1218"></a>    {
+<a name="l1219"></a>      </span><span class=cB1>if</span><span class=cB0> (total_frames &amp; 2) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1220"></a>      </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1221"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 298, sy - 2, 7, 4);
+<a name="l1222"></a>    }
+<a name="l1223"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1224"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l1225"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1226"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 330, sy - 5, 308, sy);
+<a name="l1227"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 330, sy + 5, 308, sy);
+<a name="l1228"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, 330, sy - 5, 330, sy + 5);
+<a name="l1229"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1230"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 329, sy - 3, 6, 6);
+<a name="l1231"></a>    </span><span class=cB1>if</span><span class=cB0> (kl || kr)
+<a name="l1232"></a>    {
+<a name="l1233"></a>      </span><span class=cB1>if</span><span class=cB0> (total_frames &amp; 2) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1234"></a>      </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1235"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 335, sy - 2, 7, 4);
+<a name="l1236"></a>    }
+<a name="l1237"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1238"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3383"></span><span class=cB3>CYAN</a></span><span class=cB0>;
+<a name="l1239"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 317, sy - 3, 6, 6);
+<a name="l1240"></a>}
+<a name="l1241"></a>
+<a name="l1242"></a></span><span class=cB1>U0</span><span class=cB0> DrawSaucer(</span><span class=cB9>CDC</span><span class=cB0> *dc, </span><span class=cB9>I64</span><span class=cB0> sx, </span><span class=cB9>I64</span><span class=cB0> sy, </span><span class=cB9>I64</span><span class=cB0> hull, </span><span class=cB9>I64</span><span class=cB0> under, </span><span class=cB1>Bool</span><span class=cB0> struts)
+<a name="l1243"></a>{
+<a name="l1244"></a>  dc-&gt;color = hull;
+<a name="l1245"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 11, sy - 1, 23, 3);
+<a name="l1246"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 7, sy - 3, 15, 2);
+<a name="l1247"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy - 5, 9, 2);
+<a name="l1248"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1249"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx, sy - 5, 0, 3);
+<a name="l1250"></a>  dc-&gt;color = under;
+<a name="l1251"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 7, sy + 2, 15, 2);
+<a name="l1252"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1253"></a>  </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1254"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 8, sy, 2, 2);
+<a name="l1255"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 2, sy, 2, 2);
+<a name="l1256"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 5, sy, 2, 2);
+<a name="l1257"></a>  </span><span class=cB1>if</span><span class=cB0> (struts)
+<a name="l1258"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1259"></a>    dc-&gt;color = hull;
+<a name="l1260"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, sx - 7, sy + 3, sx - 9, sy + 9);
+<a name="l1261"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, sx + 7, sy + 3, sx + 9, sy + 9);
+<a name="l1262"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, sx, sy + 3, sx, sy + 9);
+<a name="l1263"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 11, sy + 9, 4, 2);
+<a name="l1264"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 7, sy + 9, 4, 2);
+<a name="l1265"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 2, sy + 9, 4, 2);
+<a name="l1266"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1267"></a>}
+<a name="l1268"></a>
+<a name="l1269"></a></span><span class=cB1>U0</span><span class=cB0> DrawEnemies(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1270"></a>{
+<a name="l1271"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx, sy;
+<a name="l1272"></a>
+<a name="l1273"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_UFO; i++)
+<a name="l1274"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1275"></a>    </span><span class=cB1>if</span><span class=cB0> (!ufo[i].act) </span><span class=cB1>goto</span><span class=cB0> draw_ufo_i_next;
+<a name="l1276"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>ufo[i].x, 20, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> draw_ufo_i_next;
+<a name="l1277"></a>    sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(ufo[i].y);
+<a name="l1278"></a>    DrawSaucer(dc, sx, sy, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3387"></span><span class=cB3>LTGRAY</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l1279"></a>draw_ufo_i_next:
+<a name="l1280"></a>    ;
+<a name="l1281"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1282"></a>
+<a name="l1283"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l1284"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1285"></a>    </span><span class=cB1>if</span><span class=cB0> (!kufo[i].act) </span><span class=cB1>goto</span><span class=cB0> draw_mut_i_next;
+<a name="l1286"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>kufo[i].x, 20, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> draw_mut_i_next;
+<a name="l1287"></a>    sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(kufo[i].y);
+<a name="l1288"></a>    DrawSaucer(dc, sx, sy, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>GREEN</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l1289"></a>draw_mut_i_next:
+<a name="l1290"></a>    ;
+<a name="l1291"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1292"></a>
+<a name="l1293"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_EXP; i++)
+<a name="l1294"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1295"></a>    </span><span class=cB1>if</span><span class=cB0> (!xpl[i].act) </span><span class=cB1>goto</span><span class=cB0> exp_i_next;
+<a name="l1296"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>xpl[i].x, 30, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> exp_i_next;
+<a name="l1297"></a>    </span><span class=cB1>if</span><span class=cB0> (xpl[i].t &gt; 9) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1298"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (xpl[i].t &gt; 4) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1299"></a>    </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1300"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>xpl[i].y</span><span class=cB7>)</span><span class=cB0>, 0, xpl[i].t / 2 + 2);
+<a name="l1301"></a>exp_i_next:
+<a name="l1302"></a>    ;
+<a name="l1303"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1304"></a>}
+<a name="l1305"></a>
+<a name="l1306"></a></span><span class=cB1>U0</span><span class=cB0> DrawGlowies(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1307"></a>{
+<a name="l1308"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx, sy, leg;
+<a name="l1309"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_GLOW; i++)
+<a name="l1310"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1311"></a>    </span><span class=cB1>if</span><span class=cB0> (!glow[i].act) </span><span class=cB1>goto</span><span class=cB0> glow_i_next;
+<a name="l1312"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>glow[i].x, 10, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> glow_i_next;
+<a name="l1313"></a>    sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(glow[i].y);
+<a name="l1314"></a>
+<a name="l1315"></a>    </span><span class=cB1>if</span><span class=cB0> (i == terry)
+<a name="l1316"></a>    {
+<a name="l1317"></a>      </span><span class=cB1>if</span><span class=cB0> (glow[i].carried)
+<a name="l1318"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1319"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1320"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx, sy - 10, 0, 4);
+<a name="l1321"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1322"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 3, sy - 5, 7, 9);
+<a name="l1323"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1324"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1325"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1326"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1327"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 10, sy - 4, 20, 8);
+<a name="l1328"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1329"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 6, sy - 9, 10, 6);
+<a name="l1330"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3391"></span><span class=cB3>LTCYAN</a></span><span class=cB0>;
+<a name="l1331"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx - 1, sy - 10, 0, 2);
+<a name="l1332"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3380"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l1333"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx - 6, sy + 4, 0, 2);
+<a name="l1334"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx + 6, sy + 4, 0, 2);
+<a name="l1335"></a>        dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1336"></a>        </span><span class=cB1>if</span><span class=cB0> (terry_face == 0) <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 9, sy - 2, 3, 3);
+<a name="l1337"></a>        </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 12, sy - 2, 3, 3);
+<a name="l1338"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1339"></a>      </span><span class=cB1>goto</span><span class=cB0> glow_i_next;
+<a name="l1340"></a>    }
+<a name="l1341"></a>
+<a name="l1342"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3391"></span><span class=cB3>LTCYAN</a></span><span class=cB0>;
+<a name="l1343"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l1046"></span><span class=cB5>GrCircle3</a></span><span class=cB0>(dc, sx, sy - 10, 0, 4);
+<a name="l1344"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l1345"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 3, sy - 5, 7, 8);
+<a name="l1346"></a>    </span><span class=cB1>if</span><span class=cB0> (glow[i].carried) leg = 0;
+<a name="l1347"></a>    </span><span class=cB1>else</span><span class=cB0> leg = (total_frames / 8) &amp; 1;
+<a name="l1348"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1349"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy + 3, 3, 5);
+<a name="l1350"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 1, sy + 3, 3, 5);
+<a name="l1351"></a>    </span><span class=cB1>if</span><span class=cB0> (leg)
+<a name="l1352"></a>    {
+<a name="l1353"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l1354"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 5, sy + 6, 2, 3);
+<a name="l1355"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 3, sy + 6, 2, 3);
+<a name="l1356"></a>    }
+<a name="l1357"></a>glow_i_next:
+<a name="l1358"></a>    ;
+<a name="l1359"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1360"></a>}
+<a name="l1361"></a>
+<a name="l1362"></a></span><span class=cB1>U0</span><span class=cB0> DrawBullets(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1363"></a>{
+<a name="l1364"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx;
+<a name="l1365"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1366"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_BUL; i++)
+<a name="l1367"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1368"></a>    </span><span class=cB1>if</span><span class=cB0> (!bul[i].act) </span><span class=cB1>goto</span><span class=cB0> draw_bul_i_next;
+<a name="l1369"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>bul[i].x, 0, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> draw_bul_i_next;
+<a name="l1370"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 3, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>bul[i].y</span><span class=cB7>)</span><span class=cB0> - 1, 7, 3);
+<a name="l1371"></a>draw_bul_i_next:
+<a name="l1372"></a>    ;
+<a name="l1373"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1374"></a>}
+<a name="l1375"></a>
+<a name="l1376"></a></span><span class=cB1>U0</span><span class=cB0> DrawPickups(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1377"></a>{
+<a name="l1378"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx, sy;
+<a name="l1379"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_PICK; i++)
+<a name="l1380"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1381"></a>    </span><span class=cB1>if</span><span class=cB0> (!pu[i].act) </span><span class=cB1>goto</span><span class=cB0> draw_pick_i_next;
+<a name="l1382"></a>    </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>pu[i].x, 10, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> draw_pick_i_next;
+<a name="l1383"></a>    sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(pu[i].y);
+<a name="l1384"></a>    </span><span class=cB1>if</span><span class=cB0> (pu[i].type == ITEM_SHASTA)
+<a name="l1385"></a>    {
+<a name="l1386"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3387"></span><span class=cB3>LTGRAY</a></span><span class=cB0>;
+<a name="l1387"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy - 7, 9, 14);
+<a name="l1388"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1389"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy - 7, 9, 2);
+<a name="l1390"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 1, sy - 8, 3, 1);
+<a name="l1391"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy + 6, 9, 1);
+<a name="l1392"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1393"></a>      </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3389"></span><span class=cB3>LTBLUE</a></span><span class=cB0>;
+<a name="l1394"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy - 2, 9, 6);
+<a name="l1395"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1396"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, sx - 3, sy - 3, </span><span class=cB6>&quot;S&quot;</span><span class=cB0>);
+<a name="l1397"></a>    }
+<a name="l1398"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1399"></a>    {
+<a name="l1400"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BROWN</a></span><span class=cB0>;
+<a name="l1401"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 4, sy - 7, 8, 2);
+<a name="l1402"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 6, sy - 5, 12, 3);
+<a name="l1403"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1404"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 3, sy - 5, 1, 1);
+<a name="l1405"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, sy - 6, 1, 1);
+<a name="l1406"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 3, sy - 5, 1, 1);
+<a name="l1407"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1408"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 6, sy - 2, 12, 2);
+<a name="l1409"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 5, sy, 2, 1);
+<a name="l1410"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx + 3, sy, 2, 1);
+<a name="l1411"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1412"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 6, sy, 12, 2);
+<a name="l1413"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1414"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 7, sy + 2, 14, 1);
+<a name="l1415"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>BROWN</a></span><span class=cB0>;
+<a name="l1416"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 6, sy + 3, 12, 3);
+<a name="l1417"></a>    }
+<a name="l1418"></a>draw_pick_i_next:
+<a name="l1419"></a>    ;
+<a name="l1420"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1421"></a>}
+<a name="l1422"></a>
+<a name="l1423"></a>#</span><span class=cB1>define</span><span class=cB0> BIRD_TILT  2.0
+<a name="l1424"></a></span><span class=cB1>U0</span><span class=cB0> DrawBird(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1425"></a>{
+<a name="l1426"></a>  </span><span class=cB9>I64</span><span class=cB0> sx, sy, k, side, bx, by;
+<a name="l1427"></a>  </span><span class=cB1>F64</span><span class=cB0> ..., cosw, sinw, fdir, u, tailx, headx, taily, heady, apx, apy;
+<a name="l1428"></a>  </span><span class=cB1>if</span><span class=cB0> (!bird_act) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1429"></a>  </span><span class=cB1>if</span><span class=cB0> (!OnScreen</span><span class=cB7>(</span><span class=cB0>bird_x, 20, &amp;sx</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1430"></a>  sy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(bird_y);
+<a name="l1431"></a>
+<a name="l1432"></a>  fdir = 1.0;
+<a name="l1433"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_face) fdir = -1.0;
+<a name="l1434"></a>
+<a name="l1435"></a>  ... = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(bird_flap);
+<a name="l1436"></a>  cosw = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(...);
+<a name="l1437"></a>  sinw = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(...);
+<a name="l1438"></a>
+<a name="l1439"></a>  tailx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sx) - fdir * 5.0;
+<a name="l1440"></a>  taily = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sy) + BIRD_TILT;
+<a name="l1441"></a>  headx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sx) + fdir * 7.0;
+<a name="l1442"></a>  heady = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sy) - BIRD_TILT;
+<a name="l1443"></a>
+<a name="l1444"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1445"></a>  </span><span class=cB1>for</span><span class=cB0> (side = -1; side &lt;= 1; side += 2)
+<a name="l1446"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1447"></a>    apx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sx) + fdir * 2.0 * cosw;
+<a name="l1448"></a>    apy = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(sy) + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(side) * 8.0 * cosw - 10.0 * sinw;
+<a name="l1449"></a>    </span><span class=cB1>for</span><span class=cB0> (k = 0; k &lt;= 12; k++)
+<a name="l1450"></a>    {
+<a name="l1451"></a>      u = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(k) / <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(12);
+<a name="l1452"></a>      bx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(tailx + </span><span class=cB7>(</span><span class=cB0>headx - tailx</span><span class=cB7>)</span><span class=cB0> * u);
+<a name="l1453"></a>      by = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(taily + </span><span class=cB7>(</span><span class=cB0>heady - taily</span><span class=cB7>)</span><span class=cB0> * u);
+<a name="l1454"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, bx, by, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>apx</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>apy</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1455"></a>    }
+<a name="l1456"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1457"></a>
+<a name="l1458"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3387"></span><span class=cB3>LTGRAY</a></span><span class=cB0>;
+<a name="l1459"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>tailx</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>taily</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>headx</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>heady</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1460"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1461"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>headx</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>heady</span><span class=cB7>)</span><span class=cB0>,
+<a name="l1462"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>headx + fdir * 3.0</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB7>(</span><span class=cB0>heady - BIRD_TILT * 0.5</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1463"></a>}
+<a name="l1464"></a>
+<a name="l1465"></a></span><span class=cB1>U0</span><span class=cB0> DrawMinimap(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1466"></a>{
+<a name="l1467"></a>  </span><span class=cB9>I64</span><span class=cB0> i, sx, sy, mw;
+<a name="l1468"></a>  </span><span class=cB1>F64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0> = 640.0 / <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(WORLD_W);
+<a name="l1469"></a>
+<a name="l1470"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3380"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l1471"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 0, 0, 640, MH);
+<a name="l1472"></a>
+<a name="l1473"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1474"></a>  sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>scroll</span><span class=cB7>)</span><span class=cB0> * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1475"></a>  mw = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(640.0 * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1476"></a>  </span><span class=cB1>if</span><span class=cB0> (sx + mw &lt;= 640)
+<a name="l1477"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1478"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, 1, mw, MH - 2);
+<a name="l1479"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1480"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l1481"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1482"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, 1, 640 - sx, MH - 2);
+<a name="l1483"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 0, 1, sx + mw - 640, MH - 2);
+<a name="l1484"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1485"></a>
+<a name="l1486"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_GLOW; i++)
+<a name="l1487"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1488"></a>    </span><span class=cB1>if</span><span class=cB0> (!glow[i].act) </span><span class=cB1>goto</span><span class=cB0> mm_glow_i_next;
+<a name="l1489"></a>    </span><span class=cB1>if</span><span class=cB0> (i == terry) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1490"></a>    </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>GREEN</a></span><span class=cB0>;
+<a name="l1491"></a>    sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(glow[i].x * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1492"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, MH - 4, 2, 3);
+<a name="l1493"></a>mm_glow_i_next:
+<a name="l1494"></a>    ;
+<a name="l1495"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1496"></a>
+<a name="l1497"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1498"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_UFO; i++)
+<a name="l1499"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1500"></a>    </span><span class=cB1>if</span><span class=cB0> (!ufo[i].act) </span><span class=cB1>goto</span><span class=cB0> mm_ufo_i_next;
+<a name="l1501"></a>    sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(ufo[i].x * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1502"></a>    sy = 1 + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>ufo[i].y - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP)</span><span class=cB7>)</span><span class=cB0> * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>MH - 2</span><span class=cB7>)</span><span class=cB0> / <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - TOP</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1503"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, sy, 2, 2);
+<a name="l1504"></a>mm_ufo_i_next:
+<a name="l1505"></a>    ;
+<a name="l1506"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1507"></a>
+<a name="l1508"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1509"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_KUFO; i++)
+<a name="l1510"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1511"></a>    </span><span class=cB1>if</span><span class=cB0> (!kufo[i].act) </span><span class=cB1>goto</span><span class=cB0> mm_mut_i_next;
+<a name="l1512"></a>    sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(kufo[i].x * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1513"></a>    sy = 1 + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>kufo[i].y - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP)</span><span class=cB7>)</span><span class=cB0> * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>MH - 2</span><span class=cB7>)</span><span class=cB0> / <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - TOP</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1514"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, sy, 2, 2);
+<a name="l1515"></a>mm_mut_i_next:
+<a name="l1516"></a>    ;
+<a name="l1517"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1518"></a>
+<a name="l1519"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1520"></a>  </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1521"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; MAX_PICK; i++)
+<a name="l1522"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1523"></a>    </span><span class=cB1>if</span><span class=cB0> (!pu[i].act) </span><span class=cB1>goto</span><span class=cB0> mm_pick_i_next;
+<a name="l1524"></a>    sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(pu[i].x * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1525"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, MH - 6, 2, 5);
+<a name="l1526"></a>mm_pick_i_next:
+<a name="l1527"></a>    ;
+<a name="l1528"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1529"></a>
+<a name="l1530"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_act)
+<a name="l1531"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1532"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3393"></span><span class=cB3>LTPURPLE</a></span><span class=cB0>;
+<a name="l1533"></a>    sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(bird_x * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1534"></a>    sy = 1 + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>bird_y - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(TOP)</span><span class=cB7>)</span><span class=cB0> * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>MH - 2</span><span class=cB7>)</span><span class=cB0> / <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB7>(</span><span class=cB0>GY - TOP</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1535"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx, sy, 2, 2);
+<a name="l1536"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1537"></a>
+<a name="l1538"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1539"></a>  sx = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(px * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l1540"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, sx - 1, MH / 2 - 2, 3, 4);
+<a name="l1541"></a>}
+<a name="l1542"></a>
+<a name="l1543"></a></span><span class=cB1>U0</span><span class=cB0> DrawCheck(</span><span class=cB9>CDC</span><span class=cB0> *dc, </span><span class=cB9>I64</span><span class=cB0> x, </span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l1544"></a>{
+<a name="l1545"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, x, y + 2, x + 2, y + 4);
+<a name="l1546"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, x + 2, y + 4, x + 6, y);
+<a name="l1547"></a>}
+<a name="l1548"></a>
+<a name="l1549"></a></span><span class=cB1>U0</span><span class=cB0> DrawCrown(</span><span class=cB9>CDC</span><span class=cB0> *dc, </span><span class=cB9>I64</span><span class=cB0> x, </span><span class=cB9>I64</span><span class=cB0> y)
+<a name="l1550"></a>{
+<a name="l1551"></a>  </span><span class=cB9>I64</span><span class=cB0> c, p, a, d, best, pcol[3], ph[3];
+<a name="l1552"></a>  pcol[0] = 1;
+<a name="l1553"></a>  ph[0] = 0;
+<a name="l1554"></a>  pcol[1] = 5;
+<a name="l1555"></a>  ph[1] = -1;
+<a name="l1556"></a>  pcol[2] = 9;
+<a name="l1557"></a>  ph[2] = 0;
+<a name="l1558"></a>  </span><span class=cB1>for</span><span class=cB0> (c = 0; c &lt;= 10; c++)
+<a name="l1559"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1560"></a>    best = 99;
+<a name="l1561"></a>    </span><span class=cB1>for</span><span class=cB0> (p = 0; p &lt; 3; p++)
+<a name="l1562"></a>    {
+<a name="l1563"></a>      a = c - pcol[p];
+<a name="l1564"></a>      </span><span class=cB1>if</span><span class=cB0> (a &lt; 0) a = -a;
+<a name="l1565"></a>      d = ph[p] + 2 * a;
+<a name="l1566"></a>      </span><span class=cB1>if</span><span class=cB0> (d &lt; best) best = d;
+<a name="l1567"></a>    }
+<a name="l1568"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPrimatives.html#l642"></span><span class=cB5>GrLine</a></span><span class=cB0>(dc, x + c, y + best, x + c, y + 6);
+<a name="l1569"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1570"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, x, y + 5, 11, 3);
+<a name="l1571"></a>  </span><span class=cB1>for</span><span class=cB0> (p = 0; p &lt; 3; p++) <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, x + pcol[p], y + ph[p], 1, 1);
+<a name="l1572"></a>}
+<a name="l1573"></a>
+<a name="l1574"></a></span><span class=cB1>U0</span><span class=cB0> DrawHud(</span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1575"></a>{
+<a name="l1576"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3380"></span><span class=cB3>BLACK</a></span><span class=cB0>;
+<a name="l1577"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1152"></span><span class=cB5>GrRect</a></span><span class=cB0>(dc, 0, MH, 640, 4);
+<a name="l1578"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1579"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 4, 1, </span><span class=cB6>&quot;%07d&quot;</span><span class=cB0>, score);
+<a name="l1580"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 260, 1, </span><span class=cB6>&quot;HI %07d&quot;</span><span class=cB0>, hi);
+<a name="l1581"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 520, 1, </span><span class=cB6>&quot;WAVE %d&quot;</span><span class=cB0>, wave);
+<a name="l1582"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1583"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 68, 1, </span><span class=cB6>&quot;B:%d&quot;</span><span class=cB0>, bk_boosts);
+<a name="l1584"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1585"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 112, 1, </span><span class=cB6>&quot;S:%d&quot;</span><span class=cB0>, shasta_items);
+<a name="l1586"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_caught) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1587"></a>  </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1588"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 156, 1, </span><span class=cB6>&quot;BIRD&quot;</span><span class=cB0>);
+<a name="l1589"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3391"></span><span class=cB3>LTCYAN</a></span><span class=cB0>;
+<a name="l1590"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 200, 1, </span><span class=cB6>&quot;L:%d&quot;</span><span class=cB0>, lives);
+<a name="l1591"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1592"></a>  </span><span class=cB1>if</span><span class=cB0> (used_bk) DrawCheck(dc, 76, 12);
+<a name="l1593"></a>  </span><span class=cB1>if</span><span class=cB0> (used_shasta) DrawCheck(dc, 120, 12);
+<a name="l1594"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_caught) DrawCheck(dc, 164, 12);
+<a name="l1595"></a>  </span><span class=cB1>if</span><span class=cB0> (used_bk &amp;&amp; used_shasta &amp;&amp; bird_caught)
+<a name="l1596"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1597"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1598"></a>    DrawCrown(dc, 206, 11);
+<a name="l1599"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1600"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1601"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 360, 1, </span><span class=cB6>&quot;TERRY %d&quot;</span><span class=cB0>, terry_caps);
+<a name="l1602"></a>  dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1603"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 444, 1, </span><span class=cB6>&quot;UFO %d&quot;</span><span class=cB0>, ufo_caps);
+<a name="l1604"></a>  </span><span class=cB1>if</span><span class=cB0> (hyper_avail) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1605"></a>  </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>DKGRAY</a></span><span class=cB0>;
+<a name="l1606"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 584, 1, </span><span class=cB6>&quot;HYP&quot;</span><span class=cB0>);
+<a name="l1607"></a>
+<a name="l1608"></a>  </span><span class=cB1>if</span><span class=cB0> (terry &gt;= 0 &amp;&amp; glow[terry].act &amp;&amp; glow[terry].carried)
+<a name="l1609"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1610"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1)
+<a name="l1611"></a>    {
+<a name="l1612"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1613"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 168, 60, </span><span class=cB6>&quot;!! TERRY ABDUCTED -- SHOOT THE SHIP !!&quot;</span><span class=cB0>);
+<a name="l1614"></a>    }
+<a name="l1615"></a>    </span><span class=cB1>if</span><span class=cB0> (hyper_avail)
+<a name="l1616"></a>    {
+<a name="l1617"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1618"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 200, 76, </span><span class=cB6>&quot;Press H to HYPER-JUMP to Terry&quot;</span><span class=cB0>);
+<a name="l1619"></a>    }
+<a name="l1620"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1621"></a>
+<a name="l1622"></a>  </span><span class=cB1>if</span><span class=cB0> (pick_msg &gt; 0)
+<a name="l1623"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1624"></a>    </span><span class=cB1>U8</span><span class=cB0> *nm;
+<a name="l1625"></a>    </span><span class=cB1>if</span><span class=cB0> (pick_item == ITEM_SHASTA) nm = </span><span class=cB6>&quot;SHASTA BOOST&quot;</span><span class=cB0>;
+<a name="l1626"></a>    </span><span class=cB1>else</span><span class=cB0> nm = </span><span class=cB6>&quot;BK BOOST&quot;</span><span class=cB0>;
+<a name="l1627"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1628"></a>    </span><span class=cB1>if</span><span class=cB0> (pick_who == 1)
+<a name="l1629"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 206, 100, </span><span class=cB6>&quot;Terry grabbed a %s!&quot;</span><span class=cB0>, nm);
+<a name="l1630"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1631"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 240, 100, </span><span class=cB6>&quot;Got a %s!&quot;</span><span class=cB0>, nm);
+<a name="l1632"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1633"></a>
+<a name="l1634"></a>  </span><span class=cB1>if</span><span class=cB0> (bird_msg &gt; 0)
+<a name="l1635"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1636"></a>    </span><span class=cB1>if</span><span class=cB0> (bird_killed)
+<a name="l1637"></a>    {
+<a name="l1638"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1639"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 196, 118, </span><span class=cB6>&quot;You killed Terry's bird!  -%d&quot;</span><span class=cB0>, BIRD_PTS);
+<a name="l1640"></a>    }
+<a name="l1641"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1642"></a>    {
+<a name="l1643"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1644"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 232, 118, </span><span class=cB6>&quot;Caught the bird! +%d&quot;</span><span class=cB0>, BIRD_PTS);
+<a name="l1645"></a>    }
+<a name="l1646"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1647"></a>
+<a name="l1648"></a>  </span><span class=cB1>if</span><span class=cB0> (bk_msg &gt; 0)
+<a name="l1649"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1650"></a>    </span><span class=cB1>U8</span><span class=cB0> *msg = </span><span class=cB6>&quot;BK POWER!&quot;</span><span class=cB0>;
+<a name="l1651"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1652"></a>    </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1653"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, </span><span class=cB7>(</span><span class=cB0>640 - <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(msg) * <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4048"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB7>)</span><span class=cB0> / 2, 136, msg);
+<a name="l1654"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1655"></a>
+<a name="l1656"></a>  </span><span class=cB1>if</span><span class=cB0> (shasta_timer &gt; 0)
+<a name="l1657"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1658"></a>    </span><span class=cB9>I64</span><span class=cB0> bsec = (shasta_timer + 29) / 30;
+<a name="l1659"></a>    </span><span class=cB1>if</span><span class=cB0> (bsec &lt;= 5 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>total_frames / 4</span><span class=cB7>)</span><span class=cB0> &amp; 1) dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1660"></a>    </span><span class=cB1>else</span><span class=cB0> dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1661"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 256, 44, </span><span class=cB6>&quot;SHASTA BOOST %ds&quot;</span><span class=cB0>, bsec);
+<a name="l1662"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1663"></a>
+<a name="l1664"></a>  </span><span class=cB1>if</span><span class=cB0> (state == ST_DEAD)
+<a name="l1665"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1666"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1667"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 236, 210, </span><span class=cB6>&quot;SHIP DESTROYED!&quot;</span><span class=cB0>);
+<a name="l1668"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1669"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 236, 230, </span><span class=cB6>&quot;Ships left: %d&quot;</span><span class=cB0>, lives);
+<a name="l1670"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1671"></a>  </span><span class=cB1>if</span><span class=cB0> (state == ST_NEXT)
+<a name="l1672"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1673"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1674"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 262, 162, </span><span class=cB6>&quot;WAVE CLEAR!&quot;</span><span class=cB0>);
+<a name="l1675"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1676"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 184, </span><span class=cB6>&quot;Ships left</span><span class=cB0>   </span><span class=cB6>   %2d x %3d = %5d&quot;</span><span class=cB0>,
+<a name="l1677"></a>        lives, 100, bonus_life);
+<a name="l1678"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 196, </span><span class=cB6>&quot;BK Boost</span><span class=cB0>     </span><span class=cB6>   %2d x %3d = %5d&quot;</span><span class=cB0>,
+<a name="l1679"></a>        bk_boosts, 50, bonus_bk);
+<a name="l1680"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 208, </span><span class=cB6>&quot;Shasta Boost    %2d x %3d = %5d&quot;</span><span class=cB0>,
+<a name="l1681"></a>        shasta_items, 50, bonus_shasta);
+<a name="l1682"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 220, </span><span class=cB6>&quot;Wave %-2d</span><span class=cB0>    </span><span class=cB6>     %2d x %3d = %5d&quot;</span><span class=cB0>,
+<a name="l1683"></a>        wave, wave, 250, bonus_wave);
+<a name="l1684"></a>    </span><span class=cB1>if</span><span class=cB0> (bonus_hyper &gt; 0)
+<a name="l1685"></a>    {
+<a name="l1686"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1687"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 232, </span><span class=cB6>&quot;Hyper-jump saved</span><span class=cB0>   </span><span class=cB6>      = %5d&quot;</span><span class=cB0>, bonus_hyper);
+<a name="l1688"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1689"></a>    }
+<a name="l1690"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1691"></a>    {
+<a name="l1692"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1693"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 232, </span><span class=cB6>&quot;Hyper-jump used</span><span class=cB0>    </span><span class=cB6>      = %5d&quot;</span><span class=cB0>, 0);
+<a name="l1694"></a>    }
+<a name="l1695"></a>    </span><span class=cB1>if</span><span class=cB0> (bonus_king &gt; 0)
+<a name="l1696"></a>    {
+<a name="l1697"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1698"></a>      DrawCrown(dc, 194, 245);
+<a name="l1699"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1700"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 244, </span><span class=cB6>&quot;KING TERRY BONUS!</span><span class=cB0>  </span><span class=cB6>      = %5d&quot;</span><span class=cB0>, bonus_king);
+<a name="l1701"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1702"></a>    }
+<a name="l1703"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1704"></a>    {
+<a name="l1705"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1706"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 244, </span><span class=cB6>&quot;King Terry </span><span class=cB0>        </span><span class=cB6>      = %5d&quot;</span><span class=cB0>, 0);
+<a name="l1707"></a>    }
+<a name="l1708"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1709"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 260, </span><span class=cB6>&quot;Total bonus</span><span class=cB0>          </span><span class=cB6>    = %5d&quot;</span><span class=cB0>, bonus_total);
+<a name="l1710"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1711"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 216, 280, </span><span class=cB6>&quot;Press SPACE for next wave&quot;</span><span class=cB0>);
+<a name="l1712"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1713"></a>  </span><span class=cB1>if</span><span class=cB0> (state == ST_OVER)
+<a name="l1714"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1715"></a>    </span><span class=cB1>if</span><span class=cB0> (terry_lost)
+<a name="l1716"></a>    {
+<a name="l1717"></a>      dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3392"></span><span class=cB3>LTRED</a></span><span class=cB0>;
+<a name="l1718"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 200, 188, </span><span class=cB6>&quot;TERRY WAS TAKEN TO THE TOP!&quot;</span><span class=cB0>);
+<a name="l1719"></a>    }
+<a name="l1720"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>RED</a></span><span class=cB0>;
+<a name="l1721"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 248, 210, </span><span class=cB6>&quot;GAME OVER&quot;</span><span class=cB0>);
+<a name="l1722"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3395"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l1723"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 222, 234, </span><span class=cB6>&quot;Score: %d&quot;</span><span class=cB0>, score);
+<a name="l1724"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3394"></span><span class=cB3>YELLOW</a></span><span class=cB0>;
+<a name="l1725"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 210, 258, </span><span class=cB6>&quot;R = Restart</span><span class=cB0>  </span><span class=cB6> ESC = Quit&quot;</span><span class=cB0>);
+<a name="l1726"></a>    dc-&gt;color = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3390"></span><span class=cB3>LTGREEN</a></span><span class=cB0>;
+<a name="l1727"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1133"></span><span class=cB5>GrPrint</a></span><span class=cB0>(dc, 184, 282, </span><span class=cB6>&quot;Abducted -- Terry: %d   UFOs: %d&quot;</span><span class=cB0>,
+<a name="l1728"></a>        terry_caps, ufo_caps);
+<a name="l1729"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1730"></a>}
+<a name="l1731"></a>
+<a name="l1732"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3748"></span><span class=cB9>CTask</a></span><span class=cB0> *task, </span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l1733"></a>{
+<a name="l1734"></a>  </span><span class=cB1>no_warn</span><span class=cB0> task;
+<a name="l1735"></a>  DrawBackground(dc);
+<a name="l1736"></a>  DrawBird(dc);
+<a name="l1737"></a>  DrawGlowies(dc);
+<a name="l1738"></a>  DrawEnemies(dc);
+<a name="l1739"></a>  DrawPickups(dc);
+<a name="l1740"></a>  DrawPlayer(dc);
+<a name="l1741"></a>  DrawBullets(dc);
+<a name="l1742"></a>  DrawMinimap(dc);
+<a name="l1743"></a>  DrawHud(dc);
+<a name="l1744"></a>}
+<a name="l1745"></a>
+<a name="l1746"></a></span><span class=cB1>U0</span><span class=cB0> GlowUFOs()
+<a name="l1747"></a>{
+<a name="l1748"></a>  </span><span class=cB9>I64</span><span class=cB0> ch, sc;
+<a name="l1749"></a>  </span><span class=cB1>Bool</span><span class=cB0> running;
+<a name="l1750"></a>
+<a name="l1751"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l30"></span><span class=cB5>SettingsPush</a></span><span class=cB0>;
+<a name="l1752"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l425"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l1753"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l580"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l1754"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l609"></span><span class=cB5>WinBorder</a></span><span class=cB0>(0);
+<a name="l1755"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>(0);
+<a name="l1756"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(</span><span class=cB6>&quot;File {}\n&quot;</span><span class=cB0>);
+<a name="l1757"></a>
+<a name="l1758"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>.show=0;
+<a name="l1759"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l1760"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l365"></span><span class=cB5>Type</a></span><span class=cB0>(</span><span class=cB6>&quot;GlowUFOs.DD&quot;</span><span class=cB0>);
+<a name="l1761"></a>  </span><span class=cB6>&quot;\nPress any key to start...\n&quot;</span><span class=cB0>;
+<a name="l1762"></a>  ch = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
+<a name="l1763"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l1764"></a>
+<a name="l1765"></a>  NewGame();
+<a name="l1766"></a>
+<a name="l1767"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocGr.html#l104"></span><span class=cB5>DrawIt</a></span><span class=cB0>;
+<a name="l1768"></a>  running = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1769"></a>
+<a name="l1770"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l1771"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1772"></a>    </span><span class=cB1>while</span><span class=cB0> (running)
+<a name="l1773"></a>    {
+<a name="l1774"></a>      </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l41"></span><span class=cB5>ScanMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;ch, &amp;sc, (1 &lt;&lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3653"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>) | (1 &lt;&lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3654"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1775"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1776"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3653"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB0>:
+<a name="l1777"></a>        </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0])
+<a name="l1778"></a>        {
+<a name="l1779"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3990"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
+<a name="l1780"></a>          kl = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1781"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1782"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3991"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
+<a name="l1783"></a>          kr = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1784"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1785"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3988"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l1786"></a>          ku = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1787"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1788"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3989"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l1789"></a>          kd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1790"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1791"></a>        }
+<a name="l1792"></a>        </span><span class=cB1>switch</span><span class=cB0> (ch)
+<a name="l1793"></a>        {
+<a name="l1794"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l1795"></a>          kfire = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1796"></a>          </span><span class=cB1>if</span><span class=cB0> (state == ST_NEXT &amp;&amp; next_armed) knext = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1797"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1798"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'b'</span><span class=cB0>:
+<a name="l1799"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'B'</span><span class=cB0>:
+<a name="l1800"></a>          kbk = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1801"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1802"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'h'</span><span class=cB0>:
+<a name="l1803"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'H'</span><span class=cB0>:
+<a name="l1804"></a>          HyperJump();
+<a name="l1805"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1806"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'s'</span><span class=cB0>:
+<a name="l1807"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'S'</span><span class=cB0>:
+<a name="l1808"></a>          UseShastaBoost();
+<a name="l1809"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1810"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'r'</span><span class=cB0>:
+<a name="l1811"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'R'</span><span class=cB0>:
+<a name="l1812"></a>          </span><span class=cB1>if</span><span class=cB0> (state == ST_OVER) NewGame();
+<a name="l1813"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1814"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3933"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l1815"></a>          running = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1816"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1817"></a>        }
+<a name="l1818"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1819"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3654"></span><span class=cB3>MSG_KEY_UP</a></span><span class=cB0>:
+<a name="l1820"></a>        </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0])
+<a name="l1821"></a>        {
+<a name="l1822"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3990"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>:
+<a name="l1823"></a>          kl = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1824"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1825"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3991"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>:
+<a name="l1826"></a>          kr = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1827"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1828"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3988"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l1829"></a>          ku = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1830"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1831"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3989"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l1832"></a>          kd = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1833"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1834"></a>        }
+<a name="l1835"></a>        </span><span class=cB1>switch</span><span class=cB0> (ch)
+<a name="l1836"></a>        {
+<a name="l1837"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l1838"></a>          kfire = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1839"></a>          next_armed = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1840"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1841"></a>        }
+<a name="l1842"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1843"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1844"></a>      Update();
+<a name="l1845"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(33);
+<a name="l1846"></a>    }
+<a name="l1847"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1848"></a>  </span><span class=cB1>catch</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l1849"></a>
+<a name="l1850"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l31"></span><span class=cB6>ms</a></span><span class=cB0>.show=1;
+<a name="l1851"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1852"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/ARegistry.html#l54"></span><span class=cB5>RegWrite</a></span><span class=cB0>(</span><span class=cB6>&quot;TinkerOS/GlowUFOs&quot;</span><span class=cB0>,</span><span class=cB6>&quot;hi=%d;\n&quot;</span><span class=cB0>,hi);
+<a name="l1853"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l1854"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l1855"></a>  </span><span class=cB6>&quot;\nGlowUFOs ended. Score: %d</span><span class=cB0>  </span><span class=cB6>Hi: %d\n&quot;</span><span class=cB0>, score, hi;
+<a name="l1856"></a>}
+<a name="l1857"></a>
+<a name="l1858"></a>GlowUFOs;
+</span></div></pre></body>
+</html>

@@ -77,7 +77,7 @@
 <a name="l36"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/BootRAM.html#l36"></span><span class=cB5>BootRAM</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> keep_ram_drv=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
 <a name="l37"></a>{</span><span class=cB2>//Softboot Kernel.BIN file. No hardware reset.</span><span class=cB0>
 <a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
-<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3145"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bdrd;
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bdrd;
 <a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l551"></span><span class=cB9>CKernel</a></span><span class=cB0> *hi_image,*lo_image=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l37"></span><span class=cB6>mem_boot_base</a></span><span class=cB0>-</span><span class=cB1>sizeof</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l463"></span><span class=cB9>CBinFile</a></span><span class=cB0>),
 <a name="l41"></a>        </span><span class=cB1>reg</span><span class=cB0> *sys_ram_reboot;
 <a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (!filename)
@@ -88,7 +88,7 @@
 <a name="l47"></a>  </span><span class=cB1>do</span><span class=cB0> sys_ram_reboot=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KStart64.html#l112"></span><span class=cBD>SYS_RAM_REBOOT_END</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KStart64.html#l87"></span><span class=cBD>SYS_RAM_REBOOT</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
 <a name="l48"></a>  </span><span class=cB1>while</span><span class=cB0> (sys_ram_reboot&lt;0x100000);
 <a name="l49"></a>
-<a name="l50"></a>  hi_image-&gt;boot_src=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4394"></span><span class=cB3>BOOT_SRC_RAM</a></span><span class=cB0>;
+<a name="l50"></a>  hi_image-&gt;boot_src=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4346"></span><span class=cB3>BOOT_SRC_RAM</a></span><span class=cB0>;
 <a name="l51"></a>  hi_image-&gt;boot_blk=0;
 <a name="l52"></a>  hi_image-&gt;boot_patch_table_base=lo_image(</span><span class=cB1>U8</span><span class=cB0> *)+hi_image-&gt;h.patch_table_offset;
 <a name="l53"></a>  hi_image-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0> =lo_image-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l601"></span><span class=cB3>RLF_VGA</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l600"></span><span class=cB3>RLF_16BIT</a></span><span class=cB0>);
@@ -100,7 +100,7 @@
 <a name="l59"></a>    {
 <a name="l60"></a>      bdrd=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l313"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(</span><span class=cB6>'B'</span><span class=cB0>);
 <a name="l61"></a>      hi_image-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l304"></span><span class=cB6>sys_initramfs_ptr</a></span><span class=cB0>=bdrd-&gt;RAM_dsk;
-<a name="l62"></a>      hi_image-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l305"></span><span class=cB6>sys_initramfs_size</a></span><span class=cB0>=(bdrd-&gt;max_blk+1)&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2442"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
+<a name="l62"></a>      hi_image-&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l305"></span><span class=cB6>sys_initramfs_size</a></span><span class=cB0>=(bdrd-&gt;max_blk+1)&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>;
 <a name="l63"></a>    }
 <a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l65"></a>
