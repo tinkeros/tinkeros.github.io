@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// Copies the OS files onto SD card partitions.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>// When booting from SD, the bootloader lives on a different</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>// drive, so unlike OSInstall.HC there is no need to ask about</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>// resolution or install a boot loader here -- this just copies</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>// the OS tree onto whichever of drive letters W, X, Y, Z (the</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>// SDHCI partitions) are mounted.</span><span class=cB0>
+<a name="l7"></a>
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> SD_DRV_WAIT_TIMEOUT_MS 30000
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> InstallDrvSD(</span><span class=cB9>I64</span><span class=cB0> drv_let)
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB1>Bool</span><span class=cB0> ready=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l13"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
+<a name="l14"></a>  </span><span class=cB9>I64</span><span class=cB0> src_let,timeout=0;
+<a name="l15"></a>  src_let=</span><span class=cB6>':'</span><span class=cB0>;
+<a name="l16"></a>  st=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/Ready&quot;</span><span class=cB0>,drv_let);
+<a name="l17"></a>  </span><span class=cB1>while</span><span class=cB0> (!ready &amp;&amp; timeout&lt;SD_DRV_WAIT_TIMEOUT_MS)
+<a name="l18"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>    </span><span class=cB1>try</span><span class=cB0>
+<a name="l20"></a>    {
+<a name="l21"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l190"></span><span class=cB5>DirMk</a></span><span class=cB0>(st);
+<a name="l22"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l23"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l103"></span><span class=cB5>IsDir</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>)
+<a name="l24"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l25"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l26"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskA.html#l150"></span><span class=cB5>DelTree</a></span><span class=cB0>(st);
+<a name="l27"></a>        ready=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l28"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l29"></a>    }
+<a name="l30"></a>    </span><span class=cB1>catch</span><span class=cB0>
+<a name="l31"></a>    {
+<a name="l32"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l33"></a>    }
+<a name="l34"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(100);
+<a name="l35"></a>    timeout+=100;
+<a name="l36"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l37"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l38"></a>  </span><span class=cB1>if</span><span class=cB0> (timeout&gt;SD_DRV_WAIT_TIMEOUT_MS)
+<a name="l39"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l40"></a>    </span><span class=cB6>&quot;Failed to write to drive %C, install cannot continue!\n&quot;</span><span class=cB0>,drv_let;
+<a name="l41"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l42"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l43"></a>  </span><span class=cB6>&quot;Copying OS files to drive %C:...\n&quot;</span><span class=cB0>,drv_let;
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Copy(\&quot;%C:/*.HC.Z\&quot;,\&quot;%C:/\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Adam\&quot;,\&quot;%C:/Adam\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Apps\&quot;,\&quot;%C:/Apps\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Compiler\&quot;,\&quot;%C:/Compiler\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Demo\&quot;,\&quot;%C:/Demo\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l49"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Doc\&quot;,\&quot;%C:/Doc\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l50"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Home\&quot;,\&quot;%C:/Home\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Kernel\&quot;,\&quot;%C:/Kernel\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;CopyTree(\&quot;%C:/Misc\&quot;,\&quot;%C:/Misc\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;DirMk(\&quot;%C:/Tmp\&quot;);&quot;</span><span class=cB0>,drv_let);
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;DirMk(\&quot;%C:/Tmp/ScrnShots\&quot;);&quot;</span><span class=cB0>,drv_let);
+<a name="l55"></a>  st=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/Home/DoDistro.HC.Z&quot;</span><span class=cB0>,drv_let);
+<a name="l56"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65"></span><span class=cB5>FileFind</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>)
+<a name="l57"></a>    <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Copy(\&quot;%C:/Misc/DoDistro.HC.Z\&quot;,\&quot;%C:/Home/DoDistro.HC.Z\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l59"></a>  st=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/Home/MakeHome.HC.Z&quot;</span><span class=cB0>,drv_let);
+<a name="l60"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l65"></span><span class=cB5>FileFind</a></span><span class=cB7>(</span><span class=cB0>st</span><span class=cB7>)</span><span class=cB0>)
+<a name="l61"></a>    <a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l706"></span><span class=cB5>ExePrint</a></span><span class=cB0>(</span><span class=cB6>&quot;Copy(\&quot;%C:/MakeHome.HC.Z\&quot;,\&quot;%C:/Home/MakeHome.HC.Z\&quot;);&quot;</span><span class=cB0>,src_let,drv_let);
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l63"></a>  </span><span class=cB6>&quot;Done copying OS files to drive %C:\n&quot;</span><span class=cB0>,drv_let;
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>Bool</span><span class=cB0> SDInstall()
+<a name="l67"></a>{
+<a name="l68"></a>  </span><span class=cB9>I64</span><span class=cB0> i, drv_let;
+<a name="l69"></a>  </span><span class=cB1>Bool</span><span class=cB0> found=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l70"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;4;i++)
+<a name="l71"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>    drv_let=</span><span class=cB6>'W'</span><span class=cB0>+i;
+<a name="l73"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB0>drv_let</span><span class=cB7>)</span><span class=cB0>)
+<a name="l74"></a>    {
+<a name="l75"></a>      InstallDrvSD(drv_let);
+<a name="l76"></a>      found=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l77"></a>    }
+<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>  </span><span class=cB1>if</span><span class=cB0> (!found)
+<a name="l80"></a>    </span><span class=cB6>&quot;No SD partitions found mounted on W-Z!  Run MountSDHCIAuto first.\n&quot;</span><span class=cB0>;
+<a name="l81"></a>  </span><span class=cB1>return</span><span class=cB0> found;
+<a name="l82"></a>}
+<a name="l83"></a>
+<a name="l84"></a>#</span><span class=cB1>if</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2119"></span><span class=cB3>__CMD_LINE__</a></span><span class=cB0>
+<a name="l85"></a>SDInstall();
+<a name="l86"></a>#</span><span class=cB1>endif</span><span class=cB0>
+</span></div></pre></body>
+</html>

@@ -134,8 +134,8 @@
 <a name="l95"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_ptr = 0;
 <a name="l96"></a></span><span class=cB9>I64</span><span class=cB0> rx_buffer_cnt = 255;
 <a name="l97"></a></span><span class=cB9>I64</span><span class=cB0> tx_buffer_cnt = 256;
-<a name="l98"></a></span><span class=cB9>U64</span><span class=cB0> rx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * rx_buffer_cnt);
-<a name="l99"></a></span><span class=cB9>U64</span><span class=cB0> tx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * tx_buffer_cnt);
+<a name="l98"></a></span><span class=cB9>U64</span><span class=cB0> rx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * rx_buffer_cnt, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l99"></a></span><span class=cB9>U64</span><span class=cB0> tx_buffers = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE * tx_buffer_cnt, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l100"></a>
 <a name="l101"></a></span><span class=cB1>class</span><span class=cB0> @virtio_net
 <a name="l102"></a>{
@@ -166,7 +166,7 @@
 <a name="l127"></a>@virtio_net VirtioNet;
 <a name="l128"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;VirtioNet, 0, </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net</span><span class=cB7>)</span><span class=cB0>);
 <a name="l129"></a>
-<a name="l130"></a>@virtio_net_header *def_pkt_hdr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l130"></a>@virtio_net_header *def_pkt_hdr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l131"></a>
 <a name="l132"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> @virtio_net_alloc_tx_packet(</span><span class=cB1>U8</span><span class=cB0> **buffer_out, </span><span class=cB9>I64</span><span class=cB0> length</span><span class=cB2>/*, I64 flags*/</span><span class=cB0>)
 <a name="l133"></a>{</span><span class=cB2>// FIXME: validate length</span><span class=cB0>
@@ -269,20 +269,20 @@
 <a name="l230"></a>  </span><span class=cB2>// Set up receive queue</span><span class=cB0>
 <a name="l231"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 0);
 <a name="l232"></a>  VirtioNet.rq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
-<a name="l233"></a>  VirtioNet.rq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l233"></a>  VirtioNet.rq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l234"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.rq / 4096);
 <a name="l235"></a>  </span><span class=cB2>// Set up send queue</span><span class=cB0>
 <a name="l236"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l78"></span><span class=cB5>OutU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SEL, 1);
 <a name="l237"></a>  VirtioNet.sq_size = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l75"></span><span class=cB5>InU16</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_SIZE); </span><span class=cB2>// 256</span><span class=cB0>
-<a name="l238"></a>  VirtioNet.sq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;code_heap);
+<a name="l238"></a>  VirtioNet.sq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_queue</span><span class=cB7>)</span><span class=cB0>, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l239"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l79"></span><span class=cB5>OutU32</a></span><span class=cB0>(VirtioNet.port + VIRTIO_PCI_QUEUE_PFN, VirtioNet.sq / 4096);
 <a name="l240"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 128; i++)
 <a name="l241"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l242"></a>    VirtioNet.rq-&gt;buffers[i * 2].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>);
+<a name="l242"></a>    VirtioNet.rq-&gt;buffers[i * 2].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>@virtio_net_header</span><span class=cB7>)</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l243"></a>    VirtioNet.rq-&gt;buffers[i * 2].length = </span><span class=cB1>sizeof</span><span class=cB0>(@virtio_net_header);
 <a name="l244"></a>    VirtioNet.rq-&gt;buffers[i * 2].flags = VRING_DESC_F_NEXT | VRING_DESC_F_WRITE;
 <a name="l245"></a>    VirtioNet.rq-&gt;buffers[i * 2].next = (i * 2) + 1;
-<a name="l246"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE);
+<a name="l246"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].address = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETHERNET_FRAME_SIZE, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l247"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].length = ETHERNET_FRAME_SIZE;
 <a name="l248"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].flags = VRING_DESC_F_WRITE;
 <a name="l249"></a>    VirtioNet.rq-&gt;buffers[(i * 2) + 1].next = 0;

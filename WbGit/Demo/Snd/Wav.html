@@ -1,0 +1,323 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// Convert an input file for use with this player using ffmpeg.</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>// Low quality (smallest, 8-bit mono 22050Hz):</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//   ffmpeg -i input.wav -ac 1 -ar 22050 -c:a pcm_u8 output.wav</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>// High quality (16-bit stereo at the mixer rate, no resampling):</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>//   ffmpeg -i input.wav -ac 2 -ar 48000 -c:a pcm_s16le output.wav</span><span class=cB0>
+<a name="l8"></a>
+<a name="l9"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Snd/Wav&quot;</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> WAVK_PCM        1
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> WAVK_FLOAT      3
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> WAVK_EXTENSIBLE 0xFFFE
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>F64</span><span class=cB0> wav_gain=1.0,
+<a name="l16"></a>    wav_fade_mS=6.0;
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>class</span><span class=cB0> CWavHdr
+<a name="l19"></a>{
+<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> channels,bits,fmt,rate,pcm_off,pcm_len;
+<a name="l21"></a>};
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>class</span><span class=cB0> CWav
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB1>U8</span><span class=cB0> *file_buf,*pcm;
+<a name="l26"></a>  </span><span class=cB9>I64</span><span class=cB0> pcm_len,channels,bits,fmt,bytes_per_samp,frame_count;
+<a name="l27"></a>  </span><span class=cB1>F64</span><span class=cB0> src_rate,step,pos,fade_frames;
+<a name="l28"></a>  </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>;
+<a name="l29"></a>} wav;
+<a name="l30"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;wav,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CWav</span><span class=cB7>)</span><span class=cB0>);
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB9>I64</span><span class=cB0> wav_mixer_idx=-1;
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB9>I64</span><span class=cB0> WavU16(</span><span class=cB1>U8</span><span class=cB0> *p)
+<a name="l35"></a>{
+<a name="l36"></a>  </span><span class=cB1>return</span><span class=cB0> p[0]|p[1]&lt;&lt;8;
+<a name="l37"></a>}
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB9>I64</span><span class=cB0> WavU32(</span><span class=cB1>U8</span><span class=cB0> *p)
+<a name="l40"></a>{
+<a name="l41"></a>  </span><span class=cB1>return</span><span class=cB0> p[0]|p[1]&lt;&lt;8|p[2]&lt;&lt;16|p[3]&lt;&lt;24;
+<a name="l42"></a>}
+<a name="l43"></a>
+<a name="l44"></a></span><span class=cB1>Bool</span><span class=cB0> WavParseHeader(</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> size,CWavHdr *h)
+<a name="l45"></a>{
+<a name="l46"></a>  </span><span class=cB9>I64</span><span class=cB0> pos,cksize;
+<a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> *id;
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(h,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CWavHdr</span><span class=cB7>)</span><span class=cB0>);
+<a name="l49"></a>  h-&gt;pcm_off=-1;
+<a name="l50"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;12 || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;RIFF&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0> || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf+8,</span><span class=cB6>&quot;WAVE&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l51"></a>    </span><span class=cB6>&quot;Wav: not a RIFF/WAVE file.\n&quot;</span><span class=cB0>;
+<a name="l52"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l53"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>  pos=12;
+<a name="l55"></a>  </span><span class=cB1>while</span><span class=cB0> (pos+8&lt;=size) </span><span class=cB7>{</span><span class=cB0>
+<a name="l56"></a>    id=buf+pos;
+<a name="l57"></a>    cksize=WavU32(buf+pos+4);
+<a name="l58"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>id,</span><span class=cB6>&quot;fmt &quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l59"></a>      </span><span class=cB1>if</span><span class=cB0> (cksize&lt;16) </span><span class=cB7>{</span><span class=cB0>
+<a name="l60"></a>        </span><span class=cB6>&quot;Wav: fmt chunk too small.\n&quot;</span><span class=cB0>;
+<a name="l61"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l62"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>      h-&gt;fmt     =WavU16(buf+pos+8);
+<a name="l64"></a>      h-&gt;channels=WavU16(buf+pos+10);
+<a name="l65"></a>      h-&gt;rate    =WavU32(buf+pos+12);
+<a name="l66"></a>      h-&gt;bits    =WavU16(buf+pos+22);
+<a name="l67"></a>      </span><span class=cB1>if</span><span class=cB0> (h-&gt;fmt==WAVK_EXTENSIBLE &amp;&amp; cksize&gt;=40)
+<a name="l68"></a>        h-&gt;fmt=WavU16(buf+pos+8+24);
+<a name="l69"></a>    } </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>id,</span><span class=cB6>&quot;data&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l70"></a>      h-&gt;pcm_off=pos+8;
+<a name="l71"></a>      h-&gt;pcm_len=cksize;
+<a name="l72"></a>      </span><span class=cB1>if</span><span class=cB0> (h-&gt;pcm_off+h-&gt;pcm_len&gt;size)
+<a name="l73"></a>        h-&gt;pcm_len=size-h-&gt;pcm_off;
+<a name="l74"></a>    }
+<a name="l75"></a>    pos+=8+cksize+(cksize&amp;1);
+<a name="l76"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (!h-&gt;channels || !h-&gt;rate || !h-&gt;bits || h-&gt;pcm_off&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l78"></a>    </span><span class=cB6>&quot;Wav: missing fmt or data chunk.\n&quot;</span><span class=cB0>;
+<a name="l79"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (h-&gt;bits!=8 &amp;&amp; h-&gt;bits!=16 &amp;&amp; h-&gt;bits!=24 &amp;&amp; h-&gt;bits!=32) </span><span class=cB7>{</span><span class=cB0>
+<a name="l82"></a>    </span><span class=cB6>&quot;Wav: unsupported bit depth %d.\n&quot;</span><span class=cB0>,h-&gt;bits;
+<a name="l83"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l84"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l85"></a>  </span><span class=cB1>if</span><span class=cB0> (h-&gt;fmt==WAVK_FLOAT &amp;&amp; h-&gt;bits!=32) </span><span class=cB7>{</span><span class=cB0>
+<a name="l86"></a>    </span><span class=cB6>&quot;Wav: float PCM must be 32-bit.\n&quot;</span><span class=cB0>;
+<a name="l87"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l88"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l89"></a>  </span><span class=cB1>if</span><span class=cB0> (h-&gt;fmt!=WAVK_PCM &amp;&amp; h-&gt;fmt!=WAVK_FLOAT) </span><span class=cB7>{</span><span class=cB0>
+<a name="l90"></a>    </span><span class=cB6>&quot;Wav: unsupported format tag %d (only PCM or IEEE float).\n&quot;</span><span class=cB0>,h-&gt;fmt;
+<a name="l91"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l92"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l93"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l94"></a>}
+<a name="l95"></a>
+<a name="l96"></a></span><span class=cB1>F64</span><span class=cB0> WavF32Decode(</span><span class=cB9>I64</span><span class=cB0> bits)
+<a name="l97"></a>{
+<a name="l98"></a>  </span><span class=cB9>I64</span><span class=cB0> sign,exp,mant;
+<a name="l99"></a>  </span><span class=cB1>F64</span><span class=cB0> v;
+<a name="l100"></a>  sign=bits&gt;&gt;31&amp;1;
+<a name="l101"></a>  exp=bits&gt;&gt;23&amp;0xFF;
+<a name="l102"></a>  mant=bits&amp;0x7FFFFF;
+<a name="l103"></a>  </span><span class=cB1>if</span><span class=cB0> (!exp) </span><span class=cB7>{</span><span class=cB0>
+<a name="l104"></a>    </span><span class=cB1>if</span><span class=cB0> (!mant)
+<a name="l105"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l106"></a>    v=mant/8388608.0*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(2.0,-126.0);
+<a name="l107"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (exp==255)
+<a name="l108"></a>    v=1.0;
+<a name="l109"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l110"></a>    v=(1.0+mant/8388608.0)*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(2.0,exp-127.0);
+<a name="l111"></a>  </span><span class=cB1>if</span><span class=cB0> (sign)
+<a name="l112"></a>    v=-v;
+<a name="l113"></a>  </span><span class=cB1>return</span><span class=cB0> v;
+<a name="l114"></a>}
+<a name="l115"></a>
+<a name="l116"></a></span><span class=cB1>F64</span><span class=cB0> WavSample(</span><span class=cB9>I64</span><span class=cB0> frame,</span><span class=cB9>I64</span><span class=cB0> ch)
+<a name="l117"></a>{
+<a name="l118"></a>  </span><span class=cB9>I64</span><span class=cB0> off,v;
+<a name="l119"></a>  </span><span class=cB1>U8</span><span class=cB0> *p;
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (frame&lt;0 || frame&gt;=wav.frame_count)
+<a name="l121"></a>    </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l122"></a>  off=(frame*wav.channels+ch)*wav.bytes_per_samp;
+<a name="l123"></a>  p=wav.pcm+off;
+<a name="l124"></a>  </span><span class=cB1>switch</span><span class=cB0> (wav.bits) </span><span class=cB7>{</span><span class=cB0>
+<a name="l125"></a>    </span><span class=cB1>case</span><span class=cB0> 8:
+<a name="l126"></a>      </span><span class=cB1>return</span><span class=cB0> (p[0]-128)/128.0;
+<a name="l127"></a>    </span><span class=cB1>case</span><span class=cB0> 16:
+<a name="l128"></a>      v=p[0]|p[1]&lt;&lt;8;
+<a name="l129"></a>      </span><span class=cB1>if</span><span class=cB0> (v&amp;0x8000)
+<a name="l130"></a>        v-=0x10000;
+<a name="l131"></a>      </span><span class=cB1>return</span><span class=cB0> v/32768.0;
+<a name="l132"></a>    </span><span class=cB1>case</span><span class=cB0> 24:
+<a name="l133"></a>      v=p[0]|p[1]&lt;&lt;8|p[2]&lt;&lt;16;
+<a name="l134"></a>      </span><span class=cB1>if</span><span class=cB0> (v&amp;0x800000)
+<a name="l135"></a>        v-=0x1000000;
+<a name="l136"></a>      </span><span class=cB1>return</span><span class=cB0> v/8388608.0;
+<a name="l137"></a>    </span><span class=cB1>case</span><span class=cB0> 32:
+<a name="l138"></a>      v=p[0]|p[1]&lt;&lt;8|p[2]&lt;&lt;16|p[3]&lt;&lt;24;
+<a name="l139"></a>      </span><span class=cB1>if</span><span class=cB0> (wav.fmt==WAVK_FLOAT)
+<a name="l140"></a>        </span><span class=cB1>return</span><span class=cB0> WavF32Decode(v);
+<a name="l141"></a>      </span><span class=cB1>if</span><span class=cB0> (v&amp;0x80000000)
+<a name="l142"></a>        v-=0x100000000;
+<a name="l143"></a>      </span><span class=cB1>return</span><span class=cB0> v/2147483648.0;
+<a name="l144"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l145"></a>  </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l146"></a>}
+<a name="l147"></a>
+<a name="l148"></a></span><span class=cB1>U0</span><span class=cB0> WavFillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l149"></a>{
+<a name="l150"></a>  </span><span class=cB9>I64</span><span class=cB0> j,l,c,f0,t,samp;
+<a name="l151"></a>  </span><span class=cB1>F64</span><span class=cB0> frac,v,g,remain;
+<a name="l152"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>SND_OUT_CONTAINER</span><span class=cB7>)</span><span class=cB0>);
+<a name="l153"></a>  </span><span class=cB1>if</span><span class=cB0> (!wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>)
+<a name="l154"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l155"></a>  j=0;
+<a name="l156"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
+<a name="l157"></a>    </span><span class=cB1>if</span><span class=cB0> (wav.pos&gt;=wav.frame_count) {
+<a name="l158"></a>      wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l159"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l160"></a>    }
+<a name="l161"></a>    f0=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Floor</a></span><span class=cB7>(</span><span class=cB0>wav.pos</span><span class=cB7>)</span><span class=cB0>);
+<a name="l162"></a>    frac=wav.pos-f0;
+<a name="l163"></a>    remain=wav.frame_count-wav.pos;
+<a name="l164"></a>    g=1.0;
+<a name="l165"></a>    </span><span class=cB1>if</span><span class=cB0> (remain&lt;wav.fade_frames)
+<a name="l166"></a>      g=remain/wav.fade_frames;
+<a name="l167"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++) {
+<a name="l168"></a>      c=l;
+<a name="l169"></a>      </span><span class=cB1>if</span><span class=cB0> (wav.channels==1)
+<a name="l170"></a>        c=0;
+<a name="l171"></a>      v=WavSample(f0,c)*(1.0-frac)+WavSample(f0+1,c)*frac;
+<a name="l172"></a>      samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>v*g*snd_vol*wav_gain,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;~0xFF;
+<a name="l173"></a>      t=buf[j]+samp;
+<a name="l174"></a>      </span><span class=cB1>if</span><span class=cB0> (t&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)
+<a name="l175"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>;
+<a name="l176"></a>      </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>)
+<a name="l177"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>;
+<a name="l178"></a>      buf[j]=t;
+<a name="l179"></a>      j++;
+<a name="l180"></a>    }
+<a name="l181"></a>    wav.pos+=wav.step;
+<a name="l182"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> WavBusy()
+<a name="l186"></a>{
+<a name="l187"></a>  </span><span class=cB1>return</span><span class=cB0> wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>;
+<a name="l188"></a>}
+<a name="l189"></a>
+<a name="l190"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> WavWait()
+<a name="l191"></a>{
+<a name="l192"></a>  </span><span class=cB1>while</span><span class=cB0> (wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>)
+<a name="l193"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l194"></a>}
+<a name="l195"></a>
+<a name="l196"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> WavStop()
+<a name="l197"></a>{
+<a name="l198"></a>  wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l199"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l200"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wav.file_buf);
+<a name="l201"></a>  wav.file_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l202"></a>}
+<a name="l203"></a>
+<a name="l204"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> WavPlayMem(</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> size)
+<a name="l205"></a>{
+<a name="l206"></a>  CWavHdr h;
+<a name="l207"></a>  </span><span class=cB1>if</span><span class=cB0> (wav_mixer_idx&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l208"></a>    </span><span class=cB6>&quot;Wav: not installed -- bring up HD Audio and HDMixer first.\n&quot;</span><span class=cB0>;
+<a name="l209"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l210"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (!WavParseHeader</span><span class=cB7>(</span><span class=cB0>data,size,&amp;h</span><span class=cB7>)</span><span class=cB0>)
+<a name="l212"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l213"></a>  WavWait;
+<a name="l214"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l215"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wav.file_buf);
+<a name="l216"></a>  wav.file_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(size);
+<a name="l217"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(wav.file_buf,data,size);
+<a name="l218"></a>  wav.pcm=wav.file_buf+h.pcm_off;
+<a name="l219"></a>  wav.pcm_len=h.pcm_len;
+<a name="l220"></a>  wav.channels=h.channels;
+<a name="l221"></a>  wav.bits=h.bits;
+<a name="l222"></a>  wav.fmt=h.fmt;
+<a name="l223"></a>  wav.bytes_per_samp=h.bits/8;
+<a name="l224"></a>  wav.frame_count=wav.pcm_len/(wav.channels*wav.bytes_per_samp);
+<a name="l225"></a>  wav.src_rate=h.rate;
+<a name="l226"></a>  wav.step=h.rate/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(SND_SAMPLE_RATE);
+<a name="l227"></a>  wav.fade_frames=wav_fade_mS/1000.0*h.rate;
+<a name="l228"></a>  wav.pos=0.0;
+<a name="l229"></a>  wav.<a href="http://tinkeros.github.io/WbGit/Demo/VM/AC97.html#l27"></span><span class=cB6>playing</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l230"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l231"></a>}
+<a name="l232"></a>
+<a name="l233"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> WavPlay(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>Bool</span><span class=cB0> bkg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l234"></a>{
+<a name="l235"></a>  </span><span class=cB1>U8</span><span class=cB0> *data;
+<a name="l236"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l237"></a>  </span><span class=cB1>Bool</span><span class=cB0> res;
+<a name="l238"></a>  data=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
+<a name="l239"></a>  </span><span class=cB1>if</span><span class=cB0> (!data) </span><span class=cB7>{</span><span class=cB0>
+<a name="l240"></a>    </span><span class=cB6>&quot;Wav: can't read \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,filename;
+<a name="l241"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l242"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l243"></a>  res=WavPlayMem(data,size);
+<a name="l244"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l245"></a>  </span><span class=cB1>if</span><span class=cB0> (res &amp;&amp; !bkg)
+<a name="l246"></a>    WavWait;
+<a name="l247"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l248"></a>}
+<a name="l249"></a>
+<a name="l250"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> WavInfo(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l251"></a>{
+<a name="l252"></a>  </span><span class=cB1>U8</span><span class=cB0> *data,*kind;
+<a name="l253"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l254"></a>  CWavHdr h;
+<a name="l255"></a>  data=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
+<a name="l256"></a>  </span><span class=cB1>if</span><span class=cB0> (!data) </span><span class=cB7>{</span><span class=cB0>
+<a name="l257"></a>    </span><span class=cB6>&quot;Wav: can't read \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,filename;
+<a name="l258"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l259"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l260"></a>  </span><span class=cB1>if</span><span class=cB0> (WavParseHeader</span><span class=cB7>(</span><span class=cB0>data,size,&amp;h</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l261"></a>    kind=</span><span class=cB6>&quot;int&quot;</span><span class=cB0>;
+<a name="l262"></a>    </span><span class=cB1>if</span><span class=cB0> (h.fmt==WAVK_FLOAT)
+<a name="l263"></a>      kind=</span><span class=cB6>&quot;float&quot;</span><span class=cB0>;
+<a name="l264"></a>    </span><span class=cB6>&quot;%s: %d ch, %d-bit %s, %dHz, %dmS\n&quot;</span><span class=cB0>,filename,h.channels,h.bits,
+<a name="l265"></a>          kind,h.rate,
+<a name="l266"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(1000.0*h.pcm_len/</span><span class=cB7>(</span><span class=cB0>h.channels*(h.bits/8)</span><span class=cB7>)</span><span class=cB0>/h.rate);
+<a name="l267"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l268"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l269"></a>}
+<a name="l270"></a>
+<a name="l271"></a></span><span class=cB1>U0</span><span class=cB0> WavInstall()
+<a name="l272"></a>{
+<a name="l273"></a>  wav_mixer_idx=MixerRegister(</span><span class=cB6>&quot;Wav&quot;</span><span class=cB0>,&amp;WavFillBuf);
+<a name="l274"></a>}
+<a name="l275"></a>
+<a name="l276"></a></span><span class=cB1>if</span><span class=cB0> (snd_dev==SD_HD_AUDIO) {
+<a name="l277"></a>  WavInstall;
+<a name="l278"></a>  </span><span class=cB6>&quot;Wav module loaded.\n&quot;</span><span class=cB0>;
+<a name="l279"></a>} </span><span class=cB1>else</span><span class=cB0>
+<a name="l280"></a>  </span><span class=cB6>&quot;Wav: needs HD Audio + Mixer.\n&quot;</span><span class=cB0>;
+<a name="l281"></a>
+<a name="l282"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>

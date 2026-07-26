@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> NES_SCRN_W      256
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> NES_SCRN_H      240
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> NES_OVERSCAN    8
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_HORZ               0
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_VERT               1
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_SINGLE             2
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_FOUR               3
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_SINGLE_UPPER       4
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U8</span><span class=cB0> *cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l11"></a></span><span class=cB9>I64</span><span class=cB0> numPRGROM,
+<a name="l12"></a>    numCHRROM,
+<a name="l13"></a>    controlByte1,
+<a name="l14"></a>    mapper,
+<a name="l15"></a>    mirroringType=MIRR_VERT;
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB2>//IRQ lines into the 6502, polled once per instruction by the main loop</span><span class=cB0>
+<a name="l18"></a></span><span class=cB1>Bool</span><span class=cB0> papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>, mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB2>//The PPU renders into gameCanvas; NESDrawWindow (Emu.HC) blits it (or</span><span class=cB0>
+<a name="l21"></a></span><span class=cB2>//a pre-doubled copy in gameCanvas2x) into the task window.</span><span class=cB0>
+<a name="l22"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l23"></a>
+<a name="l24"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3404"></span><span class=cB9>CBGR48</a></span><span class=cB0> nes_sys_palette[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>COLORS_NUM</a></span><span class=cB0>];
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB2>//Sprite fetched onto the current scanline (secondary OAM)</span><span class=cB0>
+<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> PPUsprite {
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> shifts_remaining;
+<a name="l29"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_index;
+<a name="l30"></a>  </span><span class=cB1>U8</span><span class=cB0> byte2;
+<a name="l31"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_0;
+<a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_1;
+<a name="l33"></a>  </span><span class=cB1>U8</span><span class=cB0> attribute;
+<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0> x;
+<a name="l35"></a>};
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB2>//Complete 2C02 PPU state (also snapshotted whole into save states)</span><span class=cB0>
+<a name="l38"></a></span><span class=cB1>class</span><span class=cB0> PPU2C02state {
+<a name="l39"></a>  </span><span class=cB1>U8</span><span class=cB0> odd_frame;
+<a name="l40"></a>  </span><span class=cB9>U16</span><span class=cB0> scanline;
+<a name="l41"></a>  </span><span class=cB9>U16</span><span class=cB0> dot;
+<a name="l42"></a> 
+<a name="l43"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_occurred;
+<a name="l44"></a> 
+<a name="l45"></a>
+<a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_output;
+<a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_zero_hit;
+<a name="l48"></a> 
+<a name="l49"></a>
+<a name="l50"></a>  </span><span class=cB9>U16</span><span class=cB0> nametable_base;
+<a name="l51"></a> 
+<a name="l52"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0_latch;
+<a name="l53"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1_latch;
+<a name="l54"></a> 
+<a name="l55"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0;
+<a name="l56"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1;
+<a name="l57"></a> 
+<a name="l58"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0_latch;
+<a name="l59"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1_latch;
+<a name="l60"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0;
+<a name="l61"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1;
+<a name="l62"></a> 
+<a name="l63"></a>  </span><span class=cB1>U8</span><span class=cB0> num_sprites;
+<a name="l64"></a>  PPUsprite sprites[8];
+<a name="l65"></a>};
+<a name="l66"></a>
+<a name="l67"></a>PPU2C02state PPU_state;
+</span></div></pre></body>
+</html>

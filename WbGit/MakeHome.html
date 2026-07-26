@@ -84,32 +84,83 @@
 <a name="l46"></a>}
 <a name="l47"></a>#</span><span class=cB1>endif</span><span class=cB0>
 <a name="l48"></a>
-<a name="l49"></a></span><span class=cB2>// Experimental FM 801 sound card OPL support</span><span class=cB0>
-<a name="l50"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;/Demo/Snd/FM801&quot;</span><span class=cB0>
-<a name="l51"></a>
-<a name="l52"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l124"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) {
-<a name="l53"></a>  </span><span class=cB2>// AC97 sound support</span><span class=cB0>
-<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/AC97&quot;</span><span class=cB0>);
-<a name="l55"></a>  </span><span class=cB2>// Enable experimental Virtualbox guest additions if detected</span><span class=cB0>
-<a name="l56"></a>  </span><span class=cB2>// SethFile(&quot;/Demo/VM/VBoxAdd&quot;,-2);</span><span class=cB0>
-<a name="l57"></a>  </span><span class=cB2>//</span><span class=cB0>
-<a name="l58"></a>  </span><span class=cB2>// Enable VMW mouse if detected</span><span class=cB0>
-<a name="l59"></a>  </span><span class=cB2>// Better mouse performance, but breaks raw mouse mode</span><span class=cB0>
-<a name="l60"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/VMMouse&quot;</span><span class=cB0>);
-<a name="l61"></a>  </span><span class=cB2>// Try enabling ISA OPL sounds if VM detected</span><span class=cB0>
-<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
-<a name="l63"></a>}
-<a name="l64"></a></span><span class=cB1>else</span><span class=cB0> {
-<a name="l65"></a>#</span><span class=cB1>ifdef</span><span class=cB0> FM801_OPL_BASE
-<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
-<a name="l67"></a>#</span><span class=cB1>endif</span><span class=cB0>
-<a name="l68"></a>}
-<a name="l69"></a>
-<a name="l70"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeWrappers&quot;</span><span class=cB0>
-<a name="l71"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Kernel/Kernel&quot;</span><span class=cB0>);
-<a name="l72"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Compiler/Compiler&quot;</span><span class=cB0>);
-<a name="l73"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeKeyPlugIns&quot;</span><span class=cB0>
-<a name="l74"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeSys&quot;</span><span class=cB0>
-<a name="l75"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);;
+<a name="l49"></a></span><span class=cB2>// Experimental FM 801 sound card OPL support. Kept as a plain #include</span><span class=cB0>
+<a name="l50"></a></span><span class=cB2>// outside AudioInit: FM801.HC defines public FM801SetVol/FM801GetVol</span><span class=cB0>
+<a name="l51"></a></span><span class=cB2>// (global volume-key hotkey handlers) and, if a card is found,</span><span class=cB0>
+<a name="l52"></a></span><span class=cB2>// synchronously #defines FM801_OPL_BASE via Adam() -- the #ifdef</span><span class=cB0>
+<a name="l53"></a></span><span class=cB2>// FM801_OPL_BASE check inside AudioInit below relies on that define</span><span class=cB0>
+<a name="l54"></a></span><span class=cB2>// already being resolved at compile time, which only holds if this</span><span class=cB0>
+<a name="l55"></a></span><span class=cB2>// stays a top-level #include compiled before AudioInit's body.</span><span class=cB0>
+<a name="l56"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;/Demo/Snd/FM801&quot;</span><span class=cB0>
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Home/MakeHome.html#l58"></span><span class=cB5>AudioInit</a></span><span class=cB0>()
+<a name="l59"></a>{
+<a name="l60"></a>  </span><span class=cB1>Bool</span><span class=cB0> hda_present,hda_cfg_ok;
+<a name="l61"></a>
+<a name="l62"></a>  </span><span class=cB2>// Intel HD Audio (PCI class 04, subclass 03 -- same 0x040300 probe</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB2>// HDAudio.HC itself uses). When a controller is present the HDA stack</span><span class=cB0>
+<a name="l64"></a>  </span><span class=cB2>// below takes precedence: AC97 and the standalone Demo/Snd/OPL2 are</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB2>// skipped (OPL2EmuHDA pulls in OPL2.HC itself, routed through HDA).</span><span class=cB0>
+<a name="l66"></a>  hda_present=<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l84"></span><span class=cB5>PCIClassFind</a></span><span class=cB0>(0x040300,0)&gt;=0;
+<a name="l67"></a>
+<a name="l68"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l152"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>    </span><span class=cB1>if</span><span class=cB0> (!hda_present) {
+<a name="l70"></a>      </span><span class=cB2>// AC97 sound support</span><span class=cB0>
+<a name="l71"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/AC97&quot;</span><span class=cB0>);
+<a name="l72"></a>      </span><span class=cB2>// Try enabling ISA OPL sounds if VM detected</span><span class=cB0>
+<a name="l73"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
+<a name="l74"></a>    }
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l77"></a>#</span><span class=cB1>ifdef</span><span class=cB0> FM801_OPL_BASE
+<a name="l78"></a>    </span><span class=cB1>if</span><span class=cB0> (!hda_present)
+<a name="l79"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>);
+<a name="l80"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>
+<a name="l83"></a>  </span><span class=cB2>// Bring up the whole HDA sound stack -- driver, codec routing config,</span><span class=cB0>
+<a name="l84"></a>  </span><span class=cB2>// mixer, speech (TMS5220/TTS), Wav/Mp3 playback, and the software OPL2</span><span class=cB0>
+<a name="l85"></a>  </span><span class=cB2>// (Adlib) FM synth. Order matters: HDAudio must init first; OPL2EmuHDA</span><span class=cB0>
+<a name="l86"></a>  </span><span class=cB2>// hijacks Snd() last so everything before it still compiles against</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB2>// plain tones.</span><span class=cB0>
+<a name="l88"></a>  </span><span class=cB1>if</span><span class=cB0> (hda_present) </span><span class=cB7>{</span><span class=cB0>
+<a name="l89"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/HDAudio&quot;</span><span class=cB0>);
+<a name="l90"></a>    </span><span class=cB2>// First boot on this machine? Generate /Home/HDAudioCfg.HC.Z by</span><span class=cB0>
+<a name="l91"></a>    </span><span class=cB2>// running HDCfg.HC, whose trailing HDCfgAuto call probes the codec,</span><span class=cB0>
+<a name="l92"></a>    </span><span class=cB2>// auto-wires Speaker pins and saves the file -- queued after HDAudio</span><span class=cB0>
+<a name="l93"></a>    </span><span class=cB2>// above, so the codec is up when it runs. Adam runs its queue in</span><span class=cB0>
+<a name="l94"></a>    </span><span class=cB2>// order, so the file exists by the time the include below executes.</span><span class=cB0>
+<a name="l95"></a>    hda_cfg_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l1"></span><span class=cB5>IsFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Home/HDAudioCfg.HC.Z&quot;</span><span class=cB0>);
+<a name="l96"></a>    </span><span class=cB1>if</span><span class=cB0> (!hda_cfg_ok &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l238"></span><span class=cB5>DrvIsWritable</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l152"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) {
+<a name="l97"></a>      </span><span class=cB2>// Run automatic HDA config if in VM</span><span class=cB0>
+<a name="l98"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/HDCfgNew&quot;</span><span class=cB0>);
+<a name="l99"></a>      hda_cfg_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l100"></a>    }
+<a name="l101"></a>    </span><span class=cB1>if</span><span class=cB0> (hda_cfg_ok)
+<a name="l102"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Home/HDAudioCfg.HC.Z&quot;</span><span class=cB0>);
+<a name="l103"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/HDMixer&quot;</span><span class=cB0>);
+<a name="l104"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/TMS5220&quot;</span><span class=cB0>);
+<a name="l105"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/TTS&quot;</span><span class=cB0>);
+<a name="l106"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/Wav&quot;</span><span class=cB0>);
+<a name="l107"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/Mp3&quot;</span><span class=cB0>);
+<a name="l108"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/Snd/OPL2EmuHDA&quot;</span><span class=cB0>);
+<a name="l109"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l110"></a>}
+<a name="l111"></a>
+<a name="l112"></a></span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l152"></span><span class=cB5>IsHypervisorPresent</a></span><span class=cB0>) {
+<a name="l113"></a>  </span><span class=cB2>// Enable experimental QEMU/VBox/VMware mouse help</span><span class=cB0>
+<a name="l114"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l130"></span><span class=cB5>VBoxPciPresent</a></span><span class=cB0>)
+<a name="l115"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/SethUtil.html#l124"></span><span class=cB5>SethFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/VBoxAdd&quot;</span><span class=cB0>,-2);
+<a name="l116"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l117"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPopUp.html#l274"></span><span class=cB5>AdamFile</a></span><span class=cB0>(</span><span class=cB6>&quot;/Demo/VM/VMMouse&quot;</span><span class=cB0>);
+<a name="l118"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1) <a href="http://tinkeros.github.io/WbGit/Home/MakeHome.html#l58"></span><span class=cB5>AudioInit</a></span><span class=cB0>;
+<a name="l119"></a>}
+<a name="l120"></a>
+<a name="l121"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeWrappers&quot;</span><span class=cB0>
+<a name="l122"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Kernel/Kernel&quot;</span><span class=cB0>);
+<a name="l123"></a><a href="http://tinkeros.github.io/WbGit/Adam/AHash.html#l401"></span><span class=cB5>MapFileLoad</a></span><span class=cB0>(</span><span class=cB6>&quot;::/Compiler/Compiler&quot;</span><span class=cB0>);
+<a name="l124"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeKeyPlugIns&quot;</span><span class=cB0>
+<a name="l125"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;~/HomeSys&quot;</span><span class=cB0>
+<a name="l126"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);;
 </span></div></pre></body>
 </html>

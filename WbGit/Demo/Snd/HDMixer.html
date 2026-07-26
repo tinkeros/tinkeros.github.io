@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>
+<a name="l2"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Snd/HDMixer&quot;</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_MAX_SRC   8
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_NAME_LEN  24
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_VOL_MAX   2.0
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>class</span><span class=cB0> CMixerSrc
+<a name="l9"></a>{
+<a name="l10"></a>  </span><span class=cB1>Bool</span><span class=cB0> active;
+<a name="l11"></a>  </span><span class=cB1>U8</span><span class=cB0> name[MIXER_NAME_LEN];
+<a name="l12"></a>  </span><span class=cB1>F64</span><span class=cB0> vol;
+<a name="l13"></a>  </span><span class=cB1>U0</span><span class=cB0> (*fp_fill)(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0> buf_num);
+<a name="l14"></a>};
+<a name="l15"></a>CMixerSrc mixer_srcs[MIXER_MAX_SRC];
+<a name="l16"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(mixer_srcs,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CMixerSrc</span><span class=cB7>)</span><span class=cB0>*MIXER_MAX_SRC);
+<a name="l17"></a>
+<a name="l18"></a>SND_OUT_CONTAINER *mixer_src_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l19"></a></span><span class=cB1>F64</span><span class=cB0> *mixer_mix_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l20"></a>
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_NCOMB         4
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_NAP           3
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_COMBS         (SND_OCHANNELS*MIXER_REV_NCOMB)
+<a name="l24"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_APS           (SND_OCHANNELS*MIXER_REV_NAP)
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_SPREAD        23
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_FB            0.84
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_DAMP          0.25
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_AP_FB         0.5
+<a name="l29"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_IN_GAIN       0.25
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_WET           0.9
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> MIXER_REV_DRY_CUT       0.3
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB9>I64</span><span class=cB0> mixer_rev_comb_len[MIXER_REV_NCOMB]={1214,1293,1390,1476};
+<a name="l34"></a></span><span class=cB9>I64</span><span class=cB0> mixer_rev_ap_len[MIXER_REV_NAP]={605,480,371};
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>class</span><span class=cB0> CMixerRevLine
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB1>F64</span><span class=cB0> *buf;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> len,pos;
+<a name="l40"></a>  </span><span class=cB1>F64</span><span class=cB0> filt;
+<a name="l41"></a>};
+<a name="l42"></a>
+<a name="l43"></a>CMixerRevLine mixer_rev_comb[MIXER_REV_COMBS];
+<a name="l44"></a>CMixerRevLine mixer_rev_ap[MIXER_REV_APS];
+<a name="l45"></a></span><span class=cB1>F64</span><span class=cB0> mixer_reverb=0.0;
+<a name="l46"></a></span><span class=cB1>Bool</span><span class=cB0> mixer_rev_ready=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,mixer_rev_wet=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>U0</span><span class=cB0> MixerRevAlloc()
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,n;
+<a name="l51"></a>  CMixerRevLine *l;
+<a name="l52"></a>  </span><span class=cB1>for</span><span class=cB0> (ch=0;ch&lt;SND_OCHANNELS;ch++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_NCOMB;i++) {
+<a name="l54"></a>      l=&amp;mixer_rev_comb[ch*MIXER_REV_NCOMB+i];
+<a name="l55"></a>      n=mixer_rev_comb_len[i]+ch*MIXER_REV_SPREAD;
+<a name="l56"></a>      l-&gt;buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(n*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l57"></a>      l-&gt;len=n;
+<a name="l58"></a>      l-&gt;pos=0;
+<a name="l59"></a>      l-&gt;filt=0.0;
+<a name="l60"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(l-&gt;buf,0,n*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l61"></a>    }
+<a name="l62"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_NAP;i++) {
+<a name="l63"></a>      l=&amp;mixer_rev_ap[ch*MIXER_REV_NAP+i];
+<a name="l64"></a>      n=mixer_rev_ap_len[i]+ch*MIXER_REV_SPREAD;
+<a name="l65"></a>      l-&gt;buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(n*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l66"></a>      l-&gt;len=n;
+<a name="l67"></a>      l-&gt;pos=0;
+<a name="l68"></a>      l-&gt;filt=0.0;
+<a name="l69"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(l-&gt;buf,0,n*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l70"></a>    }
+<a name="l71"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>  mixer_rev_ready=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l73"></a>}
+<a name="l74"></a>
+<a name="l75"></a></span><span class=cB1>U0</span><span class=cB0> MixerRevClear()
+<a name="l76"></a>{</span><span class=cB2>//Drop any stale tail so re-enabling starts silent.</span><span class=cB0>
+<a name="l77"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l78"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_COMBS;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(mixer_rev_comb[i].buf,0,mixer_rev_comb[i].len*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l80"></a>    mixer_rev_comb[i].pos=0;
+<a name="l81"></a>    mixer_rev_comb[i].filt=0.0;
+<a name="l82"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l83"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_APS;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l84"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(mixer_rev_ap[i].buf,0,mixer_rev_ap[i].len*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l85"></a>    mixer_rev_ap[i].pos=0;
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>}
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB1>U0</span><span class=cB0> MixerRevApply(</span><span class=cB1>F64</span><span class=cB0> *mix,</span><span class=cB9>I64</span><span class=cB0> len,</span><span class=cB1>F64</span><span class=cB0> amt)
+<a name="l90"></a>{</span><span class=cB2>//In-place wet/dry blend over the interleaved mix buf.</span><span class=cB0>
+<a name="l91"></a>  </span><span class=cB9>I64</span><span class=cB0> ch,i,j;
+<a name="l92"></a>  </span><span class=cB1>F64</span><span class=cB0> in,out,y,damp1=MIXER_REV_DAMP,damp2=1.0-MIXER_REV_DAMP,
+<a name="l93"></a>      wet=MIXER_REV_WET*amt,dry=1.0-MIXER_REV_DRY_CUT*amt;
+<a name="l94"></a>  CMixerRevLine *l;
+<a name="l95"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j+SND_OCHANNELS&lt;=len;j+=SND_OCHANNELS)
+<a name="l96"></a>    </span><span class=cB1>for</span><span class=cB0> (ch=0;ch&lt;SND_OCHANNELS;ch++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l97"></a>      in=mix[j+ch]*MIXER_REV_IN_GAIN;
+<a name="l98"></a>      out=0.0;
+<a name="l99"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_NCOMB;i++) {
+<a name="l100"></a>        l=&amp;mixer_rev_comb[ch*MIXER_REV_NCOMB+i];
+<a name="l101"></a>        y=l-&gt;buf[l-&gt;pos];
+<a name="l102"></a>        l-&gt;filt=y*damp2+l-&gt;filt*damp1;
+<a name="l103"></a>        l-&gt;buf[l-&gt;pos]=in+l-&gt;filt*MIXER_REV_FB;
+<a name="l104"></a>        l-&gt;pos++;
+<a name="l105"></a>        </span><span class=cB1>if</span><span class=cB0> (l-&gt;pos&gt;=l-&gt;len)
+<a name="l106"></a>          l-&gt;pos=0;
+<a name="l107"></a>        out+=y;
+<a name="l108"></a>      }
+<a name="l109"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_REV_NAP;i++) {
+<a name="l110"></a>        l=&amp;mixer_rev_ap[ch*MIXER_REV_NAP+i];
+<a name="l111"></a>        y=l-&gt;buf[l-&gt;pos];
+<a name="l112"></a>        l-&gt;buf[l-&gt;pos]=out+y*MIXER_REV_AP_FB;
+<a name="l113"></a>        out=y-out;
+<a name="l114"></a>        l-&gt;pos++;
+<a name="l115"></a>        </span><span class=cB1>if</span><span class=cB0> (l-&gt;pos&gt;=l-&gt;len)
+<a name="l116"></a>          l-&gt;pos=0;
+<a name="l117"></a>      }
+<a name="l118"></a>      mix[j+ch]=mix[j+ch]*dry+out*wet;
+<a name="l119"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>}
+<a name="l121"></a>
+<a name="l122"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MixerSetReverb(</span><span class=cB1>F64</span><span class=cB0> amt)
+<a name="l123"></a>{
+<a name="l124"></a>  mixer_reverb=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(amt,0.0,1.0);
+<a name="l125"></a>}
+<a name="l126"></a>
+<a name="l127"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> MixerGetReverb()
+<a name="l128"></a>{
+<a name="l129"></a>  </span><span class=cB1>return</span><span class=cB0> mixer_reverb;
+<a name="l130"></a>}
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB9>I64</span><span class=cB0> MixerFindByName(</span><span class=cB1>U8</span><span class=cB0> *name)
+<a name="l133"></a>{
+<a name="l134"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l135"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_MAX_SRC;i++)
+<a name="l136"></a>    </span><span class=cB1>if</span><span class=cB0> (mixer_srcs[i].active &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>mixer_srcs[i].name,name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l137"></a>      </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l138"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l139"></a>}
+<a name="l140"></a>
+<a name="l141"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> MixerRegister(</span><span class=cB1>U8</span><span class=cB0> *name,
+<a name="l142"></a>        </span><span class=cB1>U0</span><span class=cB0> </span><span class=cB7>(</span><span class=cB0>*fp_fill</span><span class=cB7>)(</span><span class=cB0>SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0> buf_num</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB1>F64</span><span class=cB0> init_vol=1.0)
+<a name="l143"></a>{
+<a name="l144"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l145"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>i=MixerFindByName(name)</span><span class=cB7>)</span><span class=cB0>&gt;=0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l146"></a>    mixer_srcs[i].fp_fill=fp_fill;
+<a name="l147"></a>    </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l148"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l149"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_MAX_SRC;i++)
+<a name="l150"></a>    </span><span class=cB1>if</span><span class=cB0> (!mixer_srcs[i].active) </span><span class=cB7>{</span><span class=cB0>
+<a name="l151"></a>      mixer_srcs[i].active=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l152"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(mixer_srcs[i].name,name);
+<a name="l153"></a>      mixer_srcs[i].vol=init_vol;
+<a name="l154"></a>      mixer_srcs[i].fp_fill=fp_fill;
+<a name="l155"></a>      </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l156"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l157"></a>  </span><span class=cB6>&quot;Mixer: no free source slots for \&quot;%s\&quot; (max %d) -- raise &quot;</span><span class=cB0>
+<a name="l158"></a>        </span><span class=cB6>&quot;MIXER_MAX_SRC.\n&quot;</span><span class=cB0>,name,MIXER_MAX_SRC;
+<a name="l159"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l160"></a>}
+<a name="l161"></a>
+<a name="l162"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MixerUnregister(</span><span class=cB9>I64</span><span class=cB0> idx)
+<a name="l163"></a>{
+<a name="l164"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=idx&lt;MIXER_MAX_SRC)
+<a name="l165"></a>    mixer_srcs[idx].active=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l166"></a>}
+<a name="l167"></a>
+<a name="l168"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MixerSetVol(</span><span class=cB9>I64</span><span class=cB0> idx,</span><span class=cB1>F64</span><span class=cB0> vol)
+<a name="l169"></a>{
+<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=idx&lt;MIXER_MAX_SRC)
+<a name="l171"></a>    mixer_srcs[idx].vol=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(vol,0.0,MIXER_VOL_MAX);
+<a name="l172"></a>}
+<a name="l173"></a>
+<a name="l174"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> MixerGetVol(</span><span class=cB9>I64</span><span class=cB0> idx)
+<a name="l175"></a>{
+<a name="l176"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;=idx&lt;MIXER_MAX_SRC)
+<a name="l177"></a>    </span><span class=cB1>return</span><span class=cB0> mixer_srcs[idx].vol;
+<a name="l178"></a>  </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l179"></a>}
+<a name="l180"></a>
+<a name="l181"></a></span><span class=cB1>U0</span><span class=cB0> MixerFillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0> buf_num)
+<a name="l182"></a>{
+<a name="l183"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l184"></a>  </span><span class=cB1>F64</span><span class=cB0> v,amt;
+<a name="l185"></a>  </span><span class=cB1>if</span><span class=cB0> (!mixer_src_buf)
+<a name="l186"></a>    mixer_src_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>SND_OUT_CONTAINER</span><span class=cB7>)</span><span class=cB0>);
+<a name="l187"></a>  </span><span class=cB1>if</span><span class=cB0> (!mixer_mix_buf)
+<a name="l188"></a>    mixer_mix_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l189"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(mixer_mix_buf,0,SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l190"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MIXER_MAX_SRC;i++)
+<a name="l191"></a>    </span><span class=cB1>if</span><span class=cB0> (mixer_srcs[i].active &amp;&amp; mixer_srcs[i].fp_fill) </span><span class=cB7>{</span><span class=cB0>
+<a name="l192"></a>      (*mixer_srcs[i].fp_fill)(mixer_src_buf,buf_num);
+<a name="l193"></a>      v=mixer_srcs[i].vol;
+<a name="l194"></a>      </span><span class=cB1>if</span><span class=cB0> (v&gt;0.0)
+<a name="l195"></a>        </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;SND_BUF_LEN;j++)
+<a name="l196"></a>          mixer_mix_buf[j]+=mixer_src_buf[j]*v;
+<a name="l197"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l198"></a>  </span><span class=cB1>if</span><span class=cB0> (!mixer_rev_ready)
+<a name="l199"></a>    MixerRevAlloc;
+<a name="l200"></a>  amt=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(mixer_reverb,0.0,1.0);
+<a name="l201"></a>  </span><span class=cB1>if</span><span class=cB0> (amt&gt;0.0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l202"></a>    </span><span class=cB1>if</span><span class=cB0> (!mixer_rev_wet) {
+<a name="l203"></a>      MixerRevClear;
+<a name="l204"></a>      mixer_rev_wet=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l205"></a>    }
+<a name="l206"></a>    MixerRevApply(mixer_mix_buf,SND_BUF_LEN,amt);
+<a name="l207"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l208"></a>    mixer_rev_wet=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l209"></a>  </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;SND_BUF_LEN;j++)
+<a name="l210"></a>    buf[j]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>mixer_mix_buf[j]/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;0xFFFFFF00;
+<a name="l211"></a>}
+<a name="l212"></a>
+<a name="l213"></a></span><span class=cB1>U0</span><span class=cB0> MixerInstall()
+<a name="l214"></a>{
+<a name="l215"></a>  </span><span class=cB1>if</span><span class=cB0> (!mixer_rev_ready)
+<a name="l216"></a>    MixerRevAlloc;
+<a name="l217"></a>  </span><span class=cB1>if</span><span class=cB0> (fp_snd_fill_buf!=&amp;MixerFillBuf) </span><span class=cB7>{</span><span class=cB0>
+<a name="l218"></a>    </span><span class=cB1>if</span><span class=cB0> (fp_snd_fill_buf)
+<a name="l219"></a>      MixerRegister(</span><span class=cB6>&quot;Tones&quot;</span><span class=cB0>,fp_snd_fill_buf);
+<a name="l220"></a>    fp_snd_fill_buf=&amp;MixerFillBuf;
+<a name="l221"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l222"></a>}
+<a name="l223"></a>
+<a name="l224"></a></span><span class=cB1>if</span><span class=cB0> (snd_dev==SD_HD_AUDIO) {
+<a name="l225"></a>  MixerInstall;
+<a name="l226"></a>  </span><span class=cB6>&quot;Mixer loaded.\n&quot;</span><span class=cB0>;
+<a name="l227"></a>} </span><span class=cB1>else</span><span class=cB0>
+<a name="l228"></a>  </span><span class=cB6>&quot;Mixer: needs HD Audio.\n&quot;</span><span class=cB0>;
+<a name="l229"></a>
+<a name="l230"></a></span><span class=cB1>U0</span><span class=cB0> MixerGuiCtrlAltM(</span><span class=cB9>I64</span><span class=cB0> sc)
+<a name="l231"></a>{
+<a name="l232"></a>  </span><span class=cB1>no_warn</span><span class=cB0> sc;
+<a name="l233"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l456"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;#include \&quot;/Demo/Snd/HDMixerGui\&quot;;\n&quot;</span><span class=cB0>);
+<a name="l234"></a>}
+<a name="l235"></a>
+<a name="l236"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KeyDev.html#l196"></span><span class=cB5>CtrlAltCBSet</a></span><span class=cB0>(</span><span class=cB6>'M'</span><span class=cB0>,&amp;MixerGuiCtrlAltM,</span><span class=cB6>&quot;Cmd/Sound Mixer&quot;</span><span class=cB0>,</span><span class=cB6>&quot;&quot;</span><span class=cB0>);
+<a name="l237"></a>
+<a name="l238"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>

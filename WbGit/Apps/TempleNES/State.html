@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> NES_STATE_VERSION       1
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U8</span><span class=cB0> nes_state_filename[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l4"></a></span><span class=cB1>U8</span><span class=cB0> nes_sram_filename[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l5"></a>
+<a name="l6"></a></span><span class=cB1>U0</span><span class=cB0> SaveSRAM()
+<a name="l7"></a>{
+<a name="l8"></a>  </span><span class=cB1>if</span><span class=cB0> (!MMU.RAM || !</span><span class=cB7>(</span><span class=cB0>controlByte1 &amp; 2</span><span class=cB7>)</span><span class=cB0>)
+<a name="l9"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l10"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB7>(</span><span class=cB0>nes_sram_filename,MMU.RAM+0x6000,0x2000</span><span class=cB7>)</span><span class=cB0>)
+<a name="l11"></a>    </span><span class=cB6>&quot;TempleNES: SRAM saved to \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_sram_filename;
+<a name="l12"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l13"></a>    </span><span class=cB6>&quot;TempleNES: couldn't write \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_sram_filename;
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> LoadSRAM()
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l19"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf;
+<a name="l20"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>controlByte1 &amp; 2</span><span class=cB7>)</span><span class=cB0>)
+<a name="l21"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l22"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(nes_sram_filename,&amp;size);
+<a name="l23"></a>  </span><span class=cB1>if</span><span class=cB0> (!buf)
+<a name="l24"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l25"></a>  </span><span class=cB1>if</span><span class=cB0> (size==0x2000)
+<a name="l26"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l27"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x6000,buf,0x2000);
+<a name="l28"></a>    </span><span class=cB6>&quot;TempleNES: SRAM loaded from \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_sram_filename;
+<a name="l29"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l31"></a>    </span><span class=cB6>&quot;TempleNES: \&quot;%s\&quot; isn't 8KB SRAM, ignored.\n&quot;</span><span class=cB0>,
+<a name="l32"></a>    nes_sram_filename;
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>class</span><span class=cB0> CNESState
+<a name="l37"></a>{
+<a name="l38"></a>  </span><span class=cB9>U64</span><span class=cB0> magic;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> version,cpu_pc,cpu_sp,cpu_a,cpu_x,cpu_y,cpu_status,
+<a name="l40"></a>      mmu_w,mmu_t,mmu_x,mmu_y,mmu_vram_address,mmu_internal_buffer,
+<a name="l41"></a>      mirroring, papu_irq,mapper_irq,
+<a name="l42"></a>      mmc1_reg_buffer,mmc1_reg_buffer_counter,mmc1_mirroring,
+<a name="l43"></a>      mmc1_prg_switching_area,mmc1_prg_switching_size,
+<a name="l44"></a>      mmc1_vrom_switching_size,mmc1_rom_selection_reg0,
+<a name="l45"></a>      mmc1_rom_selection_reg1,mmc1_rom_bank_select,
+<a name="l46"></a>      mmc3_regs[8],mmc3_prg0,mmc3_prg1,mmc3_prg_bank_mode,
+<a name="l47"></a>      mmc3_chr_bank_mode,mmc3_command,mmc3_irq_latch,mmc3_irq_counter,
+<a name="l48"></a>      mmc3_irq_reload,mmc3_irq_enable;
+<a name="l49"></a>  PPU2C02state ppu;
+<a name="l50"></a>  PAPU2A03 papu;
+<a name="l51"></a>  </span><span class=cB1>U8</span><span class=cB0> oam[0x100], ram[0x10000], vram[0x4000];
+<a name="l52"></a>};
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> SaveState()
+<a name="l55"></a>{
+<a name="l56"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l57"></a>  CNESState *s=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CNESState</span><span class=cB7>)</span><span class=cB0>);
+<a name="l58"></a>  s-&gt;magic=</span><span class=cB6>'TNESSAV'</span><span class=cB0>;
+<a name="l59"></a>  s-&gt;version=NES_STATE_VERSION;
+<a name="l60"></a>  s-&gt;cpu_pc=pc;
+<a name="l61"></a>  s-&gt;cpu_sp=sp;
+<a name="l62"></a>  s-&gt;cpu_a=a;
+<a name="l63"></a>  s-&gt;cpu_x=x;
+<a name="l64"></a>  s-&gt;cpu_y=y;
+<a name="l65"></a>  s-&gt;cpu_status=cpustatus;
+<a name="l66"></a>  s-&gt;mmu_w=MMU.w;
+<a name="l67"></a>  s-&gt;mmu_t=MMU.t;
+<a name="l68"></a>  s-&gt;mmu_x=MMU.x;
+<a name="l69"></a>  s-&gt;mmu_y=MMU.y;
+<a name="l70"></a>  s-&gt;mmu_vram_address=MMU.VRAM_address;
+<a name="l71"></a>  s-&gt;mmu_internal_buffer=MMU.internal_buffer;
+<a name="l72"></a>  s-&gt;mirroring=mirroringType;
+<a name="l73"></a>  s-&gt;papu_irq=papu_request_irq;
+<a name="l74"></a>  s-&gt;mapper_irq=mapper_request_irq;
+<a name="l75"></a>  s-&gt;mmc1_reg_buffer=MMC1_regBuffer;
+<a name="l76"></a>  s-&gt;mmc1_reg_buffer_counter=MMC1_regBufferCounter;
+<a name="l77"></a>  s-&gt;mmc1_mirroring=MMC1_mirroring;
+<a name="l78"></a>  s-&gt;mmc1_prg_switching_area=MMC1_prgSwitchingArea;
+<a name="l79"></a>  s-&gt;mmc1_prg_switching_size=MMC1_prgSwitchingSize;
+<a name="l80"></a>  s-&gt;mmc1_vrom_switching_size=MMC1_vromSwitchingSize;
+<a name="l81"></a>  s-&gt;mmc1_rom_selection_reg0=MMC1_romSelectionReg0;
+<a name="l82"></a>  s-&gt;mmc1_rom_selection_reg1=MMC1_romSelectionReg1;
+<a name="l83"></a>  s-&gt;mmc1_rom_bank_select=MMC1_romBankSelect;
+<a name="l84"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l85"></a>    s-&gt;mmc3_regs[i]=MMC3_Regs[i];
+<a name="l86"></a>  s-&gt;mmc3_prg0=MMC3_Prg0;
+<a name="l87"></a>  s-&gt;mmc3_prg1=MMC3_Prg1;
+<a name="l88"></a>  s-&gt;mmc3_prg_bank_mode=MMC3_PrgBankMode;
+<a name="l89"></a>  s-&gt;mmc3_chr_bank_mode=MMC3_ChrBankMode;
+<a name="l90"></a>  s-&gt;mmc3_command=MMC3_Command;
+<a name="l91"></a>  s-&gt;mmc3_irq_latch=MMC3_IrqLatch;
+<a name="l92"></a>  s-&gt;mmc3_irq_counter=MMC3_IrqCounter;
+<a name="l93"></a>  s-&gt;mmc3_irq_reload=MMC3_IrqReload;
+<a name="l94"></a>  s-&gt;mmc3_irq_enable=MMC3_IrqEnable;
+<a name="l95"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;s-&gt;ppu,&amp;PPU_state,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PPU2C02state</span><span class=cB7>)</span><span class=cB0>);
+<a name="l96"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;s-&gt;papu,&amp;PAPU,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PAPU2A03</span><span class=cB7>)</span><span class=cB0>);
+<a name="l97"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(s-&gt;oam,MMU.OAM,0x100);
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(s-&gt;ram,MMU.RAM,0x10000);
+<a name="l99"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(s-&gt;vram,MMU.VRAM,0x4000);
+<a name="l100"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB7>(</span><span class=cB0>nes_state_filename,s,</span><span class=cB1>sizeof</span><span class=cB0>(CNESState)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l101"></a>    </span><span class=cB6>&quot;TempleNES: state saved to \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_state_filename;
+<a name="l102"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l103"></a>    </span><span class=cB6>&quot;TempleNES: couldn't write \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_state_filename;
+<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(s);
+<a name="l105"></a>}
+<a name="l106"></a>
+<a name="l107"></a></span><span class=cB1>U0</span><span class=cB0> LoadState()
+<a name="l108"></a>{
+<a name="l109"></a>  </span><span class=cB9>I64</span><span class=cB0> i,size;
+<a name="l110"></a>  CNESState *s=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(nes_state_filename,&amp;size);
+<a name="l111"></a>  </span><span class=cB1>if</span><span class=cB0> (!s)
+<a name="l112"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l113"></a>      </span><span class=cB6>&quot;TempleNES: no save state \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_state_filename;
+<a name="l114"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l115"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l116"></a>  </span><span class=cB1>if</span><span class=cB0> (size!=</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CNESState</span><span class=cB7>)</span><span class=cB0> || s-&gt;magic!=</span><span class=cB6>'TNESSAV'</span><span class=cB0> ||
+<a name="l117"></a>      s-&gt;version!=NES_STATE_VERSION)
+<a name="l118"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l119"></a>    </span><span class=cB6>&quot;TempleNES: \&quot;%s\&quot; isn't a valid save state.\n&quot;</span><span class=cB0>,
+<a name="l120"></a>    nes_state_filename;
+<a name="l121"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(s);
+<a name="l122"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l123"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l124"></a>  pc=s-&gt;cpu_pc;
+<a name="l125"></a>  sp=s-&gt;cpu_sp;
+<a name="l126"></a>  a=s-&gt;cpu_a;
+<a name="l127"></a>  x=s-&gt;cpu_x;
+<a name="l128"></a>  y=s-&gt;cpu_y;
+<a name="l129"></a>  cpustatus=s-&gt;cpu_status;
+<a name="l130"></a>  MMU.w=s-&gt;mmu_w;
+<a name="l131"></a>  MMU.t=s-&gt;mmu_t;
+<a name="l132"></a>  MMU.x=s-&gt;mmu_x;
+<a name="l133"></a>  MMU.y=s-&gt;mmu_y;
+<a name="l134"></a>  MMU.VRAM_address=s-&gt;mmu_vram_address;
+<a name="l135"></a>  MMU.internal_buffer=s-&gt;mmu_internal_buffer;
+<a name="l136"></a>  mirroringType=s-&gt;mirroring;
+<a name="l137"></a>  papu_request_irq=s-&gt;papu_irq;
+<a name="l138"></a>  mapper_request_irq=s-&gt;mapper_irq;
+<a name="l139"></a>  MMC1_regBuffer=s-&gt;mmc1_reg_buffer;
+<a name="l140"></a>  MMC1_regBufferCounter=s-&gt;mmc1_reg_buffer_counter;
+<a name="l141"></a>  MMC1_mirroring=s-&gt;mmc1_mirroring;
+<a name="l142"></a>  MMC1_prgSwitchingArea=s-&gt;mmc1_prg_switching_area;
+<a name="l143"></a>  MMC1_prgSwitchingSize=s-&gt;mmc1_prg_switching_size;
+<a name="l144"></a>  MMC1_vromSwitchingSize=s-&gt;mmc1_vrom_switching_size;
+<a name="l145"></a>  MMC1_romSelectionReg0=s-&gt;mmc1_rom_selection_reg0;
+<a name="l146"></a>  MMC1_romSelectionReg1=s-&gt;mmc1_rom_selection_reg1;
+<a name="l147"></a>  MMC1_romBankSelect=s-&gt;mmc1_rom_bank_select;
+<a name="l148"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l149"></a>    MMC3_Regs[i]=s-&gt;mmc3_regs[i];
+<a name="l150"></a>  MMC3_Prg0=s-&gt;mmc3_prg0;
+<a name="l151"></a>  MMC3_Prg1=s-&gt;mmc3_prg1;
+<a name="l152"></a>  MMC3_PrgBankMode=s-&gt;mmc3_prg_bank_mode;
+<a name="l153"></a>  MMC3_ChrBankMode=s-&gt;mmc3_chr_bank_mode;
+<a name="l154"></a>  MMC3_Command=s-&gt;mmc3_command;
+<a name="l155"></a>  MMC3_IrqLatch=s-&gt;mmc3_irq_latch;
+<a name="l156"></a>  MMC3_IrqCounter=s-&gt;mmc3_irq_counter;
+<a name="l157"></a>  MMC3_IrqReload=s-&gt;mmc3_irq_reload;
+<a name="l158"></a>  MMC3_IrqEnable=s-&gt;mmc3_irq_enable;
+<a name="l159"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;PPU_state,&amp;s-&gt;ppu,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PPU2C02state</span><span class=cB7>)</span><span class=cB0>);
+<a name="l160"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;PAPU,&amp;s-&gt;papu,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>PAPU2A03</span><span class=cB7>)</span><span class=cB0>);
+<a name="l161"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.OAM,s-&gt;oam,0x100);
+<a name="l162"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM,s-&gt;ram,0x10000);
+<a name="l163"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.VRAM,s-&gt;vram,0x4000);
+<a name="l164"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(s);
+<a name="l165"></a>  PAPU_initBuffers;
+<a name="l166"></a>  </span><span class=cB6>&quot;TempleNES: state loaded from \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,nes_state_filename;
+<a name="l167"></a>}
+</span></div></pre></body>
+</html>

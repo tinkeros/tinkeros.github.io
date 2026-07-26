@@ -1,0 +1,411 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>
+<a name="l2"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Snd/TMS5220&quot;</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> TMS_RATE        8000
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> TMS_FRAME_SAMPS 200
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> TMS_UPSAMP      (SND_SAMPLE_RATE/TMS_RATE)
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>F64</span><span class=cB0> tms5220_energy[16],
+<a name="l9"></a>    tms5220_pitch[64],
+<a name="l10"></a>    tms5220_k[168];
+<a name="l11"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_k_bits[10]={5,5,4,4,4,4,4,3,3,3},
+<a name="l12"></a>    tms5220_k_offs[10]={0,32,64,80,96,112,128,144,152,160},
+<a name="l13"></a>    tms5220_k_cnt[10]={32,32,16,16,16,16,16,8,8,8};
+<a name="l14"></a></span><span class=cB1>F64</span><span class=cB0> tms5220_gain=4.0,
+<a name="l15"></a>    tms5220_lpf_coef=0.7387;
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_energy_rom[16]={0,1,2,3,4,6,8,11,16,23,33,47,63,85,114,
+<a name="l18"></a>      0};
+<a name="l19"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_pitch_rom[64]={0,15,16,17,18,19,20,21,22,23,24,25,26,27,
+<a name="l20"></a>      28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,44,46,48,50,52,
+<a name="l21"></a>      53,56,58,60,62,65,68,70,72,76,78,80,84,86,91,94,98,101,105,
+<a name="l22"></a>      109,114,118,122,127,132,137,142,148,153,159};
+<a name="l23"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_k_rom[168]={
+<a name="l24"></a>      -501,-498,-497,-495,-493,-491,-488,-482,-478,-474,-469,-464,
+<a name="l25"></a>      -459,-452,-445,-437,-412,-380,-339,-288,-227,-158,-81,-1,
+<a name="l26"></a>      80,157,226,287,337,379,411,436,
+<a name="l27"></a>      -328,-303,-274,-244,-211,-175,-138,-99,-59,-18,24,64,
+<a name="l28"></a>      105,143,180,215,248,278,306,331,354,374,392,408,
+<a name="l29"></a>      422,435,445,455,463,470,476,506,
+<a name="l30"></a>      -441,-387,-333,-279,-225,-171,-117,-63,-9,45,98,152,206,260,
+<a name="l31"></a>      314,368,
+<a name="l32"></a>      -328,-273,-217,-161,-106,-50,5,61,116,172,228,283,339,394,
+<a name="l33"></a>      450,506,
+<a name="l34"></a>      -328,-282,-235,-189,-142,-96,-50,-3,43,90,136,182,229,275,
+<a name="l35"></a>      322,368,
+<a name="l36"></a>      -256,-212,-168,-123,-79,-35,10,54,98,143,187,232,276,320,
+<a name="l37"></a>      365,409,
+<a name="l38"></a>      -308,-260,-212,-164,-117,-69,-21,27,75,122,170,218,266,314,
+<a name="l39"></a>      361,409,
+<a name="l40"></a>      -256,-161,-66,29,124,219,314,409,
+<a name="l41"></a>      -256,-176,-96,-15,65,146,226,307,
+<a name="l42"></a>      -205,-132,-59,14,87,160,234,307};
+<a name="l43"></a>
+<a name="l44"></a>#</span><span class=cB1>define</span><span class=cB0> TMS_CHIRP_LEN   21
+<a name="l45"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_chirp[TMS_CHIRP_LEN]={
+<a name="l46"></a>      0,3,15,40,76,108,113,80,37,38,76,68,26,50,59,19,55,26,37,31,29};
+<a name="l47"></a>
+<a name="l48"></a></span><span class=cB1>class</span><span class=cB0> CTMS5220
+<a name="l49"></a>{
+<a name="l50"></a>  </span><span class=cB1>U8</span><span class=cB0> *stream;
+<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> stream_len,bit_pos;
+<a name="l52"></a>  </span><span class=cB1>Bool</span><span class=cB0> speaking,stopping,voiced;
+<a name="l53"></a>  </span><span class=cB9>I64</span><span class=cB0> frame_samp,pitch_cnt,chirp_idx;
+<a name="l54"></a>  </span><span class=cB9>U16</span><span class=cB0> lfsr;
+<a name="l55"></a>  </span><span class=cB1>F64</span><span class=cB0> cur_energy,tgt_energy,d_energy,
+<a name="l56"></a>      cur_period,tgt_period,d_period,
+<a name="l57"></a>      cur_k[10],tgt_k[10],d_k[10],
+<a name="l58"></a>      lat_b[10],
+<a name="l59"></a>      lpf,
+<a name="l60"></a>      s_prev,s_cur;
+<a name="l61"></a>  </span><span class=cB9>I64</span><span class=cB0> up_phase;
+<a name="l62"></a>} tms;
+<a name="l63"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;tms,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CTMS5220</span><span class=cB7>)</span><span class=cB0>);
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB9>I64</span><span class=cB0> tms5220_mixer_idx=-1;
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> TMS5220InitTabs()
+<a name="l68"></a>{
+<a name="l69"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l70"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;16;i++)
+<a name="l71"></a>    tms5220_energy[i]=tms5220_energy_rom[i]/114.0;
+<a name="l72"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;64;i++)
+<a name="l73"></a>    tms5220_pitch[i]=tms5220_pitch_rom[i];
+<a name="l74"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;168;i++)
+<a name="l75"></a>    tms5220_k[i]=tms5220_k_rom[i]/512.0;
+<a name="l76"></a>}
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> TMS5220KVal(</span><span class=cB9>I64</span><span class=cB0> stage,</span><span class=cB9>I64</span><span class=cB0> idx)
+<a name="l79"></a>{
+<a name="l80"></a>  </span><span class=cB1>return</span><span class=cB0> tms5220_k[tms5220_k_offs[stage]+idx];
+<a name="l81"></a>}
+<a name="l82"></a>
+<a name="l83"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> TMS5220QuantK(</span><span class=cB9>I64</span><span class=cB0> stage,</span><span class=cB1>F64</span><span class=cB0> v)
+<a name="l84"></a>{
+<a name="l85"></a>  </span><span class=cB9>I64</span><span class=cB0> i,best=0;
+<a name="l86"></a>  </span><span class=cB1>F64</span><span class=cB0> d,best_d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l48"></span><span class=cB3>F64_MAX</a></span><span class=cB0>;
+<a name="l87"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;tms5220_k_cnt[stage];i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l88"></a>    d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(tms5220_k[tms5220_k_offs[stage]+i]-v);
+<a name="l89"></a>    </span><span class=cB1>if</span><span class=cB0> (d&lt;best_d) {
+<a name="l90"></a>      best_d=d;
+<a name="l91"></a>      best=i;
+<a name="l92"></a>    }
+<a name="l93"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l94"></a>  </span><span class=cB1>return</span><span class=cB0> best;
+<a name="l95"></a>}
+<a name="l96"></a>
+<a name="l97"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> TMS5220QuantPitch(</span><span class=cB1>F64</span><span class=cB0> period)
+<a name="l98"></a>{
+<a name="l99"></a>  </span><span class=cB9>I64</span><span class=cB0> i,best=1;
+<a name="l100"></a>  </span><span class=cB1>F64</span><span class=cB0> d,best_d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l48"></span><span class=cB3>F64_MAX</a></span><span class=cB0>;
+<a name="l101"></a>  </span><span class=cB1>for</span><span class=cB0> (i=1;i&lt;64;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l102"></a>    d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(tms5220_pitch[i]-period);
+<a name="l103"></a>    </span><span class=cB1>if</span><span class=cB0> (d&lt;best_d) {
+<a name="l104"></a>      best_d=d;
+<a name="l105"></a>      best=i;
+<a name="l106"></a>    }
+<a name="l107"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l108"></a>  </span><span class=cB1>return</span><span class=cB0> best;
+<a name="l109"></a>}
+<a name="l110"></a>
+<a name="l111"></a></span><span class=cB9>I64</span><span class=cB0> TMS5220GetBits(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l112"></a>{
+<a name="l113"></a>  </span><span class=cB9>I64</span><span class=cB0> i,v=0;
+<a name="l114"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;n;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l115"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.bit_pos&gt;=tms.stream_len*8)
+<a name="l116"></a>      </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l117"></a>    v=v&lt;&lt;1|tms.stream[tms.bit_pos&gt;&gt;3]&gt;&gt;(tms.bit_pos&amp;7)&amp;1;
+<a name="l118"></a>    tms.bit_pos++;
+<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>  </span><span class=cB1>return</span><span class=cB0> v;
+<a name="l121"></a>}
+<a name="l122"></a>
+<a name="l123"></a></span><span class=cB1>U0</span><span class=cB0> TMS5220FadeFrame()
+<a name="l124"></a>{
+<a name="l125"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l126"></a>  tms.tgt_energy=0.0;
+<a name="l127"></a>  tms.d_energy=(0.0-tms.cur_energy)/TMS_FRAME_SAMPS;
+<a name="l128"></a>  tms.d_period=0.0;
+<a name="l129"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l130"></a>    tms.tgt_k[i]=0.0;
+<a name="l131"></a>    tms.d_k[i]=(0.0-tms.cur_k[i])/TMS_FRAME_SAMPS;
+<a name="l132"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l133"></a>}
+<a name="l134"></a>
+<a name="l135"></a></span><span class=cB1>U0</span><span class=cB0> TMS5220LoadFrame()
+<a name="l136"></a>{
+<a name="l137"></a>  </span><span class=cB9>I64</span><span class=cB0> e,r,p,i,idx;
+<a name="l138"></a>  </span><span class=cB1>Bool</span><span class=cB0> new_voiced,snap;
+<a name="l139"></a>  e=TMS5220GetBits(4);
+<a name="l140"></a>  </span><span class=cB1>if</span><span class=cB0> (e&lt;0 || e==15) </span><span class=cB7>{</span><span class=cB0>
+<a name="l141"></a>    tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l142"></a>    TMS5220FadeFrame;
+<a name="l143"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l144"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l145"></a>  </span><span class=cB1>if</span><span class=cB0> (!e) </span><span class=cB7>{</span><span class=cB0>
+<a name="l146"></a>    TMS5220FadeFrame;
+<a name="l147"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l148"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l149"></a>  r=TMS5220GetBits(1);
+<a name="l150"></a>  p=TMS5220GetBits(6);
+<a name="l151"></a>  </span><span class=cB1>if</span><span class=cB0> (r&lt;0 || p&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l152"></a>    tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l153"></a>    TMS5220FadeFrame;
+<a name="l154"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l155"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l156"></a>  new_voiced=p&gt;0;
+<a name="l157"></a>  </span><span class=cB1>if</span><span class=cB0> (r) </span><span class=cB7>{</span><span class=cB0>
+<a name="l158"></a>    </span><span class=cB1>if</span><span class=cB0> (!new_voiced)
+<a name="l159"></a>      </span><span class=cB1>for</span><span class=cB0> (i=4;i&lt;10;i++)
+<a name="l160"></a>        tms.tgt_k[i]=0.0;
+<a name="l161"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l162"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;4;i++) {
+<a name="l163"></a>      idx=TMS5220GetBits(tms5220_k_bits[i]);
+<a name="l164"></a>      </span><span class=cB1>if</span><span class=cB0> (idx&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>        tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l166"></a>        TMS5220FadeFrame;
+<a name="l167"></a>        </span><span class=cB1>return</span><span class=cB0>;
+<a name="l168"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l169"></a>      tms.tgt_k[i]=TMS5220KVal(i,idx);
+<a name="l170"></a>    }
+<a name="l171"></a>    </span><span class=cB1>if</span><span class=cB0> (new_voiced) {
+<a name="l172"></a>      </span><span class=cB1>for</span><span class=cB0> (i=4;i&lt;10;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l173"></a>        idx=TMS5220GetBits(tms5220_k_bits[i]);
+<a name="l174"></a>        </span><span class=cB1>if</span><span class=cB0> (idx&lt;0) {
+<a name="l175"></a>          tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l176"></a>          TMS5220FadeFrame;
+<a name="l177"></a>          </span><span class=cB1>return</span><span class=cB0>;
+<a name="l178"></a>        }
+<a name="l179"></a>        tms.tgt_k[i]=TMS5220KVal(i,idx);
+<a name="l180"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l181"></a>    } </span><span class=cB1>else</span><span class=cB0> {
+<a name="l182"></a>      </span><span class=cB1>for</span><span class=cB0> (i=4;i&lt;10;i++)
+<a name="l183"></a>        tms.tgt_k[i]=0.0;
+<a name="l184"></a>    }
+<a name="l185"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l186"></a>  snap=new_voiced!=tms.voiced || tms.cur_energy&lt;0.005;
+<a name="l187"></a>  tms.voiced=new_voiced;
+<a name="l188"></a>  </span><span class=cB1>if</span><span class=cB0> (new_voiced)
+<a name="l189"></a>    tms.tgt_period=tms5220_pitch[p];
+<a name="l190"></a>  tms.tgt_energy=tms5220_energy[e];
+<a name="l191"></a>  tms.d_energy=(tms.tgt_energy-tms.cur_energy)/TMS_FRAME_SAMPS;
+<a name="l192"></a>  </span><span class=cB1>if</span><span class=cB0> (snap) </span><span class=cB7>{</span><span class=cB0>
+<a name="l193"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++) {
+<a name="l194"></a>      tms.cur_k[i]=tms.tgt_k[i];
+<a name="l195"></a>      tms.d_k[i]=0.0;
+<a name="l196"></a>    }
+<a name="l197"></a>    tms.cur_period=tms.tgt_period;
+<a name="l198"></a>    tms.d_period=0.0;
+<a name="l199"></a>    </span><span class=cB1>if</span><span class=cB0> (new_voiced)
+<a name="l200"></a>      tms.pitch_cnt=0;
+<a name="l201"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l202"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++)
+<a name="l203"></a>      tms.d_k[i]=(tms.tgt_k[i]-tms.cur_k[i])/TMS_FRAME_SAMPS;
+<a name="l204"></a>    tms.d_period=(tms.tgt_period-tms.cur_period)/TMS_FRAME_SAMPS;
+<a name="l205"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l206"></a>}
+<a name="l207"></a>
+<a name="l208"></a></span><span class=cB1>F64</span><span class=cB0> TMS5220Sample8k()
+<a name="l209"></a>{
+<a name="l210"></a>  </span><span class=cB1>F64</span><span class=cB0> ex,f[11];
+<a name="l211"></a>  </span><span class=cB9>I64</span><span class=cB0> i,e_int,u;
+<a name="l212"></a>  </span><span class=cB1>if</span><span class=cB0> (!tms.speaking)
+<a name="l213"></a>    </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l214"></a>  </span><span class=cB1>if</span><span class=cB0> (tms.frame_samp&lt;=0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l215"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.stopping) {
+<a name="l216"></a>      tms.speaking=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l217"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l218"></a>    }
+<a name="l219"></a>    TMS5220LoadFrame;
+<a name="l220"></a>    tms.frame_samp=TMS_FRAME_SAMPS;
+<a name="l221"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l222"></a>  tms.frame_samp--;
+<a name="l223"></a>  tms.cur_energy+=tms.d_energy;
+<a name="l224"></a>  </span><span class=cB1>if</span><span class=cB0> (tms.cur_energy&lt;0.0)
+<a name="l225"></a>    tms.cur_energy=0.0;
+<a name="l226"></a>  tms.cur_period+=tms.d_period;
+<a name="l227"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++)
+<a name="l228"></a>    tms.cur_k[i]+=tms.d_k[i];
+<a name="l229"></a>  e_int=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l131"></span><span class=cB5>Floor</a></span><span class=cB7>(</span><span class=cB0>tms.cur_energy*114.0</span><span class=cB7>)</span><span class=cB0>);
+<a name="l230"></a>  </span><span class=cB1>if</span><span class=cB0> (tms.voiced) </span><span class=cB7>{</span><span class=cB0>
+<a name="l231"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.pitch_cnt&lt;=0) {
+<a name="l232"></a>      tms.chirp_idx=0;
+<a name="l233"></a>      tms.pitch_cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(tms.cur_period);
+<a name="l234"></a>      </span><span class=cB1>if</span><span class=cB0> (tms.pitch_cnt&lt;2)
+<a name="l235"></a>        tms.pitch_cnt=2;
+<a name="l236"></a>    }
+<a name="l237"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.chirp_idx&lt;TMS_CHIRP_LEN)
+<a name="l238"></a>      u=tms5220_chirp[tms.chirp_idx]*e_int/256;
+<a name="l239"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l240"></a>      u=0;
+<a name="l241"></a>    tms.chirp_idx++;
+<a name="l242"></a>    tms.pitch_cnt--;
+<a name="l243"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l244"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.lfsr&amp;1)
+<a name="l245"></a>      tms.lfsr=tms.lfsr&gt;&gt;1^0xB800;
+<a name="l246"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l247"></a>      tms.lfsr&gt;&gt;=1;
+<a name="l248"></a>    u=64*e_int/256;
+<a name="l249"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>tms.lfsr&amp;1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l250"></a>      u=-u;
+<a name="l251"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l252"></a>  ex=u/64.0;
+<a name="l253"></a>  f[10]=ex;
+<a name="l254"></a>  </span><span class=cB1>for</span><span class=cB0> (i=10;i&gt;=1;i--)
+<a name="l255"></a>    f[i-1]=f[i]-tms.cur_k[i-1]*tms.lat_b[i-1];
+<a name="l256"></a>  </span><span class=cB1>for</span><span class=cB0> (i=9;i&gt;=1;i--)
+<a name="l257"></a>    tms.lat_b[i]=tms.lat_b[i-1]+tms.cur_k[i-1]*f[i-1];
+<a name="l258"></a>  tms.lat_b[0]=f[0];
+<a name="l259"></a>  </span><span class=cB1>if</span><span class=cB0> (tms.tgt_energy==0.0 &amp;&amp; tms.cur_energy&lt;0.0005)
+<a name="l260"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++)
+<a name="l261"></a>      tms.lat_b[i]*=0.9;
+<a name="l262"></a>  tms.lpf+=tms5220_lpf_coef*(f[0]-tms.lpf);
+<a name="l263"></a>  </span><span class=cB1>return</span><span class=cB0> tms.lpf;
+<a name="l264"></a>}
+<a name="l265"></a>
+<a name="l266"></a></span><span class=cB1>U0</span><span class=cB0> TMS5220FillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l267"></a>{
+<a name="l268"></a>  </span><span class=cB9>I64</span><span class=cB0> j,l,samp,t;
+<a name="l269"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l270"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>SND_OUT_CONTAINER</span><span class=cB7>)</span><span class=cB0>);
+<a name="l271"></a>  </span><span class=cB1>if</span><span class=cB0> (!tms.speaking)
+<a name="l272"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l273"></a>  j=0;
+<a name="l274"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
+<a name="l275"></a>    </span><span class=cB1>if</span><span class=cB0> (tms.up_phase&gt;=TMS_UPSAMP) {
+<a name="l276"></a>      tms.up_phase=0;
+<a name="l277"></a>      tms.s_prev=tms.s_cur;
+<a name="l278"></a>      tms.s_cur=TMS5220Sample8k;
+<a name="l279"></a>    }
+<a name="l280"></a>    s=tms.s_prev+(tms.s_cur-tms.s_prev)*tms.up_phase/TMS_UPSAMP;
+<a name="l281"></a>    tms.up_phase++;
+<a name="l282"></a>    samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>s*snd_vol*tms5220_gain,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;~0xFF;
+<a name="l283"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++) {
+<a name="l284"></a>      t=buf[j]+samp;
+<a name="l285"></a>      </span><span class=cB1>if</span><span class=cB0> (t&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)
+<a name="l286"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>;
+<a name="l287"></a>      </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>)
+<a name="l288"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>;
+<a name="l289"></a>      buf[j]=t;
+<a name="l290"></a>      j++;
+<a name="l291"></a>    }
+<a name="l292"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l293"></a>}
+<a name="l294"></a>
+<a name="l295"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> TMS5220Busy()
+<a name="l296"></a>{
+<a name="l297"></a>  </span><span class=cB1>return</span><span class=cB0> tms.speaking;
+<a name="l298"></a>}
+<a name="l299"></a>
+<a name="l300"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> TMS5220Wait()
+<a name="l301"></a>{
+<a name="l302"></a>  </span><span class=cB1>while</span><span class=cB0> (tms.speaking)
+<a name="l303"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l304"></a>}
+<a name="l305"></a>
+<a name="l306"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> TMS5220Stop()
+<a name="l307"></a>{
+<a name="l308"></a>  tms.speaking=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l309"></a>  tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l310"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l311"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tms.stream);
+<a name="l312"></a>  tms.stream=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l313"></a>}
+<a name="l314"></a>
+<a name="l315"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> TMS5220PlayStream(</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> size,</span><span class=cB1>Bool</span><span class=cB0> bkg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l316"></a>{
+<a name="l317"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l318"></a>  </span><span class=cB1>U8</span><span class=cB0> *cpy;
+<a name="l319"></a>  </span><span class=cB1>if</span><span class=cB0> (tms5220_mixer_idx&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l320"></a>    </span><span class=cB6>&quot;TMS5220: not installed -- bring up HD Audio and HDMixer first.\n&quot;</span><span class=cB0>;
+<a name="l321"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l322"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l323"></a>  TMS5220Wait;
+<a name="l324"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l325"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tms.stream);
+<a name="l326"></a>  tms.stream=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(size);
+<a name="l327"></a>  cpy=tms.stream;
+<a name="l328"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(cpy,data,size);
+<a name="l329"></a>  tms.stream_len=size;
+<a name="l330"></a>  tms.bit_pos=0;
+<a name="l331"></a>  tms.stopping=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l332"></a>  tms.voiced=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l333"></a>  tms.frame_samp=0;
+<a name="l334"></a>  tms.pitch_cnt=0;
+<a name="l335"></a>  tms.chirp_idx=TMS_CHIRP_LEN;
+<a name="l336"></a>  tms.lfsr=0x5555;
+<a name="l337"></a>  tms.cur_energy=0.0;
+<a name="l338"></a>  tms.tgt_energy=0.0;
+<a name="l339"></a>  tms.d_energy=0.0;
+<a name="l340"></a>  tms.cur_period=64.0;
+<a name="l341"></a>  tms.tgt_period=64.0;
+<a name="l342"></a>  tms.d_period=0.0;
+<a name="l343"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;10;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l344"></a>    tms.cur_k[i]=0.0;
+<a name="l345"></a>    tms.tgt_k[i]=0.0;
+<a name="l346"></a>    tms.d_k[i]=0.0;
+<a name="l347"></a>    tms.lat_b[i]=0.0;
+<a name="l348"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l349"></a>  tms.lpf=0.0;
+<a name="l350"></a>  tms.s_prev=0.0;
+<a name="l351"></a>  tms.s_cur=0.0;
+<a name="l352"></a>  tms.up_phase=TMS_UPSAMP;
+<a name="l353"></a>  tms.speaking=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l354"></a>  </span><span class=cB1>if</span><span class=cB0> (!bkg)
+<a name="l355"></a>    TMS5220Wait;
+<a name="l356"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l357"></a>}
+<a name="l358"></a>
+<a name="l359"></a></span><span class=cB1>U0</span><span class=cB0> TMS5220Install()
+<a name="l360"></a>{
+<a name="l361"></a>  TMS5220InitTabs;
+<a name="l362"></a>  tms5220_mixer_idx=MixerRegister(</span><span class=cB6>&quot;TMS5220&quot;</span><span class=cB0>,&amp;TMS5220FillBuf);
+<a name="l363"></a>}
+<a name="l364"></a>
+<a name="l365"></a></span><span class=cB1>if</span><span class=cB0> (snd_dev==SD_HD_AUDIO) {
+<a name="l366"></a>  TMS5220Install;
+<a name="l367"></a>  </span><span class=cB6>&quot;TMS5220 module loaded.\n&quot;</span><span class=cB0>;
+<a name="l368"></a>} </span><span class=cB1>else</span><span class=cB0>
+<a name="l369"></a>  </span><span class=cB6>&quot;TMS5220: needs HD Audio + Mixer.\n&quot;</span><span class=cB0>;
+<a name="l370"></a>
+<a name="l371"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>
