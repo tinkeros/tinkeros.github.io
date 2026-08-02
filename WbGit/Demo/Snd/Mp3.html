@@ -1399,153 +1399,291 @@
 <a name="l1360"></a></span><span class=cB9>I64</span><span class=cB0> mp3_mixer_idx=-1;
 <a name="l1361"></a></span><span class=cB1>Bool</span><span class=cB0> mp3_verbose=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l1362"></a>
-<a name="l1363"></a></span><span class=cB1>U0</span><span class=cB0> MP3FillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
-<a name="l1364"></a>{
-<a name="l1365"></a>  </span><span class=cB9>I64</span><span class=cB0> j,l,c,idx,samp,t;
-<a name="l1366"></a>  </span><span class=cB1>F64</span><span class=cB0> frac,s0,s1,s;
-<a name="l1367"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>SND_OUT_CONTAINER</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1368"></a>  </span><span class=cB1>if</span><span class=cB0> (!mp3_playing)
-<a name="l1369"></a>    </span><span class=cB1>return</span><span class=cB0>;
-<a name="l1370"></a>  j=0;
-<a name="l1371"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1372"></a>    idx=mp3_play_pos&gt;&gt;32;
-<a name="l1373"></a>    </span><span class=cB1>if</span><span class=cB0> (idx+1&gt;=mp3_song_samps) {
-<a name="l1374"></a>      mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l1375"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1376"></a>    }
-<a name="l1377"></a>    frac=(mp3_play_pos&amp;0xFFFFFFFF)/4294967296.0;
-<a name="l1378"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++) {
-<a name="l1379"></a>      c=l;
-<a name="l1380"></a>      </span><span class=cB1>if</span><span class=cB0> (mp3_song_ch==1)
-<a name="l1381"></a>        c=0;
-<a name="l1382"></a>      s0=mp3_song[idx*mp3_song_ch+c];
-<a name="l1383"></a>      s1=mp3_song[(idx+1)*mp3_song_ch+c];
-<a name="l1384"></a>      s=(s0+</span><span class=cB7>(</span><span class=cB0>s1-s0</span><span class=cB7>)</span><span class=cB0>*frac)/32768.0;
-<a name="l1385"></a>      samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>s*snd_vol*mp3_gain,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;~0xFF;
-<a name="l1386"></a>      t=buf[j]+samp;
-<a name="l1387"></a>      </span><span class=cB1>if</span><span class=cB0> (t&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)
-<a name="l1388"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>;
-<a name="l1389"></a>      </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>)
-<a name="l1390"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>;
-<a name="l1391"></a>      buf[j]=t;
-<a name="l1392"></a>      j++;
-<a name="l1393"></a>    }
-<a name="l1394"></a>    mp3_play_pos+=mp3_play_step;
-<a name="l1395"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1396"></a>}
-<a name="l1397"></a>
-<a name="l1398"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I16</span><span class=cB0> *MP3Decode(</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> size,</span><span class=cB9>I64</span><span class=cB0> *_samps=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> *_hz=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
-<a name="l1399"></a>        </span><span class=cB9>I64</span><span class=cB0> *_nch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l1400"></a>{
-<a name="l1401"></a>  </span><span class=cB9>I16</span><span class=cB0> *out,*out2;
-<a name="l1402"></a>  </span><span class=cB9>I64</span><span class=cB0> n,i,total=0,cap=0x200000,frames=0;
-<a name="l1403"></a>  out=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(cap*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1404"></a>  Mp3Reset(data,size);
-<a name="l1405"></a>  n=Mp3NextFrame;
-<a name="l1406"></a>  </span><span class=cB1>while</span><span class=cB0> (n&gt;=0) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1407"></a>    </span><span class=cB1>if</span><span class=cB0> (n&gt;0) {
-<a name="l1408"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total+n</span><span class=cB7>)</span><span class=cB0>*mp3_nch&gt;cap) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1409"></a>        cap*=2;
-<a name="l1410"></a>        out2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(cap*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1411"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(out2,out,total*mp3_nch*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1412"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
-<a name="l1413"></a>        out=out2;
-<a name="l1414"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l1415"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;n*mp3_nch;i++)
-<a name="l1416"></a>        out[total*mp3_nch+i]=mp3_pcm[i];
-<a name="l1417"></a>      total+=n;
-<a name="l1418"></a>    }
-<a name="l1419"></a>    frames++;
-<a name="l1420"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>frames&amp;127</span><span class=cB7>)</span><span class=cB0> &amp;&amp; mp3_verbose)
-<a name="l1421"></a>      </span><span class=cB6>&quot;.&quot;</span><span class=cB0>;
-<a name="l1422"></a>    n=Mp3NextFrame;
-<a name="l1423"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1424"></a>  </span><span class=cB1>if</span><span class=cB0> (!total) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1425"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
-<a name="l1426"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l1427"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1428"></a>  </span><span class=cB1>if</span><span class=cB0> (_samps)
-<a name="l1429"></a>    *_samps=total;
-<a name="l1430"></a>  </span><span class=cB1>if</span><span class=cB0> (_hz)
-<a name="l1431"></a>    *_hz=mp3_srate_tbl[mp3_h_sr_idx];
-<a name="l1432"></a>  </span><span class=cB1>if</span><span class=cB0> (_nch)
-<a name="l1433"></a>    *_nch=mp3_nch;
-<a name="l1434"></a>  </span><span class=cB1>return</span><span class=cB0> out;
-<a name="l1435"></a>}
-<a name="l1436"></a>
-<a name="l1437"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MP3Stop()
-<a name="l1438"></a>{
-<a name="l1439"></a>  mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l1440"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
-<a name="l1441"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mp3_song);
-<a name="l1442"></a>  mp3_song=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l1443"></a>}
-<a name="l1444"></a>
-<a name="l1445"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> MP3Busy()
-<a name="l1446"></a>{
-<a name="l1447"></a>  </span><span class=cB1>return</span><span class=cB0> mp3_playing;
-<a name="l1448"></a>}
-<a name="l1449"></a>
-<a name="l1450"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MP3Wait()
-<a name="l1451"></a>{
-<a name="l1452"></a>  </span><span class=cB1>while</span><span class=cB0> (mp3_playing)
-<a name="l1453"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
-<a name="l1454"></a>}
-<a name="l1455"></a>
-<a name="l1456"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> MP3Play(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>Bool</span><span class=cB0> bkg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> verbose=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l1457"></a>{
-<a name="l1458"></a>  </span><span class=cB1>U8</span><span class=cB0> *raw;
-<a name="l1459"></a>  </span><span class=cB9>I16</span><span class=cB0> *pcm;
-<a name="l1460"></a>  </span><span class=cB9>I64</span><span class=cB0> size,samps,hz,nch;
-<a name="l1461"></a>  </span><span class=cB1>if</span><span class=cB0> (mp3_mixer_idx&lt;0) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1462"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
-<a name="l1463"></a>      </span><span class=cB6>&quot;MP3: not installed -- bring up HD Audio and HDMixer first.\n&quot;</span><span class=cB0>;
-<a name="l1464"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l1465"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1466"></a>  raw=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
-<a name="l1467"></a>  </span><span class=cB1>if</span><span class=cB0> (!raw) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1468"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
-<a name="l1469"></a>      </span><span class=cB6>&quot;MP3: can't read %s\n&quot;</span><span class=cB0>,filename;
-<a name="l1470"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l1471"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1472"></a>  mp3_verbose=verbose;
-<a name="l1473"></a>  </span><span class=cB1>if</span><span class=cB0> (verbose)
-<a name="l1474"></a>    </span><span class=cB6>&quot;MP3: decoding %s &quot;</span><span class=cB0>,filename;
-<a name="l1475"></a>  pcm=MP3Decode(raw,size,&amp;samps,&amp;hz,&amp;nch);
-<a name="l1476"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(raw);
-<a name="l1477"></a>  mp3_verbose=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l1478"></a>  </span><span class=cB1>if</span><span class=cB0> (!pcm) </span><span class=cB7>{</span><span class=cB0>
-<a name="l1479"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
-<a name="l1480"></a>      </span><span class=cB6>&quot; no MPEG-1 Layer III frames found.\n&quot;</span><span class=cB0>;
-<a name="l1481"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l1482"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1483"></a>  </span><span class=cB1>if</span><span class=cB0> (verbose)
-<a name="l1484"></a>    </span><span class=cB6>&quot; %d.%03d sec @ %dHz %dch\n&quot;</span><span class=cB0>,samps/hz,(samps%hz)*1000/hz,hz,nch;
-<a name="l1485"></a>  MP3Stop;
-<a name="l1486"></a>  mp3_song_samps=samps;
-<a name="l1487"></a>  mp3_song_ch=nch;
-<a name="l1488"></a>  mp3_song_hz=hz;
-<a name="l1489"></a>  mp3_play_pos=0;
-<a name="l1490"></a>  mp3_play_step=(hz&lt;&lt;32)/SND_SAMPLE_RATE;
-<a name="l1491"></a>  mp3_song=pcm;
-<a name="l1492"></a>  mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l1493"></a>  </span><span class=cB1>if</span><span class=cB0> (!bkg)
-<a name="l1494"></a>    MP3Wait;
-<a name="l1495"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l1496"></a>}
-<a name="l1497"></a>
-<a name="l1498"></a></span><span class=cB1>U0</span><span class=cB0> MP3Install()
-<a name="l1499"></a>{
-<a name="l1500"></a>  Mp3InitTables;
-<a name="l1501"></a>  mp3_mixer_idx=MixerRegister(</span><span class=cB6>&quot;MP3&quot;</span><span class=cB0>,&amp;MP3FillBuf);
-<a name="l1502"></a>}
-<a name="l1503"></a>
-<a name="l1504"></a></span><span class=cB1>if</span><span class=cB0> (snd_dev==SD_HD_AUDIO) {
-<a name="l1505"></a>  MP3Install;
-<a name="l1506"></a>  </span><span class=cB6>&quot;MP3 module loaded.\n&quot;</span><span class=cB0>;
-<a name="l1507"></a>} </span><span class=cB1>else</span><span class=cB0>
-<a name="l1508"></a>  </span><span class=cB6>&quot;MP3: needs HD Audio + Mixer.\n&quot;</span><span class=cB0>;
-<a name="l1509"></a>
-<a name="l1510"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l1363"></a></span><span class=cB9>I64</span><span class=cB0> *mp3_abort_ptr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1364"></a></span><span class=cB9>I64</span><span class=cB0> mp3_abort_gen=0;
+<a name="l1365"></a>
+<a name="l1366"></a></span><span class=cB1>U0</span><span class=cB0> MP3FillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l1367"></a>{
+<a name="l1368"></a>  </span><span class=cB9>I64</span><span class=cB0> j,l,c,idx,samp,t;
+<a name="l1369"></a>  </span><span class=cB1>F64</span><span class=cB0> frac,s0,s1,s;
+<a name="l1370"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,SND_BUF_LEN*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>SND_OUT_CONTAINER</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1371"></a>  </span><span class=cB1>if</span><span class=cB0> (!mp3_playing)
+<a name="l1372"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l1373"></a>  j=0;
+<a name="l1374"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1375"></a>    idx=mp3_play_pos&gt;&gt;32;
+<a name="l1376"></a>    </span><span class=cB1>if</span><span class=cB0> (idx+1&gt;=mp3_song_samps) {
+<a name="l1377"></a>      mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1378"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1379"></a>    }
+<a name="l1380"></a>    frac=(mp3_play_pos&amp;0xFFFFFFFF)/4294967296.0;
+<a name="l1381"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++) {
+<a name="l1382"></a>      c=l;
+<a name="l1383"></a>      </span><span class=cB1>if</span><span class=cB0> (mp3_song_ch==1)
+<a name="l1384"></a>        c=0;
+<a name="l1385"></a>      s0=mp3_song[idx*mp3_song_ch+c];
+<a name="l1386"></a>      s1=mp3_song[(idx+1)*mp3_song_ch+c];
+<a name="l1387"></a>      s=(s0+</span><span class=cB7>(</span><span class=cB0>s1-s0</span><span class=cB7>)</span><span class=cB0>*frac)/32768.0;
+<a name="l1388"></a>      samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>s*snd_vol*mp3_gain,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;~0xFF;
+<a name="l1389"></a>      t=buf[j]+samp;
+<a name="l1390"></a>      </span><span class=cB1>if</span><span class=cB0> (t&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)
+<a name="l1391"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>;
+<a name="l1392"></a>      </span><span class=cB1>if</span><span class=cB0> (t&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>)
+<a name="l1393"></a>        t=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l34"></span><span class=cB3>I32_MIN</a></span><span class=cB0>;
+<a name="l1394"></a>      buf[j]=t;
+<a name="l1395"></a>      j++;
+<a name="l1396"></a>    }
+<a name="l1397"></a>    mp3_play_pos+=mp3_play_step;
+<a name="l1398"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1399"></a>}
+<a name="l1400"></a>
+<a name="l1401"></a>#</span><span class=cB1>define</span><span class=cB0> MP3_FFT_LG      10
+<a name="l1402"></a>#</span><span class=cB1>define</span><span class=cB0> MP3_FFT_N       (1&lt;&lt;MP3_FFT_LG)
+<a name="l1403"></a>#</span><span class=cB1>define</span><span class=cB0> MP3_VIS_DB_FLOOR (-54.0)
+<a name="l1404"></a>
+<a name="l1405"></a></span><span class=cB1>F64</span><span class=cB0> mp3_vis_re[MP3_FFT_N],mp3_vis_im[MP3_FFT_N],
+<a name="l1406"></a>    mp3_vis_win[MP3_FFT_N],
+<a name="l1407"></a>    mp3_vis_cos[MP3_FFT_N&gt;&gt;1],
+<a name="l1408"></a>    mp3_vis_sin[MP3_FFT_N&gt;&gt;1];
+<a name="l1409"></a></span><span class=cB9>I64</span><span class=cB0> mp3_vis_rev[MP3_FFT_N];
+<a name="l1410"></a></span><span class=cB1>Bool</span><span class=cB0> mp3_vis_tabs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1411"></a>
+<a name="l1412"></a></span><span class=cB1>F64</span><span class=cB0> mp3_vis_lag_mS=2*SND_BUF_TIME_mS;
+<a name="l1413"></a>
+<a name="l1414"></a></span><span class=cB1>U0</span><span class=cB0> Mp3VisInitTables()
+<a name="l1415"></a>{
+<a name="l1416"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,k;
+<a name="l1417"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MP3_FFT_N;i++)
+<a name="l1418"></a>    mp3_vis_win[i]=0.5-0.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(2*MP3_PI*i/</span><span class=cB7>(</span><span class=cB0>MP3_FFT_N-1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1419"></a>  </span><span class=cB1>for</span><span class=cB0> (k=0;k&lt;MP3_FFT_N&gt;&gt;1;k++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1420"></a>    mp3_vis_cos[k]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(-2*MP3_PI*k/MP3_FFT_N);
+<a name="l1421"></a>    mp3_vis_sin[k]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(-2*MP3_PI*k/MP3_FFT_N);
+<a name="l1422"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1423"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MP3_FFT_N;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1424"></a>    j=0;
+<a name="l1425"></a>    </span><span class=cB1>for</span><span class=cB0> (k=0;k&lt;MP3_FFT_LG;k++)
+<a name="l1426"></a>      </span><span class=cB1>if</span><span class=cB0> (i&gt;&gt;k&amp;1)
+<a name="l1427"></a>        j|=1&lt;&lt;(MP3_FFT_LG-1-k);
+<a name="l1428"></a>    mp3_vis_rev[i]=j;
+<a name="l1429"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1430"></a>  mp3_vis_tabs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1431"></a>}
+<a name="l1432"></a>
+<a name="l1433"></a></span><span class=cB1>Bool</span><span class=cB0> Mp3VisLoad()
+<a name="l1434"></a>{</span><span class=cB2>//Mono-sum, window and bit-reverse-permute the MP3_FFT_N samples playing</span><span class=cB0>
+<a name="l1435"></a>  </span><span class=cB9>I64</span><span class=cB0> i,idx,</span><span class=cB1>start</span><span class=cB0>;
+<a name="l1436"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l1437"></a>  </span><span class=cB1>if</span><span class=cB0> (!mp3_song || !mp3_playing || mp3_song_samps&lt;MP3_FFT_N)
+<a name="l1438"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1439"></a>  </span><span class=cB1>start</span><span class=cB0>=(mp3_play_pos&gt;&gt;32)-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(mp3_vis_lag_mS*mp3_song_hz/1000.0)
+<a name="l1440"></a>        -MP3_FFT_N;
+<a name="l1441"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB1>start</span><span class=cB0>&lt;0)
+<a name="l1442"></a>    </span><span class=cB1>start</span><span class=cB0>=0;
+<a name="l1443"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB1>start</span><span class=cB0>&gt;mp3_song_samps-MP3_FFT_N)
+<a name="l1444"></a>    </span><span class=cB1>start</span><span class=cB0>=mp3_song_samps-MP3_FFT_N;
+<a name="l1445"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MP3_FFT_N;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1446"></a>    idx=</span><span class=cB1>start</span><span class=cB0>+i;
+<a name="l1447"></a>    </span><span class=cB1>if</span><span class=cB0> (mp3_song_ch==2)
+<a name="l1448"></a>      s=(mp3_song[idx*2]+mp3_song[idx*2+1])/65536.0;
+<a name="l1449"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l1450"></a>      s=mp3_song[idx*mp3_song_ch]/32768.0;
+<a name="l1451"></a>    mp3_vis_re[mp3_vis_rev[i]]=s*mp3_vis_win[i];
+<a name="l1452"></a>    mp3_vis_im[mp3_vis_rev[i]]=0;
+<a name="l1453"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1454"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1455"></a>}
+<a name="l1456"></a>
+<a name="l1457"></a></span><span class=cB1>U0</span><span class=cB0> Mp3VisFFT()
+<a name="l1458"></a>{</span><span class=cB2>//In-place radix-2 decimation-in-time FFT.</span><span class=cB0>
+<a name="l1459"></a>  </span><span class=cB9>I64</span><span class=cB0> len,half,step,i,j,k,a,b;
+<a name="l1460"></a>  </span><span class=cB1>F64</span><span class=cB0> wr,wi,tr,ti;
+<a name="l1461"></a>  </span><span class=cB1>for</span><span class=cB0> (len=2;len&lt;=MP3_FFT_N;len&lt;&lt;=1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1462"></a>    half=len&gt;&gt;1;
+<a name="l1463"></a>    step=MP3_FFT_N/len;
+<a name="l1464"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;MP3_FFT_N;i+=len)
+<a name="l1465"></a>      </span><span class=cB1>for</span><span class=cB0> (j=0;j&lt;half;j++) {
+<a name="l1466"></a>        k=j*step;
+<a name="l1467"></a>        wr=mp3_vis_cos[k];
+<a name="l1468"></a>        wi=mp3_vis_sin[k];
+<a name="l1469"></a>        a=i+j;
+<a name="l1470"></a>        b=a+half;
+<a name="l1471"></a>        tr=mp3_vis_re[b]*wr-mp3_vis_im[b]*wi;
+<a name="l1472"></a>        ti=mp3_vis_re[b]*wi+mp3_vis_im[b]*wr;
+<a name="l1473"></a>        mp3_vis_re[b]=mp3_vis_re[a]-tr;
+<a name="l1474"></a>        mp3_vis_im[b]=mp3_vis_im[a]-ti;
+<a name="l1475"></a>        mp3_vis_re[a]+=tr;
+<a name="l1476"></a>        mp3_vis_im[a]+=ti;
+<a name="l1477"></a>      }
+<a name="l1478"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1479"></a>}
+<a name="l1480"></a>
+<a name="l1481"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> MP3Spectrum(</span><span class=cB1>F64</span><span class=cB0> *bands,</span><span class=cB9>I64</span><span class=cB0> n_bands,</span><span class=cB1>F64</span><span class=cB0> f_lo=50.0,
+<a name="l1482"></a>        </span><span class=cB1>F64</span><span class=cB0> f_hi=16000.0)
+<a name="l1483"></a>{</span><span class=cB2>//Fill bands[0..n_bands-1] with 0.0..1.0 loudness</span><span class=cB0>
+<a name="l1484"></a>  </span><span class=cB9>I64</span><span class=cB0> b,k,k0,k1,k_top;
+<a name="l1485"></a>  </span><span class=cB1>F64</span><span class=cB0> mag,best,db,f0,f1,ratio,scale,nyq;
+<a name="l1486"></a>  </span><span class=cB1>if</span><span class=cB0> (!bands || n_bands&lt;1)
+<a name="l1487"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1488"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(bands,0,n_bands*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>F64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1489"></a>  </span><span class=cB1>if</span><span class=cB0> (!mp3_vis_tabs)
+<a name="l1490"></a>    Mp3VisInitTables;
+<a name="l1491"></a>  </span><span class=cB1>if</span><span class=cB0> (!Mp3VisLoad)
+<a name="l1492"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1493"></a>  Mp3VisFFT;
+<a name="l1494"></a>
+<a name="l1495"></a>  nyq=mp3_song_hz/2.0;
+<a name="l1496"></a>  </span><span class=cB1>if</span><span class=cB0> (f_lo&lt;mp3_song_hz*1.0/MP3_FFT_N)
+<a name="l1497"></a>    f_lo=mp3_song_hz*1.0/MP3_FFT_N;
+<a name="l1498"></a>  </span><span class=cB1>if</span><span class=cB0> (f_hi&gt;nyq*0.98)
+<a name="l1499"></a>    f_hi=nyq*0.98;
+<a name="l1500"></a>  </span><span class=cB1>if</span><span class=cB0> (f_hi&lt;=f_lo)
+<a name="l1501"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1502"></a>  scale=4.0/MP3_FFT_N;
+<a name="l1503"></a>  ratio=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(f_hi/f_lo,1.0/n_bands);
+<a name="l1504"></a>  k_top=(MP3_FFT_N&gt;&gt;1)-1;
+<a name="l1505"></a>  f0=f_lo;
+<a name="l1506"></a>  </span><span class=cB1>for</span><span class=cB0> (b=0;b&lt;n_bands;b++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1507"></a>    f1=f0*ratio;
+<a name="l1508"></a>    k0=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(f0*MP3_FFT_N/mp3_song_hz);
+<a name="l1509"></a>    k1=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(f1*MP3_FFT_N/mp3_song_hz);
+<a name="l1510"></a>    </span><span class=cB1>if</span><span class=cB0> (k0&lt;1)
+<a name="l1511"></a>      k0=1;
+<a name="l1512"></a>    </span><span class=cB1>if</span><span class=cB0> (k1&lt;k0)
+<a name="l1513"></a>      k1=k0;
+<a name="l1514"></a>    </span><span class=cB1>if</span><span class=cB0> (k1&gt;k_top)
+<a name="l1515"></a>      k1=k_top;
+<a name="l1516"></a>    best=0;
+<a name="l1517"></a>    </span><span class=cB1>for</span><span class=cB0> (k=k0;k&lt;=k1;k++) {
+<a name="l1518"></a>      mag=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB7>(</span><span class=cB0>mp3_vis_re[k]</span><span class=cB7>)</span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB7>(</span><span class=cB0>mp3_vis_im[k]</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1519"></a>      </span><span class=cB1>if</span><span class=cB0> (mag&gt;best)
+<a name="l1520"></a>        best=mag;
+<a name="l1521"></a>    }
+<a name="l1522"></a>    best*=scale;
+<a name="l1523"></a>    </span><span class=cB1>if</span><span class=cB0> (best&lt;0.0000001)
+<a name="l1524"></a>      best=0.0000001;
+<a name="l1525"></a>    db=20*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l135"></span><span class=cB5>Log10</a></span><span class=cB0>(best);
+<a name="l1526"></a>    bands[b]=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>db-MP3_VIS_DB_FLOOR</span><span class=cB7>)</span><span class=cB0>/-MP3_VIS_DB_FLOOR,0.0,1.0);
+<a name="l1527"></a>    f0=f1;
+<a name="l1528"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1529"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1530"></a>}
+<a name="l1531"></a>
+<a name="l1532"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I16</span><span class=cB0> *MP3Decode(</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> size,</span><span class=cB9>I64</span><span class=cB0> *_samps=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> *_hz=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,
+<a name="l1533"></a>        </span><span class=cB9>I64</span><span class=cB0> *_nch=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l1534"></a>{
+<a name="l1535"></a>  </span><span class=cB9>I16</span><span class=cB0> *out,*out2;
+<a name="l1536"></a>  </span><span class=cB9>I64</span><span class=cB0> n,i,total=0,cap=0x200000,frames=0;
+<a name="l1537"></a>  out=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(cap*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1538"></a>  Mp3Reset(data,size);
+<a name="l1539"></a>  n=Mp3NextFrame;
+<a name="l1540"></a>  </span><span class=cB1>while</span><span class=cB0> (n&gt;=0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1541"></a>    </span><span class=cB1>if</span><span class=cB0> (n&gt;0) {
+<a name="l1542"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total+n</span><span class=cB7>)</span><span class=cB0>*mp3_nch&gt;cap) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1543"></a>        cap*=2;
+<a name="l1544"></a>        out2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(cap*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1545"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(out2,out,total*mp3_nch*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1546"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
+<a name="l1547"></a>        out=out2;
+<a name="l1548"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1549"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;n*mp3_nch;i++)
+<a name="l1550"></a>        out[total*mp3_nch+i]=mp3_pcm[i];
+<a name="l1551"></a>      total+=n;
+<a name="l1552"></a>    }
+<a name="l1553"></a>    frames++;
+<a name="l1554"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>frames&amp;127</span><span class=cB7>)</span><span class=cB0> &amp;&amp; mp3_verbose)
+<a name="l1555"></a>      </span><span class=cB6>&quot;.&quot;</span><span class=cB0>;
+<a name="l1556"></a>    </span><span class=cB1>if</span><span class=cB0> (mp3_abort_ptr &amp;&amp; *mp3_abort_ptr!=mp3_abort_gen) {
+<a name="l1557"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
+<a name="l1558"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1559"></a>    }
+<a name="l1560"></a>    n=Mp3NextFrame;
+<a name="l1561"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1562"></a>  </span><span class=cB1>if</span><span class=cB0> (!total) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1563"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
+<a name="l1564"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1565"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1566"></a>  </span><span class=cB1>if</span><span class=cB0> (_samps)
+<a name="l1567"></a>    *_samps=total;
+<a name="l1568"></a>  </span><span class=cB1>if</span><span class=cB0> (_hz)
+<a name="l1569"></a>    *_hz=mp3_srate_tbl[mp3_h_sr_idx];
+<a name="l1570"></a>  </span><span class=cB1>if</span><span class=cB0> (_nch)
+<a name="l1571"></a>    *_nch=mp3_nch;
+<a name="l1572"></a>  </span><span class=cB1>return</span><span class=cB0> out;
+<a name="l1573"></a>}
+<a name="l1574"></a>
+<a name="l1575"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MP3Stop()
+<a name="l1576"></a>{
+<a name="l1577"></a>  mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1578"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l1579"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mp3_song);
+<a name="l1580"></a>  mp3_song=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1581"></a>}
+<a name="l1582"></a>
+<a name="l1583"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> MP3Busy()
+<a name="l1584"></a>{
+<a name="l1585"></a>  </span><span class=cB1>return</span><span class=cB0> mp3_playing;
+<a name="l1586"></a>}
+<a name="l1587"></a>
+<a name="l1588"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MP3Wait()
+<a name="l1589"></a>{
+<a name="l1590"></a>  </span><span class=cB1>while</span><span class=cB0> (mp3_playing)
+<a name="l1591"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l1592"></a>}
+<a name="l1593"></a>
+<a name="l1594"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> MP3Play(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB1>Bool</span><span class=cB0> bkg=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> verbose=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l1595"></a>{
+<a name="l1596"></a>  </span><span class=cB1>U8</span><span class=cB0> *raw;
+<a name="l1597"></a>  </span><span class=cB9>I16</span><span class=cB0> *pcm;
+<a name="l1598"></a>  </span><span class=cB9>I64</span><span class=cB0> size,samps,hz,nch;
+<a name="l1599"></a>  </span><span class=cB1>if</span><span class=cB0> (mp3_mixer_idx&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1600"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
+<a name="l1601"></a>      </span><span class=cB6>&quot;MP3: not installed -- bring up HD Audio and HDMixer first.\n&quot;</span><span class=cB0>;
+<a name="l1602"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1603"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1604"></a>  raw=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size);
+<a name="l1605"></a>  </span><span class=cB1>if</span><span class=cB0> (!raw) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1606"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
+<a name="l1607"></a>      </span><span class=cB6>&quot;MP3: can't read %s\n&quot;</span><span class=cB0>,filename;
+<a name="l1608"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1609"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1610"></a>  mp3_verbose=verbose;
+<a name="l1611"></a>  </span><span class=cB1>if</span><span class=cB0> (verbose)
+<a name="l1612"></a>    </span><span class=cB6>&quot;MP3: decoding %s &quot;</span><span class=cB0>,filename;
+<a name="l1613"></a>  pcm=MP3Decode(raw,size,&amp;samps,&amp;hz,&amp;nch);
+<a name="l1614"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(raw);
+<a name="l1615"></a>  mp3_verbose=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1616"></a>  </span><span class=cB1>if</span><span class=cB0> (!pcm) </span><span class=cB7>{</span><span class=cB0>
+<a name="l1617"></a>    </span><span class=cB1>if</span><span class=cB0> (verbose)
+<a name="l1618"></a>      </span><span class=cB6>&quot; no MPEG-1 Layer III frames found.\n&quot;</span><span class=cB0>;
+<a name="l1619"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l1620"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1621"></a>  </span><span class=cB1>if</span><span class=cB0> (verbose)
+<a name="l1622"></a>    </span><span class=cB6>&quot; %d.%03d sec @ %dHz %dch\n&quot;</span><span class=cB0>,samps/hz,(samps%hz)*1000/hz,hz,nch;
+<a name="l1623"></a>  MP3Stop;
+<a name="l1624"></a>  mp3_song_samps=samps;
+<a name="l1625"></a>  mp3_song_ch=nch;
+<a name="l1626"></a>  mp3_song_hz=hz;
+<a name="l1627"></a>  mp3_play_pos=0;
+<a name="l1628"></a>  mp3_play_step=(hz&lt;&lt;32)/SND_SAMPLE_RATE;
+<a name="l1629"></a>  mp3_song=pcm;
+<a name="l1630"></a>  mp3_playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1631"></a>  </span><span class=cB1>if</span><span class=cB0> (!bkg)
+<a name="l1632"></a>    MP3Wait;
+<a name="l1633"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1634"></a>}
+<a name="l1635"></a>
+<a name="l1636"></a></span><span class=cB1>U0</span><span class=cB0> MP3Install()
+<a name="l1637"></a>{
+<a name="l1638"></a>  Mp3InitTables;
+<a name="l1639"></a>  mp3_mixer_idx=MixerRegister(</span><span class=cB6>&quot;MP3&quot;</span><span class=cB0>,&amp;MP3FillBuf);
+<a name="l1640"></a>}
+<a name="l1641"></a>
+<a name="l1642"></a></span><span class=cB1>if</span><span class=cB0> (snd_dev==SD_HD_AUDIO) {
+<a name="l1643"></a>  MP3Install;
+<a name="l1644"></a>  </span><span class=cB6>&quot;MP3 module loaded.\n&quot;</span><span class=cB0>;
+<a name="l1645"></a>} </span><span class=cB1>else</span><span class=cB0>
+<a name="l1646"></a>  </span><span class=cB6>&quot;MP3: needs HD Audio + Mixer.\n&quot;</span><span class=cB0>;
+<a name="l1647"></a>
+<a name="l1648"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
 </span></div></pre></body>
 </html>

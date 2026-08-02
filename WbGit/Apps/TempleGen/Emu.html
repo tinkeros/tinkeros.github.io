@@ -1,0 +1,445 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> win_scale=2;
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> GenDrawWindow(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task, </span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l4"></a>{
+<a name="l5"></a>        </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l6"></a>        </span><span class=cB1>U8</span><span class=cB0> *src;
+<a name="l7"></a>        </span><span class=cB9>U16</span><span class=cB0> *d0;
+<a name="l8"></a>        </span><span class=cB9>CDC</span><span class=cB0> *shown=gen_shown_canvas;
+<a name="l9"></a>        </span><span class=cB1>no_warn</span><span class=cB0> task;
+<a name="l10"></a>        </span><span class=cB1>if</span><span class=cB0> (!shown)
+<a name="l11"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l12"></a>        </span><span class=cB1>if</span><span class=cB0> (win_scale==2 &amp;&amp; gameCanvas2x) </span><span class=cB7>{</span><span class=cB0>
+<a name="l13"></a>                </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;GEN_SCRN_H-2*GEN_OVERSCAN; y++) {
+<a name="l14"></a>                        src=shown-&gt;body+
+<a name="l15"></a>                                (y+GEN_OVERSCAN)*shown-&gt;width_internal;
+<a name="l16"></a>                        d0=gameCanvas2x-&gt;body+
+<a name="l17"></a>                                2*y*gameCanvas2x-&gt;width_internal;
+<a name="l18"></a>                        </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;GEN_SCRN_W; x++)
+<a name="l19"></a>                                d0[x]=src[x]*0x0101;
+<a name="l20"></a>                        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(d0</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+gameCanvas2x-&gt;width_internal,d0,
+<a name="l21"></a>                                GEN_SCRN_W*2);
+<a name="l22"></a>                }
+<a name="l23"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,gameCanvas2x);
+<a name="l24"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l25"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,shown);
+<a name="l26"></a>}
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB1>U0</span><span class=cB0> GenSnapWindow()
+<a name="l29"></a>{
+<a name="l30"></a>        </span><span class=cB9>I64</span><span class=cB0> want_cols,want_rows,snap_left,snap_top;
+<a name="l31"></a>        </span><span class=cB1>if</span><span class=cB0> (win_scale==2) </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l618"></span><span class=cB5>WinBorder</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
+<a name="l33"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l425"></span><span class=cB5>WinHorz</a></span><span class=cB0>(0,<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1);
+<a name="l34"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l465"></span><span class=cB5>WinVert</a></span><span class=cB0>(1,2*</span><span class=cB7>(</span><span class=cB0>GEN_SCRN_H-2*GEN_OVERSCAN</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>);
+<a name="l35"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l618"></span><span class=cB5>WinBorder</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>);
+<a name="l37"></a>                want_cols=GEN_SCRN_W/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4035"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l38"></a>                want_rows=GEN_SCRN_H/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l39"></a>                snap_left=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_left;
+<a name="l40"></a>                snap_top=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top;
+<a name="l41"></a>                </span><span class=cB1>if</span><span class=cB0> (snap_left+want_cols&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1)
+<a name="l42"></a>                        snap_left=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1-want_cols;
+<a name="l43"></a>                </span><span class=cB1>if</span><span class=cB0> (snap_left&lt;1)
+<a name="l44"></a>                        snap_left=1;
+<a name="l45"></a>                </span><span class=cB1>if</span><span class=cB0> (snap_top+want_rows&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1)
+<a name="l46"></a>                        snap_top=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1-want_rows;
+<a name="l47"></a>                </span><span class=cB1>if</span><span class=cB0> (snap_top&lt;2)
+<a name="l48"></a>                        snap_top=2;
+<a name="l49"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l425"></span><span class=cB5>WinHorz</a></span><span class=cB0>(snap_left,snap_left+want_cols-1);
+<a name="l50"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l465"></span><span class=cB5>WinVert</a></span><span class=cB0>(snap_top,snap_top+want_rows-1);
+<a name="l51"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l52"></a>}
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB1>U0</span><span class=cB0> GenReset()
+<a name="l55"></a>{
+<a name="l56"></a>        VDPReset;
+<a name="l57"></a>        GenSndReset;
+<a name="l58"></a>        GenJoypadInit;
+<a name="l59"></a>        z80_bus_ack=0;
+<a name="l60"></a>        z80_reset=0;
+<a name="l61"></a>        Z80Reset;
+<a name="l62"></a>        m68k_pulse_reset;
+<a name="l63"></a>}
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB1>Bool</span><span class=cB0> GenIsRomName(</span><span class=cB1>U8</span><span class=cB0> *name)
+<a name="l66"></a>{
+<a name="l67"></a>        </span><span class=cB1>U8</span><span class=cB0> buf[256];
+<a name="l68"></a>        </span><span class=cB9>I64</span><span class=cB0> n;
+<a name="l69"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(buf,name);
+<a name="l70"></a>        n=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(buf);
+<a name="l71"></a>        </span><span class=cB1>if</span><span class=cB0> (n&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>buf+n-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l72"></a>                n-=2;
+<a name="l73"></a>                buf[n]=0;
+<a name="l74"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>        </span><span class=cB1>if</span><span class=cB0> (n&gt;=4 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(buf+n-4,</span><span class=cB6>&quot;.BIN&quot;</span><span class=cB0>) || !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(buf+n-4,</span><span class=cB6>&quot;.GEN&quot;</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l76"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l77"></a>        </span><span class=cB1>return</span><span class=cB0> n&gt;=3 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(buf+n-3,</span><span class=cB6>&quot;.MD&quot;</span><span class=cB0>);
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB1>Bool</span><span class=cB0> GenPickRom(</span><span class=cB1>U8</span><span class=cB0> *rom_name)
+<a name="l81"></a>{
+<a name="l82"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de_list,*tmpde,**arr;
+<a name="l83"></a>        </span><span class=cB9>I64</span><span class=cB0> i,n=0,sel=0,top=0,rows,sc;
+<a name="l84"></a>        </span><span class=cB1>U8</span><span class=cB0> mask[256];
+<a name="l85"></a>        </span><span class=cB1>Bool</span><span class=cB0> picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l86"></a>        </span><span class=cB1>U0</span><span class=cB0> (*old_draw_it)(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc);
+<a name="l87"></a>        old_draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it;
+<a name="l88"></a>
+<a name="l89"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l90"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(mask,</span><span class=cB6>&quot;%s/Roms/*&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
+<a name="l91"></a>        de_list=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2736"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>);
+<a name="l92"></a>        tmpde=de_list;
+<a name="l93"></a>        </span><span class=cB1>while</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l94"></a>                </span><span class=cB1>if</span><span class=cB0> (GenIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l95"></a>                        n++;
+<a name="l96"></a>                tmpde=tmpde-&gt;next;
+<a name="l97"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>        </span><span class=cB1>if</span><span class=cB0> (!n) </span><span class=cB7>{</span><span class=cB0>
+<a name="l99"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l100"></a>                </span><span class=cB6>&quot;No ROMs found.\n\n&quot;</span><span class=cB0>
+<a name="l101"></a>                        </span><span class=cB6>&quot;Put .BIN/.GEN/.MD (or .Z-compressed) files in\n&quot;</span><span class=cB0>
+<a name="l102"></a>                        </span><span class=cB6>&quot;\&quot;%s/Roms\&quot;.\n\n&quot;</span><span class=cB0>
+<a name="l103"></a>                        </span><span class=cB6>&quot;Press any key...\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>;
+<a name="l104"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
+<a name="l105"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
+<a name="l106"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l107"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
+<a name="l108"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l109"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l110"></a>        arr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(n*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l111"></a>        i=0;
+<a name="l112"></a>        tmpde=de_list;
+<a name="l113"></a>        </span><span class=cB1>while</span><span class=cB0> (tmpde) </span><span class=cB7>{</span><span class=cB0>
+<a name="l114"></a>                </span><span class=cB1>if</span><span class=cB0> (GenIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l115"></a>                        arr[i++]=tmpde;
+<a name="l116"></a>                tmpde=tmpde-&gt;next;
+<a name="l117"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l118"></a>
+<a name="l119"></a>        rows=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_bottom-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top-3;
+<a name="l120"></a>        </span><span class=cB1>if</span><span class=cB0> (rows&lt;1)
+<a name="l121"></a>                rows=1;
+<a name="l122"></a>        </span><span class=cB1>while</span><span class=cB0> (!done) </span><span class=cB7>{</span><span class=cB0>
+<a name="l123"></a>                </span><span class=cB1>if</span><span class=cB0> (sel&lt;top)
+<a name="l124"></a>                        top=sel;
+<a name="l125"></a>                </span><span class=cB1>if</span><span class=cB0> (sel&gt;=top+rows)
+<a name="l126"></a>                        top=sel-rows+1;
+<a name="l127"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l128"></a>                </span><span class=cB6>&quot;Pick a ROM (%d found)\n&quot;</span><span class=cB0>
+<a name="l129"></a>                        </span><span class=cB6>&quot;Arrows move, Space/&quot;</span><span class=cB0>
+<a name="l130"></a>                        </span><span class=cB6>&quot;Enter pick, ESC backs out.\n\n&quot;</span><span class=cB0>,
+<a name="l131"></a>                        n;
+<a name="l132"></a>                </span><span class=cB1>for</span><span class=cB0> (i=top; i&lt;n &amp;&amp; i&lt;top+rows; i++)
+<a name="l133"></a>                        </span><span class=cB1>if</span><span class=cB0> (i==sel)
+<a name="l134"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
+<a name="l135"></a>                        </span><span class=cB1>else</span><span class=cB0>
+<a name="l136"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
+<a name="l137"></a>                </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB7>(</span><span class=cB0>&amp;sc</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l138"></a>                </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l139"></a>                        </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0]) </span><span class=cB7>{</span><span class=cB0>
+<a name="l140"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l141"></a>                                </span><span class=cB1>if</span><span class=cB0> (sel)
+<a name="l142"></a>                                        sel--;
+<a name="l143"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l144"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l145"></a>                                </span><span class=cB1>if</span><span class=cB0> (sel&lt;n-1)
+<a name="l146"></a>                                        sel++;
+<a name="l147"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l148"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3979"></span><span class=cB3>SC_PAGE_UP</a></span><span class=cB0>:
+<a name="l149"></a>                                sel-=rows;
+<a name="l150"></a>                                </span><span class=cB1>if</span><span class=cB0> (sel&lt;0)
+<a name="l151"></a>                                        sel=0;
+<a name="l152"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l153"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3980"></span><span class=cB3>SC_PAGE_DOWN</a></span><span class=cB0>:
+<a name="l154"></a>                                sel+=rows;
+<a name="l155"></a>                                </span><span class=cB1>if</span><span class=cB0> (sel&gt;n-1)
+<a name="l156"></a>                                        sel=n-1;
+<a name="l157"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l158"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3981"></span><span class=cB3>SC_HOME</a></span><span class=cB0>:
+<a name="l159"></a>                                sel=0;
+<a name="l160"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l161"></a>                        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3982"></span><span class=cB3>SC_END</a></span><span class=cB0>:
+<a name="l162"></a>                                sel=n-1;
+<a name="l163"></a>                                </span><span class=cB1>break</span><span class=cB0>;
+<a name="l164"></a>                        </span><span class=cB7>}</span><span class=cB0>
+<a name="l165"></a>                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l166"></a>                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l167"></a>                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
+<a name="l168"></a>                        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(rom_name,arr[sel]-&gt;full_name);
+<a name="l169"></a>                        picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l170"></a>                        done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l171"></a>                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l172"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l173"></a>                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l174"></a>                        done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l175"></a>                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l176"></a>                }
+<a name="l177"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l178"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(arr);
+<a name="l179"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
+<a name="l180"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l181"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
+<a name="l182"></a>        </span><span class=cB1>return</span><span class=cB0> picked;
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>Bool</span><span class=cB0> GenLoadRom(</span><span class=cB1>U8</span><span class=cB0> *rom_filename)
+<a name="l186"></a>{
+<a name="l187"></a>        </span><span class=cB9>I64</span><span class=cB0> size,i;
+<a name="l188"></a>        </span><span class=cB1>U8</span><span class=cB0> *buf,*dot;
+<a name="l189"></a>
+<a name="l190"></a>        buf=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(rom_filename,&amp;size);
+<a name="l191"></a>        </span><span class=cB1>if</span><span class=cB0> (!buf) </span><span class=cB7>{</span><span class=cB0>
+<a name="l192"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;ROM file not found.\n&quot;</span><span class=cB0>);
+<a name="l193"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l194"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>        </span><span class=cB1>if</span><span class=cB0> (size&lt;0x200 || size&gt;GEN_ROM_SIZE) </span><span class=cB7>{</span><span class=cB0>
+<a name="l196"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; isn't a usable size for a Genesis ROM.\n&quot;</span><span class=cB0>,
+<a name="l197"></a>                        rom_filename);
+<a name="l198"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l199"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l200"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l201"></a>        </span><span class=cB1>if</span><span class=cB0> (size%16384==512) </span><span class=cB7>{</span><span class=cB0>
+<a name="l202"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; is an interleaved .SMD image -- convert it &quot;</span><span class=cB0>
+<a name="l203"></a>                        </span><span class=cB6>&quot;to .BIN format.\n&quot;</span><span class=cB0>,rom_filename);
+<a name="l204"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l205"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l206"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l207"></a>        </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf+0x100,</span><span class=cB6>&quot;SEGA&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf+0x101,</span><span class=cB6>&quot;SEGA&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l208"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; doesn't look like a Genesis ROM &quot;</span><span class=cB0>
+<a name="l209"></a>                        </span><span class=cB6>&quot;(no SEGA header at 0x100).\n&quot;</span><span class=cB0>,rom_filename);
+<a name="l210"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l211"></a>                </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l212"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l213"></a>        GenSetRom(buf,size);
+<a name="l214"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l215"></a>
+<a name="l216"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(gen_state_filename,rom_filename);
+<a name="l217"></a>        i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(gen_state_filename);
+<a name="l218"></a>        </span><span class=cB1>if</span><span class=cB0> (i&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>gen_state_filename+i-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l219"></a>                gen_state_filename[i-2]=0;
+<a name="l220"></a>        dot=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l643"></span><span class=cB5>StrLastOcc</a></span><span class=cB0>(gen_state_filename,</span><span class=cB6>&quot;.&quot;</span><span class=cB0>);
+<a name="l221"></a>        </span><span class=cB1>if</span><span class=cB0> (dot)
+<a name="l222"></a>                *dot=0;
+<a name="l223"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(gen_state_filename,</span><span class=cB6>&quot;.SAV.Z&quot;</span><span class=cB0>);
+<a name="l224"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l225"></a>}
+<a name="l226"></a>
+<a name="l227"></a></span><span class=cB1>U0</span><span class=cB0> GenChangeRom()
+<a name="l228"></a>{
+<a name="l229"></a>        </span><span class=cB1>U8</span><span class=cB0> new_rom[256];
+<a name="l230"></a>        </span><span class=cB1>if</span><span class=cB0> (!GenPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l231"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l232"></a>        </span><span class=cB1>while</span><span class=cB0> (!GenLoadRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l233"></a>                </span><span class=cB1>if</span><span class=cB0> (!GenPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l234"></a>                        </span><span class=cB1>return</span><span class=cB0>;
+<a name="l235"></a>        GenReset;
+<a name="l236"></a>        </span><span class=cB1>if</span><span class=cB0> (gen_snd_fifo)
+<a name="l237"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l342"></span><span class=cB5>FifoI64Flush</a></span><span class=cB0>(gen_snd_fifo);
+<a name="l238"></a>        gen_snd_last=0;
+<a name="l239"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l240"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l241"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l242"></a>}
+<a name="l243"></a>
+<a name="l244"></a></span><span class=cB1>U0</span><span class=cB0> TempleGen(</span><span class=cB1>U8</span><span class=cB0> *rom_filename=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l245"></a>{
+<a name="l246"></a>        </span><span class=cB9>I64</span><span class=cB0> arg1,arg2;
+<a name="l247"></a>        </span><span class=cB1>Bool</span><span class=cB0> quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l248"></a>        </span><span class=cB1>F64</span><span class=cB0> next_frame;
+<a name="l249"></a>        </span><span class=cB1>U8</span><span class=cB0> rom_name[256],help_path[256];
+<a name="l250"></a>
+<a name="l251"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l30"></span><span class=cB5>SettingsPush</a></span><span class=cB0>;
+<a name="l252"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l253"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
+<a name="l254"></a>                </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
+<a name="l255"></a>                </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
+<a name="l256"></a>                </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l257"></a>                </span><span class=cB6>&quot;Game {&quot;</span><span class=cB0>
+<a name="l258"></a>                </span><span class=cB6>&quot;  PickROM(,'P');&quot;</span><span class=cB0>
+<a name="l259"></a>                </span><span class=cB6>&quot;  Reset(,'R');&quot;</span><span class=cB0>
+<a name="l260"></a>                </span><span class=cB6>&quot;  Pause(,' ');&quot;</span><span class=cB0>
+<a name="l261"></a>                </span><span class=cB6>&quot;  SaveState(,'S');&quot;</span><span class=cB0>
+<a name="l262"></a>                </span><span class=cB6>&quot;  LoadState(,'L');&quot;</span><span class=cB0>
+<a name="l263"></a>                </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l264"></a>                </span><span class=cB6>&quot;View {&quot;</span><span class=cB0>
+<a name="l265"></a>                </span><span class=cB6>&quot;  Scale1x(,'1');&quot;</span><span class=cB0>
+<a name="l266"></a>                </span><span class=cB6>&quot;  Scale2x(,'2');&quot;</span><span class=cB0>
+<a name="l267"></a>                </span><span class=cB6>&quot;}&quot;</span><span class=cB0>);
+<a name="l268"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l426"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l269"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l270"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l271"></a>        GenSnapWindow;
+<a name="l272"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l412"></span><span class=cB5>WinFocus</a></span><span class=cB0>;
+<a name="l273"></a>
+<a name="l274"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(help_path,</span><span class=cB6>&quot;%s/Help.DD&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
+<a name="l275"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l365"></span><span class=cB5>Type</a></span><span class=cB0>(help_path);
+<a name="l276"></a>        </span><span class=cB1>if</span><span class=cB0> (rom_filename)
+<a name="l277"></a>                </span><span class=cB6>&quot;\nPress any key to start...\n&quot;</span><span class=cB0>;
+<a name="l278"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l279"></a>                </span><span class=cB6>&quot;\nPress any key to pick a ROM...\n&quot;</span><span class=cB0>;
+<a name="l280"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
+<a name="l281"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l282"></a>
+<a name="l283"></a>        </span><span class=cB1>if</span><span class=cB0> (!rom_filename) </span><span class=cB7>{</span><span class=cB0>
+<a name="l284"></a>                </span><span class=cB1>if</span><span class=cB0> (!GenPickRom</span><span class=cB7>(</span><span class=cB0>rom_name</span><span class=cB7>)</span><span class=cB0>) {
+<a name="l285"></a>                        <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l286"></a>                        <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l287"></a>                        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l288"></a>                        </span><span class=cB1>return</span><span class=cB0>;
+<a name="l289"></a>                }
+<a name="l290"></a>                rom_filename=rom_name;
+<a name="l291"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l292"></a>
+<a name="l293"></a>        ROM=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(GEN_ROM_SIZE);
+<a name="l294"></a>        RAM=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(0x10000);
+<a name="l295"></a>        ZRAM=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(0x2000);
+<a name="l296"></a>        </span><span class=cB1>if</span><span class=cB0> (!GenLoadRom</span><span class=cB7>(</span><span class=cB0>rom_filename</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l297"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ROM);
+<a name="l298"></a>                ROM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l299"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(RAM);
+<a name="l300"></a>                RAM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l301"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ZRAM);
+<a name="l302"></a>                ZRAM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l303"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l304"></a>                <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l305"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l306"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l307"></a>
+<a name="l308"></a>        gameCanvas=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(GEN_SCRN_W,GEN_SCRN_H);
+<a name="l309"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l310"></a>        gameCanvas2=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(GEN_SCRN_W,GEN_SCRN_H);
+<a name="l311"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l312"></a>        gen_shown_canvas=gameCanvas2;
+<a name="l313"></a>        gameCanvas-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
+<a name="l314"></a>        gameCanvas2-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
+<a name="l315"></a>        gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(2*GEN_SCRN_W,2*</span><span class=cB7>(</span><span class=cB0>GEN_SCRN_H-2*GEN_OVERSCAN</span><span class=cB7>)</span><span class=cB0>);
+<a name="l316"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l317"></a>        gameCanvas2x-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
+<a name="l318"></a>
+<a name="l319"></a>        GenSavePalette;
+<a name="l320"></a>        GenInitPalette;
+<a name="l321"></a>        GenReset;
+<a name="l322"></a>        GenSyncPalette;
+<a name="l323"></a>
+<a name="l324"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;GenDrawWindow;
+<a name="l325"></a>        next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
+<a name="l326"></a>        </span><span class=cB1>try</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l327"></a>                </span><span class=cB1>while</span><span class=cB0> (!quit) {
+<a name="l328"></a>                        </span><span class=cB1>if</span><span class=cB0> (!paused) </span><span class=cB7>{</span><span class=cB0>
+<a name="l329"></a>                                GenFrame;
+<a name="l330"></a>                                GenSndThrottle;
+<a name="l331"></a>                                </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>&lt;next_frame)
+<a name="l332"></a>                                        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l333"></a>                                next_frame+=1.0/60;
+<a name="l334"></a>                                </span><span class=cB1>if</span><span class=cB0> (next_frame&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>)
+<a name="l335"></a>                                        next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
+<a name="l336"></a>                        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0>
+<a name="l337"></a>                                <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l338"></a>                        GenSyncPalette;
+<a name="l339"></a>                        </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l41"></span><span class=cB5>ScanMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3640"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l340"></a>                                </span><span class=cB1>switch</span><span class=cB0> (arg1) {
+<a name="l341"></a>                                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l342"></a>                                </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l343"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'q'</span><span class=cB0>:
+<a name="l344"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'Q'</span><span class=cB0>:
+<a name="l345"></a>                                        quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l346"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l347"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'r'</span><span class=cB0>:
+<a name="l348"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'R'</span><span class=cB0>:
+<a name="l349"></a>                                        GenReset;
+<a name="l350"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l351"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'p'</span><span class=cB0>:
+<a name="l352"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'P'</span><span class=cB0>:
+<a name="l353"></a>                                        GenChangeRom;
+<a name="l354"></a>                                        paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l355"></a>                                        next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
+<a name="l356"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l357"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l358"></a>                                        paused=!paused;
+<a name="l359"></a>                                        </span><span class=cB1>if</span><span class=cB0> (!paused)
+<a name="l360"></a>                                                next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
+<a name="l361"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l362"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'s'</span><span class=cB0>:
+<a name="l363"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'S'</span><span class=cB0>:
+<a name="l364"></a>                                        SaveState;
+<a name="l365"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l366"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'l'</span><span class=cB0>:
+<a name="l367"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'L'</span><span class=cB0>:
+<a name="l368"></a>                                        LoadState;
+<a name="l369"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l370"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'1'</span><span class=cB0>:
+<a name="l371"></a>                                        win_scale=1;
+<a name="l372"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l373"></a>                                </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'2'</span><span class=cB0>:
+<a name="l374"></a>                                        win_scale=2;
+<a name="l375"></a>                                        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l376"></a>                                }
+<a name="l377"></a>                        </span><span class=cB7>}</span><span class=cB0>
+<a name="l378"></a>                        GenSnapWindow;
+<a name="l379"></a>                        GenJoypadScan;
+<a name="l380"></a>                }
+<a name="l381"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>catch</span><span class=cB0>
+<a name="l382"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l383"></a>
+<a name="l384"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l385"></a>        </span><span class=cB1>if</span><span class=cB0> (gen_snd_fifo)
+<a name="l386"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l342"></span><span class=cB5>FifoI64Flush</a></span><span class=cB0>(gen_snd_fifo);
+<a name="l387"></a>        gen_snd_last=0;
+<a name="l388"></a>        GenRestorePalette;
+<a name="l389"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ROM);
+<a name="l390"></a>        ROM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l391"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(RAM);
+<a name="l392"></a>        RAM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l393"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(ZRAM);
+<a name="l394"></a>        ZRAM=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l395"></a>        gen_shown_canvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l396"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas);
+<a name="l397"></a>        gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l398"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas2);
+<a name="l399"></a>        gameCanvas2=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l400"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas2x);
+<a name="l401"></a>        gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l402"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l403"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l404"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l405"></a>}
+</span></div></pre></body>
+</html>

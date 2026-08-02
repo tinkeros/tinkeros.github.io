@@ -41,52 +41,62 @@
 <a name="l3"></a>{
 <a name="l4"></a>  </span><span class=cB1>U8</span><span class=cB0> pointer;
 <a name="l5"></a>  </span><span class=cB1>U8</span><span class=cB0> button_status[8];
-<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> previous_write;
-<a name="l7"></a>};
-<a name="l8"></a>
-<a name="l9"></a>CNESJoypad nes_joypad;
-<a name="l10"></a>
-<a name="l11"></a></span><span class=cB1>Bool</span><span class=cB0> NESKeyDown(</span><span class=cB9>I64</span><span class=cB0> sc)
-<a name="l12"></a>{
-<a name="l13"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>kbd</a></span><span class=cB0>.down_bitmap,sc);
-<a name="l14"></a>}
-<a name="l15"></a>
-<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> JoypadInit(CNESJoypad *joypad)
-<a name="l17"></a>{
-<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l19"></a>  joypad-&gt;pointer=0;
-<a name="l20"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
-<a name="l21"></a>    joypad-&gt;button_status[i]=0;
-<a name="l22"></a>  joypad-&gt;previous_write=0;
-<a name="l23"></a>}
-<a name="l24"></a>
-<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> JoypadScan(CNESJoypad *joypad)
-<a name="l26"></a>{
-<a name="l27"></a>
-<a name="l28"></a>  joypad-&gt;button_status[0]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3971"></span><span class=cB3>SC_ALT</a></span><span class=cB0>) ||
-<a name="l29"></a>      NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB7>(</span><span class=cB6>'x'</span><span class=cB7>)</span><span class=cB0>);
-<a name="l30"></a>  joypad-&gt;button_status[1]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3970"></span><span class=cB3>SC_CTRL</a></span><span class=cB0>) ||
-<a name="l31"></a>      NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB7>(</span><span class=cB6>'z'</span><span class=cB7>)</span><span class=cB0>);
-<a name="l32"></a>  joypad-&gt;button_status[2]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3966"></span><span class=cB3>SC_TAB</a></span><span class=cB0>);
-<a name="l33"></a>  joypad-&gt;button_status[3]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3967"></span><span class=cB3>SC_ENTER</a></span><span class=cB0>);
-<a name="l34"></a>  joypad-&gt;button_status[4]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>);
-<a name="l35"></a>  joypad-&gt;button_status[5]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>);
-<a name="l36"></a>  joypad-&gt;button_status[6]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3977"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>);
-<a name="l37"></a>  joypad-&gt;button_status[7]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3978"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>);
-<a name="l38"></a>}
-<a name="l39"></a>
-<a name="l40"></a></span><span class=cB1>U0</span><span class=cB0> JoypadWrite(CNESJoypad *joypad, </span><span class=cB1>U8</span><span class=cB0> data)
-<a name="l41"></a>{
-<a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (joypad-&gt;previous_write==1 &amp;&amp; data==0)
-<a name="l43"></a>    joypad-&gt;pointer=0;
-<a name="l44"></a>  joypad-&gt;previous_write=data;
-<a name="l45"></a>}
-<a name="l46"></a>
-<a name="l47"></a></span><span class=cB1>U8</span><span class=cB0> JoypadNextButton(CNESJoypad *joypad)
-<a name="l48"></a>{
-<a name="l49"></a>  </span><span class=cB1>U8</span><span class=cB0> retval=joypad-&gt;button_status[joypad-&gt;pointer++];
-<a name="l50"></a>  joypad-&gt;pointer=joypad-&gt;pointer%8;
-<a name="l51"></a>  </span><span class=cB1>return</span><span class=cB0> retval;
-<a name="l52"></a>}
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> latched[8];
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> previous_write;
+<a name="l8"></a>};
+<a name="l9"></a>
+<a name="l10"></a>CNESJoypad nes_joypad;
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>Bool</span><span class=cB0> NESKeyDown(</span><span class=cB9>I64</span><span class=cB0> sc)
+<a name="l13"></a>{
+<a name="l14"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>kbd</a></span><span class=cB0>.down_bitmap,sc);
+<a name="l15"></a>}
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> JoypadInit(CNESJoypad *joypad)
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l20"></a>  joypad-&gt;pointer=0;
+<a name="l21"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l22"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l23"></a>    joypad-&gt;button_status[i]=0;
+<a name="l24"></a>    joypad-&gt;latched[i]=0;
+<a name="l25"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l26"></a>  joypad-&gt;previous_write=0;
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> JoypadScan(CNESJoypad *joypad)
+<a name="l30"></a>{
+<a name="l31"></a>
+<a name="l32"></a>  joypad-&gt;button_status[0]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3971"></span><span class=cB3>SC_ALT</a></span><span class=cB0>) ||
+<a name="l33"></a>      NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB7>(</span><span class=cB6>'x'</span><span class=cB7>)</span><span class=cB0>);
+<a name="l34"></a>  joypad-&gt;button_status[1]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3970"></span><span class=cB3>SC_CTRL</a></span><span class=cB0>) ||
+<a name="l35"></a>      NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB7>(</span><span class=cB6>'z'</span><span class=cB7>)</span><span class=cB0>);
+<a name="l36"></a>  joypad-&gt;button_status[2]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3966"></span><span class=cB3>SC_TAB</a></span><span class=cB0>);
+<a name="l37"></a>  joypad-&gt;button_status[3]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3967"></span><span class=cB3>SC_ENTER</a></span><span class=cB0>);
+<a name="l38"></a>  joypad-&gt;button_status[4]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>);
+<a name="l39"></a>  joypad-&gt;button_status[5]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>);
+<a name="l40"></a>  joypad-&gt;button_status[6]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3977"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB0>);
+<a name="l41"></a>  joypad-&gt;button_status[7]=NESKeyDown(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3978"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB0>);
+<a name="l42"></a>}
+<a name="l43"></a>
+<a name="l44"></a></span><span class=cB1>U0</span><span class=cB0> JoypadWrite(CNESJoypad *joypad, </span><span class=cB1>U8</span><span class=cB0> data)
+<a name="l45"></a>{
+<a name="l46"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l47"></a>  data&amp;=1;
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (joypad-&gt;previous_write &amp;&amp; !data)
+<a name="l49"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l51"></a>      joypad-&gt;latched[i]=joypad-&gt;button_status[i];
+<a name="l52"></a>    joypad-&gt;pointer=0;
+<a name="l53"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l54"></a>  joypad-&gt;previous_write=data;
+<a name="l55"></a>}
+<a name="l56"></a>
+<a name="l57"></a></span><span class=cB1>U8</span><span class=cB0> JoypadNextButton(CNESJoypad *joypad)
+<a name="l58"></a>{
+<a name="l59"></a>  </span><span class=cB1>U8</span><span class=cB0> retval=joypad-&gt;latched[joypad-&gt;pointer++];
+<a name="l60"></a>  joypad-&gt;pointer=joypad-&gt;pointer%8;
+<a name="l61"></a>  </span><span class=cB1>return</span><span class=cB0> retval;
+<a name="l62"></a>}
 </span></div></pre></body>
 </html>

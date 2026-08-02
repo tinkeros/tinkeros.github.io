@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> GEN_SCRN_W      320
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_SCRN_H      240
+<a name="l3"></a>
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_OVERSCAN    8
+<a name="l5"></a>
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_PAL_EXTRA_BASE      230
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_PAL_EXTRA_CNT       25
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> T(</span><span class=cB9>I64</span><span class=cB0> val, </span><span class=cB9>I64</span><span class=cB0> if_true, </span><span class=cB9>I64</span><span class=cB0> if_false)
+<a name="l10"></a>{
+<a name="l11"></a>        </span><span class=cB1>if</span><span class=cB0> (val)
+<a name="l12"></a>                </span><span class=cB1>return</span><span class=cB0> if_true;
+<a name="l13"></a>        </span><span class=cB1>return</span><span class=cB0> if_false;
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>Bool</span><span class=cB0> KeyDown(</span><span class=cB9>I64</span><span class=cB0> sc)
+<a name="l17"></a>{
+<a name="l18"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l33"></span><span class=cB6>kbd</a></span><span class=cB0>.down_bitmap, sc);
+<a name="l19"></a>}
+<a name="l20"></a>
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_ROM_SIZE    0x400000
+<a name="l22"></a></span><span class=cB1>U8</span><span class=cB0> *ROM = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l23"></a></span><span class=cB1>U8</span><span class=cB0> *RAM = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l24"></a></span><span class=cB1>U8</span><span class=cB0> *ZRAM = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l27"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas2 = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l28"></a></span><span class=cB9>CDC</span><span class=cB0> *gen_shown_canvas = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l29"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas2x = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l30"></a>
+<a name="l31"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3404"></span><span class=cB9>CBGR48</a></span><span class=cB0> gen_sys_palette[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>COLORS_NUM</a></span><span class=cB0>];
+<a name="l32"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3404"></span><span class=cB9>CBGR48</a></span><span class=cB0> gen_sys_extra[GEN_PAL_EXTRA_CNT];
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB1>U8</span><span class=cB0> gen_state_filename[256];
+</span></div></pre></body>
+</html>

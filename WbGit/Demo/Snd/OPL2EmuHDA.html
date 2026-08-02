@@ -43,476 +43,457 @@
 <a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> OPL2EMU_CHANS   9
 <a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> OPL2EMU_OPS     18
 <a name="l6"></a>
-<a name="l7"></a></span><span class=cB2>// Anti-click de-glitching.  A key-on that lands while the channel is still</span><span class=cB0>
-<a name="l8"></a></span><span class=cB2>// sounding (SndM changing note/freq) slams the envelope back to zero, and a</span><span class=cB0>
-<a name="l9"></a></span><span class=cB2>// key-off on an instrument with a fast release chops the waveform mid-cycle.</span><span class=cB0>
-<a name="l10"></a></span><span class=cB2>// Both are steps in the output -- an audible click.  When opl2_fade_mS is</span><span class=cB0>
-<a name="l11"></a></span><span class=cB2>// non-zero a brief linear gain ramp is run at every key transition: fade the</span><span class=cB0>
-<a name="l12"></a></span><span class=cB2>// old note out, then retrigger, then fade the new note in.  Retriggers are</span><span class=cB0>
-<a name="l13"></a></span><span class=cB2>// held off until the fade-out finishes, so the worst-case note latency is</span><span class=cB0>
-<a name="l14"></a></span><span class=cB2>// one fade time.  A key-off is only ramped when the instrument's release is</span><span class=cB0>
-<a name="l15"></a></span><span class=cB2>// at least as quick as the ramp, so slow release tails survive intact.</span><span class=cB0>
-<a name="l16"></a></span><span class=cB2>// Set to 0.0 for the old instant on/off behavior.</span><span class=cB0>
-<a name="l17"></a></span><span class=cB2>// OPL2.HC's OPL_CLICK_FADE define sets this at load time.</span><span class=cB0>
-<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> OPL2_FADE_mS    4.0
-<a name="l19"></a></span><span class=cB1>F64</span><span class=cB0> opl2_fade_mS=OPL2_FADE_mS;
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> OPL2_FADE_mS    4.0
+<a name="l8"></a></span><span class=cB1>F64</span><span class=cB0> opl2_fade_mS=OPL2_FADE_mS;
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>class</span><span class=cB0> COPL2Op
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB1>U8</span><span class=cB0> mult,ksl,tl,ar,dr,sl,rr,ws;
+<a name="l13"></a>  </span><span class=cB1>Bool</span><span class=cB0> am,vib,egt,ksr;
+<a name="l14"></a>
+<a name="l15"></a>  </span><span class=cB9>I64</span><span class=cB0> chan;
+<a name="l16"></a>
+<a name="l17"></a>  </span><span class=cB1>F64</span><span class=cB0> phase;
+<a name="l18"></a>  </span><span class=cB1>F64</span><span class=cB0> phase_inc;
+<a name="l19"></a>  </span><span class=cB1>F64</span><span class=cB0> out;
 <a name="l20"></a>
-<a name="l21"></a></span><span class=cB1>class</span><span class=cB0> COPL2Op
-<a name="l22"></a>{
-<a name="l23"></a>  </span><span class=cB1>U8</span><span class=cB0> mult,ksl,tl,ar,dr,sl,rr,ws;
-<a name="l24"></a>  </span><span class=cB1>Bool</span><span class=cB0> am,vib,egt,ksr;
-<a name="l25"></a>
-<a name="l26"></a>  </span><span class=cB9>I64</span><span class=cB0> chan;
-<a name="l27"></a>
-<a name="l28"></a>  </span><span class=cB1>F64</span><span class=cB0> phase;
-<a name="l29"></a>  </span><span class=cB1>F64</span><span class=cB0> phase_inc;
-<a name="l30"></a>  </span><span class=cB1>F64</span><span class=cB0> out;
-<a name="l31"></a>
-<a name="l32"></a>  </span><span class=cB9>I64</span><span class=cB0> env_stage;
-<a name="l33"></a>  </span><span class=cB1>F64</span><span class=cB0> env;
-<a name="l34"></a>  </span><span class=cB1>F64</span><span class=cB0> env_target;
-<a name="l35"></a>  </span><span class=cB1>F64</span><span class=cB0> env_coeff;
-<a name="l36"></a>} opl2_ops[OPL2EMU_OPS];
-<a name="l37"></a>
-<a name="l38"></a></span><span class=cB1>class</span><span class=cB0> COPL2Chan
-<a name="l39"></a>{
-<a name="l40"></a>  </span><span class=cB9>U16</span><span class=cB0> fnum;
-<a name="l41"></a>  </span><span class=cB1>U8</span><span class=cB0> block;
-<a name="l42"></a>  </span><span class=cB1>Bool</span><span class=cB0> key_on;
-<a name="l43"></a>  </span><span class=cB1>U8</span><span class=cB0> feedback;
-<a name="l44"></a>  </span><span class=cB1>Bool</span><span class=cB0> connection;
-<a name="l45"></a>  </span><span class=cB1>F64</span><span class=cB0> freq;
-<a name="l46"></a>  </span><span class=cB1>F64</span><span class=cB0> fb_mem[2];
+<a name="l21"></a>  </span><span class=cB9>I64</span><span class=cB0> env_stage;
+<a name="l22"></a>  </span><span class=cB1>F64</span><span class=cB0> env;
+<a name="l23"></a>  </span><span class=cB1>F64</span><span class=cB0> env_target;
+<a name="l24"></a>  </span><span class=cB1>F64</span><span class=cB0> env_coeff;
+<a name="l25"></a>} opl2_ops[OPL2EMU_OPS];
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> COPL2Chan
+<a name="l28"></a>{
+<a name="l29"></a>  </span><span class=cB9>U16</span><span class=cB0> fnum;
+<a name="l30"></a>  </span><span class=cB1>U8</span><span class=cB0> block;
+<a name="l31"></a>  </span><span class=cB1>Bool</span><span class=cB0> key_on;
+<a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> feedback;
+<a name="l33"></a>  </span><span class=cB1>Bool</span><span class=cB0> connection;
+<a name="l34"></a>  </span><span class=cB1>F64</span><span class=cB0> freq;
+<a name="l35"></a>  </span><span class=cB1>F64</span><span class=cB0> fb_mem[2];
+<a name="l36"></a>
+<a name="l37"></a>  </span><span class=cB1>F64</span><span class=cB0> fade,fade_inc;
+<a name="l38"></a>  </span><span class=cB9>I64</span><span class=cB0> fade_dir;
+<a name="l39"></a>  </span><span class=cB1>Bool</span><span class=cB0> key_pend;
+<a name="l40"></a>} opl2_chans[OPL2EMU_CHANS];
+<a name="l41"></a>
+<a name="l42"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> opl2_chan_op1[OPL2EMU_CHANS]={0,1,2, 6,7,8,  12,13,14};
+<a name="l43"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> opl2_chan_op2[OPL2EMU_CHANS]={3,4,5, 9,10,11,15,16,17};
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> opl2_mult_tab[16]=
+<a name="l46"></a>    {0.5,1,2,3,4,5,6,7,8,9,10,10,12,12,15,15};
 <a name="l47"></a>
-<a name="l48"></a>  </span><span class=cB2>//Anti-click ramp.  fade_dir is +1 fading in, -1 fading out, 0 idle.</span><span class=cB0>
-<a name="l49"></a>  </span><span class=cB2>//key_pend is a key-on waiting for the fade-out to reach silence.</span><span class=cB0>
-<a name="l50"></a>  </span><span class=cB1>F64</span><span class=cB0> fade,fade_inc;
-<a name="l51"></a>  </span><span class=cB9>I64</span><span class=cB0> fade_dir;
-<a name="l52"></a>  </span><span class=cB1>Bool</span><span class=cB0> key_pend;
-<a name="l53"></a>} opl2_chans[OPL2EMU_CHANS];
-<a name="l54"></a>
-<a name="l55"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> opl2_chan_op1[OPL2EMU_CHANS]={0,1,2, 6,7,8,  12,13,14};
-<a name="l56"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> opl2_chan_op2[OPL2EMU_CHANS]={3,4,5, 9,10,11,15,16,17};
-<a name="l57"></a>
-<a name="l58"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> opl2_mult_tab[16]=
-<a name="l59"></a>    {0.5,1,2,3,4,5,6,7,8,9,10,10,12,12,15,15};
+<a name="l48"></a></span><span class=cB1>Bool</span><span class=cB0> opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l49"></a></span><span class=cB1>F64</span><span class=cB0> opl2_lfo_phase=0.0;
+<a name="l50"></a></span><span class=cB1>F64</span><span class=cB0> opl2_am_depth=0.0,opl2_vib_depth=0.0;
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB9>I64</span><span class=cB0> opl2emu_mixer_idx=-1;
+<a name="l53"></a>
+<a name="l54"></a></span><span class=cB9>I64</span><span class=cB0> OPL2EmuReg2Op(</span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>)
+<a name="l55"></a>{
+<a name="l56"></a>  </span><span class=cB9>I64</span><span class=cB0> grp=</span><span class=cB1>offset</span><span class=cB0>/8,sub=</span><span class=cB1>offset</span><span class=cB0>%8;
+<a name="l57"></a>  </span><span class=cB1>if</span><span class=cB0> (sub&gt;5) </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l58"></a>  </span><span class=cB1>return</span><span class=cB0> grp*6+sub;
+<a name="l59"></a>}
 <a name="l60"></a>
-<a name="l61"></a></span><span class=cB1>Bool</span><span class=cB0> opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l62"></a></span><span class=cB1>F64</span><span class=cB0> opl2_lfo_phase=0.0;
-<a name="l63"></a></span><span class=cB1>F64</span><span class=cB0> opl2_am_depth=0.0,opl2_vib_depth=0.0;
-<a name="l64"></a>
-<a name="l65"></a></span><span class=cB9>I64</span><span class=cB0> opl2emu_mixer_idx=-1;
-<a name="l66"></a>
-<a name="l67"></a></span><span class=cB9>I64</span><span class=cB0> OPL2EmuReg2Op(</span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>offset</span><span class=cB0>)
-<a name="l68"></a>{
-<a name="l69"></a>  </span><span class=cB9>I64</span><span class=cB0> grp=</span><span class=cB1>offset</span><span class=cB0>/8,sub=</span><span class=cB1>offset</span><span class=cB0>%8;
-<a name="l70"></a>  </span><span class=cB1>if</span><span class=cB0> (sub&gt;5) </span><span class=cB1>return</span><span class=cB0> -1;
-<a name="l71"></a>  </span><span class=cB1>return</span><span class=cB0> grp*6+sub;
-<a name="l72"></a>}
-<a name="l73"></a>
-<a name="l74"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuCoeffForRate(</span><span class=cB9>I64</span><span class=cB0> rate,</span><span class=cB1>Bool</span><span class=cB0> is_attack)
-<a name="l75"></a>{
-<a name="l76"></a>  </span><span class=cB1>F64</span><span class=cB0> t;
-<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (!rate) </span><span class=cB1>return</span><span class=cB0> 0.0;
-<a name="l78"></a>  </span><span class=cB1>if</span><span class=cB0> (is_attack)
-<a name="l79"></a>    t=6.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>rate-1</span><span class=cB7>)</span><span class=cB0>);
-<a name="l80"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l81"></a>    t=16.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>rate-1</span><span class=cB7>)</span><span class=cB0>);
-<a name="l82"></a>  </span><span class=cB1>return</span><span class=cB0> 1.0-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>Exp</a></span><span class=cB0>(-1.0/</span><span class=cB7>(</span><span class=cB0>t*SND_SAMPLE_RATE</span><span class=cB7>)</span><span class=cB0>);
-<a name="l83"></a>}
-<a name="l84"></a>
-<a name="l85"></a></span><span class=cB9>I64</span><span class=cB0> OPL2EmuRateScale(COPL2Op *op)
-<a name="l86"></a>{
-<a name="l87"></a>  </span><span class=cB9>I64</span><span class=cB0> block=opl2_chans[op-&gt;chan].block;
-<a name="l88"></a>  </span><span class=cB9>I64</span><span class=cB0> fnum_msb=opl2_chans[op-&gt;chan].fnum&gt;&gt;9&amp;1;
-<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> rof=block&lt;&lt;1|fnum_msb;
-<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (!op-&gt;ksr) rof&gt;&gt;=2;
-<a name="l91"></a>  </span><span class=cB1>return</span><span class=cB0> rof;
-<a name="l92"></a>}
-<a name="l93"></a>
-<a name="l94"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnterRelease(COPL2Op *op)
-<a name="l95"></a>{
-<a name="l96"></a>  </span><span class=cB9>I64</span><span class=cB0> er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;rr+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
-<a name="l97"></a>  op-&gt;env_stage=4;
-<a name="l98"></a>  op-&gt;env_target=0.0;
-<a name="l99"></a>  op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l100"></a>}
-<a name="l101"></a>
-<a name="l102"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnterDecay(COPL2Op *op)
-<a name="l103"></a>{
-<a name="l104"></a>  </span><span class=cB9>I64</span><span class=cB0> er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;dr+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
-<a name="l105"></a>  op-&gt;env_stage=2;
-<a name="l106"></a>  </span><span class=cB1>if</span><span class=cB0> (op-&gt;sl==15)
-<a name="l107"></a>    op-&gt;env_target=0.0;
-<a name="l108"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l109"></a>    op-&gt;env_target=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(10.0,-</span><span class=cB7>(</span><span class=cB0>op-&gt;sl*3.0</span><span class=cB7>)</span><span class=cB0>/20.0);
-<a name="l110"></a>  op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l111"></a>}
-<a name="l112"></a>
-<a name="l113"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnvStep(COPL2Op *op)
-<a name="l114"></a>{
-<a name="l115"></a>  </span><span class=cB1>switch</span><span class=cB0> (op-&gt;env_stage) </span><span class=cB7>{</span><span class=cB0>
-<a name="l116"></a>    </span><span class=cB1>case</span><span class=cB0> 1:
-<a name="l117"></a>      op-&gt;env+=(1.0-op-&gt;env)*op-&gt;env_coeff;
-<a name="l118"></a>      </span><span class=cB1>if</span><span class=cB0> (op-&gt;env&gt;=0.999) {
-<a name="l119"></a>        op-&gt;env=1.0;
-<a name="l120"></a>        OPL2EmuEnterDecay(op);
-<a name="l121"></a>      }
-<a name="l122"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l123"></a>    </span><span class=cB1>case</span><span class=cB0> 2:
-<a name="l124"></a>      op-&gt;env+=(op-&gt;env_target-op-&gt;env)*op-&gt;env_coeff;
-<a name="l125"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>op-&gt;env-op-&gt;env_target</span><span class=cB7>)</span><span class=cB0>&lt;0.001) {
-<a name="l126"></a>        op-&gt;env=op-&gt;env_target;
-<a name="l127"></a>        </span><span class=cB1>if</span><span class=cB0> (op-&gt;egt)
-<a name="l128"></a>          op-&gt;env_stage=3;
-<a name="l129"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l130"></a>          OPL2EmuEnterRelease(op);
-<a name="l131"></a>      }
-<a name="l132"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l133"></a>    </span><span class=cB1>case</span><span class=cB0> 3:
-<a name="l134"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l135"></a>    </span><span class=cB1>case</span><span class=cB0> 4:
-<a name="l136"></a>      op-&gt;env+=(0.0-op-&gt;env)*op-&gt;env_coeff;
-<a name="l137"></a>      </span><span class=cB1>if</span><span class=cB0> (op-&gt;env&lt;0.0005) {
-<a name="l138"></a>        op-&gt;env=0.0;
-<a name="l139"></a>        op-&gt;env_stage=0;
-<a name="l140"></a>      }
-<a name="l141"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l142"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l143"></a>}
-<a name="l144"></a>
-<a name="l145"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuChanFreqUpdate(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l146"></a>{
-<a name="l147"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
-<a name="l148"></a>  COPL2Op *op;
-<a name="l149"></a>  </span><span class=cB9>I64</span><span class=cB0> i,idx;
-<a name="l150"></a>  ch-&gt;freq=ch-&gt;fnum*49716.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>20-ch-&gt;block</span><span class=cB7>)</span><span class=cB0>);
-<a name="l151"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;2;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l152"></a>    </span><span class=cB1>if</span><span class=cB0> (i)
-<a name="l153"></a>      idx=opl2_chan_op2[c];
-<a name="l154"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l155"></a>      idx=opl2_chan_op1[c];
-<a name="l156"></a>    op=&amp;opl2_ops[idx];
-<a name="l157"></a>    op-&gt;phase_inc=ch-&gt;freq*opl2_mult_tab[op-&gt;mult]/SND_SAMPLE_RATE;
-<a name="l158"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l159"></a>}
-<a name="l160"></a>
-<a name="l161"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOn(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l162"></a>{
-<a name="l163"></a>  </span><span class=cB9>I64</span><span class=cB0> i,er,ops[2];
-<a name="l164"></a>  COPL2Op *op;
-<a name="l165"></a>  ops[0]=opl2_chan_op1[c];
-<a name="l166"></a>  ops[1]=opl2_chan_op2[c];
-<a name="l167"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;2;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l168"></a>    op=&amp;opl2_ops[ops[i]];
-<a name="l169"></a>    er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;ar+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
-<a name="l170"></a>    op-&gt;phase=0.0;
-<a name="l171"></a>    op-&gt;env=0.0;
-<a name="l172"></a>    op-&gt;env_stage=1;
-<a name="l173"></a>    op-&gt;env_target=1.0;
-<a name="l174"></a>    op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l175"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l61"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuCoeffForRate(</span><span class=cB9>I64</span><span class=cB0> rate,</span><span class=cB1>Bool</span><span class=cB0> is_attack)
+<a name="l62"></a>{
+<a name="l63"></a>  </span><span class=cB1>F64</span><span class=cB0> t;
+<a name="l64"></a>  </span><span class=cB1>if</span><span class=cB0> (!rate) </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l65"></a>  </span><span class=cB1>if</span><span class=cB0> (is_attack)
+<a name="l66"></a>    t=6.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>rate-1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l67"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l68"></a>    t=16.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>rate-1</span><span class=cB7>)</span><span class=cB0>);
+<a name="l69"></a>  </span><span class=cB1>return</span><span class=cB0> 1.0-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l128"></span><span class=cB5>Exp</a></span><span class=cB0>(-1.0/</span><span class=cB7>(</span><span class=cB0>t*SND_SAMPLE_RATE</span><span class=cB7>)</span><span class=cB0>);
+<a name="l70"></a>}
+<a name="l71"></a>
+<a name="l72"></a></span><span class=cB9>I64</span><span class=cB0> OPL2EmuRateScale(COPL2Op *op)
+<a name="l73"></a>{
+<a name="l74"></a>  </span><span class=cB9>I64</span><span class=cB0> block=opl2_chans[op-&gt;chan].block;
+<a name="l75"></a>  </span><span class=cB9>I64</span><span class=cB0> fnum_msb=opl2_chans[op-&gt;chan].fnum&gt;&gt;9&amp;1;
+<a name="l76"></a>  </span><span class=cB9>I64</span><span class=cB0> rof=block&lt;&lt;1|fnum_msb;
+<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (!op-&gt;ksr) rof&gt;&gt;=2;
+<a name="l78"></a>  </span><span class=cB1>return</span><span class=cB0> rof;
+<a name="l79"></a>}
+<a name="l80"></a>
+<a name="l81"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnterRelease(COPL2Op *op)
+<a name="l82"></a>{
+<a name="l83"></a>  </span><span class=cB9>I64</span><span class=cB0> er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;rr+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
+<a name="l84"></a>  op-&gt;env_stage=4;
+<a name="l85"></a>  op-&gt;env_target=0.0;
+<a name="l86"></a>  op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l87"></a>}
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnterDecay(COPL2Op *op)
+<a name="l90"></a>{
+<a name="l91"></a>  </span><span class=cB9>I64</span><span class=cB0> er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;dr+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
+<a name="l92"></a>  op-&gt;env_stage=2;
+<a name="l93"></a>  </span><span class=cB1>if</span><span class=cB0> (op-&gt;sl==15)
+<a name="l94"></a>    op-&gt;env_target=0.0;
+<a name="l95"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l96"></a>    op-&gt;env_target=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(10.0,-</span><span class=cB7>(</span><span class=cB0>op-&gt;sl*3.0</span><span class=cB7>)</span><span class=cB0>/20.0);
+<a name="l97"></a>  op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l98"></a>}
+<a name="l99"></a>
+<a name="l100"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuEnvStep(COPL2Op *op)
+<a name="l101"></a>{
+<a name="l102"></a>  </span><span class=cB1>switch</span><span class=cB0> (op-&gt;env_stage) </span><span class=cB7>{</span><span class=cB0>
+<a name="l103"></a>    </span><span class=cB1>case</span><span class=cB0> 1:
+<a name="l104"></a>      op-&gt;env+=(1.0-op-&gt;env)*op-&gt;env_coeff;
+<a name="l105"></a>      </span><span class=cB1>if</span><span class=cB0> (op-&gt;env&gt;=0.999) {
+<a name="l106"></a>        op-&gt;env=1.0;
+<a name="l107"></a>        OPL2EmuEnterDecay(op);
+<a name="l108"></a>      }
+<a name="l109"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l110"></a>    </span><span class=cB1>case</span><span class=cB0> 2:
+<a name="l111"></a>      op-&gt;env+=(op-&gt;env_target-op-&gt;env)*op-&gt;env_coeff;
+<a name="l112"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB7>(</span><span class=cB0>op-&gt;env-op-&gt;env_target</span><span class=cB7>)</span><span class=cB0>&lt;0.001) {
+<a name="l113"></a>        op-&gt;env=op-&gt;env_target;
+<a name="l114"></a>        </span><span class=cB1>if</span><span class=cB0> (op-&gt;egt)
+<a name="l115"></a>          op-&gt;env_stage=3;
+<a name="l116"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l117"></a>          OPL2EmuEnterRelease(op);
+<a name="l118"></a>      }
+<a name="l119"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l120"></a>    </span><span class=cB1>case</span><span class=cB0> 3:
+<a name="l121"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l122"></a>    </span><span class=cB1>case</span><span class=cB0> 4:
+<a name="l123"></a>      op-&gt;env+=(0.0-op-&gt;env)*op-&gt;env_coeff;
+<a name="l124"></a>      </span><span class=cB1>if</span><span class=cB0> (op-&gt;env&lt;0.0005) {
+<a name="l125"></a>        op-&gt;env=0.0;
+<a name="l126"></a>        op-&gt;env_stage=0;
+<a name="l127"></a>      }
+<a name="l128"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l129"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l130"></a>}
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuChanFreqUpdate(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l133"></a>{
+<a name="l134"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
+<a name="l135"></a>  COPL2Op *op;
+<a name="l136"></a>  </span><span class=cB9>I64</span><span class=cB0> i,idx;
+<a name="l137"></a>  ch-&gt;freq=ch-&gt;fnum*49716.0/(1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>20-ch-&gt;block</span><span class=cB7>)</span><span class=cB0>);
+<a name="l138"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;2;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>    </span><span class=cB1>if</span><span class=cB0> (i)
+<a name="l140"></a>      idx=opl2_chan_op2[c];
+<a name="l141"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l142"></a>      idx=opl2_chan_op1[c];
+<a name="l143"></a>    op=&amp;opl2_ops[idx];
+<a name="l144"></a>    op-&gt;phase_inc=ch-&gt;freq*opl2_mult_tab[op-&gt;mult]/SND_SAMPLE_RATE;
+<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l146"></a>}
+<a name="l147"></a>
+<a name="l148"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOn(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l149"></a>{
+<a name="l150"></a>  </span><span class=cB9>I64</span><span class=cB0> i,er,ops[2];
+<a name="l151"></a>  COPL2Op *op;
+<a name="l152"></a>  ops[0]=opl2_chan_op1[c];
+<a name="l153"></a>  ops[1]=opl2_chan_op2[c];
+<a name="l154"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;2;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l155"></a>    op=&amp;opl2_ops[ops[i]];
+<a name="l156"></a>    er=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(op-&gt;ar+</span><span class=cB7>(</span><span class=cB0>OPL2EmuRateScale(op)&gt;&gt;1</span><span class=cB7>)</span><span class=cB0>,0,15);
+<a name="l157"></a>    op-&gt;phase=0.0;
+<a name="l158"></a>    op-&gt;env=0.0;
+<a name="l159"></a>    op-&gt;env_stage=1;
+<a name="l160"></a>    op-&gt;env_target=1.0;
+<a name="l161"></a>    op-&gt;env_coeff=OPL2EmuCoeffForRate(er,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l162"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l163"></a>}
+<a name="l164"></a>
+<a name="l165"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOff(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l166"></a>{
+<a name="l167"></a>  OPL2EmuEnterRelease(&amp;opl2_ops[opl2_chan_op1[c]]);
+<a name="l168"></a>  OPL2EmuEnterRelease(&amp;opl2_ops[opl2_chan_op2[c]]);
+<a name="l169"></a>}
+<a name="l170"></a>
+<a name="l171"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuFadeInc()
+<a name="l172"></a>{</span><span class=cB2>//Per-sample step of the anti-click ramp.</span><span class=cB0>
+<a name="l173"></a>  </span><span class=cB1>F64</span><span class=cB0> n=opl2_fade_mS*SND_SAMPLE_RATE/1000.0;
+<a name="l174"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;1.0) n=1.0;
+<a name="l175"></a>  </span><span class=cB1>return</span><span class=cB0> 1.0/n;
 <a name="l176"></a>}
 <a name="l177"></a>
-<a name="l178"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOff(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l179"></a>{
-<a name="l180"></a>  OPL2EmuEnterRelease(&amp;opl2_ops[opl2_chan_op1[c]]);
-<a name="l181"></a>  OPL2EmuEnterRelease(&amp;opl2_ops[opl2_chan_op2[c]]);
-<a name="l182"></a>}
-<a name="l183"></a>
-<a name="l184"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuFadeInc()
-<a name="l185"></a>{</span><span class=cB2>//Per-sample step of the anti-click ramp.</span><span class=cB0>
-<a name="l186"></a>  </span><span class=cB1>F64</span><span class=cB0> n=opl2_fade_mS*SND_SAMPLE_RATE/1000.0;
-<a name="l187"></a>  </span><span class=cB1>if</span><span class=cB0> (n&lt;1.0) n=1.0;
-<a name="l188"></a>  </span><span class=cB1>return</span><span class=cB0> 1.0/n;
-<a name="l189"></a>}
-<a name="l190"></a>
-<a name="l191"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuFadeStart(</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> dir)
-<a name="l192"></a>{</span><span class=cB2>//Begin an anti-click gain ramp on a channel.</span><span class=cB0>  </span><span class=cB2>dir is +1 in, -1 out.</span><span class=cB0>
-<a name="l193"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
-<a name="l194"></a>  ch-&gt;fade_inc=OPL2EmuFadeInc();
-<a name="l195"></a>  ch-&gt;fade_dir=dir;
-<a name="l196"></a>}
-<a name="l197"></a>
-<a name="l198"></a></span><span class=cB1>Bool</span><span class=cB0> OPL2EmuChanAudible(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l199"></a>{</span><span class=cB2>//Is this channel putting out anything a key change could step on?</span><span class=cB0>
-<a name="l200"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_chans[c].fade&lt;=0.0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l201"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_ops[opl2_chan_op1[c]].env_stage ||
-<a name="l202"></a>        opl2_ops[opl2_chan_op2[c]].env_stage)
-<a name="l203"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l204"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l205"></a>}
-<a name="l206"></a>
-<a name="l207"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOnEvent(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l208"></a>{</span><span class=cB2>//Key-on from a register write.  Retriggers wait out a fade of the old note.</span><span class=cB0>
-<a name="l209"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
-<a name="l210"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_fade_mS&lt;=0.0) </span><span class=cB7>{</span><span class=cB0>
-<a name="l211"></a>    ch-&gt;fade=1.0;
-<a name="l212"></a>    ch-&gt;fade_dir=0;
-<a name="l213"></a>    ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l214"></a>    OPL2EmuKeyOn(c);
-<a name="l215"></a>    </span><span class=cB1>return</span><span class=cB0>;
-<a name="l216"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l217"></a>  </span><span class=cB1>if</span><span class=cB0> (OPL2EmuChanAudible</span><span class=cB7>(</span><span class=cB0>c</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
-<a name="l218"></a>    ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l219"></a>    OPL2EmuFadeStart(c,-1);
-<a name="l220"></a>    </span><span class=cB1>return</span><span class=cB0>;
-<a name="l221"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l222"></a>  ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l223"></a>  ch-&gt;fade=0.0;
-<a name="l224"></a>  OPL2EmuKeyOn(c);
-<a name="l225"></a>  OPL2EmuFadeStart(c,1);
-<a name="l226"></a>}
-<a name="l227"></a>
-<a name="l228"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOffEvent(</span><span class=cB9>I64</span><span class=cB0> c)
-<a name="l229"></a>{</span><span class=cB2>//Key-off from a register write.  The ramp only runs when the instrument's</span><span class=cB0>
-<a name="l230"></a> </span><span class=cB2>//own release is at least as quick as the fade -- a slow release is already</span><span class=cB0>
-<a name="l231"></a> </span><span class=cB2>//a smooth fade and ramping over it would chop the note's tail off.</span><span class=cB0>
-<a name="l232"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
-<a name="l233"></a>  COPL2Op *car=&amp;opl2_ops[opl2_chan_op2[c]];
-<a name="l234"></a>  ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l235"></a>  OPL2EmuKeyOff(c);
-<a name="l236"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_fade_mS&gt;0.0 &amp;&amp; car-&gt;env_coeff&gt;=OPL2EmuFadeInc</span><span class=cB7>()</span><span class=cB0>)
-<a name="l237"></a>    OPL2EmuFadeStart(c,-1);
-<a name="l238"></a>}
-<a name="l239"></a>
-<a name="l240"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuOpWrite(</span><span class=cB9>I64</span><span class=cB0> op_idx,</span><span class=cB9>I64</span><span class=cB0> reg_group,</span><span class=cB1>U8</span><span class=cB0> data)
-<a name="l241"></a>{
-<a name="l242"></a>  COPL2Op *op=&amp;opl2_ops[op_idx];
-<a name="l243"></a>  </span><span class=cB1>switch</span><span class=cB0> (reg_group) </span><span class=cB7>{</span><span class=cB0>
-<a name="l244"></a>    </span><span class=cB1>case</span><span class=cB0> 0x20:
-<a name="l245"></a>      op-&gt;am =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,7);
-<a name="l246"></a>      op-&gt;vib=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,6);
-<a name="l247"></a>      op-&gt;egt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
-<a name="l248"></a>      op-&gt;ksr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,4);
-<a name="l249"></a>      op-&gt;mult=data&amp;0xF;
-<a name="l250"></a>      OPL2EmuChanFreqUpdate(op-&gt;chan);
+<a name="l178"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuFadeStart(</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB9>I64</span><span class=cB0> dir)
+<a name="l179"></a>{</span><span class=cB2>//Begin an anti-click gain ramp on a channel.</span><span class=cB0>  </span><span class=cB2>dir is +1 in, -1 out.</span><span class=cB0>
+<a name="l180"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
+<a name="l181"></a>  ch-&gt;fade_inc=OPL2EmuFadeInc();
+<a name="l182"></a>  ch-&gt;fade_dir=dir;
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>Bool</span><span class=cB0> OPL2EmuChanAudible(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l186"></a>{</span><span class=cB2>//Is this channel putting out anything a key change could step on?</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_chans[c].fade&lt;=0.0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l188"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_ops[opl2_chan_op1[c]].env_stage ||
+<a name="l189"></a>        opl2_ops[opl2_chan_op2[c]].env_stage)
+<a name="l190"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l191"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l192"></a>}
+<a name="l193"></a>
+<a name="l194"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOnEvent(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l195"></a>{</span><span class=cB2>//Key-on from a register write.  Retriggers wait out a fade of the old note.</span><span class=cB0>
+<a name="l196"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
+<a name="l197"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_fade_mS&lt;=0.0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l198"></a>    ch-&gt;fade=1.0;
+<a name="l199"></a>    ch-&gt;fade_dir=0;
+<a name="l200"></a>    ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l201"></a>    OPL2EmuKeyOn(c);
+<a name="l202"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l203"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l204"></a>  </span><span class=cB1>if</span><span class=cB0> (OPL2EmuChanAudible</span><span class=cB7>(</span><span class=cB0>c</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>    ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l206"></a>    OPL2EmuFadeStart(c,-1);
+<a name="l207"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l208"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l209"></a>  ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l210"></a>  ch-&gt;fade=0.0;
+<a name="l211"></a>  OPL2EmuKeyOn(c);
+<a name="l212"></a>  OPL2EmuFadeStart(c,1);
+<a name="l213"></a>}
+<a name="l214"></a>
+<a name="l215"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuKeyOffEvent(</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l216"></a>{
+<a name="l217"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
+<a name="l218"></a>  COPL2Op *car=&amp;opl2_ops[opl2_chan_op2[c]];
+<a name="l219"></a>  ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l220"></a>  OPL2EmuKeyOff(c);
+<a name="l221"></a>  </span><span class=cB1>if</span><span class=cB0> (opl2_fade_mS&gt;0.0 &amp;&amp; car-&gt;env_coeff&gt;=OPL2EmuFadeInc</span><span class=cB7>()</span><span class=cB0>)
+<a name="l222"></a>    OPL2EmuFadeStart(c,-1);
+<a name="l223"></a>}
+<a name="l224"></a>
+<a name="l225"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuOpWrite(</span><span class=cB9>I64</span><span class=cB0> op_idx,</span><span class=cB9>I64</span><span class=cB0> reg_group,</span><span class=cB1>U8</span><span class=cB0> data)
+<a name="l226"></a>{
+<a name="l227"></a>  COPL2Op *op=&amp;opl2_ops[op_idx];
+<a name="l228"></a>  </span><span class=cB1>switch</span><span class=cB0> (reg_group) </span><span class=cB7>{</span><span class=cB0>
+<a name="l229"></a>    </span><span class=cB1>case</span><span class=cB0> 0x20:
+<a name="l230"></a>      op-&gt;am =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,7);
+<a name="l231"></a>      op-&gt;vib=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,6);
+<a name="l232"></a>      op-&gt;egt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
+<a name="l233"></a>      op-&gt;ksr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,4);
+<a name="l234"></a>      op-&gt;mult=data&amp;0xF;
+<a name="l235"></a>      OPL2EmuChanFreqUpdate(op-&gt;chan);
+<a name="l236"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l237"></a>    </span><span class=cB1>case</span><span class=cB0> 0x40:
+<a name="l238"></a>      op-&gt;ksl=data&gt;&gt;6&amp;3;
+<a name="l239"></a>      op-&gt;tl =data&amp;0x3F;
+<a name="l240"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l241"></a>    </span><span class=cB1>case</span><span class=cB0> 0x60:
+<a name="l242"></a>      op-&gt;ar=data&gt;&gt;4&amp;0xF;
+<a name="l243"></a>      op-&gt;dr=data&amp;0xF;
+<a name="l244"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l245"></a>    </span><span class=cB1>case</span><span class=cB0> 0x80:
+<a name="l246"></a>      op-&gt;sl=data&gt;&gt;4&amp;0xF;
+<a name="l247"></a>      op-&gt;rr=data&amp;0xF;
+<a name="l248"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l249"></a>    </span><span class=cB1>case</span><span class=cB0> 0xE0:
+<a name="l250"></a>      op-&gt;ws=data&amp;3;
 <a name="l251"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l252"></a>    </span><span class=cB1>case</span><span class=cB0> 0x40:
-<a name="l253"></a>      op-&gt;ksl=data&gt;&gt;6&amp;3;
-<a name="l254"></a>      op-&gt;tl =data&amp;0x3F;
-<a name="l255"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l256"></a>    </span><span class=cB1>case</span><span class=cB0> 0x60:
-<a name="l257"></a>      op-&gt;ar=data&gt;&gt;4&amp;0xF;
-<a name="l258"></a>      op-&gt;dr=data&amp;0xF;
-<a name="l259"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l260"></a>    </span><span class=cB1>case</span><span class=cB0> 0x80:
-<a name="l261"></a>      op-&gt;sl=data&gt;&gt;4&amp;0xF;
-<a name="l262"></a>      op-&gt;rr=data&amp;0xF;
-<a name="l263"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l264"></a>    </span><span class=cB1>case</span><span class=cB0> 0xE0:
-<a name="l265"></a>      op-&gt;ws=data&amp;3;
-<a name="l266"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l267"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l268"></a>}
-<a name="l269"></a>
-<a name="l270"></a></span><span class=cB1>U0</span><span class=cB0> OPLEmuWriteReg(</span><span class=cB9>I64</span><span class=cB0> r,</span><span class=cB1>U8</span><span class=cB0> data)
-<a name="l271"></a>{
-<a name="l272"></a>  </span><span class=cB9>I64</span><span class=cB0> op_idx,c;
-<a name="l273"></a>  </span><span class=cB1>Bool</span><span class=cB0> key;
-<a name="l274"></a>  </span><span class=cB1>if</span><span class=cB0> (0x20&lt;=r&lt;=0x35)
-<a name="l275"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x20)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x20,data); </span><span class=cB7>}</span><span class=cB0>
-<a name="l276"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x40&lt;=r&lt;=0x55)
-<a name="l277"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x40)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x40,data); </span><span class=cB7>}</span><span class=cB0>
-<a name="l278"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x60&lt;=r&lt;=0x75)
-<a name="l279"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x60)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x60,data); </span><span class=cB7>}</span><span class=cB0>
-<a name="l280"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x80&lt;=r&lt;=0x95)
-<a name="l281"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x80)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x80,data); </span><span class=cB7>}</span><span class=cB0>
-<a name="l282"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xA0&lt;=r&lt;=0xA8) </span><span class=cB7>{</span><span class=cB0>
-<a name="l283"></a>    c=r-0xA0;
-<a name="l284"></a>    opl2_chans[c].fnum=opl2_chans[c].fnum&amp;0x300|data;
-<a name="l285"></a>    OPL2EmuChanFreqUpdate(c);
-<a name="l286"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xB0&lt;=r&lt;=0xB8) </span><span class=cB7>{</span><span class=cB0>
-<a name="l287"></a>    c=r-0xB0;
-<a name="l288"></a>    opl2_chans[c].fnum=opl2_chans[c].fnum&amp;0xFF|(data&amp;3)&lt;&lt;8;
-<a name="l289"></a>    opl2_chans[c].block=data&gt;&gt;2&amp;7;
-<a name="l290"></a>    key=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
-<a name="l291"></a>    </span><span class=cB1>if</span><span class=cB0> (key &amp;&amp; !opl2_chans[c].key_on)
-<a name="l292"></a>      OPL2EmuKeyOnEvent(c);
-<a name="l293"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!key &amp;&amp; opl2_chans[c].key_on)
-<a name="l294"></a>      OPL2EmuKeyOffEvent(c);
-<a name="l295"></a>    opl2_chans[c].key_on=key;
-<a name="l296"></a>    OPL2EmuChanFreqUpdate(c);
-<a name="l297"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xC0&lt;=r&lt;=0xC8) </span><span class=cB7>{</span><span class=cB0>
-<a name="l298"></a>    c=r-0xC0;
-<a name="l299"></a>    opl2_chans[c].feedback=data&gt;&gt;1&amp;7;
-<a name="l300"></a>    opl2_chans[c].connection=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,0);
-<a name="l301"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xE0&lt;=r&lt;=0xF5) </span><span class=cB7>{</span><span class=cB0>
-<a name="l302"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0xE0)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0xE0,data);
-<a name="l303"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (r==0x01)
-<a name="l304"></a>    opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
-<a name="l305"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (r==0xBD) </span><span class=cB7>{</span><span class=cB0>
-<a name="l306"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;data,7</span><span class=cB7>)</span><span class=cB0>)
-<a name="l307"></a>      opl2_am_depth=1.0;
-<a name="l308"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l309"></a>      opl2_am_depth=0.25;
-<a name="l310"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;data,6</span><span class=cB7>)</span><span class=cB0>)
-<a name="l311"></a>      opl2_vib_depth=1.0;
-<a name="l312"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l313"></a>      opl2_vib_depth=0.35;
-<a name="l314"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l315"></a>}
-<a name="l316"></a>
-<a name="l317"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuWave(</span><span class=cB9>I64</span><span class=cB0> ws,</span><span class=cB1>F64</span><span class=cB0> ph)
-<a name="l318"></a>{
-<a name="l319"></a>  </span><span class=cB1>F64</span><span class=cB0> frac=ph-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(ph);
-<a name="l320"></a>  </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.0) frac+=1.0;
-<a name="l321"></a>  </span><span class=cB1>if</span><span class=cB0> (!opl2_ws_enable) ws=0;
-<a name="l322"></a>  </span><span class=cB1>switch</span><span class=cB0> (ws) </span><span class=cB7>{</span><span class=cB0>
-<a name="l323"></a>    </span><span class=cB1>case</span><span class=cB0> 1:
-<a name="l324"></a>      </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.5)
-<a name="l325"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
-<a name="l326"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
-<a name="l327"></a>    </span><span class=cB1>case</span><span class=cB0> 2: </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac</span><span class=cB7>)</span><span class=cB0>);
-<a name="l328"></a>    </span><span class=cB1>case</span><span class=cB0> 3:
-<a name="l329"></a>      </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.25)
-<a name="l330"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
-<a name="l331"></a>      </span><span class=cB1>if</span><span class=cB0> (0.5&lt;=frac&lt;0.75)
-<a name="l332"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>frac-0.5</span><span class=cB7>)</span><span class=cB0>);
-<a name="l333"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
-<a name="l334"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l335"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
-<a name="l336"></a>}
-<a name="l337"></a>
-<a name="l338"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuTLAmplitude(COPL2Op *op)
-<a name="l339"></a>{
-<a name="l340"></a>  </span><span class=cB1>F64</span><span class=cB0> db=op-&gt;tl*0.75;
-<a name="l341"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> ksl_db_per_block[4]=</span><span class=cB7>{</span><span class=cB0>0.0,3.0,1.5,6.0</span><span class=cB7>}</span><span class=cB0>;
-<a name="l342"></a>  db+=ksl_db_per_block[op-&gt;ksl]*opl2_chans[op-&gt;chan].block;
-<a name="l343"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(10.0,-db/20.0);
-<a name="l344"></a>}
-<a name="l345"></a>
-<a name="l346"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuOpOutput(COPL2Op *op,</span><span class=cB1>F64</span><span class=cB0> mod_in,</span><span class=cB1>F64</span><span class=cB0> pitch_mul)
-<a name="l347"></a>{
-<a name="l348"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
-<a name="l349"></a>  </span><span class=cB1>if</span><span class=cB0> (!op-&gt;env_stage) </span><span class=cB7>{</span><span class=cB0>
-<a name="l350"></a>    op-&gt;out=0.0;
-<a name="l351"></a>    </span><span class=cB1>return</span><span class=cB0> 0.0;
-<a name="l352"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l353"></a>  OPL2EmuEnvStep(op);
-<a name="l354"></a>  op-&gt;phase+=op-&gt;phase_inc*pitch_mul;
-<a name="l355"></a>  s=OPL2EmuWave(op-&gt;ws,op-&gt;phase+mod_in);
-<a name="l356"></a>  op-&gt;out=s*op-&gt;env*OPL2EmuTLAmplitude(op);
-<a name="l357"></a>  </span><span class=cB1>return</span><span class=cB0> op-&gt;out;
-<a name="l358"></a>}
-<a name="l359"></a>
-<a name="l360"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuRenderChan(</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB1>F64</span><span class=cB0> lfo_am,</span><span class=cB1>F64</span><span class=cB0> lfo_vib)
-<a name="l361"></a>{
-<a name="l362"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
-<a name="l363"></a>  COPL2Op *op1=&amp;opl2_ops[opl2_chan_op1[c]],*op2=&amp;opl2_ops[opl2_chan_op2[c]];
-<a name="l364"></a>  </span><span class=cB1>F64</span><span class=cB0> mod,car,out,pitch_mul,fb_phase;
-<a name="l365"></a>
-<a name="l366"></a>  </span><span class=cB2>//Advance the anti-click ramp first -- it has to keep running even when the</span><span class=cB0>
-<a name="l367"></a>  </span><span class=cB2>//channel has gone quiet, or a pending retrigger would never fire.</span><span class=cB0>
-<a name="l368"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade_dir&gt;0) </span><span class=cB7>{</span><span class=cB0>
-<a name="l369"></a>    ch-&gt;fade+=ch-&gt;fade_inc;
-<a name="l370"></a>    </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&gt;=1.0) {
-<a name="l371"></a>      ch-&gt;fade=1.0;
-<a name="l372"></a>      ch-&gt;fade_dir=0;
-<a name="l373"></a>    }
-<a name="l374"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade_dir&lt;0) </span><span class=cB7>{</span><span class=cB0>
-<a name="l375"></a>    ch-&gt;fade-=ch-&gt;fade_inc;
-<a name="l376"></a>    </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&lt;=0.0) {
-<a name="l377"></a>      ch-&gt;fade=0.0;
-<a name="l378"></a>      ch-&gt;fade_dir=0;
-<a name="l379"></a>      </span><span class=cB1>if</span><span class=cB0> (ch-&gt;key_pend) </span><span class=cB7>{</span><span class=cB0>
-<a name="l380"></a>        ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l381"></a>        OPL2EmuKeyOn(c);
-<a name="l382"></a>        OPL2EmuFadeStart(c,1);
-<a name="l383"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l384"></a>        </span><span class=cB2>//Faded to silence.  Drop the operators so a leftover release tail</span><span class=cB0>
-<a name="l385"></a>        </span><span class=cB2>//doesn't keep the channel counted as active forever.</span><span class=cB0>
-<a name="l386"></a>        op1-&gt;env_stage=0;
-<a name="l387"></a>        op1-&gt;env=0.0;
-<a name="l388"></a>        op2-&gt;env_stage=0;
-<a name="l389"></a>        op2-&gt;env=0.0;
-<a name="l390"></a>        ch-&gt;fb_mem[0]=0.0;
-<a name="l391"></a>        ch-&gt;fb_mem[1]=0.0;
-<a name="l392"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l393"></a>    }
-<a name="l394"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l395"></a>
-<a name="l396"></a>  </span><span class=cB1>if</span><span class=cB0> (!op1-&gt;env_stage &amp;&amp; !op2-&gt;env_stage) </span><span class=cB1>return</span><span class=cB0> 0.0;
-<a name="l397"></a>
-<a name="l398"></a>  pitch_mul=1.0;
-<a name="l399"></a>  </span><span class=cB1>if</span><span class=cB0> (op1-&gt;vib||op2-&gt;vib)
-<a name="l400"></a>    pitch_mul+=lfo_vib*opl2_vib_depth;
-<a name="l401"></a>
-<a name="l402"></a>  fb_phase=0.0;
-<a name="l403"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;feedback)
-<a name="l404"></a>    fb_phase=(ch-&gt;fb_mem[0]+ch-&gt;fb_mem[1])*(1&lt;&lt;ch-&gt;feedback)/32.0;
-<a name="l405"></a>  mod=OPL2EmuOpOutput(op1,fb_phase,pitch_mul);
-<a name="l406"></a>  ch-&gt;fb_mem[1]=ch-&gt;fb_mem[0];
-<a name="l407"></a>  ch-&gt;fb_mem[0]=mod;
-<a name="l408"></a>
-<a name="l409"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;connection) </span><span class=cB7>{</span><span class=cB0>
-<a name="l410"></a>    car=OPL2EmuOpOutput(op2,0.0,pitch_mul);
-<a name="l411"></a>    out=(mod+car)*0.5;
-<a name="l412"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l413"></a>    car=OPL2EmuOpOutput(op2,mod,pitch_mul);
-<a name="l414"></a>    out=car;
-<a name="l415"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l416"></a>  </span><span class=cB1>if</span><span class=cB0> (op1-&gt;am || op2-&gt;am)
-<a name="l417"></a>    out*=1.0-lfo_am*opl2_am_depth*0.3;
-<a name="l418"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&lt;1.0)
-<a name="l419"></a>    out*=ch-&gt;fade;
-<a name="l420"></a>  </span><span class=cB1>return</span><span class=cB0> out;
-<a name="l421"></a>}
-<a name="l422"></a>
-<a name="l423"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuFillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
-<a name="l424"></a>{
-<a name="l425"></a>  </span><span class=cB9>I64</span><span class=cB0> j,c,l,samp,active;
-<a name="l426"></a>  </span><span class=cB1>F64</span><span class=cB0> mix,lfo_am,lfo_vib;
-<a name="l427"></a>  j=0;
-<a name="l428"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
-<a name="l429"></a>    opl2_lfo_phase+=1.0/SND_SAMPLE_RATE;
-<a name="l430"></a>    </span><span class=cB1>while</span><span class=cB0> (opl2_lfo_phase&gt;=1.0) opl2_lfo_phase-=1.0;
-<a name="l431"></a>    lfo_am =0.5+0.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*opl2_lfo_phase*3.7);
-<a name="l432"></a>    lfo_vib=0.01*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*opl2_lfo_phase*6.1);
+<a name="l252"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l253"></a>}
+<a name="l254"></a>
+<a name="l255"></a></span><span class=cB1>U0</span><span class=cB0> OPLEmuWriteReg(</span><span class=cB9>I64</span><span class=cB0> r,</span><span class=cB1>U8</span><span class=cB0> data)
+<a name="l256"></a>{
+<a name="l257"></a>  </span><span class=cB9>I64</span><span class=cB0> op_idx,c;
+<a name="l258"></a>  </span><span class=cB1>Bool</span><span class=cB0> key;
+<a name="l259"></a>  </span><span class=cB1>if</span><span class=cB0> (0x20&lt;=r&lt;=0x35)
+<a name="l260"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x20)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x20,data); </span><span class=cB7>}</span><span class=cB0>
+<a name="l261"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x40&lt;=r&lt;=0x55)
+<a name="l262"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x40)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x40,data); </span><span class=cB7>}</span><span class=cB0>
+<a name="l263"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x60&lt;=r&lt;=0x75)
+<a name="l264"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x60)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x60,data); </span><span class=cB7>}</span><span class=cB0>
+<a name="l265"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0x80&lt;=r&lt;=0x95)
+<a name="l266"></a>    </span><span class=cB7>{</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0x80)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0x80,data); </span><span class=cB7>}</span><span class=cB0>
+<a name="l267"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xA0&lt;=r&lt;=0xA8) </span><span class=cB7>{</span><span class=cB0>
+<a name="l268"></a>    c=r-0xA0;
+<a name="l269"></a>    opl2_chans[c].fnum=opl2_chans[c].fnum&amp;0x300|data;
+<a name="l270"></a>    OPL2EmuChanFreqUpdate(c);
+<a name="l271"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xB0&lt;=r&lt;=0xB8) </span><span class=cB7>{</span><span class=cB0>
+<a name="l272"></a>    c=r-0xB0;
+<a name="l273"></a>    opl2_chans[c].fnum=opl2_chans[c].fnum&amp;0xFF|(data&amp;3)&lt;&lt;8;
+<a name="l274"></a>    opl2_chans[c].block=data&gt;&gt;2&amp;7;
+<a name="l275"></a>    key=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
+<a name="l276"></a>    </span><span class=cB1>if</span><span class=cB0> (key &amp;&amp; !opl2_chans[c].key_on)
+<a name="l277"></a>      OPL2EmuKeyOnEvent(c);
+<a name="l278"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!key &amp;&amp; opl2_chans[c].key_on)
+<a name="l279"></a>      OPL2EmuKeyOffEvent(c);
+<a name="l280"></a>    opl2_chans[c].key_on=key;
+<a name="l281"></a>    OPL2EmuChanFreqUpdate(c);
+<a name="l282"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xC0&lt;=r&lt;=0xC8) </span><span class=cB7>{</span><span class=cB0>
+<a name="l283"></a>    c=r-0xC0;
+<a name="l284"></a>    opl2_chans[c].feedback=data&gt;&gt;1&amp;7;
+<a name="l285"></a>    opl2_chans[c].connection=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,0);
+<a name="l286"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (0xE0&lt;=r&lt;=0xF5) </span><span class=cB7>{</span><span class=cB0>
+<a name="l287"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>op_idx=OPL2EmuReg2Op(r-0xE0)</span><span class=cB7>)</span><span class=cB0>&gt;=0) OPL2EmuOpWrite(op_idx,0xE0,data);
+<a name="l288"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (r==0x01)
+<a name="l289"></a>    opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;data,5);
+<a name="l290"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (r==0xBD) </span><span class=cB7>{</span><span class=cB0>
+<a name="l291"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;data,7</span><span class=cB7>)</span><span class=cB0>)
+<a name="l292"></a>      opl2_am_depth=1.0;
+<a name="l293"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l294"></a>      opl2_am_depth=0.25;
+<a name="l295"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;data,6</span><span class=cB7>)</span><span class=cB0>)
+<a name="l296"></a>      opl2_vib_depth=1.0;
+<a name="l297"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l298"></a>      opl2_vib_depth=0.35;
+<a name="l299"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l300"></a>}
+<a name="l301"></a>
+<a name="l302"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuWave(</span><span class=cB9>I64</span><span class=cB0> ws,</span><span class=cB1>F64</span><span class=cB0> ph)
+<a name="l303"></a>{
+<a name="l304"></a>  </span><span class=cB1>F64</span><span class=cB0> frac=ph-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(ph);
+<a name="l305"></a>  </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.0) frac+=1.0;
+<a name="l306"></a>  </span><span class=cB1>if</span><span class=cB0> (!opl2_ws_enable) ws=0;
+<a name="l307"></a>  </span><span class=cB1>switch</span><span class=cB0> (ws) </span><span class=cB7>{</span><span class=cB0>
+<a name="l308"></a>    </span><span class=cB1>case</span><span class=cB0> 1:
+<a name="l309"></a>      </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.5)
+<a name="l310"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
+<a name="l311"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l312"></a>    </span><span class=cB1>case</span><span class=cB0> 2: </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l96"></span><span class=cB5>Abs</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB7>(</span><span class=cB0>2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac</span><span class=cB7>)</span><span class=cB0>);
+<a name="l313"></a>    </span><span class=cB1>case</span><span class=cB0> 3:
+<a name="l314"></a>      </span><span class=cB1>if</span><span class=cB0> (frac&lt;0.25)
+<a name="l315"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
+<a name="l316"></a>      </span><span class=cB1>if</span><span class=cB0> (0.5&lt;=frac&lt;0.75)
+<a name="l317"></a>        </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*</span><span class=cB7>(</span><span class=cB0>frac-0.5</span><span class=cB7>)</span><span class=cB0>);
+<a name="l318"></a>      </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l319"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l320"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*frac);
+<a name="l321"></a>}
+<a name="l322"></a>
+<a name="l323"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuTLAmplitude(COPL2Op *op)
+<a name="l324"></a>{
+<a name="l325"></a>  </span><span class=cB1>F64</span><span class=cB0> db=op-&gt;tl*0.75;
+<a name="l326"></a>  </span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> ksl_db_per_block[4]=</span><span class=cB7>{</span><span class=cB0>0.0,3.0,1.5,6.0</span><span class=cB7>}</span><span class=cB0>;
+<a name="l327"></a>  db+=ksl_db_per_block[op-&gt;ksl]*opl2_chans[op-&gt;chan].block;
+<a name="l328"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l137"></span><span class=cB5>Pow</a></span><span class=cB0>(10.0,-db/20.0);
+<a name="l329"></a>}
+<a name="l330"></a>
+<a name="l331"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuOpOutput(COPL2Op *op,</span><span class=cB1>F64</span><span class=cB0> mod_in,</span><span class=cB1>F64</span><span class=cB0> pitch_mul)
+<a name="l332"></a>{
+<a name="l333"></a>  </span><span class=cB1>F64</span><span class=cB0> s;
+<a name="l334"></a>  </span><span class=cB1>if</span><span class=cB0> (!op-&gt;env_stage) </span><span class=cB7>{</span><span class=cB0>
+<a name="l335"></a>    op-&gt;out=0.0;
+<a name="l336"></a>    </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l337"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l338"></a>  OPL2EmuEnvStep(op);
+<a name="l339"></a>  op-&gt;phase+=op-&gt;phase_inc*pitch_mul;
+<a name="l340"></a>  s=OPL2EmuWave(op-&gt;ws,op-&gt;phase+mod_in);
+<a name="l341"></a>  op-&gt;out=s*op-&gt;env*OPL2EmuTLAmplitude(op);
+<a name="l342"></a>  </span><span class=cB1>return</span><span class=cB0> op-&gt;out;
+<a name="l343"></a>}
+<a name="l344"></a>
+<a name="l345"></a></span><span class=cB1>F64</span><span class=cB0> OPL2EmuRenderChan(</span><span class=cB9>I64</span><span class=cB0> c,</span><span class=cB1>F64</span><span class=cB0> lfo_am,</span><span class=cB1>F64</span><span class=cB0> lfo_vib)
+<a name="l346"></a>{
+<a name="l347"></a>  COPL2Chan *ch=&amp;opl2_chans[c];
+<a name="l348"></a>  COPL2Op *op1=&amp;opl2_ops[opl2_chan_op1[c]],*op2=&amp;opl2_ops[opl2_chan_op2[c]];
+<a name="l349"></a>  </span><span class=cB1>F64</span><span class=cB0> mod,car,out,pitch_mul,fb_phase;
+<a name="l350"></a>
+<a name="l351"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade_dir&gt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l352"></a>    ch-&gt;fade+=ch-&gt;fade_inc;
+<a name="l353"></a>    </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&gt;=1.0) {
+<a name="l354"></a>      ch-&gt;fade=1.0;
+<a name="l355"></a>      ch-&gt;fade_dir=0;
+<a name="l356"></a>    }
+<a name="l357"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade_dir&lt;0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l358"></a>    ch-&gt;fade-=ch-&gt;fade_inc;
+<a name="l359"></a>    </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&lt;=0.0) {
+<a name="l360"></a>      ch-&gt;fade=0.0;
+<a name="l361"></a>      ch-&gt;fade_dir=0;
+<a name="l362"></a>      </span><span class=cB1>if</span><span class=cB0> (ch-&gt;key_pend) </span><span class=cB7>{</span><span class=cB0>
+<a name="l363"></a>        ch-&gt;key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l364"></a>        OPL2EmuKeyOn(c);
+<a name="l365"></a>        OPL2EmuFadeStart(c,1);
+<a name="l366"></a>      </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l367"></a>        op1-&gt;env_stage=0;
+<a name="l368"></a>        op1-&gt;env=0.0;
+<a name="l369"></a>        op2-&gt;env_stage=0;
+<a name="l370"></a>        op2-&gt;env=0.0;
+<a name="l371"></a>        ch-&gt;fb_mem[0]=0.0;
+<a name="l372"></a>        ch-&gt;fb_mem[1]=0.0;
+<a name="l373"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l374"></a>    }
+<a name="l375"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l376"></a>
+<a name="l377"></a>  </span><span class=cB1>if</span><span class=cB0> (!op1-&gt;env_stage &amp;&amp; !op2-&gt;env_stage) </span><span class=cB1>return</span><span class=cB0> 0.0;
+<a name="l378"></a>
+<a name="l379"></a>  pitch_mul=1.0;
+<a name="l380"></a>  </span><span class=cB1>if</span><span class=cB0> (op1-&gt;vib||op2-&gt;vib)
+<a name="l381"></a>    pitch_mul+=lfo_vib*opl2_vib_depth;
+<a name="l382"></a>
+<a name="l383"></a>  fb_phase=0.0;
+<a name="l384"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;feedback)
+<a name="l385"></a>    fb_phase=(ch-&gt;fb_mem[0]+ch-&gt;fb_mem[1])*(1&lt;&lt;ch-&gt;feedback)/32.0;
+<a name="l386"></a>  mod=OPL2EmuOpOutput(op1,fb_phase,pitch_mul);
+<a name="l387"></a>  ch-&gt;fb_mem[1]=ch-&gt;fb_mem[0];
+<a name="l388"></a>  ch-&gt;fb_mem[0]=mod;
+<a name="l389"></a>
+<a name="l390"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;connection) </span><span class=cB7>{</span><span class=cB0>
+<a name="l391"></a>    car=OPL2EmuOpOutput(op2,0.0,pitch_mul);
+<a name="l392"></a>    out=(mod+car)*0.5;
+<a name="l393"></a>  </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l394"></a>    car=OPL2EmuOpOutput(op2,mod,pitch_mul);
+<a name="l395"></a>    out=car;
+<a name="l396"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l397"></a>  </span><span class=cB1>if</span><span class=cB0> (op1-&gt;am || op2-&gt;am)
+<a name="l398"></a>    out*=1.0-lfo_am*opl2_am_depth*0.3;
+<a name="l399"></a>  </span><span class=cB1>if</span><span class=cB0> (ch-&gt;fade&lt;1.0)
+<a name="l400"></a>    out*=ch-&gt;fade;
+<a name="l401"></a>  </span><span class=cB1>return</span><span class=cB0> out;
+<a name="l402"></a>}
+<a name="l403"></a>
+<a name="l404"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuFillBuf(SND_OUT_CONTAINER *buf,</span><span class=cB9>I64</span><span class=cB0>)
+<a name="l405"></a>{
+<a name="l406"></a>  </span><span class=cB9>I64</span><span class=cB0> j,c,l,samp,active;
+<a name="l407"></a>  </span><span class=cB1>F64</span><span class=cB0> mix,lfo_am,lfo_vib;
+<a name="l408"></a>  j=0;
+<a name="l409"></a>  </span><span class=cB1>while</span><span class=cB0> (j&lt;SND_BUF_LEN) </span><span class=cB7>{</span><span class=cB0>
+<a name="l410"></a>    opl2_lfo_phase+=1.0/SND_SAMPLE_RATE;
+<a name="l411"></a>    </span><span class=cB1>while</span><span class=cB0> (opl2_lfo_phase&gt;=1.0) opl2_lfo_phase-=1.0;
+<a name="l412"></a>    lfo_am =0.5+0.5*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*opl2_lfo_phase*3.7);
+<a name="l413"></a>    lfo_vib=0.01*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l105"></span><span class=cB5>Sin</a></span><span class=cB0>(2*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l53"></span><span class=cB3>pi</a></span><span class=cB0>*opl2_lfo_phase*6.1);
+<a name="l414"></a>
+<a name="l415"></a>    mix=0.0;
+<a name="l416"></a>    active=0;
+<a name="l417"></a>    </span><span class=cB1>for</span><span class=cB0> (c=0;c&lt;OPL2EMU_CHANS;c++) {
+<a name="l418"></a>      </span><span class=cB1>if</span><span class=cB0> (opl2_ops[opl2_chan_op1[c]].env_stage ||
+<a name="l419"></a>            opl2_ops[opl2_chan_op2[c]].env_stage)
+<a name="l420"></a>        active++;
+<a name="l421"></a>      mix+=OPL2EmuRenderChan(c,lfo_am,lfo_vib);
+<a name="l422"></a>    }
+<a name="l423"></a>    </span><span class=cB1>if</span><span class=cB0> (active&gt;3)
+<a name="l424"></a>      mix*=snd_vol*3.0/active;
+<a name="l425"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l426"></a>      mix*=snd_vol;
+<a name="l427"></a>
+<a name="l428"></a>    samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>mix,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;0xFFFFFF00;
+<a name="l429"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++)
+<a name="l430"></a>      buf[j++]=samp;
+<a name="l431"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l432"></a>}
 <a name="l433"></a>
-<a name="l434"></a>    mix=0.0;
-<a name="l435"></a>    active=0;
-<a name="l436"></a>    </span><span class=cB1>for</span><span class=cB0> (c=0;c&lt;OPL2EMU_CHANS;c++) {
-<a name="l437"></a>      </span><span class=cB1>if</span><span class=cB0> (opl2_ops[opl2_chan_op1[c]].env_stage ||
-<a name="l438"></a>            opl2_ops[opl2_chan_op2[c]].env_stage)
-<a name="l439"></a>        active++;
-<a name="l440"></a>      mix+=OPL2EmuRenderChan(c,lfo_am,lfo_vib);
-<a name="l441"></a>    }
-<a name="l442"></a>    </span><span class=cB1>if</span><span class=cB0> (active&gt;3)
-<a name="l443"></a>      mix*=snd_vol*3.0/active;
-<a name="l444"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l445"></a>      mix*=snd_vol;
-<a name="l446"></a>
-<a name="l447"></a>    samp=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l1"></span><span class=cB5>Clamp</a></span><span class=cB7>(</span><span class=cB0>mix,-1.0,1.0</span><span class=cB7>)</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l35"></span><span class=cB3>I32_MAX</a></span><span class=cB0>)&amp;0xFFFFFF00;
-<a name="l448"></a>    </span><span class=cB1>for</span><span class=cB0> (l=0;l&lt;SND_OCHANNELS;l++)
-<a name="l449"></a>      buf[j++]=samp;
-<a name="l450"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l434"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuInit()
+<a name="l435"></a>{
+<a name="l436"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l437"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(opl2_ops,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>COPL2Op</span><span class=cB7>)</span><span class=cB0>*OPL2EMU_OPS);
+<a name="l438"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(opl2_chans,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>COPL2Chan</span><span class=cB7>)</span><span class=cB0>*OPL2EMU_CHANS);
+<a name="l439"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;OPL2EMU_CHANS;i++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l440"></a>    opl2_ops[opl2_chan_op1[i]].chan=i;
+<a name="l441"></a>    opl2_ops[opl2_chan_op2[i]].chan=i;
+<a name="l442"></a>    opl2_chans[i].fade=1.0;
+<a name="l443"></a>    opl2_chans[i].fade_dir=0;
+<a name="l444"></a>    opl2_chans[i].key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l445"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l446"></a>  opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l447"></a>  opl2_lfo_phase=0.0;
+<a name="l448"></a>  opl2_am_depth=0.25;
+<a name="l449"></a>  opl2_vib_depth=0.35;
+<a name="l450"></a>  opl2emu_mixer_idx=MixerRegister(</span><span class=cB6>&quot;OPL2&quot;</span><span class=cB0>,&amp;OPL2EmuFillBuf);
 <a name="l451"></a>}
 <a name="l452"></a>
-<a name="l453"></a></span><span class=cB1>U0</span><span class=cB0> OPL2EmuInit()
-<a name="l454"></a>{
-<a name="l455"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l456"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(opl2_ops,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>COPL2Op</span><span class=cB7>)</span><span class=cB0>*OPL2EMU_OPS);
-<a name="l457"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(opl2_chans,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>COPL2Chan</span><span class=cB7>)</span><span class=cB0>*OPL2EMU_CHANS);
-<a name="l458"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;OPL2EMU_CHANS;i++) </span><span class=cB7>{</span><span class=cB0>
-<a name="l459"></a>    opl2_ops[opl2_chan_op1[i]].chan=i;
-<a name="l460"></a>    opl2_ops[opl2_chan_op2[i]].chan=i;
-<a name="l461"></a>    opl2_chans[i].fade=1.0;
-<a name="l462"></a>    opl2_chans[i].fade_dir=0;
-<a name="l463"></a>    opl2_chans[i].key_pend=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l464"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l465"></a>  opl2_ws_enable=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l466"></a>  opl2_lfo_phase=0.0;
-<a name="l467"></a>  opl2_am_depth=0.25;
-<a name="l468"></a>  opl2_vib_depth=0.35;
-<a name="l469"></a>  opl2emu_mixer_idx=MixerRegister(</span><span class=cB6>&quot;OPL2&quot;</span><span class=cB0>,&amp;OPL2EmuFillBuf);
-<a name="l470"></a>}
-<a name="l471"></a>
-<a name="l472"></a>#</span><span class=cB1>ifndef</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Demo/Snd/OPL2.html#l620"></span><span class=cB5>HaveOPL</a></span><span class=cB0>
-<a name="l473"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>;
-<a name="l474"></a>#</span><span class=cB1>endif</span><span class=cB0>
-<a name="l475"></a>
-<a name="l476"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
-<a name="l477"></a>
+<a name="l453"></a>#</span><span class=cB1>ifndef</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Demo/Snd/OPL2.html#l620"></span><span class=cB5>HaveOPL</a></span><span class=cB0>
+<a name="l454"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;/Demo/Snd/OPL2&quot;</span><span class=cB0>;
+<a name="l455"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l456"></a>
+<a name="l457"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+<a name="l458"></a>
 </span></div></pre></body>
 </html>

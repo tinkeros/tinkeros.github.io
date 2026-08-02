@@ -8,7 +8,6 @@
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
-.cB2{color:#00aa00;background-color:#55ffff;}
 .cB3{color:#00aaaa;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
@@ -39,555 +38,1047 @@
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB9>I64</span><span class=cB0> win_scale=2, win_set_w=0;
 <a name="l2"></a>
-<a name="l3"></a></span><span class=cB2>//Coordination between the UI task (owns the window, on Core0) and</span><span class=cB0>
-<a name="l4"></a></span><span class=cB2>//the emulation task (runs the CPU/PPU/APU loop, possibly on another</span><span class=cB0>
-<a name="l5"></a></span><span class=cB2>//core).  nes_paused doubles as the &quot;please stand still&quot; request the</span><span class=cB0>
-<a name="l6"></a></span><span class=cB2>//UI task raises before touching engine state; nes_emu_idle is the</span><span class=cB0>
-<a name="l7"></a></span><span class=cB2>//emulation task's ack that it saw the request and is parked.</span><span class=cB0>
-<a name="l8"></a></span><span class=cB1>Bool</span><span class=cB0> nes_quit, nes_paused, nes_emu_idle, nes_task_done;
-<a name="l9"></a>
-<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> NESDrawWindow(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task, </span><span class=cB9>CDC</span><span class=cB0> *dc)
-<a name="l11"></a>{
-<a name="l12"></a>
-<a name="l13"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
-<a name="l14"></a>  </span><span class=cB1>U8</span><span class=cB0> *src;
-<a name="l15"></a>  </span><span class=cB9>U16</span><span class=cB0> *d0;
-<a name="l16"></a>  </span><span class=cB1>no_warn</span><span class=cB0> task;
-<a name="l17"></a>  </span><span class=cB1>if</span><span class=cB0> (win_scale==2 &amp;&amp; gameCanvas2x)
-<a name="l18"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l19"></a>    </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;NES_SCRN_H-2*NES_OVERSCAN; y++)
-<a name="l20"></a>    {
-<a name="l21"></a>      src=gameCanvas-&gt;body+
-<a name="l22"></a>          (y+NES_OVERSCAN)*gameCanvas-&gt;width_internal;
-<a name="l23"></a>      d0=gameCanvas2x-&gt;body+
-<a name="l24"></a>          2*y*gameCanvas2x-&gt;width_internal;
-<a name="l25"></a>      </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;NES_SCRN_W; x++)
-<a name="l26"></a>        d0[x]=src[x]*0x0101;
-<a name="l27"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(d0</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+gameCanvas2x-&gt;width_internal,d0,
-<a name="l28"></a>          NES_SCRN_W*2);
-<a name="l29"></a>    }
-<a name="l30"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,gameCanvas2x);
-<a name="l31"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l32"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l33"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,gameCanvas);
-<a name="l34"></a>}
-<a name="l35"></a>
-<a name="l36"></a></span><span class=cB1>U0</span><span class=cB0> NESSnapWindow()
-<a name="l37"></a>{
-<a name="l38"></a>
-<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> want_cols,want_rows,snap_left,snap_top;
-<a name="l40"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width!=win_set_w)
-<a name="l41"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l42"></a>
-<a name="l43"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width&gt;=NES_SCRN_W*3/2)
-<a name="l44"></a>      win_scale=2;
-<a name="l45"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l46"></a>      win_scale=1;
-<a name="l47"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l48"></a>  want_cols=win_scale*NES_SCRN_W/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4035"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
-<a name="l49"></a>  </span><span class=cB1>if</span><span class=cB0> (win_scale==2)
-<a name="l50"></a>    want_rows=2*(NES_SCRN_H-2*NES_OVERSCAN)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
-<a name="l51"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l52"></a>    want_rows=NES_SCRN_H/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
-<a name="l53"></a>  snap_left=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_left;
-<a name="l54"></a>  snap_top=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top;
-<a name="l55"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_left+want_cols&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1)
-<a name="l56"></a>    snap_left=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1-want_cols;
-<a name="l57"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_left&lt;1)
-<a name="l58"></a>    snap_left=1;
-<a name="l59"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_top+want_rows&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1)
-<a name="l60"></a>    snap_top=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1-want_rows;
-<a name="l61"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_top&lt;2)
-<a name="l62"></a>    snap_top=2;
-<a name="l63"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l425"></span><span class=cB5>WinHorz</a></span><span class=cB0>(snap_left,snap_left+want_cols-1);
-<a name="l64"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l465"></span><span class=cB5>WinVert</a></span><span class=cB0>(snap_top,snap_top+want_rows-1);
-<a name="l65"></a>  win_set_w=win_scale*NES_SCRN_W;
-<a name="l66"></a>}
-<a name="l67"></a>
-<a name="l68"></a></span><span class=cB1>U0</span><span class=cB0> NESReset()
-<a name="l69"></a>{
-<a name="l70"></a>  reset6502;
-<a name="l71"></a>  initPPU2C02(&amp;PPU_state);
-<a name="l72"></a>  JoypadInit(&amp;nes_joypad);
-<a name="l73"></a>}
-<a name="l74"></a>
-<a name="l75"></a></span><span class=cB1>Bool</span><span class=cB0> NESIsRomName(</span><span class=cB1>U8</span><span class=cB0> *name)
-<a name="l76"></a>{
-<a name="l77"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[256];
-<a name="l78"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
-<a name="l79"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(buf,name);
-<a name="l80"></a>  n=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(buf);
-<a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>buf+n-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>)
-<a name="l82"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l83"></a>    n-=2;
-<a name="l84"></a>    buf[n]=0;
-<a name="l85"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l86"></a>  </span><span class=cB1>return</span><span class=cB0> n&gt;=4 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(buf+n-4,</span><span class=cB6>&quot;.NES&quot;</span><span class=cB0>);
-<a name="l87"></a>}
-<a name="l88"></a>
-<a name="l89"></a></span><span class=cB1>Bool</span><span class=cB0> NESPickRom(</span><span class=cB1>U8</span><span class=cB0> *rom_name)
-<a name="l90"></a>{
-<a name="l91"></a>
-<a name="l92"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de_list,*tmpde,**arr;
-<a name="l93"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n=0,sel=0,top=0,rows,sc;
-<a name="l94"></a>  </span><span class=cB1>U8</span><span class=cB0> mask[256];
-<a name="l95"></a>  </span><span class=cB1>Bool</span><span class=cB0> picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l96"></a>  </span><span class=cB1>U0</span><span class=cB0> (*old_draw_it)(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc);
-<a name="l97"></a>  old_draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it;
-<a name="l98"></a>
-<a name="l99"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l100"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(mask,</span><span class=cB6>&quot;%s/Roms/*&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
-<a name="l101"></a>  de_list=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2736"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>);
-<a name="l102"></a>  tmpde=de_list;
-<a name="l103"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
-<a name="l104"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l105"></a>    </span><span class=cB1>if</span><span class=cB0> (NESIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l106"></a>      n++;
-<a name="l107"></a>    tmpde=tmpde-&gt;next;
-<a name="l108"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l109"></a>  </span><span class=cB1>if</span><span class=cB0> (!n)
-<a name="l110"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l111"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l112"></a>                </span><span class=cB6>&quot;No ROMs found.\n\n&quot;</span><span class=cB0>
-<a name="l113"></a>    </span><span class=cB6>&quot;Put .NES (or .NES.Z) files in\n&quot;</span><span class=cB0>
-<a name="l114"></a>    </span><span class=cB6>&quot;\&quot;%s/Roms\&quot;.\n\n&quot;</span><span class=cB0>
-<a name="l115"></a>                        </span><span class=cB6>&quot;Press any key...\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>;
-<a name="l116"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
-<a name="l117"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
-<a name="l118"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l119"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
-<a name="l120"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l121"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l122"></a>  arr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(n*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
-<a name="l123"></a>  i=0;
-<a name="l124"></a>  tmpde=de_list;
-<a name="l125"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
-<a name="l126"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l127"></a>    </span><span class=cB1>if</span><span class=cB0> (NESIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l128"></a>      arr[i++]=tmpde;
-<a name="l129"></a>    tmpde=tmpde-&gt;next;
+<a name="l3"></a></span><span class=cB1>Bool</span><span class=cB0> nes_quit, nes_paused, nes_emu_idle, nes_task_done;
+<a name="l4"></a>
+<a name="l5"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l6"></a></span><span class=cB9>I64</span><span class=cB0> nes_emu_gen=0, nes_emu_beat=0;
+<a name="l7"></a>
+<a name="l8"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> nes_diag_instrs=0, nes_diag_frames=0, nes_diag_next=0;
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB9>I64</span><span class=cB0> NESDiagFifoCnt()
+<a name="l12"></a>{
+<a name="l13"></a>  </span><span class=cB1>if</span><span class=cB0> (!nes_snd_fifo)
+<a name="l14"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l15"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l350"></span><span class=cB5>FifoI64Cnt</a></span><span class=cB0>(nes_snd_fifo);
+<a name="l16"></a>}
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB9>I64</span><span class=cB0> nes_diag_canv_nz=0;
+<a name="l19"></a></span><span class=cB9>I64</span><span class=cB0> NESDiagCanvas()
+<a name="l20"></a>{
+<a name="l21"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n,h=0;
+<a name="l22"></a>  </span><span class=cB1>U8</span><span class=cB0> *p;
+<a name="l23"></a>  nes_diag_canv_nz=0;
+<a name="l24"></a>  </span><span class=cB1>if</span><span class=cB0> (!gameCanvas)
+<a name="l25"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l26"></a>  p=gameCanvas-&gt;body;
+<a name="l27"></a>  n=gameCanvas-&gt;width_internal*gameCanvas-&gt;height;
+<a name="l28"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
+<a name="l29"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l30"></a>    h=(h&lt;&lt;5)+h+p[i];
+<a name="l31"></a>    </span><span class=cB1>if</span><span class=cB0> (p[i])
+<a name="l32"></a>      nes_diag_canv_nz++;
+<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l34"></a>  </span><span class=cB1>return</span><span class=cB0> h;
+<a name="l35"></a>}
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>U0</span><span class=cB0> NESDiagMirror()
+<a name="l38"></a>{
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l40"></a>  </span><span class=cB1>if</span><span class=cB0> (!MMU.RAM)
+<a name="l41"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (nes_dg_ram_mirror &amp;&amp; nes_dg_mirror_addr&lt;0)
+<a name="l43"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;0x800; i++)
+<a name="l44"></a>      </span><span class=cB1>if</span><span class=cB0> (MMU.RAM[i]!=nes_dg_ram_mirror[i])
+<a name="l45"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l46"></a>        nes_dg_mirror_addr=i;
+<a name="l47"></a>        nes_dg_mirror_want=nes_dg_ram_mirror[i];
+<a name="l48"></a>        nes_dg_mirror_got=MMU.RAM[i];
+<a name="l49"></a>        nes_dg_mirror_frame=nes_dg_frame;
+<a name="l50"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l51"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (nes_dg_ppureg_addr&lt;0)
+<a name="l53"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l54"></a>      </span><span class=cB1>if</span><span class=cB0> (MMU.RAM[0x2000+i]!=nes_dg_ppureg_mirror[i])
+<a name="l55"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l56"></a>        nes_dg_ppureg_addr=0x2000+i;
+<a name="l57"></a>        nes_dg_ppureg_want=nes_dg_ppureg_mirror[i];
+<a name="l58"></a>        nes_dg_ppureg_got=MMU.RAM[0x2000+i];
+<a name="l59"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_mirror_frame&lt;0)
+<a name="l60"></a>          nes_dg_mirror_frame=nes_dg_frame;
+<a name="l61"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l62"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB1>if</span><span class=cB0> (MMU.OAM &amp;&amp; nes_dg_oam_mirror &amp;&amp; nes_dg_oamm_addr&lt;0)
+<a name="l64"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;0x100; i++)
+<a name="l65"></a>      </span><span class=cB1>if</span><span class=cB0> (MMU.OAM[i]!=nes_dg_oam_mirror[i])
+<a name="l66"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l67"></a>        nes_dg_oamm_addr=i;
+<a name="l68"></a>        nes_dg_oamm_want=nes_dg_oam_mirror[i];
+<a name="l69"></a>        nes_dg_oamm_got=MMU.OAM[i];
+<a name="l70"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_mirror_frame&lt;0)
+<a name="l71"></a>          nes_dg_mirror_frame=nes_dg_frame;
+<a name="l72"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l73"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l74"></a>}
+<a name="l75"></a>
+<a name="l76"></a></span><span class=cB1>U0</span><span class=cB0> NESDiagCanary()
+<a name="l77"></a>{
+<a name="l78"></a>  </span><span class=cB9>I64</span><span class=cB0> i,v;
+<a name="l79"></a>  </span><span class=cB1>if</span><span class=cB0> (!MMU.RAM || !MMU.VRAM || nes_dg_canary_frame&gt;=0)
+<a name="l80"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l81"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0x4000; i&lt;0x10000; i++)
+<a name="l82"></a>    </span><span class=cB1>if</span><span class=cB0> (MMU.VRAM[i])
+<a name="l83"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l84"></a>      nes_dg_canary_frame=nes_dg_frame;
+<a name="l85"></a>      nes_dg_canary_what=NES_CANARY_VRAM_HIGH;
+<a name="l86"></a>      nes_dg_canary_now=i;
+<a name="l87"></a>      nes_dg_canary_want=0;
+<a name="l88"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l89"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l90"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0x0800; i&lt;0x2000; i++)
+<a name="l91"></a>    </span><span class=cB1>if</span><span class=cB0> (MMU.RAM[i])
+<a name="l92"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l93"></a>      nes_dg_canary_frame=nes_dg_frame;
+<a name="l94"></a>      nes_dg_canary_what=NES_CANARY_RAM_GAP1;
+<a name="l95"></a>      nes_dg_canary_now=i;
+<a name="l96"></a>      nes_dg_canary_want=0;
+<a name="l97"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l98"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l99"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0x2008; i&lt;0x4000; i++)
+<a name="l100"></a>    </span><span class=cB1>if</span><span class=cB0> (MMU.RAM[i])
+<a name="l101"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l102"></a>      nes_dg_canary_frame=nes_dg_frame;
+<a name="l103"></a>      nes_dg_canary_what=NES_CANARY_RAM_GAP2;
+<a name="l104"></a>      nes_dg_canary_now=i;
+<a name="l105"></a>      nes_dg_canary_want=0;
+<a name="l106"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l107"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l108"></a>  </span><span class=cB1>if</span><span class=cB0> (mapper==0 || mapper==3)
+<a name="l109"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l110"></a>    v=NESDiagSum(MMU.RAM+0x8000,0x8000);
+<a name="l111"></a>    </span><span class=cB1>if</span><span class=cB0> (v!=nes_dg_prg_sum0)
+<a name="l112"></a>    {
+<a name="l113"></a>      nes_dg_canary_frame=nes_dg_frame;
+<a name="l114"></a>      nes_dg_canary_what=NES_CANARY_PRG;
+<a name="l115"></a>      nes_dg_canary_now=v;
+<a name="l116"></a>      nes_dg_canary_want=nes_dg_prg_sum0;
+<a name="l117"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l118"></a>    }
+<a name="l119"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (mapper==0 &amp;&amp; numCHRROM)
+<a name="l121"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l122"></a>    v=NESDiagSum(MMU.VRAM,0x2000);
+<a name="l123"></a>    </span><span class=cB1>if</span><span class=cB0> (v!=nes_dg_chr_sum0)
+<a name="l124"></a>    {
+<a name="l125"></a>      nes_dg_canary_frame=nes_dg_frame;
+<a name="l126"></a>      nes_dg_canary_what=NES_CANARY_CHR;
+<a name="l127"></a>      nes_dg_canary_now=v;
+<a name="l128"></a>      nes_dg_canary_want=nes_dg_chr_sum0;
+<a name="l129"></a>    }
 <a name="l130"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l131"></a>
-<a name="l132"></a>  rows=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_bottom-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top-3;
-<a name="l133"></a>  </span><span class=cB1>if</span><span class=cB0> (rows&lt;1)
-<a name="l134"></a>    rows=1;
-<a name="l135"></a>  </span><span class=cB1>while</span><span class=cB0> (!done)
-<a name="l136"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l137"></a>    </span><span class=cB1>if</span><span class=cB0> (sel&lt;top)
-<a name="l138"></a>      top=sel;
-<a name="l139"></a>    </span><span class=cB1>if</span><span class=cB0> (sel&gt;=top+rows)
-<a name="l140"></a>      top=sel-rows+1;
-<a name="l141"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l142"></a>                </span><span class=cB6>&quot;Pick a ROM (%d found)\n&quot;</span><span class=cB0>
-<a name="l143"></a>                        </span><span class=cB6>&quot;Arrows move, Space/&quot;</span><span class=cB0>
-<a name="l144"></a>                        </span><span class=cB6>&quot;Enter pick, ESC backs out.\n\n&quot;</span><span class=cB0>,
-<a name="l145"></a>    n;
-<a name="l146"></a>    </span><span class=cB1>for</span><span class=cB0> (i=top; i&lt;n &amp;&amp; i&lt;top+rows; i++)
-<a name="l147"></a>      </span><span class=cB1>if</span><span class=cB0> (i==sel)
-<a name="l148"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
-<a name="l149"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l150"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
-<a name="l151"></a>    </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB7>(</span><span class=cB0>&amp;sc</span><span class=cB7>)</span><span class=cB0>)
-<a name="l152"></a>    {
-<a name="l153"></a>    </span><span class=cB1>case</span><span class=cB0> 0:
-<a name="l154"></a>      </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0])
-<a name="l155"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l156"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
-<a name="l157"></a>        </span><span class=cB1>if</span><span class=cB0> (sel)
-<a name="l158"></a>          sel--;
-<a name="l159"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l160"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
-<a name="l161"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&lt;n-1)
-<a name="l162"></a>          sel++;
-<a name="l163"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l164"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3979"></span><span class=cB3>SC_PAGE_UP</a></span><span class=cB0>:
-<a name="l165"></a>        sel-=rows;
-<a name="l166"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&lt;0)
-<a name="l167"></a>          sel=0;
-<a name="l168"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l169"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3980"></span><span class=cB3>SC_PAGE_DOWN</a></span><span class=cB0>:
-<a name="l170"></a>        sel+=rows;
-<a name="l171"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&gt;n-1)
-<a name="l172"></a>          sel=n-1;
-<a name="l173"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l174"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3981"></span><span class=cB3>SC_HOME</a></span><span class=cB0>:
-<a name="l175"></a>        sel=0;
-<a name="l176"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l177"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3982"></span><span class=cB3>SC_END</a></span><span class=cB0>:
-<a name="l178"></a>        sel=n-1;
-<a name="l179"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l180"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l181"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l182"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
-<a name="l183"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
-<a name="l184"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(rom_name,arr[sel]-&gt;full_name);
-<a name="l185"></a>      picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l186"></a>      done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l187"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l188"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
-<a name="l189"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
-<a name="l190"></a>      done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l191"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l192"></a>    }
-<a name="l193"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(arr);
-<a name="l195"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
-<a name="l196"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l197"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
-<a name="l198"></a>  </span><span class=cB1>return</span><span class=cB0> picked;
-<a name="l199"></a>}
-<a name="l200"></a>
-<a name="l201"></a></span><span class=cB1>Bool</span><span class=cB0> NESLoadRom(</span><span class=cB1>U8</span><span class=cB0> *rom_filename)
-<a name="l202"></a>{
-<a name="l203"></a>
-<a name="l204"></a>  </span><span class=cB9>I64</span><span class=cB0> i,size,controlByte2;
-<a name="l205"></a>  </span><span class=cB1>U8</span><span class=cB0> *dot;
+<a name="l131"></a>}
+<a name="l132"></a>
+<a name="l133"></a></span><span class=cB9>I64</span><span class=cB0> NESDiagPad()
+<a name="l134"></a>{
+<a name="l135"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res=0;
+<a name="l136"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l137"></a>    </span><span class=cB1>if</span><span class=cB0> (nes_joypad.button_status[i])
+<a name="l138"></a>      res|=1&lt;&lt;i;
+<a name="l139"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l140"></a>}
+<a name="l141"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l142"></a>
+<a name="l143"></a></span><span class=cB1>U0</span><span class=cB0> NESDrawWindow(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task, </span><span class=cB9>CDC</span><span class=cB0> *dc)
+<a name="l144"></a>{
+<a name="l145"></a>
+<a name="l146"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l147"></a>  </span><span class=cB1>U8</span><span class=cB0> *src;
+<a name="l148"></a>  </span><span class=cB9>U16</span><span class=cB0> *d0;
+<a name="l149"></a>  </span><span class=cB1>no_warn</span><span class=cB0> task;
+<a name="l150"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l151"></a>  nes_dg_draw_cnt++;
+<a name="l152"></a>  nes_dg_draw_core=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num;
+<a name="l153"></a>  </span><span class=cB1>if</span><span class=cB0> (nes_dg_render_busy)
+<a name="l154"></a>    nes_dg_draw_overlap++;
+<a name="l155"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l156"></a>  </span><span class=cB1>if</span><span class=cB0> (win_scale==2 &amp;&amp; gameCanvas2x)
+<a name="l157"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l158"></a>    </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;NES_SCRN_H-2*NES_OVERSCAN; y++)
+<a name="l159"></a>    {
+<a name="l160"></a>      src=gameCanvas-&gt;body+
+<a name="l161"></a>          (y+NES_OVERSCAN)*gameCanvas-&gt;width_internal;
+<a name="l162"></a>      d0=gameCanvas2x-&gt;body+
+<a name="l163"></a>          2*y*gameCanvas2x-&gt;width_internal;
+<a name="l164"></a>      </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;NES_SCRN_W; x++)
+<a name="l165"></a>        d0[x]=src[x]*0x0101;
+<a name="l166"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(d0</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>+gameCanvas2x-&gt;width_internal,d0,
+<a name="l167"></a>          NES_SCRN_W*2);
+<a name="l168"></a>    }
+<a name="l169"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,gameCanvas2x);
+<a name="l170"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l171"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l172"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l80"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,gameCanvas);
+<a name="l173"></a>}
+<a name="l174"></a>
+<a name="l175"></a></span><span class=cB1>U0</span><span class=cB0> NESSnapWindow()
+<a name="l176"></a>{
+<a name="l177"></a>
+<a name="l178"></a>  </span><span class=cB9>I64</span><span class=cB0> want_cols,want_rows,snap_left,snap_top;
+<a name="l179"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width!=win_set_w)
+<a name="l180"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l181"></a>
+<a name="l182"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width&gt;=NES_SCRN_W*3/2)
+<a name="l183"></a>      win_scale=2;
+<a name="l184"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l185"></a>      win_scale=1;
+<a name="l186"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l187"></a>  want_cols=win_scale*NES_SCRN_W/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4035"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l188"></a>  </span><span class=cB1>if</span><span class=cB0> (win_scale==2)
+<a name="l189"></a>    want_rows=2*(NES_SCRN_H-2*NES_OVERSCAN)/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l190"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l191"></a>    want_rows=NES_SCRN_H/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4036"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>;
+<a name="l192"></a>  snap_left=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_left;
+<a name="l193"></a>  snap_top=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top;
+<a name="l194"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_left+want_cols&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1)
+<a name="l195"></a>    snap_left=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l63"></span><span class=cB3>TEXT_COLS</a></span><span class=cB0>-1-want_cols;
+<a name="l196"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_left&lt;1)
+<a name="l197"></a>    snap_left=1;
+<a name="l198"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_top+want_rows&gt;<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1)
+<a name="l199"></a>    snap_top=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l61"></span><span class=cB3>TEXT_ROWS</a></span><span class=cB0>-1-want_rows;
+<a name="l200"></a>  </span><span class=cB1>if</span><span class=cB0> (snap_top&lt;2)
+<a name="l201"></a>    snap_top=2;
+<a name="l202"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l425"></span><span class=cB5>WinHorz</a></span><span class=cB0>(snap_left,snap_left+want_cols-1);
+<a name="l203"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l465"></span><span class=cB5>WinVert</a></span><span class=cB0>(snap_top,snap_top+want_rows-1);
+<a name="l204"></a>  win_set_w=win_scale*NES_SCRN_W;
+<a name="l205"></a>}
 <a name="l206"></a>
-<a name="l207"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(rom_filename,&amp;size);
-<a name="l208"></a>  </span><span class=cB1>if</span><span class=cB0> (!cartridgebuffer)
-<a name="l209"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l210"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;iNES ROM file not found.\n&quot;</span><span class=cB0>);
-<a name="l211"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l212"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l213"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;16 || cartridgebuffer[0]!=</span><span class=cB6>'N'</span><span class=cB0> || cartridgebuffer[1]!=</span><span class=cB6>'E'</span><span class=cB0> ||
-<a name="l214"></a>      cartridgebuffer[2]!=</span><span class=cB6>'S'</span><span class=cB0> || cartridgebuffer[3]!=0x1A)
-<a name="l215"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l216"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; is not an iNES file.\n&quot;</span><span class=cB0>,rom_filename);
-<a name="l217"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
-<a name="l218"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l219"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l220"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l221"></a>
-<a name="l222"></a>  numPRGROM =cartridgebuffer[4];
-<a name="l223"></a>  numCHRROM =cartridgebuffer[5];
-<a name="l224"></a>  controlByte1=cartridgebuffer[6];
-<a name="l225"></a>  controlByte2=cartridgebuffer[7];
-<a name="l226"></a>  mapper=(controlByte2&amp;0xF0)|(</span><span class=cB7>(</span><span class=cB0>controlByte1&amp;0xF0</span><span class=cB7>)</span><span class=cB0>&gt;&gt;4);
-<a name="l227"></a>  </span><span class=cB1>if</span><span class=cB0> (controlByte1&amp;1)
-<a name="l228"></a>    mirroringType=MIRR_VERT;
-<a name="l229"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l230"></a>    mirroringType=MIRR_HORZ;
-<a name="l231"></a>
-<a name="l232"></a>  MMUInit;
-<a name="l233"></a>  </span><span class=cB1>switch</span><span class=cB0> (mapper)
-<a name="l234"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l235"></a>  </span><span class=cB1>case</span><span class=cB0> 0:
-<a name="l236"></a>  </span><span class=cB1>case</span><span class=cB0> 3:
-<a name="l237"></a>
-<a name="l238"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,numPRGROM*0x4000);
-<a name="l239"></a>    </span><span class=cB1>if</span><span class=cB0> (numPRGROM==1)
-<a name="l240"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0xC000,cartridgebuffer+0x10,0x4000);
-<a name="l241"></a>
-<a name="l242"></a>    </span><span class=cB1>if</span><span class=cB0> (numCHRROM)
-<a name="l243"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.VRAM,cartridgebuffer+0x10+0x4000*numPRGROM,
-<a name="l244"></a>          0x2000);
-<a name="l245"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l246"></a>  </span><span class=cB1>case</span><span class=cB0> 1:
-<a name="l247"></a>  </span><span class=cB1>case</span><span class=cB0> 2:
-<a name="l248"></a>
-<a name="l249"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,0x4000);
-<a name="l250"></a>
-<a name="l251"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0xC000,
-<a name="l252"></a>        cartridgebuffer+0x10+0x4000*</span><span class=cB7>(</span><span class=cB0>numPRGROM-1</span><span class=cB7>)</span><span class=cB0>,0x4000);
-<a name="l253"></a>
-<a name="l254"></a>    </span><span class=cB1>if</span><span class=cB0> (numCHRROM)
-<a name="l255"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.VRAM,cartridgebuffer+0x10+0x4000*numPRGROM,
-<a name="l256"></a>          0x2000);
-<a name="l257"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l258"></a>  </span><span class=cB1>case</span><span class=cB0> 4:
-<a name="l259"></a>    MMC3_Init();
-<a name="l260"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l261"></a>  </span><span class=cB1>case</span><span class=cB0> 7:
-<a name="l262"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,0x8000);
-<a name="l263"></a>    mirroringType=MIRR_SINGLE;
-<a name="l264"></a>    </span><span class=cB1>break</span><span class=cB0>;
-<a name="l265"></a>  </span><span class=cB1>default</span><span class=cB0>:
-<a name="l266"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;iNES mapper %d isn't supported &quot;</span><span class=cB0>
-<a name="l267"></a>                        </span><span class=cB6>&quot;(0, 1, 2, 3, 4 and 7 are).\n&quot;</span><span class=cB0>,mapper);
-<a name="l268"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
-<a name="l269"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l270"></a>    MMUFree;
-<a name="l271"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l207"></a></span><span class=cB1>U0</span><span class=cB0> NESReset()
+<a name="l208"></a>{
+<a name="l209"></a>  reset6502;
+<a name="l210"></a>  initPPU2C02(&amp;PPU_state);
+<a name="l211"></a>  JoypadInit(&amp;nes_joypad);
+<a name="l212"></a>  papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l213"></a>  mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l214"></a>  cpu_stall_cycles=0;
+<a name="l215"></a>}
+<a name="l216"></a>
+<a name="l217"></a></span><span class=cB1>Bool</span><span class=cB0> NESIsRomName(</span><span class=cB1>U8</span><span class=cB0> *name)
+<a name="l218"></a>{
+<a name="l219"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[256];
+<a name="l220"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
+<a name="l221"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(buf,name);
+<a name="l222"></a>  n=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(buf);
+<a name="l223"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>buf+n-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l224"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l225"></a>    n-=2;
+<a name="l226"></a>    buf[n]=0;
+<a name="l227"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l228"></a>  </span><span class=cB1>return</span><span class=cB0> n&gt;=4 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(buf+n-4,</span><span class=cB6>&quot;.NES&quot;</span><span class=cB0>);
+<a name="l229"></a>}
+<a name="l230"></a>
+<a name="l231"></a></span><span class=cB1>Bool</span><span class=cB0> NESPickRom(</span><span class=cB1>U8</span><span class=cB0> *rom_name)
+<a name="l232"></a>{
+<a name="l233"></a>
+<a name="l234"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de_list,*tmpde,**arr;
+<a name="l235"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n=0,sel=0,top=0,rows,sc;
+<a name="l236"></a>  </span><span class=cB1>U8</span><span class=cB0> mask[256];
+<a name="l237"></a>  </span><span class=cB1>Bool</span><span class=cB0> picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l238"></a>  </span><span class=cB1>U0</span><span class=cB0> (*old_draw_it)(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0> *task,</span><span class=cB9>CDC</span><span class=cB0> *dc);
+<a name="l239"></a>  old_draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it;
+<a name="l240"></a>
+<a name="l241"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l242"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(mask,</span><span class=cB6>&quot;%s/Roms/*&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
+<a name="l243"></a>  de_list=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2736"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>);
+<a name="l244"></a>  tmpde=de_list;
+<a name="l245"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
+<a name="l246"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l247"></a>    </span><span class=cB1>if</span><span class=cB0> (NESIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l248"></a>      n++;
+<a name="l249"></a>    tmpde=tmpde-&gt;next;
+<a name="l250"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l251"></a>  </span><span class=cB1>if</span><span class=cB0> (!n)
+<a name="l252"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l253"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l254"></a>                </span><span class=cB6>&quot;No ROMs found.\n\n&quot;</span><span class=cB0>
+<a name="l255"></a>    </span><span class=cB6>&quot;Put .NES (or .NES.Z) files in\n&quot;</span><span class=cB0>
+<a name="l256"></a>    </span><span class=cB6>&quot;\&quot;%s/Roms\&quot;.\n\n&quot;</span><span class=cB0>
+<a name="l257"></a>                        </span><span class=cB6>&quot;Press any key...\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>;
+<a name="l258"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
+<a name="l259"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
+<a name="l260"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l261"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
+<a name="l262"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l263"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l264"></a>  arr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(n*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l265"></a>  i=0;
+<a name="l266"></a>  tmpde=de_list;
+<a name="l267"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
+<a name="l268"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l269"></a>    </span><span class=cB1>if</span><span class=cB0> (NESIsRomName</span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l270"></a>      arr[i++]=tmpde;
+<a name="l271"></a>    tmpde=tmpde-&gt;next;
 <a name="l272"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l273"></a>
-<a name="l274"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(nes_state_filename,rom_filename);
-<a name="l275"></a>  i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(nes_state_filename);
-<a name="l276"></a>  </span><span class=cB1>if</span><span class=cB0> (i&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>nes_state_filename+i-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>)
-<a name="l277"></a>    nes_state_filename[i-2]=0;
-<a name="l278"></a>  dot=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l643"></span><span class=cB5>StrLastOcc</a></span><span class=cB0>(nes_state_filename,</span><span class=cB6>&quot;.&quot;</span><span class=cB0>);
-<a name="l279"></a>  </span><span class=cB1>if</span><span class=cB0> (dot)
-<a name="l280"></a>    *dot=0;
-<a name="l281"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(nes_sram_filename,nes_state_filename);
-<a name="l282"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(nes_state_filename,</span><span class=cB6>&quot;.BIN.Z&quot;</span><span class=cB0>);
-<a name="l283"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(nes_sram_filename,</span><span class=cB6>&quot;.SRM&quot;</span><span class=cB0>);
-<a name="l284"></a>
-<a name="l285"></a>  LoadSRAM;
-<a name="l286"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l287"></a>}
-<a name="l288"></a>
-<a name="l289"></a></span><span class=cB1>Bool</span><span class=cB0> NESChangeRom()
-<a name="l290"></a>{
-<a name="l291"></a>
-<a name="l292"></a>  </span><span class=cB1>U8</span><span class=cB0> new_rom[256];
-<a name="l293"></a>  </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
-<a name="l294"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l295"></a>  SaveSRAM;
-<a name="l296"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
-<a name="l297"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l298"></a>  MMUFree;
-<a name="l299"></a>  </span><span class=cB1>while</span><span class=cB0> (!NESLoadRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
-<a name="l300"></a>    </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
-<a name="l301"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l302"></a>  NESReset;
-<a name="l303"></a>  initPAPU(&amp;PAPU);
-<a name="l304"></a>  papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l305"></a>  mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l306"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,0);
-<a name="l307"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,0);
-<a name="l308"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l309"></a>}
-<a name="l310"></a>
-<a name="l311"></a></span><span class=cB1>U0</span><span class=cB0> NESPauseEmu()
-<a name="l312"></a>{</span><span class=cB2>//Stop the emu task before the UI task touches shared engine state.</span><span class=cB0>
-<a name="l313"></a>  nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l314"></a>  </span><span class=cB1>while</span><span class=cB0> (!nes_emu_idle)
-<a name="l315"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l316"></a>}
-<a name="l317"></a>
-<a name="l318"></a></span><span class=cB1>U0</span><span class=cB0> NESEmuTask(</span><span class=cB1>U8</span><span class=cB0> *data)
-<a name="l319"></a>{</span><span class=cB2>//Runs on its own core when one is free.  Never touches Fs -- this</span><span class=cB0>
-<a name="l320"></a></span><span class=cB2>//task has no window, only Core0 tasks do.</span><span class=cB0>
-<a name="l321"></a>  </span><span class=cB9>I64</span><span class=cB0> cycles,loop;
-<a name="l322"></a>  </span><span class=cB1>U8</span><span class=cB0> frame_finished=0;
-<a name="l323"></a>  </span><span class=cB1>F64</span><span class=cB0> next_frame;
-<a name="l324"></a>  </span><span class=cB1>Bool</span><span class=cB0> was_paused;
-<a name="l325"></a>  </span><span class=cB1>no_warn</span><span class=cB0> data;
-<a name="l326"></a>  was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l327"></a>  next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
-<a name="l328"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l329"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l330"></a>    </span><span class=cB1>while</span><span class=cB0> (!nes_quit)
-<a name="l331"></a>    {
-<a name="l332"></a>      </span><span class=cB1>if</span><span class=cB0> (nes_paused)
-<a name="l333"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l334"></a>        nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l335"></a>        was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l336"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
-<a name="l337"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l338"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l339"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l340"></a>        nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l341"></a>        </span><span class=cB1>if</span><span class=cB0> (was_paused)
-<a name="l342"></a>        {
-<a name="l343"></a>          next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
-<a name="l344"></a>          was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l345"></a>        }
-<a name="l346"></a>        </span><span class=cB1>if</span><span class=cB0> (papu_request_irq)
-<a name="l347"></a>        {
-<a name="l348"></a>          irq6502;
-<a name="l349"></a>          papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l350"></a>        }
-<a name="l351"></a>        </span><span class=cB1>if</span><span class=cB0> (mapper_request_irq)
-<a name="l352"></a>        {
-<a name="l353"></a>          irq6502;
-<a name="l354"></a>          mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l355"></a>        }
-<a name="l356"></a>        exec6502(1);
-<a name="l357"></a>        cycles=ticktable[opcode];
-<a name="l358"></a>        PAPU_clockFrameCounter(&amp;PAPU,cycles);
-<a name="l359"></a>        loop=cycles*3;
-<a name="l360"></a>        </span><span class=cB1>while</span><span class=cB0> (loop)
-<a name="l361"></a>        {
-<a name="l362"></a>          frame_finished|=PPUcycle(&amp;PPU_state);
-<a name="l363"></a>          loop--;
-<a name="l364"></a>        }
-<a name="l365"></a>        </span><span class=cB1>if</span><span class=cB0> (frame_finished)
-<a name="l366"></a>        {
-<a name="l367"></a>          frame_finished=0;
-<a name="l368"></a>          NESSndThrottle;
-<a name="l369"></a>          </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>&lt;next_frame)
-<a name="l370"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l371"></a>          next_frame+=1.0/60;
-<a name="l372"></a>          </span><span class=cB1>if</span><span class=cB0> (next_frame&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>)
-<a name="l373"></a>            next_frame=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>+1.0/60;
-<a name="l374"></a>          JoypadScan(&amp;nes_joypad);
-<a name="l375"></a>        }
-<a name="l376"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l377"></a>    }
-<a name="l378"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l379"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l380"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l381"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
-<a name="l382"></a>    nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l383"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l384"></a>  nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l385"></a>  nes_task_done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l386"></a>}
-<a name="l387"></a>
-<a name="l388"></a></span><span class=cB1>U0</span><span class=cB0> TempleNES(</span><span class=cB1>U8</span><span class=cB0> *rom_filename=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l389"></a>{
-<a name="l390"></a>
-<a name="l391"></a>  </span><span class=cB9>I64</span><span class=cB0> arg1,arg2;
-<a name="l392"></a>  </span><span class=cB1>U8</span><span class=cB0> rom_name[256],help_path[256];
-<a name="l393"></a>
-<a name="l394"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l30"></span><span class=cB5>SettingsPush</a></span><span class=cB0>;
-<a name="l395"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>WHITE</a></span><span class=cB0>;
-<a name="l396"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
-<a name="l397"></a>      </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
-<a name="l398"></a>      </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
-<a name="l399"></a>      </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
-<a name="l400"></a>      </span><span class=cB6>&quot;Game {&quot;</span><span class=cB0>
-<a name="l401"></a>      </span><span class=cB6>&quot;  PickROM(,'P');&quot;</span><span class=cB0>
-<a name="l402"></a>      </span><span class=cB6>&quot;  Reset(,'R');&quot;</span><span class=cB0>
-<a name="l403"></a>      </span><span class=cB6>&quot;  Pause(,' ');&quot;</span><span class=cB0>
-<a name="l404"></a>      </span><span class=cB6>&quot;  SaveState(,'S');&quot;</span><span class=cB0>
-<a name="l405"></a>      </span><span class=cB6>&quot;  LoadState(,'L');&quot;</span><span class=cB0>
-<a name="l406"></a>      </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
-<a name="l407"></a>      </span><span class=cB6>&quot;View {&quot;</span><span class=cB0>
-<a name="l408"></a>      </span><span class=cB6>&quot;  Scale1x(,'1');&quot;</span><span class=cB0>
-<a name="l409"></a>      </span><span class=cB6>&quot;  Scale2x(,'2');&quot;</span><span class=cB0>
-<a name="l410"></a>                </span><span class=cB6>&quot;}&quot;</span><span class=cB0>);
-<a name="l411"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l426"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
-<a name="l412"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l618"></span><span class=cB5>WinBorder</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>);
-<a name="l413"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
-<a name="l414"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l415"></a>  win_set_w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width;
-<a name="l416"></a>  NESSnapWindow;
-<a name="l417"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l412"></span><span class=cB5>WinFocus</a></span><span class=cB0>;
-<a name="l418"></a>
-<a name="l419"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(help_path,</span><span class=cB6>&quot;%s/Help.DD&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
-<a name="l420"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l365"></span><span class=cB5>Type</a></span><span class=cB0>(help_path);
-<a name="l421"></a>  </span><span class=cB1>if</span><span class=cB0> (rom_filename)
-<a name="l422"></a>                </span><span class=cB6>&quot;\nPress any key to start...\n&quot;</span><span class=cB0>;
-<a name="l423"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l424"></a>                </span><span class=cB6>&quot;\nPress any key to pick a ROM...\n&quot;</span><span class=cB0>;
-<a name="l425"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
-<a name="l426"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l427"></a>
-<a name="l428"></a>  </span><span class=cB1>if</span><span class=cB0> (!rom_filename)
-<a name="l429"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l430"></a>    </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>rom_name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l431"></a>    {
-<a name="l432"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
-<a name="l433"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l434"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l435"></a>      </span><span class=cB1>return</span><span class=cB0>;
-<a name="l436"></a>    }
-<a name="l437"></a>    rom_filename=rom_name;
-<a name="l438"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l439"></a>  </span><span class=cB1>if</span><span class=cB0> (!NESLoadRom</span><span class=cB7>(</span><span class=cB0>rom_filename</span><span class=cB7>)</span><span class=cB0>)
-<a name="l440"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l441"></a>
-<a name="l442"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
-<a name="l443"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l444"></a>    </span><span class=cB1>return</span><span class=cB0>;
-<a name="l445"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l446"></a>
-<a name="l447"></a>  gameCanvas=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(NES_SCRN_W,NES_SCRN_H);
-<a name="l448"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,0);
-<a name="l449"></a>
-<a name="l450"></a>  gameCanvas-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
-<a name="l451"></a>  gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(2*NES_SCRN_W,2*</span><span class=cB7>(</span><span class=cB0>NES_SCRN_H-2*NES_OVERSCAN</span><span class=cB7>)</span><span class=cB0>);
-<a name="l452"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,0);
-<a name="l453"></a>  gameCanvas2x-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
-<a name="l454"></a>
-<a name="l455"></a>  reset6502;
-<a name="l456"></a>  initPPU2C02(&amp;PPU_state);
-<a name="l457"></a>  initPAPU(&amp;PAPU);
-<a name="l458"></a>  JoypadInit(&amp;nes_joypad);
-<a name="l459"></a>
-<a name="l460"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l82"></span><span class=cB5>GrPaletteGet</a></span><span class=cB0>(&amp;nes_sys_palette);
-<a name="l461"></a>  PPU_InitPalette;
-<a name="l462"></a>
-<a name="l463"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;NESDrawWindow;
-<a name="l464"></a>
-<a name="l465"></a>  nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l466"></a>  nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l467"></a>  nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l468"></a>  nes_task_done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l469"></a></span><span class=cB2>//Most of the emulation work (CPU/PPU/APU) runs in its own task, on</span><span class=cB0>
-<a name="l470"></a></span><span class=cB2>//its own core when one is free, leaving this (Core0, windowed) task</span><span class=cB0>
-<a name="l471"></a></span><span class=cB2>//free to service input and the window.</span><span class=cB0>
-<a name="l472"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
-<a name="l473"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,1);
-<a name="l474"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l475"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
-<a name="l476"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l477"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l478"></a>    </span><span class=cB1>while</span><span class=cB0> (!nes_quit)
-<a name="l479"></a>    {
-<a name="l480"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l41"></span><span class=cB5>ScanMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3640"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l481"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l482"></a>        </span><span class=cB1>switch</span><span class=cB0> (arg1)
-<a name="l483"></a>        {
-<a name="l484"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
-<a name="l485"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
-<a name="l486"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'q'</span><span class=cB0>:
-<a name="l487"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'Q'</span><span class=cB0>:
-<a name="l488"></a>          nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l489"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l490"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'r'</span><span class=cB0>:
-<a name="l491"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'R'</span><span class=cB0>:
-<a name="l492"></a>          NESPauseEmu;
-<a name="l493"></a>          NESReset;
-<a name="l494"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l495"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l496"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'p'</span><span class=cB0>:
-<a name="l497"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'P'</span><span class=cB0>:
-<a name="l498"></a>          NESPauseEmu;
-<a name="l499"></a>          </span><span class=cB1>if</span><span class=cB0> (NESChangeRom</span><span class=cB7>()</span><span class=cB0>)
-<a name="l500"></a>            nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l501"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l502"></a>            nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l503"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l504"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
-<a name="l505"></a>          nes_paused=!nes_paused;
-<a name="l506"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l507"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'s'</span><span class=cB0>:
-<a name="l508"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'S'</span><span class=cB0>:
-<a name="l509"></a>          NESPauseEmu;
-<a name="l510"></a>          SaveState;
-<a name="l511"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l512"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l513"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'l'</span><span class=cB0>:
-<a name="l514"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'L'</span><span class=cB0>:
-<a name="l515"></a>          NESPauseEmu;
-<a name="l516"></a>          LoadState;
-<a name="l517"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l518"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l519"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'1'</span><span class=cB0>:
-<a name="l520"></a>          win_scale=1;
-<a name="l521"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l522"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'2'</span><span class=cB0>:
-<a name="l523"></a>          win_scale=2;
-<a name="l524"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l525"></a>        }
-<a name="l526"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l527"></a>      NESSnapWindow;
-<a name="l528"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
-<a name="l529"></a>    }
-<a name="l530"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l531"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l532"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
-<a name="l533"></a>
-<a name="l534"></a>  nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l535"></a>  </span><span class=cB1>while</span><span class=cB0> (!nes_task_done)
-<a name="l536"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
-<a name="l537"></a>
-<a name="l538"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l539"></a>  SaveSRAM;
-<a name="l540"></a>  PAPU_initBuffers;
-<a name="l541"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l89"></span><span class=cB5>GrPaletteSet</a></span><span class=cB0>(&amp;nes_sys_palette);
-<a name="l542"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
-<a name="l543"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l544"></a>  MMUFree;
-<a name="l545"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas);
-<a name="l546"></a>  gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l547"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas2x);
-<a name="l548"></a>  gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l549"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
-<a name="l550"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
-<a name="l551"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
-<a name="l552"></a>}
+<a name="l274"></a>  rows=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_bottom-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;win_top-3;
+<a name="l275"></a>  </span><span class=cB1>if</span><span class=cB0> (rows&lt;1)
+<a name="l276"></a>    rows=1;
+<a name="l277"></a>  </span><span class=cB1>while</span><span class=cB0> (!done)
+<a name="l278"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l279"></a>    </span><span class=cB1>if</span><span class=cB0> (sel&lt;top)
+<a name="l280"></a>      top=sel;
+<a name="l281"></a>    </span><span class=cB1>if</span><span class=cB0> (sel&gt;=top+rows)
+<a name="l282"></a>      top=sel-rows+1;
+<a name="l283"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l284"></a>                </span><span class=cB6>&quot;Pick a ROM (%d found)\n&quot;</span><span class=cB0>
+<a name="l285"></a>                        </span><span class=cB6>&quot;Arrows move, Space/&quot;</span><span class=cB0>
+<a name="l286"></a>                        </span><span class=cB6>&quot;Enter pick, ESC backs out.\n\n&quot;</span><span class=cB0>,
+<a name="l287"></a>    n;
+<a name="l288"></a>    </span><span class=cB1>for</span><span class=cB0> (i=top; i&lt;n &amp;&amp; i&lt;top+rows; i++)
+<a name="l289"></a>      </span><span class=cB1>if</span><span class=cB0> (i==sel)
+<a name="l290"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
+<a name="l291"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l292"></a>                                </span><span class=cB6>&quot;%s\n&quot;</span><span class=cB0>,arr[i]-&gt;name;
+<a name="l293"></a>    </span><span class=cB1>switch</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB7>(</span><span class=cB0>&amp;sc</span><span class=cB7>)</span><span class=cB0>)
+<a name="l294"></a>    {
+<a name="l295"></a>    </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l296"></a>      </span><span class=cB1>switch</span><span class=cB0> (sc.u8[0])
+<a name="l297"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l298"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB0>:
+<a name="l299"></a>        </span><span class=cB1>if</span><span class=cB0> (sel)
+<a name="l300"></a>          sel--;
+<a name="l301"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l302"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB0>:
+<a name="l303"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&lt;n-1)
+<a name="l304"></a>          sel++;
+<a name="l305"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l306"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3979"></span><span class=cB3>SC_PAGE_UP</a></span><span class=cB0>:
+<a name="l307"></a>        sel-=rows;
+<a name="l308"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&lt;0)
+<a name="l309"></a>          sel=0;
+<a name="l310"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l311"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3980"></span><span class=cB3>SC_PAGE_DOWN</a></span><span class=cB0>:
+<a name="l312"></a>        sel+=rows;
+<a name="l313"></a>        </span><span class=cB1>if</span><span class=cB0> (sel&gt;n-1)
+<a name="l314"></a>          sel=n-1;
+<a name="l315"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l316"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3981"></span><span class=cB3>SC_HOME</a></span><span class=cB0>:
+<a name="l317"></a>        sel=0;
+<a name="l318"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l319"></a>      </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3982"></span><span class=cB3>SC_END</a></span><span class=cB0>:
+<a name="l320"></a>        sel=n-1;
+<a name="l321"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l322"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l323"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l324"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l325"></a>    </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'\n'</span><span class=cB0>:
+<a name="l326"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(rom_name,arr[sel]-&gt;full_name);
+<a name="l327"></a>      picked=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l328"></a>      done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l329"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l330"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l331"></a>    </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l332"></a>      done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l333"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l334"></a>    }
+<a name="l335"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l336"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(arr);
+<a name="l337"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(de_list);
+<a name="l338"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l339"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=old_draw_it;
+<a name="l340"></a>  </span><span class=cB1>return</span><span class=cB0> picked;
+<a name="l341"></a>}
+<a name="l342"></a>
+<a name="l343"></a></span><span class=cB1>Bool</span><span class=cB0> NESLoadRom(</span><span class=cB1>U8</span><span class=cB0> *rom_filename)
+<a name="l344"></a>{
+<a name="l345"></a>
+<a name="l346"></a>  </span><span class=cB9>I64</span><span class=cB0> i,size,controlByte2,need;
+<a name="l347"></a>  </span><span class=cB1>U8</span><span class=cB0> *dot;
+<a name="l348"></a>
+<a name="l349"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(rom_filename,&amp;size);
+<a name="l350"></a>  </span><span class=cB1>if</span><span class=cB0> (!cartridgebuffer)
+<a name="l351"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l352"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;iNES ROM file not found.\n&quot;</span><span class=cB0>);
+<a name="l353"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l354"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l355"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;16 || cartridgebuffer[0]!=</span><span class=cB6>'N'</span><span class=cB0> || cartridgebuffer[1]!=</span><span class=cB6>'E'</span><span class=cB0> ||
+<a name="l356"></a>      cartridgebuffer[2]!=</span><span class=cB6>'S'</span><span class=cB0> || cartridgebuffer[3]!=0x1A)
+<a name="l357"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l358"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; is not an iNES file.\n&quot;</span><span class=cB0>,rom_filename);
+<a name="l359"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l360"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l361"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l362"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l363"></a>
+<a name="l364"></a>  numPRGROM =cartridgebuffer[4];
+<a name="l365"></a>  numCHRROM =cartridgebuffer[5];
+<a name="l366"></a>  controlByte1=cartridgebuffer[6];
+<a name="l367"></a>  controlByte2=cartridgebuffer[7];
+<a name="l368"></a>  mapper=(controlByte2&amp;0xF0)|(</span><span class=cB7>(</span><span class=cB0>controlByte1&amp;0xF0</span><span class=cB7>)</span><span class=cB0>&gt;&gt;4);
+<a name="l369"></a>  </span><span class=cB1>if</span><span class=cB0> (controlByte1&amp;1)
+<a name="l370"></a>    mirroringType=MIRR_VERT;
+<a name="l371"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l372"></a>    mirroringType=MIRR_HORZ;
+<a name="l373"></a>
+<a name="l374"></a>  </span><span class=cB1>if</span><span class=cB0> (controlByte1&amp;4)
+<a name="l375"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l376"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; has a trainer, which isn't supported.\n&quot;</span><span class=cB0>,
+<a name="l377"></a>        rom_filename);
+<a name="l378"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l379"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l380"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l381"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l382"></a>  need=0x10+numPRGROM*0x4000+numCHRROM*0x2000;
+<a name="l383"></a>  </span><span class=cB1>if</span><span class=cB0> (!numPRGROM || size&lt;need)
+<a name="l384"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l385"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; is truncated: got %d bytes, header wants %d &quot;</span><span class=cB0>
+<a name="l386"></a>        </span><span class=cB6>&quot;(%d PRG, %d CHR).\n&quot;</span><span class=cB0>,rom_filename,size,need,numPRGROM,
+<a name="l387"></a>        numCHRROM);
+<a name="l388"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l389"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l390"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l391"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l392"></a>
+<a name="l393"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>(mapper==0 || mapper==3) &amp;&amp; numPRGROM&gt;2</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l394"></a>      </span><span class=cB7>(</span><span class=cB0>(mapper==7) &amp;&amp; (numPRGROM&lt;2)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l395"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l396"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;\&quot;%s\&quot; declares %d PRG banks, which mapper %d can't &quot;</span><span class=cB0>
+<a name="l397"></a>        </span><span class=cB6>&quot;hold.\n&quot;</span><span class=cB0>,rom_filename,numPRGROM,mapper);
+<a name="l398"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l399"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l400"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l401"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l402"></a>
+<a name="l403"></a>  MMUInit;
+<a name="l404"></a>  </span><span class=cB1>switch</span><span class=cB0> (mapper)
+<a name="l405"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l406"></a>  </span><span class=cB1>case</span><span class=cB0> 0:
+<a name="l407"></a>  </span><span class=cB1>case</span><span class=cB0> 3:
+<a name="l408"></a>
+<a name="l409"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,numPRGROM*0x4000);
+<a name="l410"></a>    </span><span class=cB1>if</span><span class=cB0> (numPRGROM==1)
+<a name="l411"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0xC000,cartridgebuffer+0x10,0x4000);
+<a name="l412"></a>
+<a name="l413"></a>    </span><span class=cB1>if</span><span class=cB0> (numCHRROM)
+<a name="l414"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.VRAM,cartridgebuffer+0x10+0x4000*numPRGROM,
+<a name="l415"></a>          0x2000);
+<a name="l416"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l417"></a>  </span><span class=cB1>case</span><span class=cB0> 1:
+<a name="l418"></a>  </span><span class=cB1>case</span><span class=cB0> 2:
+<a name="l419"></a>
+<a name="l420"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,0x4000);
+<a name="l421"></a>
+<a name="l422"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0xC000,
+<a name="l423"></a>        cartridgebuffer+0x10+0x4000*</span><span class=cB7>(</span><span class=cB0>numPRGROM-1</span><span class=cB7>)</span><span class=cB0>,0x4000);
+<a name="l424"></a>
+<a name="l425"></a>    </span><span class=cB1>if</span><span class=cB0> (numCHRROM)
+<a name="l426"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.VRAM,cartridgebuffer+0x10+0x4000*numPRGROM,
+<a name="l427"></a>          0x2000);
+<a name="l428"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l429"></a>  </span><span class=cB1>case</span><span class=cB0> 4:
+<a name="l430"></a>    MMC3_Init();
+<a name="l431"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l432"></a>  </span><span class=cB1>case</span><span class=cB0> 7:
+<a name="l433"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(MMU.RAM+0x8000,cartridgebuffer+0x10,0x8000);
+<a name="l434"></a>    mirroringType=MIRR_SINGLE;
+<a name="l435"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l436"></a>  </span><span class=cB1>default</span><span class=cB0>:
+<a name="l437"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;iNES mapper %d isn't supported &quot;</span><span class=cB0>
+<a name="l438"></a>                        </span><span class=cB6>&quot;(0, 1, 2, 3, 4 and 7 are).\n&quot;</span><span class=cB0>,mapper);
+<a name="l439"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l440"></a>    cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l441"></a>    MMUFree;
+<a name="l442"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l443"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l444"></a>
+<a name="l445"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(nes_state_filename,rom_filename);
+<a name="l446"></a>  i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(nes_state_filename);
+<a name="l447"></a>  </span><span class=cB1>if</span><span class=cB0> (i&gt;2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>nes_state_filename+i-2,</span><span class=cB6>&quot;.Z&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l448"></a>    nes_state_filename[i-2]=0;
+<a name="l449"></a>  dot=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l643"></span><span class=cB5>StrLastOcc</a></span><span class=cB0>(nes_state_filename,</span><span class=cB6>&quot;.&quot;</span><span class=cB0>);
+<a name="l450"></a>  </span><span class=cB1>if</span><span class=cB0> (dot)
+<a name="l451"></a>    *dot=0;
+<a name="l452"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(nes_sram_filename,nes_state_filename);
+<a name="l453"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(nes_state_filename,</span><span class=cB6>&quot;.BIN.Z&quot;</span><span class=cB0>);
+<a name="l454"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1048"></span><span class=cB5>CatPrint</a></span><span class=cB0>(nes_sram_filename,</span><span class=cB6>&quot;.SRM&quot;</span><span class=cB0>);
+<a name="l455"></a>
+<a name="l456"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l457"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES load: %s\n&quot;</span><span class=cB0>
+<a name="l458"></a>      </span><span class=cB6>&quot;  size=%d mapper=%d prg=%d chr=%d mirror=%d\n&quot;</span><span class=cB0>
+<a name="l459"></a>      </span><span class=cB6>&quot;  prgsum=0x%08X chrsum=0x%08X reset_vec=0x%02X%02X\n&quot;</span><span class=cB0>,
+<a name="l460"></a>      rom_filename,
+<a name="l461"></a>      size,mapper,numPRGROM,numCHRROM,mirroringType,
+<a name="l462"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>MMU.RAM+0x8000,0x8000</span><span class=cB7>)</span><span class=cB0>,NESDiagSum</span><span class=cB7>(</span><span class=cB0>MMU.VRAM,0x2000</span><span class=cB7>)</span><span class=cB0>,
+<a name="l463"></a>      MMU.RAM[0xFFFD],MMU.RAM[0xFFFC]);
+<a name="l464"></a>  nes_dg_prg_sum0=NESDiagSum(MMU.RAM+0x8000,0x8000);
+<a name="l465"></a>  nes_dg_chr_sum0=NESDiagSum(MMU.VRAM,0x2000);
+<a name="l466"></a>  nes_dg_canary_frame=-1;
+<a name="l467"></a>  nes_dg_canary_what=-1;
+<a name="l468"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l469"></a>  LoadSRAM;
+<a name="l470"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l471"></a>}
+<a name="l472"></a>
+<a name="l473"></a></span><span class=cB1>Bool</span><span class=cB0> NESChangeRom()
+<a name="l474"></a>{
+<a name="l475"></a>
+<a name="l476"></a>  </span><span class=cB1>U8</span><span class=cB0> new_rom[256];
+<a name="l477"></a>  </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l478"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l479"></a>  SaveSRAM;
+<a name="l480"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l481"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l482"></a>  MMUFree;
+<a name="l483"></a>  </span><span class=cB1>while</span><span class=cB0> (!NESLoadRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l484"></a>    </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>new_rom</span><span class=cB7>)</span><span class=cB0>)
+<a name="l485"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l486"></a>  NESReset;
+<a name="l487"></a>  initPAPU(&amp;PAPU);
+<a name="l488"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,0);
+<a name="l489"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,0);
+<a name="l490"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l491"></a>}
+<a name="l492"></a>
+<a name="l493"></a></span><span class=cB1>U0</span><span class=cB0> NESPauseEmu()
+<a name="l494"></a>{
+<a name="l495"></a>  </span><span class=cB9>I64</span><span class=cB0> timeout=0;
+<a name="l496"></a>  nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l497"></a>  nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l498"></a>  </span><span class=cB1>while</span><span class=cB0> (!nes_emu_idle)
+<a name="l499"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l500"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>nes_emu_task</span><span class=cB7>)</span><span class=cB0> || ++timeout&gt;3000)
+<a name="l501"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l502"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l503"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l504"></a>}
+<a name="l505"></a>
+<a name="l506"></a></span><span class=cB1>U0</span><span class=cB0> NESEmuTask(</span><span class=cB1>U8</span><span class=cB0> *data)
+<a name="l507"></a>{
+<a name="l508"></a>  </span><span class=cB9>I64</span><span class=cB0> gen,cycles,loop,base_jiffy,frame_num,next_frame_jiffy;
+<a name="l509"></a>  </span><span class=cB1>U8</span><span class=cB0> frame_finished=0;
+<a name="l510"></a>  </span><span class=cB1>Bool</span><span class=cB0> was_paused;
+<a name="l511"></a>  gen=data(</span><span class=cB9>I64</span><span class=cB0>);
+<a name="l512"></a>  was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l513"></a>  base_jiffy=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
+<a name="l514"></a>  frame_num=0;
+<a name="l515"></a>  next_frame_jiffy=base_jiffy+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/60;
+<a name="l516"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l517"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l518"></a>    </span><span class=cB1>while</span><span class=cB0> (!nes_quit)
+<a name="l519"></a>    {
+<a name="l520"></a>      </span><span class=cB1>if</span><span class=cB0> (gen!=nes_emu_gen)
+<a name="l521"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l522"></a>      nes_emu_beat++;
+<a name="l523"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l524"></a>      nes_dg_emu_core=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num;
+<a name="l525"></a>      nes_dg_emu_iters++;
+<a name="l526"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l527"></a>      </span><span class=cB1>if</span><span class=cB0> (nes_paused)
+<a name="l528"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l529"></a>        nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l530"></a>        was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l531"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l532"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l533"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l534"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l535"></a>        nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l536"></a>        </span><span class=cB1>if</span><span class=cB0> (was_paused)
+<a name="l537"></a>        {
+<a name="l538"></a>          base_jiffy=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
+<a name="l539"></a>          frame_num=0;
+<a name="l540"></a>          next_frame_jiffy=base_jiffy+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/60;
+<a name="l541"></a>          was_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l542"></a>        }
+<a name="l543"></a>        </span><span class=cB1>if</span><span class=cB0> (PPU_state.nmi_pending)
+<a name="l544"></a>        {
+<a name="l545"></a>          PPU_state.nmi_pending=0;
+<a name="l546"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l547"></a>          nes_dg_nmi_fire++;
+<a name="l548"></a>          </span><span class=cB1>if</span><span class=cB0> (nes_nmi_trace_cnt&lt;NES_NMI_TRACE)
+<a name="l549"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l550"></a>            NESNmiRec *nr=&amp;nes_nmi_trace[nes_nmi_trace_cnt];
+<a name="l551"></a>            nr-&gt;frame=nes_dg_frame;
+<a name="l552"></a>            nr-&gt;instr=instructions;
+<a name="l553"></a>            nr-&gt;pc=pc;
+<a name="l554"></a>            nr-&gt;scanline=PPU_state.scanline;
+<a name="l555"></a>            nr-&gt;dot=PPU_state.dot;
+<a name="l556"></a>            nes_nmi_trace_cnt++;
+<a name="l557"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l558"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l559"></a>          nmi6502;
+<a name="l560"></a>        }
+<a name="l561"></a>        </span><span class=cB1>if</span><span class=cB0> (papu_request_irq &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>cpustatus &amp; FLAG_INTERRUPT</span><span class=cB7>)</span><span class=cB0>)
+<a name="l562"></a>        {
+<a name="l563"></a>          irq6502;
+<a name="l564"></a>          papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l565"></a>        }
+<a name="l566"></a>        </span><span class=cB1>if</span><span class=cB0> (mapper_request_irq &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>cpustatus &amp; FLAG_INTERRUPT</span><span class=cB7>)</span><span class=cB0>)
+<a name="l567"></a>        {
+<a name="l568"></a>          irq6502;
+<a name="l569"></a>          mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l570"></a>        }
+<a name="l571"></a>        exec6502(1);
+<a name="l572"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l573"></a>        nes_diag_instrs++;
+<a name="l574"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l575"></a>        cycles=ticktable[opcode]+clockticks6502;
+<a name="l576"></a>        </span><span class=cB1>if</span><span class=cB0> (cpu_stall_cycles)
+<a name="l577"></a>        {
+<a name="l578"></a>          cycles+=cpu_stall_cycles;
+<a name="l579"></a>          cpu_stall_cycles=0;
+<a name="l580"></a>        }
+<a name="l581"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l582"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_isample &amp;&amp; instructions&gt;=nes_dg_isample_from &amp;&amp;
+<a name="l583"></a>            </span><span class=cB7>(</span><span class=cB0>!nes_dg_isample_to || instructions&lt;=nes_dg_isample_to</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l584"></a>            !</span><span class=cB7>(</span><span class=cB0>(instructions-nes_dg_isample_from) % nes_dg_isample</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l585"></a>            nes_isamp_put-nes_isamp_got&lt;NES_ISAMP_MAX)
+<a name="l586"></a>        {
+<a name="l587"></a>          NESISamp *is=&amp;nes_isamp[nes_isamp_put&amp;(NES_ISAMP_MAX-1)];
+<a name="l588"></a>          is-&gt;instr=instructions;
+<a name="l589"></a>          is-&gt;pc=pc;
+<a name="l590"></a>          is-&gt;opcode=opcode;
+<a name="l591"></a>          is-&gt;cycles=cycles;
+<a name="l592"></a>          is-&gt;scanline=PPU_state.scanline;
+<a name="l593"></a>          is-&gt;dot=PPU_state.dot;
+<a name="l594"></a>          is-&gt;a=a;
+<a name="l595"></a>          is-&gt;x=x;
+<a name="l596"></a>          is-&gt;y=y;
+<a name="l597"></a>          is-&gt;sp=sp;
+<a name="l598"></a>          is-&gt;cpustatus=cpustatus;
+<a name="l599"></a>          nes_isamp_put++;
+<a name="l600"></a>        }
+<a name="l601"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l602"></a>        PAPU_clockFrameCounter(&amp;PAPU,cycles);
+<a name="l603"></a>        loop=cycles*3;
+<a name="l604"></a>        </span><span class=cB1>while</span><span class=cB0> (loop)
+<a name="l605"></a>        {
+<a name="l606"></a>          frame_finished|=PPUcycle(&amp;PPU_state);
+<a name="l607"></a>          loop--;
+<a name="l608"></a>        }
+<a name="l609"></a>        </span><span class=cB1>if</span><span class=cB0> (frame_finished)
+<a name="l610"></a>        {
+<a name="l611"></a>          frame_finished=0;
+<a name="l612"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l613"></a>          nes_diag_frames++;
+<a name="l614"></a>          nes_dg_frame++;
+<a name="l615"></a>          NESDiagMirror;
+<a name="l616"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>nes_dg_frame&amp;7</span><span class=cB7>)</span><span class=cB0>)
+<a name="l617"></a>            NESDiagCanary;
+<a name="l618"></a>          </span><span class=cB1>if</span><span class=cB0> (nes_dg_frame&lt;=16 || nes_dg_frame==20 ||
+<a name="l619"></a>              nes_dg_frame==40 || nes_dg_frame==60 || nes_dg_frame==120)
+<a name="l620"></a>            </span><span class=cB1>if</span><span class=cB0> (nes_ckpt_put-nes_ckpt_got&lt;NES_CKPT_MAX)
+<a name="l621"></a>            </span><span class=cB7>{</span><span class=cB0>
+<a name="l622"></a>              NESCkpt *ck=&amp;nes_ckpt[nes_ckpt_put&amp;(NES_CKPT_MAX-1)];
+<a name="l623"></a>              ck-&gt;frame=nes_dg_frame;
+<a name="l624"></a>              ck-&gt;pc=pc;
+<a name="l625"></a>              ck-&gt;a=a;
+<a name="l626"></a>              ck-&gt;x=x;
+<a name="l627"></a>              ck-&gt;y=y;
+<a name="l628"></a>              ck-&gt;sp=sp;
+<a name="l629"></a>              ck-&gt;cpustatus=cpustatus;
+<a name="l630"></a>              ck-&gt;r2000=MMU.RAM[0x2000];
+<a name="l631"></a>              ck-&gt;r2001=MMU.RAM[0x2001];
+<a name="l632"></a>              ck-&gt;pad=NESDiagPad();
+<a name="l633"></a>              ck-&gt;instr=instructions;
+<a name="l634"></a>              ck-&gt;scanline=PPU_state.scanline;
+<a name="l635"></a>              ck-&gt;dot=PPU_state.dot;
+<a name="l636"></a>              ck-&gt;vaddr=MMU.VRAM_address;
+<a name="l637"></a>              ck-&gt;t=MMU.t;
+<a name="l638"></a>              ck-&gt;w=MMU.w;
+<a name="l639"></a>              ck-&gt;nmi_occ=PPU_state.nmi_occurred;
+<a name="l640"></a>              ck-&gt;nmi_out=PPU_state.nmi_output;
+<a name="l641"></a>              ck-&gt;nmi_pend=PPU_state.nmi_pending;
+<a name="l642"></a>              ck-&gt;ramsum=NESDiagSum(MMU.RAM,0x800);
+<a name="l643"></a>              ck-&gt;vramsum=NESDiagSum(MMU.VRAM,0x4000);
+<a name="l644"></a>              ck-&gt;oamsum=NESDiagSum(MMU.OAM,0x100);
+<a name="l645"></a>              nes_ckpt_put++;
+<a name="l646"></a>            </span><span class=cB7>}</span><span class=cB0>
+<a name="l647"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l648"></a>          NESSndThrottle;
+<a name="l649"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l122"></span><span class=cB5>SleepUntil</a></span><span class=cB0>(next_frame_jiffy);
+<a name="l650"></a>          frame_num++;
+<a name="l651"></a>          next_frame_jiffy=base_jiffy+(frame_num+1)*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/60;
+<a name="l652"></a>          </span><span class=cB1>if</span><span class=cB0> (next_frame_jiffy&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies)
+<a name="l653"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l654"></a>            base_jiffy=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies;
+<a name="l655"></a>            frame_num=0;
+<a name="l656"></a>            next_frame_jiffy=base_jiffy+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>/60;
+<a name="l657"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l658"></a>          JoypadScan(&amp;nes_joypad);
+<a name="l659"></a>        }
+<a name="l660"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l661"></a>    }
+<a name="l662"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l663"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l664"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l665"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l666"></a>    nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l667"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l668"></a>  </span><span class=cB1>if</span><span class=cB0> (gen==nes_emu_gen)
+<a name="l669"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l670"></a>    nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l671"></a>    nes_task_done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l672"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l673"></a>}
+<a name="l674"></a>
+<a name="l675"></a></span><span class=cB1>U0</span><span class=cB0> TempleNES(</span><span class=cB1>U8</span><span class=cB0> *rom_filename=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l676"></a>{
+<a name="l677"></a>
+<a name="l678"></a>  </span><span class=cB9>I64</span><span class=cB0> arg1,arg2,wait;
+<a name="l679"></a>  </span><span class=cB1>U8</span><span class=cB0> rom_name[256],help_path[256];
+<a name="l680"></a>
+<a name="l681"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l30"></span><span class=cB5>SettingsPush</a></span><span class=cB0>;
+<a name="l682"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;text_attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3367"></span><span class=cB3>BLACK</a></span><span class=cB0>&lt;&lt;4+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3382"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l683"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l161"></span><span class=cB5>MenuPush</a></span><span class=cB0>(
+<a name="l684"></a>      </span><span class=cB6>&quot;File {&quot;</span><span class=cB0>
+<a name="l685"></a>      </span><span class=cB6>&quot;  Exit(,CH_ESC);&quot;</span><span class=cB0>
+<a name="l686"></a>      </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l687"></a>      </span><span class=cB6>&quot;Game {&quot;</span><span class=cB0>
+<a name="l688"></a>      </span><span class=cB6>&quot;  PickROM(,'P');&quot;</span><span class=cB0>
+<a name="l689"></a>      </span><span class=cB6>&quot;  Reset(,'R');&quot;</span><span class=cB0>
+<a name="l690"></a>      </span><span class=cB6>&quot;  Pause(,' ');&quot;</span><span class=cB0>
+<a name="l691"></a>      </span><span class=cB6>&quot;  SaveState(,'S');&quot;</span><span class=cB0>
+<a name="l692"></a>      </span><span class=cB6>&quot;  LoadState(,'L');&quot;</span><span class=cB0>
+<a name="l693"></a>      </span><span class=cB6>&quot;}&quot;</span><span class=cB0>
+<a name="l694"></a>      </span><span class=cB6>&quot;View {&quot;</span><span class=cB0>
+<a name="l695"></a>      </span><span class=cB6>&quot;  Scale1x(,'1');&quot;</span><span class=cB0>
+<a name="l696"></a>      </span><span class=cB6>&quot;  Scale2x(,'2');&quot;</span><span class=cB0>
+<a name="l697"></a>                </span><span class=cB6>&quot;}&quot;</span><span class=cB0>);
+<a name="l698"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/AutoComplete/ACTask.html#l426"></span><span class=cB5>AutoComplete</a></span><span class=cB0>;
+<a name="l699"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l618"></span><span class=cB5>WinBorder</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>);
+<a name="l700"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>;
+<a name="l701"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l702"></a>  win_set_w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width;
+<a name="l703"></a>  NESSnapWindow;
+<a name="l704"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l412"></span><span class=cB5>WinFocus</a></span><span class=cB0>;
+<a name="l705"></a>
+<a name="l706"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(help_path,</span><span class=cB6>&quot;%s/Help.DD&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);
+<a name="l707"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l365"></span><span class=cB5>Type</a></span><span class=cB0>(help_path);
+<a name="l708"></a>  </span><span class=cB1>if</span><span class=cB0> (rom_filename)
+<a name="l709"></a>                </span><span class=cB6>&quot;\nPress any key to start...\n&quot;</span><span class=cB0>;
+<a name="l710"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l711"></a>                </span><span class=cB6>&quot;\nPress any key to pick a ROM...\n&quot;</span><span class=cB0>;
+<a name="l712"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l156"></span><span class=cB5>GetKey</a></span><span class=cB0>;
+<a name="l713"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l714"></a>
+<a name="l715"></a>  </span><span class=cB1>if</span><span class=cB0> (!rom_filename)
+<a name="l716"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l717"></a>    </span><span class=cB1>if</span><span class=cB0> (!NESPickRom</span><span class=cB7>(</span><span class=cB0>rom_name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l718"></a>    {
+<a name="l719"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l720"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l721"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l722"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l723"></a>    }
+<a name="l724"></a>    rom_filename=rom_name;
+<a name="l725"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l726"></a>  </span><span class=cB1>if</span><span class=cB0> (!NESLoadRom</span><span class=cB7>(</span><span class=cB0>rom_filename</span><span class=cB7>)</span><span class=cB0>)
+<a name="l727"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l728"></a>
+<a name="l729"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l730"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l731"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l732"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l733"></a>
+<a name="l734"></a>  gameCanvas=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(NES_SCRN_W,NES_SCRN_H);
+<a name="l735"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas,0);
+<a name="l736"></a>
+<a name="l737"></a>  gameCanvas-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
+<a name="l738"></a>  gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(2*NES_SCRN_W,2*</span><span class=cB7>(</span><span class=cB0>NES_SCRN_H-2*NES_OVERSCAN</span><span class=cB7>)</span><span class=cB0>);
+<a name="l739"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(gameCanvas2x,0);
+<a name="l740"></a>  gameCanvas2x-&gt;flags|=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4049"></span><span class=cB3>DCF_NO_TRANSPARENTS</a></span><span class=cB0>;
+<a name="l741"></a>
+<a name="l742"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l743"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES pre-init: ppu=0x%08X papu=0x%08X joy=0x%08X mmu=0x%08X\n&quot;</span><span class=cB0>
+<a name="l744"></a>      </span><span class=cB6>&quot;  ui_core=%d mp_cnt=%d\n&quot;</span><span class=cB0>,
+<a name="l745"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;PPU_state,</span><span class=cB1>sizeof</span><span class=cB0>(PPU2C02state)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l746"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;PAPU,</span><span class=cB1>sizeof</span><span class=cB0>(PAPU2A03)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l747"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;nes_joypad,</span><span class=cB1>sizeof</span><span class=cB0>(CNESJoypad)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l748"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;MMU,</span><span class=cB1>sizeof</span><span class=cB0>(CNESMMU)</span><span class=cB7>)</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>);
+<a name="l749"></a>  nes_dg_ui_core=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l247"></span><span class=cB5>Gs</a></span><span class=cB0>-&gt;num;
+<a name="l750"></a>  y=0xFE;
+<a name="l751"></a>  cpustatus=0x27;
+<a name="l752"></a>  x=0xCD;
+<a name="l753"></a>  a=0xAB;
+<a name="l754"></a>  sp=0x12;
+<a name="l755"></a>  nes_dg_cast_y=y(</span><span class=cB9>U16</span><span class=cB0>);
+<a name="l756"></a>  nes_dg_cast_x=x(</span><span class=cB9>U16</span><span class=cB0>);
+<a name="l757"></a>  nes_dg_cast_a=a(</span><span class=cB9>U16</span><span class=cB0>);
+<a name="l758"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES casttest: y(U16)=0x%04X x(U16)=0x%04X a(U16)=0x%04X &quot;</span><span class=cB0>
+<a name="l759"></a>      </span><span class=cB6>&quot;(want 0x00FE 0x00CD 0x00AB)\n&quot;</span><span class=cB0>
+<a name="l760"></a>      </span><span class=cB6>&quot;  addr sp=0x%08X a=0x%08X x=0x%08X y=0x%08X p=0x%08X\n&quot;</span><span class=cB0>,
+<a name="l761"></a>      nes_dg_cast_y,nes_dg_cast_x,nes_dg_cast_a,
+<a name="l762"></a>      &amp;sp,&amp;a,&amp;x,&amp;y,&amp;cpustatus);
+<a name="l763"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l764"></a>  NESReset;
+<a name="l765"></a>  initPAPU(&amp;PAPU);
+<a name="l766"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l767"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES post-init: ppu=0x%08X papu=0x%08X joy=0x%08X mmu=0x%08X\n&quot;</span><span class=cB0>
+<a name="l768"></a>      </span><span class=cB6>&quot;  pc=0x%04X a=%02X x=%02X y=%02X sp=%02X p=%02X ua=%d pa=%d po=%d\n&quot;</span><span class=cB0>
+<a name="l769"></a>      </span><span class=cB6>&quot;  stall=%d papuirq=%d mapirq=%d w=%d t=0x%04X mx=%d my=%d &quot;</span><span class=cB0>
+<a name="l770"></a>      </span><span class=cB6>&quot;vaddr=0x%04X ibuf=0x%02X\n&quot;</span><span class=cB0>
+<a name="l771"></a>      </span><span class=cB6>&quot;  sl=%d dot=%d nmi_occ=%d nmi_out=%d nmi_pend=%d s0hit=%d odd=%d &quot;</span><span class=cB0>
+<a name="l772"></a>      </span><span class=cB6>&quot;nsprites=%d\n&quot;</span><span class=cB0>,
+<a name="l773"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;PPU_state,</span><span class=cB1>sizeof</span><span class=cB0>(PPU2C02state)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l774"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;PAPU,</span><span class=cB1>sizeof</span><span class=cB0>(PAPU2A03)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l775"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;nes_joypad,</span><span class=cB1>sizeof</span><span class=cB0>(CNESJoypad)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l776"></a>      NESDiagSum</span><span class=cB7>(</span><span class=cB0>&amp;MMU,</span><span class=cB1>sizeof</span><span class=cB0>(CNESMMU)</span><span class=cB7>)</span><span class=cB0>,
+<a name="l777"></a>      pc,a,x,y,sp,cpustatus,useaccum,penalty_addr,penalty_op,
+<a name="l778"></a>      cpu_stall_cycles,papu_request_irq,mapper_request_irq,
+<a name="l779"></a>      MMU.w,MMU.t,MMU.x,MMU.y,MMU.VRAM_address,MMU.internal_buffer,
+<a name="l780"></a>      PPU_state.scanline,PPU_state.dot,PPU_state.nmi_occurred,
+<a name="l781"></a>      PPU_state.nmi_output,PPU_state.nmi_pending,
+<a name="l782"></a>      PPU_state.sprite_zero_hit,PPU_state.odd_frame,PPU_state.num_sprites);
+<a name="l783"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l784"></a>
+<a name="l785"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l82"></span><span class=cB5>GrPaletteGet</a></span><span class=cB0>(&amp;nes_sys_palette);
+<a name="l786"></a>  PPU_InitPalette;
+<a name="l787"></a>
+<a name="l788"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=&amp;NESDrawWindow;
+<a name="l789"></a>
+<a name="l790"></a>  nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l791"></a>  nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l792"></a>  nes_emu_idle=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l793"></a>  nes_task_done=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l794"></a>  nes_emu_beat=0;
+<a name="l795"></a>  nes_emu_gen++;
+<a name="l796"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_SINGLE_CORE
+<a name="l797"></a>  nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,nes_emu_gen,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
+<a name="l798"></a>#</span><span class=cB1>else</span><span class=cB0>
+<a name="l799"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
+<a name="l800"></a>    nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,nes_emu_gen,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,1);
+<a name="l801"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l802"></a>    nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,nes_emu_gen,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
+<a name="l803"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l804"></a>  wait=0;
+<a name="l805"></a>  </span><span class=cB1>while</span><span class=cB0> (!nes_emu_beat &amp;&amp; wait&lt;150)
+<a name="l806"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l807"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
+<a name="l808"></a>    wait++;
+<a name="l809"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l810"></a>  </span><span class=cB1>if</span><span class=cB0> (!nes_emu_beat)
+<a name="l811"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l812"></a>                </span><span class=cB6>&quot;TempleNES: emu task never ran on its core; &quot;</span><span class=cB0>
+<a name="l813"></a>                </span><span class=cB6>&quot;falling back to this core.\n&quot;</span><span class=cB0>;
+<a name="l814"></a>    nes_emu_gen++;
+<a name="l815"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"></span><span class=cB5>Kill</a></span><span class=cB0>(nes_emu_task,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l816"></a>    nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;NESEmuTask,nes_emu_gen,</span><span class=cB6>&quot;TempleNES Core&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
+<a name="l817"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l818"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l819"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l820"></a>    </span><span class=cB1>while</span><span class=cB0> (!nes_quit)
+<a name="l821"></a>    {
+<a name="l822"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l41"></span><span class=cB5>ScanMsg</a></span><span class=cB7>(</span><span class=cB0>&amp;arg1,&amp;arg2,1&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3640"></span><span class=cB3>MSG_KEY_DOWN</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l823"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l824"></a>        </span><span class=cB1>switch</span><span class=cB0> (arg1)
+<a name="l825"></a>        {
+<a name="l826"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3920"></span><span class=cB3>CH_ESC</a></span><span class=cB0>:
+<a name="l827"></a>        </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3921"></span><span class=cB3>CH_SHIFT_ESC</a></span><span class=cB0>:
+<a name="l828"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'q'</span><span class=cB0>:
+<a name="l829"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'Q'</span><span class=cB0>:
+<a name="l830"></a>          nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l831"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l832"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'r'</span><span class=cB0>:
+<a name="l833"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'R'</span><span class=cB0>:
+<a name="l834"></a>          NESPauseEmu;
+<a name="l835"></a>          NESReset;
+<a name="l836"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l837"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l838"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'p'</span><span class=cB0>:
+<a name="l839"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'P'</span><span class=cB0>:
+<a name="l840"></a>          NESPauseEmu;
+<a name="l841"></a>          </span><span class=cB1>if</span><span class=cB0> (NESChangeRom</span><span class=cB7>()</span><span class=cB0>)
+<a name="l842"></a>            nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l843"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l844"></a>            nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l845"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l846"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>' '</span><span class=cB0>:
+<a name="l847"></a>          nes_paused=!nes_paused;
+<a name="l848"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l849"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'s'</span><span class=cB0>:
+<a name="l850"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'S'</span><span class=cB0>:
+<a name="l851"></a>          NESPauseEmu;
+<a name="l852"></a>          SaveState;
+<a name="l853"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l854"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l855"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'l'</span><span class=cB0>:
+<a name="l856"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'L'</span><span class=cB0>:
+<a name="l857"></a>          NESPauseEmu;
+<a name="l858"></a>          LoadState;
+<a name="l859"></a>          nes_paused=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l860"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l861"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'1'</span><span class=cB0>:
+<a name="l862"></a>          win_scale=1;
+<a name="l863"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l864"></a>        </span><span class=cB1>case</span><span class=cB0> </span><span class=cB6>'2'</span><span class=cB0>:
+<a name="l865"></a>          win_scale=2;
+<a name="l866"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l867"></a>        }
+<a name="l868"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l869"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l870"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies&gt;=nes_diag_next)
+<a name="l871"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l872"></a>        nes_diag_next=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.jiffies+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l688"></span><span class=cB3>JIFFY_FREQ</a></span><span class=cB0>;
+<a name="l873"></a>        </span><span class=cB1>U8</span><span class=cB0> nes_badop_nowbyte=0xFF;
+<a name="l874"></a>        </span><span class=cB9>I64</span><span class=cB0> canvsum;
+<a name="l875"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_badop_pc&gt;=0)
+<a name="l876"></a>          nes_badop_nowbyte=MMU.RAM[nes_badop_pc];
+<a name="l877"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES dbgver=%d ips=%d fps=%d pc=0x%04X 0x2000=0x%02X &quot;</span><span class=cB0>
+<a name="l878"></a>            </span><span class=cB6>&quot;0x2001=0x%02X sl=%d fifo=%d stall=%d mixer=%d\n&quot;</span><span class=cB0>
+<a name="l879"></a>            </span><span class=cB6>&quot;  pal=%02X %02X %02X %02X nt=%02X %02X &quot;</span><span class=cB0>
+<a name="l880"></a>            </span><span class=cB6>&quot;vaddr=0x%04X w=%d pad=0x%02X padptr=%d\n&quot;</span><span class=cB0>,
+<a name="l881"></a>            NES_DEBUG_VER,nes_diag_instrs,nes_diag_frames,pc,MMU.RAM[0x2000],
+<a name="l882"></a>            MMU.RAM[0x2001],PPU_state.scanline,NESDiagFifoCnt</span><span class=cB7>()</span><span class=cB0>,
+<a name="l883"></a>            nes_snd_stall_cnt,nes_snd_mixer_idx,
+<a name="l884"></a>            MMU.VRAM[0x3F00],MMU.VRAM[0x3F01],MMU.VRAM[0x3F02],
+<a name="l885"></a>            MMU.VRAM[0x3F03],MMU.VRAM[0x2000],MMU.VRAM[0x2001],
+<a name="l886"></a>            MMU.VRAM_address,MMU.w,NESDiagPad</span><span class=cB7>()</span><span class=cB0>,nes_joypad.pointer);
+<a name="l887"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;  r2002=%d hit=%d nmi_set=%d nmi_clr=%d &quot;</span><span class=cB0>
+<a name="l888"></a>            </span><span class=cB6>&quot;nmi_fire=%d w2000=%d w2001=%d r4016=%d\n&quot;</span><span class=cB0>
+<a name="l889"></a>            </span><span class=cB6>&quot;  last2000=0x%02X last2001=0x%02X badop=%d &quot;</span><span class=cB0>
+<a name="l890"></a>            </span><span class=cB6>&quot;lastop=0x%02X atpc=0x%04X bank=%d bankseq=%d &quot;</span><span class=cB0>
+<a name="l891"></a>            </span><span class=cB6>&quot;nowbyte=0x%02X ldseq=%d\n&quot;</span><span class=cB0>,
+<a name="l892"></a>            nes_dg_r2002,nes_dg_r2002_hit,
+<a name="l893"></a>            nes_dg_nmi_set,nes_dg_nmi_clr,nes_dg_nmi_fire,
+<a name="l894"></a>            nes_dg_w2000,nes_dg_w2001,nes_dg_r4016,
+<a name="l895"></a>            nes_dg_w2000_val,nes_dg_w2001_val,nes_badop_cnt,
+<a name="l896"></a>            nes_badop_last,nes_badop_pc,nes_badop_bank,nes_badop_seq,
+<a name="l897"></a>            nes_badop_nowbyte,nes_ld16_seq);
+<a name="l898"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;  mapw=%d mapdflt=%d seen=%d mapper=%d prg=%d &quot;</span><span class=cB0>
+<a name="l899"></a>            </span><span class=cB6>&quot;oamdma_over=%d\n&quot;</span><span class=cB0>
+<a name="l900"></a>            </span><span class=cB6>&quot;  uninit_rd=%d first=0x%04X palw=%d palwf=%d\n&quot;</span><span class=cB0>,
+<a name="l901"></a>            nes_dg_mapw,nes_dg_mapdflt,nes_dg_mapper_seen,mapper,numPRGROM,
+<a name="l902"></a>            nes_dg_oamdma_over,
+<a name="l903"></a>            nes_dg_uninit_rd,nes_dg_uninit_addr,
+<a name="l904"></a>            nes_dg_palw,nes_dg_palw_frame);
+<a name="l905"></a>        canvsum=NESDiagCanvas();
+<a name="l906"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES draw: canvsum=0x%08X nz=%d\n&quot;</span><span class=cB0>
+<a name="l907"></a>            </span><span class=cB6>&quot;NES tasks: mp_cnt=%d ui=%d emu=%d draw=%d fill=%d iters=%d &quot;</span><span class=cB0>
+<a name="l908"></a>            </span><span class=cB6>&quot;frame=%d\n&quot;</span><span class=cB0>
+<a name="l909"></a>            </span><span class=cB6>&quot;  drawcnt=%d drawovl=%d fillcnt=%d fillovl=%d flushcnt=%d &quot;</span><span class=cB0>
+<a name="l910"></a>            </span><span class=cB6>&quot;flushovl=%d\n&quot;</span><span class=cB0>,
+<a name="l911"></a>            canvsum,nes_diag_canv_nz,
+<a name="l912"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>,nes_dg_ui_core,nes_dg_emu_core,nes_dg_draw_core,
+<a name="l913"></a>            nes_dg_fill_core,nes_dg_emu_iters,nes_dg_frame,
+<a name="l914"></a>            nes_dg_draw_cnt,nes_dg_draw_overlap,
+<a name="l915"></a>            nes_dg_fill_cnt,nes_dg_fill_overlap,
+<a name="l916"></a>            nes_dg_flush_cnt,nes_dg_flush_overlap);
+<a name="l917"></a>        </span><span class=cB1>while</span><span class=cB0> (nes_ckpt_got&lt;nes_ckpt_put)
+<a name="l918"></a>        {
+<a name="l919"></a>          NESCkpt *ck=&amp;nes_ckpt[nes_ckpt_got&amp;(NES_CKPT_MAX-1)];
+<a name="l920"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES ckpt f=%d instr=%d pc=0x%04X a=%02X x=%02X y=%02X &quot;</span><span class=cB0>
+<a name="l921"></a>              </span><span class=cB6>&quot;sp=%02X p=%02X 2000=%02X 2001=%02X pad=%02X\n&quot;</span><span class=cB0>
+<a name="l922"></a>              </span><span class=cB6>&quot;  sl=%d dot=%d vaddr=0x%04X t=0x%04X w=%d occ=%d out=%d &quot;</span><span class=cB0>
+<a name="l923"></a>              </span><span class=cB6>&quot;pend=%d\n&quot;</span><span class=cB0>
+<a name="l924"></a>              </span><span class=cB6>&quot;  ramsum=0x%08X vramsum=0x%08X oamsum=0x%08X\n&quot;</span><span class=cB0>,
+<a name="l925"></a>              ck-&gt;frame,ck-&gt;instr,ck-&gt;pc,ck-&gt;a,ck-&gt;x,ck-&gt;y,ck-&gt;sp,
+<a name="l926"></a>              ck-&gt;cpustatus,ck-&gt;r2000,ck-&gt;r2001,ck-&gt;pad,
+<a name="l927"></a>              ck-&gt;scanline,ck-&gt;dot,ck-&gt;vaddr,ck-&gt;t,ck-&gt;w,
+<a name="l928"></a>              ck-&gt;nmi_occ,ck-&gt;nmi_out,ck-&gt;nmi_pend,
+<a name="l929"></a>              ck-&gt;ramsum,ck-&gt;vramsum,ck-&gt;oamsum);
+<a name="l930"></a>          nes_ckpt_got++;
+<a name="l931"></a>        }
+<a name="l932"></a>        </span><span class=cB1>while</span><span class=cB0> (nes_isamp_got&lt;nes_isamp_put)
+<a name="l933"></a>        {
+<a name="l934"></a>          NESISamp *is=&amp;nes_isamp[nes_isamp_got&amp;(NES_ISAMP_MAX-1)];
+<a name="l935"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES isamp instr=%d op=%02X cyc=%d pc=0x%04X sl=%d dot=%d &quot;</span><span class=cB0>
+<a name="l936"></a>              </span><span class=cB6>&quot;a=%02X x=%02X y=%02X sp=%02X p=%02X\n&quot;</span><span class=cB0>,
+<a name="l937"></a>              is-&gt;instr,is-&gt;opcode,is-&gt;cycles,is-&gt;pc,is-&gt;scanline,is-&gt;dot,
+<a name="l938"></a>              is-&gt;a,is-&gt;x,is-&gt;y,is-&gt;sp,is-&gt;cpustatus);
+<a name="l939"></a>          nes_isamp_got++;
+<a name="l940"></a>        }
+<a name="l941"></a>        </span><span class=cB1>while</span><span class=cB0> (nes_nmi_trace_got&lt;nes_nmi_trace_cnt)
+<a name="l942"></a>        {
+<a name="l943"></a>          NESNmiRec *nr=&amp;nes_nmi_trace[nes_nmi_trace_got];
+<a name="l944"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES nmi #%d f=%d instr=%d pc=0x%04X sl=%d dot=%d\n&quot;</span><span class=cB0>,
+<a name="l945"></a>              nes_nmi_trace_got,nr-&gt;frame,nr-&gt;instr,nr-&gt;pc,
+<a name="l946"></a>              nr-&gt;scanline,nr-&gt;dot);
+<a name="l947"></a>          nes_nmi_trace_got++;
+<a name="l948"></a>        }
+<a name="l949"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_mirror_addr&gt;=0)
+<a name="l950"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES MIRROR: RAM[0x%04X] changed with no 6502 write: &quot;</span><span class=cB0>
+<a name="l951"></a>              </span><span class=cB6>&quot;cpu_wrote=0x%02X now=0x%02X frame=%d\n&quot;</span><span class=cB0>,
+<a name="l952"></a>              nes_dg_mirror_addr,nes_dg_mirror_want,nes_dg_mirror_got,
+<a name="l953"></a>              nes_dg_mirror_frame);
+<a name="l954"></a>        </span><span class=cB1>while</span><span class=cB0> (nes_dg_indy_got&lt;nes_dg_indy_cnt)
+<a name="l955"></a>        {
+<a name="l956"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES indy #%d instr=%d pc=0x%04X eah=0x%04X eah2=0x%04X &quot;</span><span class=cB0>
+<a name="l957"></a>              </span><span class=cB6>&quot;lo=0x%02X hi=0x%02X base=0x%04X y=0x%02X ea=0x%04X p=0x%02X\n&quot;</span><span class=cB0>,
+<a name="l958"></a>              nes_dg_indy_got,nes_dg_indy_instr[nes_dg_indy_got],
+<a name="l959"></a>              nes_dg_indy_pc[nes_dg_indy_got],nes_dg_indy_eah[nes_dg_indy_got],
+<a name="l960"></a>              nes_dg_indy_eah2[nes_dg_indy_got],nes_dg_indy_lo[nes_dg_indy_got],
+<a name="l961"></a>              nes_dg_indy_hi[nes_dg_indy_got],nes_dg_indy_base[nes_dg_indy_got],
+<a name="l962"></a>              nes_dg_indy_y[nes_dg_indy_got],nes_dg_indy_ea[nes_dg_indy_got],
+<a name="l963"></a>              nes_dg_indy_p[nes_dg_indy_got]);
+<a name="l964"></a>          nes_dg_indy_got++;
+<a name="l965"></a>        }
+<a name="l966"></a>        </span><span class=cB1>while</span><span class=cB0> (nes_dg_pw_got&lt;nes_dg_pw_cnt)
+<a name="l967"></a>        {
+<a name="l968"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES pw #%d instr=%d pc=0x%04X raw=0x%04X val=0x%02X &quot;</span><span class=cB0>
+<a name="l969"></a>              </span><span class=cB6>&quot;zp06=0x%02X zp07=0x%02X\n&quot;</span><span class=cB0>,
+<a name="l970"></a>              nes_dg_pw_got,nes_dg_pw_instr[nes_dg_pw_got],
+<a name="l971"></a>              nes_dg_pw_pc[nes_dg_pw_got],nes_dg_pw_addr[nes_dg_pw_got],
+<a name="l972"></a>              nes_dg_pw_val[nes_dg_pw_got],
+<a name="l973"></a>              nes_dg_pw_zp6[nes_dg_pw_got],nes_dg_pw_zp7[nes_dg_pw_got]);
+<a name="l974"></a>          nes_dg_pw_got++;
+<a name="l975"></a>        }
+<a name="l976"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_ppureg_addr&gt;=0)
+<a name="l977"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES MIRROR: PPUREG[0x%04X] changed with no 6502 write: &quot;</span><span class=cB0>
+<a name="l978"></a>              </span><span class=cB6>&quot;cpu_wrote=0x%02X now=0x%02X frame=%d\n&quot;</span><span class=cB0>,
+<a name="l979"></a>              nes_dg_ppureg_addr,nes_dg_ppureg_want,nes_dg_ppureg_got,
+<a name="l980"></a>              nes_dg_mirror_frame);
+<a name="l981"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_oamm_addr&gt;=0)
+<a name="l982"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES MIRROR: OAM[0x%02X] changed with no 6502 write: &quot;</span><span class=cB0>
+<a name="l983"></a>              </span><span class=cB6>&quot;cpu_wrote=0x%02X now=0x%02X frame=%d\n&quot;</span><span class=cB0>,
+<a name="l984"></a>              nes_dg_oamm_addr,nes_dg_oamm_want,nes_dg_oamm_got,
+<a name="l985"></a>              nes_dg_mirror_frame);
+<a name="l986"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_canary_frame&gt;=0)
+<a name="l987"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES CANARY: region=%d broke at frame=%d now=0x%08X &quot;</span><span class=cB0>
+<a name="l988"></a>              </span><span class=cB6>&quot;want=0x%08X\n&quot;</span><span class=cB0>,
+<a name="l989"></a>              nes_dg_canary_what,nes_dg_canary_frame,
+<a name="l990"></a>              nes_dg_canary_now,nes_dg_canary_want);
+<a name="l991"></a>        </span><span class=cB1>if</span><span class=cB0> (nes_dg_inc32_frame&gt;=0 &amp;&amp; !nes_dg_inc32_shown)
+<a name="l992"></a>        {
+<a name="l993"></a>          nes_dg_inc32_shown=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l994"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/Job.html#l462"></span><span class=cB5>AdamLog</a></span><span class=cB0>(</span><span class=cB6>&quot;NES inc32: first 0x2000 write with bit2 set: val=0x%02X &quot;</span><span class=cB0>
+<a name="l995"></a>              </span><span class=cB6>&quot;frame=%d\n&quot;</span><span class=cB0>,nes_dg_inc32_val,nes_dg_inc32_frame);
+<a name="l996"></a>        }
+<a name="l997"></a>        nes_dg_r2002=0;
+<a name="l998"></a>        nes_dg_r2002_hit=0;
+<a name="l999"></a>        nes_dg_nmi_set=0;
+<a name="l1000"></a>        nes_dg_nmi_clr=0;
+<a name="l1001"></a>        nes_dg_nmi_fire=0;
+<a name="l1002"></a>        nes_dg_w2000=0;
+<a name="l1003"></a>        nes_dg_w2001=0;
+<a name="l1004"></a>        nes_dg_r4016=0;
+<a name="l1005"></a>        nes_diag_instrs=0;
+<a name="l1006"></a>        nes_diag_frames=0;
+<a name="l1007"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1008"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l1009"></a>      NESSnapWindow;
+<a name="l1010"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l1011"></a>    }
+<a name="l1012"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1013"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1014"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l45"></span><span class=cB5>PutExcept</a></span><span class=cB0>;
+<a name="l1015"></a>
+<a name="l1016"></a>  nes_quit=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1017"></a>  wait=0;
+<a name="l1018"></a>  </span><span class=cB1>while</span><span class=cB0> (!nes_task_done)
+<a name="l1019"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1020"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>nes_emu_task</span><span class=cB7>)</span><span class=cB0> || ++wait&gt;3000)
+<a name="l1021"></a>    {
+<a name="l1022"></a>      nes_emu_gen++;
+<a name="l1023"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l52"></span><span class=cB5>Kill</a></span><span class=cB0>(nes_emu_task,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l1024"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1025"></a>    }
+<a name="l1026"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l130"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l1027"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1028"></a>  nes_emu_task=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1029"></a>
+<a name="l1030"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;draw_it=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1031"></a>  SaveSRAM;
+<a name="l1032"></a>  PAPU_initBuffers;
+<a name="l1033"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l89"></span><span class=cB5>GrPaletteSet</a></span><span class=cB0>(&amp;nes_sys_palette);
+<a name="l1034"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cartridgebuffer);
+<a name="l1035"></a>  cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1036"></a>  MMUFree;
+<a name="l1037"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas);
+<a name="l1038"></a>  gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1039"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(gameCanvas2x);
+<a name="l1040"></a>  gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l1041"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Menu.html#l177"></span><span class=cB5>MenuPop</a></span><span class=cB0>;
+<a name="l1042"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l1043"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
+<a name="l1044"></a>}
 </span></div></pre></body>
 </html>

@@ -8,7 +8,6 @@
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
-.cB2{color:#00aa00;background-color:#55ffff;}
 .cB3{color:#00aaaa;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
@@ -43,63 +42,181 @@
 <a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_FOUR               3
 <a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> MIRR_SINGLE_UPPER       4
 <a name="l9"></a>
-<a name="l10"></a></span><span class=cB1>U8</span><span class=cB0> *cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l11"></a></span><span class=cB9>I64</span><span class=cB0> numPRGROM,
-<a name="l12"></a>    numCHRROM,
-<a name="l13"></a>    controlByte1,
-<a name="l14"></a>    mapper,
-<a name="l15"></a>    mirroringType=MIRR_VERT;
-<a name="l16"></a>
-<a name="l17"></a></span><span class=cB2>//IRQ lines into the 6502, polled once per instruction by the main loop</span><span class=cB0>
-<a name="l18"></a></span><span class=cB1>Bool</span><span class=cB0> papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>, mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> NES_DEBUG_VER 5
+<a name="l11"></a>
+<a name="l12"></a>#</span><span class=cB1>ifdef</span><span class=cB0> NES_DIAG
+<a name="l13"></a>
+<a name="l14"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_r2002=0, nes_dg_r2002_hit=0,
+<a name="l15"></a>    nes_dg_nmi_set=0, nes_dg_nmi_clr=0, nes_dg_nmi_fire=0,
+<a name="l16"></a>    nes_dg_w2000=0, nes_dg_w2001=0, nes_dg_r4016=0;
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_w2000_val=-1, nes_dg_w2001_val=-1;
 <a name="l19"></a>
-<a name="l20"></a></span><span class=cB2>//The PPU renders into gameCanvas; NESDrawWindow (Emu.HC) blits it (or</span><span class=cB0>
-<a name="l21"></a></span><span class=cB2>//a pre-doubled copy in gameCanvas2x) into the task window.</span><span class=cB0>
-<a name="l22"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l23"></a>
-<a name="l24"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3404"></span><span class=cB9>CBGR48</a></span><span class=cB0> nes_sys_palette[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>COLORS_NUM</a></span><span class=cB0>];
-<a name="l25"></a>
-<a name="l26"></a></span><span class=cB2>//Sprite fetched onto the current scanline (secondary OAM)</span><span class=cB0>
-<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> PPUsprite {
-<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> shifts_remaining;
-<a name="l29"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_index;
-<a name="l30"></a>  </span><span class=cB1>U8</span><span class=cB0> byte2;
-<a name="l31"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_0;
-<a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_1;
-<a name="l33"></a>  </span><span class=cB1>U8</span><span class=cB0> attribute;
-<a name="l34"></a>  </span><span class=cB1>U8</span><span class=cB0> x;
-<a name="l35"></a>};
-<a name="l36"></a>
-<a name="l37"></a></span><span class=cB2>//Complete 2C02 PPU state (also snapshotted whole into save states)</span><span class=cB0>
-<a name="l38"></a></span><span class=cB1>class</span><span class=cB0> PPU2C02state {
-<a name="l39"></a>  </span><span class=cB1>U8</span><span class=cB0> odd_frame;
-<a name="l40"></a>  </span><span class=cB9>U16</span><span class=cB0> scanline;
-<a name="l41"></a>  </span><span class=cB9>U16</span><span class=cB0> dot;
-<a name="l42"></a> 
-<a name="l43"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_occurred;
-<a name="l44"></a> 
-<a name="l45"></a>
-<a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_output;
-<a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_zero_hit;
-<a name="l48"></a> 
-<a name="l49"></a>
-<a name="l50"></a>  </span><span class=cB9>U16</span><span class=cB0> nametable_base;
-<a name="l51"></a> 
-<a name="l52"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0_latch;
-<a name="l53"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1_latch;
-<a name="l54"></a> 
-<a name="l55"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0;
-<a name="l56"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1;
-<a name="l57"></a> 
-<a name="l58"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0_latch;
-<a name="l59"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1_latch;
-<a name="l60"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0;
-<a name="l61"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1;
-<a name="l62"></a> 
-<a name="l63"></a>  </span><span class=cB1>U8</span><span class=cB0> num_sprites;
-<a name="l64"></a>  PPUsprite sprites[8];
-<a name="l65"></a>};
+<a name="l20"></a></span><span class=cB9>I64</span><span class=cB0> NESDiagSum(</span><span class=cB1>U8</span><span class=cB0> *p,</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l21"></a>{
+<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> i,h=0;
+<a name="l23"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
+<a name="l24"></a>    h=(h&lt;&lt;5)+h+p[i];
+<a name="l25"></a>  </span><span class=cB1>return</span><span class=cB0> h;
+<a name="l26"></a>}
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_frame=0;
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_mapw=0, nes_dg_mapdflt=0, nes_dg_mapper_seen=-1;
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_oamdma_over=0;
+<a name="l33"></a>
+<a name="l34"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_palw=0, nes_dg_palw_frame=-1;
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_inc32_frame=-1, nes_dg_inc32_val=-1, nes_dg_inc32_shown=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l37"></a>
+<a name="l38"></a></span><span class=cB1>U8</span><span class=cB0> *nes_dg_ram_written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l39"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_uninit_rd=0, nes_dg_uninit_addr=-1;
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB1>U8</span><span class=cB0> *nes_dg_ram_mirror=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l42"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_mirror_addr=-1, nes_dg_mirror_want=-1, nes_dg_mirror_got=-1,
+<a name="l43"></a>    nes_dg_mirror_frame=-1;
+<a name="l44"></a>
+<a name="l45"></a></span><span class=cB1>U8</span><span class=cB0> nes_dg_ppureg_mirror[8];
+<a name="l46"></a></span><span class=cB1>U8</span><span class=cB0> *nes_dg_oam_mirror=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l47"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_ppureg_addr=-1, nes_dg_ppureg_want=-1, nes_dg_ppureg_got=-1;
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_cur_instr=0;
+<a name="l50"></a></span><span class=cB9>U16</span><span class=cB0> nes_dg_cur_pc=0;
+<a name="l51"></a>
+<a name="l52"></a>#</span><span class=cB1>define</span><span class=cB0> NES_PW_MAX 48
+<a name="l53"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_pw_instr[NES_PW_MAX];
+<a name="l54"></a></span><span class=cB9>U16</span><span class=cB0> nes_dg_pw_pc[NES_PW_MAX], nes_dg_pw_addr[NES_PW_MAX];
+<a name="l55"></a></span><span class=cB1>U8</span><span class=cB0> nes_dg_pw_val[NES_PW_MAX];
+<a name="l56"></a></span><span class=cB1>U8</span><span class=cB0> nes_dg_pw_zp6[NES_PW_MAX], nes_dg_pw_zp7[NES_PW_MAX];
+<a name="l57"></a>
+<a name="l58"></a>#</span><span class=cB1>define</span><span class=cB0> NES_INDY_MAX 24
+<a name="l59"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_indy_instr[NES_INDY_MAX];
+<a name="l60"></a></span><span class=cB9>U16</span><span class=cB0> nes_dg_indy_pc[NES_INDY_MAX], nes_dg_indy_eah[NES_INDY_MAX],
+<a name="l61"></a>    nes_dg_indy_eah2[NES_INDY_MAX], nes_dg_indy_base[NES_INDY_MAX],
+<a name="l62"></a>    nes_dg_indy_ea[NES_INDY_MAX];
+<a name="l63"></a></span><span class=cB1>U8</span><span class=cB0> nes_dg_indy_lo[NES_INDY_MAX], nes_dg_indy_hi[NES_INDY_MAX],
+<a name="l64"></a>    nes_dg_indy_y[NES_INDY_MAX], nes_dg_indy_p[NES_INDY_MAX];
+<a name="l65"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_indy_cnt=0, nes_dg_indy_got=0;
 <a name="l66"></a>
-<a name="l67"></a>PPU2C02state PPU_state;
+<a name="l67"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_cast_y=-1, nes_dg_cast_x=-1, nes_dg_cast_a=-1;
+<a name="l68"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_pw_cnt=0, nes_dg_pw_got=0;
+<a name="l69"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_oamm_addr=-1, nes_dg_oamm_want=-1, nes_dg_oamm_got=-1;
+<a name="l70"></a>
+<a name="l71"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_VRAM_HIGH 1
+<a name="l72"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_PRG       2
+<a name="l73"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_CHR       3
+<a name="l74"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_RAM_GAP1  4
+<a name="l75"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_RAM_GAP2  5
+<a name="l76"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_PPUREG    6
+<a name="l77"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CANARY_OAM       7
+<a name="l78"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_prg_sum0=-1, nes_dg_chr_sum0=-1;
+<a name="l79"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_canary_frame=-1, nes_dg_canary_what=-1,
+<a name="l80"></a>    nes_dg_canary_now=-1, nes_dg_canary_want=-1;
+<a name="l81"></a>
+<a name="l82"></a>#</span><span class=cB1>define</span><span class=cB0> NES_CKPT_MAX 64
+<a name="l83"></a></span><span class=cB1>class</span><span class=cB0> NESCkpt
+<a name="l84"></a>{
+<a name="l85"></a>  </span><span class=cB9>I64</span><span class=cB0> frame, instr;
+<a name="l86"></a>  </span><span class=cB9>U16</span><span class=cB0> pc;
+<a name="l87"></a>  </span><span class=cB1>U8</span><span class=cB0> a, x, y, sp, cpustatus;
+<a name="l88"></a>  </span><span class=cB1>U8</span><span class=cB0> r2000, r2001, pad;
+<a name="l89"></a>  </span><span class=cB9>U16</span><span class=cB0> scanline, dot, vaddr, t;
+<a name="l90"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_occ, nmi_out, nmi_pend, w;
+<a name="l91"></a>  </span><span class=cB9>I64</span><span class=cB0> ramsum, vramsum, oamsum;
+<a name="l92"></a>};
+<a name="l93"></a>NESCkpt nes_ckpt[NES_CKPT_MAX];
+<a name="l94"></a></span><span class=cB9>I64</span><span class=cB0> nes_ckpt_put=0, nes_ckpt_got=0;
+<a name="l95"></a>
+<a name="l96"></a>#</span><span class=cB1>define</span><span class=cB0> NES_ISAMP_MAX 256
+<a name="l97"></a></span><span class=cB1>class</span><span class=cB0> NESISamp
+<a name="l98"></a>{
+<a name="l99"></a>  </span><span class=cB9>I64</span><span class=cB0> instr;
+<a name="l100"></a>  </span><span class=cB9>U16</span><span class=cB0> pc, scanline, dot;
+<a name="l101"></a>  </span><span class=cB1>U8</span><span class=cB0> opcode, cycles, a, x, y, sp, cpustatus;
+<a name="l102"></a>};
+<a name="l103"></a>NESISamp nes_isamp[NES_ISAMP_MAX];
+<a name="l104"></a></span><span class=cB9>I64</span><span class=cB0> nes_isamp_put=0, nes_isamp_got=0;
+<a name="l105"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> nes_dg_isample=0, nes_dg_isample_from=0, nes_dg_isample_to=0;
+<a name="l106"></a>
+<a name="l107"></a>#</span><span class=cB1>define</span><span class=cB0> NES_NMI_TRACE 24
+<a name="l108"></a></span><span class=cB1>class</span><span class=cB0> NESNmiRec
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB9>I64</span><span class=cB0> frame, instr;
+<a name="l111"></a>  </span><span class=cB9>U16</span><span class=cB0> pc, scanline, dot;
+<a name="l112"></a>};
+<a name="l113"></a>NESNmiRec nes_nmi_trace[NES_NMI_TRACE];
+<a name="l114"></a></span><span class=cB9>I64</span><span class=cB0> nes_nmi_trace_cnt=0, nes_nmi_trace_got=0;
+<a name="l115"></a>
+<a name="l116"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_render_busy=0, nes_dg_fifo_busy=0;
+<a name="l117"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_draw_cnt=0, nes_dg_draw_overlap=0, nes_dg_draw_core=-1;
+<a name="l118"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_fill_cnt=0, nes_dg_fill_overlap=0, nes_dg_fill_core=-1;
+<a name="l119"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_flush_cnt=0, nes_dg_flush_overlap=0;
+<a name="l120"></a></span><span class=cB9>I64</span><span class=cB0> nes_dg_emu_core=-1, nes_dg_ui_core=-1, nes_dg_emu_iters=0;
+<a name="l121"></a>
+<a name="l122"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> nes_heap_jitter=0;
+<a name="l123"></a>#</span><span class=cB1>endif</span><span class=cB0>
+<a name="l124"></a>
+<a name="l125"></a></span><span class=cB1>U8</span><span class=cB0> *cartridgebuffer=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l126"></a></span><span class=cB9>I64</span><span class=cB0> numPRGROM,
+<a name="l127"></a>    numCHRROM,
+<a name="l128"></a>    controlByte1,
+<a name="l129"></a>    mapper,
+<a name="l130"></a>    mirroringType=MIRR_VERT;
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>Bool</span><span class=cB0> papu_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>, mapper_request_irq=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l133"></a>
+<a name="l134"></a></span><span class=cB9>I64</span><span class=cB0> cpu_stall_cycles=0;
+<a name="l135"></a>
+<a name="l136"></a></span><span class=cB9>I64</span><span class=cB0> nes_badop_cnt=0, nes_badop_last=-1, nes_badop_pc=-1;
+<a name="l137"></a>
+<a name="l138"></a></span><span class=cB9>I64</span><span class=cB0> nes_last_ld16_bank=-1, nes_last_ld16_addr=-1, nes_ld16_seq=0;
+<a name="l139"></a></span><span class=cB9>I64</span><span class=cB0> nes_badop_bank=-1, nes_badop_seq=-1;
+<a name="l140"></a>
+<a name="l141"></a></span><span class=cB9>CDC</span><span class=cB0> *gameCanvas=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *gameCanvas2x=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l142"></a>
+<a name="l143"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3404"></span><span class=cB9>CBGR48</a></span><span class=cB0> nes_sys_palette[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3384"></span><span class=cB3>COLORS_NUM</a></span><span class=cB0>];
+<a name="l144"></a>
+<a name="l145"></a></span><span class=cB1>class</span><span class=cB0> PPUsprite {
+<a name="l146"></a>  </span><span class=cB1>U8</span><span class=cB0> shifts_remaining;
+<a name="l147"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_index;
+<a name="l148"></a>  </span><span class=cB1>U8</span><span class=cB0> byte2;
+<a name="l149"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_0;
+<a name="l150"></a>  </span><span class=cB1>U8</span><span class=cB0> shift_register_1;
+<a name="l151"></a>  </span><span class=cB1>U8</span><span class=cB0> attribute;
+<a name="l152"></a>  </span><span class=cB1>U8</span><span class=cB0> x;
+<a name="l153"></a>};
+<a name="l154"></a>
+<a name="l155"></a></span><span class=cB1>class</span><span class=cB0> PPU2C02state {
+<a name="l156"></a>  </span><span class=cB1>U8</span><span class=cB0> odd_frame;
+<a name="l157"></a>  </span><span class=cB9>U16</span><span class=cB0> scanline;
+<a name="l158"></a>  </span><span class=cB9>U16</span><span class=cB0> dot;
+<a name="l159"></a>
+<a name="l160"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_occurred;
+<a name="l161"></a>
+<a name="l162"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_output;
+<a name="l163"></a>
+<a name="l164"></a>  </span><span class=cB1>U8</span><span class=cB0> nmi_pending;
+<a name="l165"></a>
+<a name="l166"></a>  </span><span class=cB1>U8</span><span class=cB0> sprite_zero_hit;
+<a name="l167"></a>
+<a name="l168"></a>  </span><span class=cB9>U16</span><span class=cB0> nametable_base;
+<a name="l169"></a>
+<a name="l170"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0_latch;
+<a name="l171"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1_latch;
+<a name="l172"></a>
+<a name="l173"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_0;
+<a name="l174"></a>  </span><span class=cB9>U16</span><span class=cB0> bitmap_shift_1;
+<a name="l175"></a>
+<a name="l176"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0_latch;
+<a name="l177"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1_latch;
+<a name="l178"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_0;
+<a name="l179"></a>  </span><span class=cB9>U16</span><span class=cB0> AT_shift_1;
+<a name="l180"></a>
+<a name="l181"></a>  </span><span class=cB1>U8</span><span class=cB0> num_sprites;
+<a name="l182"></a>  PPUsprite sprites[8];
+<a name="l183"></a>};
+<a name="l184"></a>
+<a name="l185"></a>PPU2C02state PPU_state;
 </span></div></pre></body>
 </html>

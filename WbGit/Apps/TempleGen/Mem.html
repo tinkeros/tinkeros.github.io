@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>lines_per_frame=262;
+<a name="l2"></a>MCYCLES_PER_LINE=3420;
+<a name="l3"></a>cycle_counter=0;
+<a name="l4"></a>
+<a name="l5"></a></span><span class=cB1>U0</span><span class=cB0> GenSetRom(</span><span class=cB1>U8</span><span class=cB0> *buffer, </span><span class=cB9>I64</span><span class=cB0> size)
+<a name="l6"></a>{
+<a name="l7"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(ROM,0,GEN_ROM_SIZE);
+<a name="l8"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(RAM,0,0x10000);
+<a name="l9"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(ZRAM,0,0x2000);
+<a name="l10"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(ROM,buffer,size);
+<a name="l11"></a>}
+<a name="l12"></a>
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> GEN_ADDR_MASK   0xFFFFFF
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB9>U32</span><span class=cB0> read_memory(</span><span class=cB9>U32</span><span class=cB0> address)
+<a name="l16"></a>{
+<a name="l17"></a>        </span><span class=cB9>U32</span><span class=cB0> range;
+<a name="l18"></a>        address&amp;=GEN_ADDR_MASK;
+<a name="l19"></a>        range=(address&amp;0xFF0000)&gt;&gt;16;
+<a name="l20"></a>        </span><span class=cB1>if</span><span class=cB0> (range&lt;=0x3F)
+<a name="l21"></a>                </span><span class=cB1>return</span><span class=cB0> ROM[address];
+<a name="l22"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range==0xA0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l23"></a>                </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA00000 &amp;&amp; address&lt;0xA04000)
+<a name="l24"></a>                        </span><span class=cB1>return</span><span class=cB0> ZRAM[address&amp;0x1FFF];
+<a name="l25"></a>                </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA04000 &amp;&amp; address&lt;0xA04004)
+<a name="l26"></a>                        </span><span class=cB1>return</span><span class=cB0> YMReadStatus;
+<a name="l27"></a>                </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l28"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range==0xA1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l29"></a>                </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA10000 &amp;&amp; address&lt;0xA10020)
+<a name="l30"></a>                        </span><span class=cB1>return</span><span class=cB0> io_read_memory(address&amp;0x1F);
+<a name="l31"></a>                </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA11100 &amp;&amp; address&lt;0xA11300)
+<a name="l32"></a>                        </span><span class=cB1>return</span><span class=cB0> z80_ctrl_read(address&amp;0xFFFF);
+<a name="l33"></a>                </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l34"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xC0 &amp;&amp; range&lt;=0xDF)
+<a name="l35"></a>                </span><span class=cB1>return</span><span class=cB0> vdp_read_byte(address);
+<a name="l36"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xE0 &amp;&amp; range&lt;=0xFF)
+<a name="l37"></a>                </span><span class=cB1>return</span><span class=cB0> RAM[address&amp;0xFFFF];
+<a name="l38"></a>        </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l39"></a>}
+<a name="l40"></a>
+<a name="l41"></a></span><span class=cB1>U0</span><span class=cB0> write_memory(</span><span class=cB9>U32</span><span class=cB0> address, </span><span class=cB9>U32</span><span class=cB0> value)
+<a name="l42"></a>{
+<a name="l43"></a>        </span><span class=cB9>U32</span><span class=cB0> range;
+<a name="l44"></a>        address&amp;=GEN_ADDR_MASK;
+<a name="l45"></a>        range=(address&amp;0xFF0000)&gt;&gt;16;
+<a name="l46"></a>        </span><span class=cB1>if</span><span class=cB0> (range&lt;=0x3F) </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>                ROM[address]=value;
+<a name="l48"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l49"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range==0xA0) </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>                </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA00000 &amp;&amp; address&lt;0xA04000)
+<a name="l51"></a>                        ZRAM[address&amp;0x1FFF]=value;
+<a name="l52"></a>                </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA04000 &amp;&amp; address&lt;0xA04004)
+<a name="l53"></a>                        YMWrite(address&amp;3,value);
+<a name="l54"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l55"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range==0xA1) </span><span class=cB7>{</span><span class=cB0>
+<a name="l56"></a>                </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA10000 &amp;&amp; address&lt;0xA10020)
+<a name="l57"></a>                        io_write_memory(address&amp;0x1F,value);
+<a name="l58"></a>                </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (address&gt;=0xA11100 &amp;&amp; address&lt;0xA11300)
+<a name="l59"></a>                        z80_ctrl_write(address&amp;0xFFFF,value);
+<a name="l60"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l61"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xC0 &amp;&amp; range&lt;=0xDF) </span><span class=cB7>{</span><span class=cB0>
+<a name="l62"></a>                value&amp;=0xFF;
+<a name="l63"></a>                </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>address&amp;0x1F</span><span class=cB7>)</span><span class=cB0>&lt;0x08)
+<a name="l64"></a>                        vdp_write(address,value|</span><span class=cB7>(</span><span class=cB0>value&lt;&lt;8</span><span class=cB7>)</span><span class=cB0>);
+<a name="l65"></a>                </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>address&amp;0x18</span><span class=cB7>)</span><span class=cB0>==0x10)
+<a name="l66"></a>                        PSGWrite(value);
+<a name="l67"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l68"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xE0 &amp;&amp; range&lt;=0xFF) </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>                RAM[address&amp;0xFFFF]=value;
+<a name="l70"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l71"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l72"></a>}
+<a name="l73"></a>
+<a name="l74"></a></span><span class=cB9>U32</span><span class=cB0> m68k_read_memory_8(</span><span class=cB9>U32</span><span class=cB0> address)
+<a name="l75"></a>{
+<a name="l76"></a>        </span><span class=cB1>return</span><span class=cB0> read_memory(address);
+<a name="l77"></a>}
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB9>U32</span><span class=cB0> m68k_read_memory_16(</span><span class=cB9>U32</span><span class=cB0> address)
+<a name="l80"></a>{
+<a name="l81"></a>        </span><span class=cB9>U32</span><span class=cB0> range;
+<a name="l82"></a>        address&amp;=GEN_ADDR_MASK;
+<a name="l83"></a>        range=(address&amp;0xFF0000)&gt;&gt;16;
+<a name="l84"></a>        </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xC0 &amp;&amp; range&lt;=0xDF)
+<a name="l85"></a>                </span><span class=cB1>return</span><span class=cB0> vdp_read(address);
+<a name="l86"></a>        </span><span class=cB1>return</span><span class=cB0> (read_memory</span><span class=cB7>(</span><span class=cB0>address</span><span class=cB7>)</span><span class=cB0>&lt;&lt;8)|read_memory(address+1);
+<a name="l87"></a>}
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB9>U32</span><span class=cB0> m68k_read_memory_32(</span><span class=cB9>U32</span><span class=cB0> address)
+<a name="l90"></a>{
+<a name="l91"></a>        </span><span class=cB1>return</span><span class=cB0> (m68k_read_memory_16</span><span class=cB7>(</span><span class=cB0>address</span><span class=cB7>)</span><span class=cB0>&lt;&lt;16)|
+<a name="l92"></a>                m68k_read_memory_16(address+2);
+<a name="l93"></a>}
+<a name="l94"></a>
+<a name="l95"></a></span><span class=cB1>U0</span><span class=cB0> m68k_write_memory_8(</span><span class=cB9>U32</span><span class=cB0> address, </span><span class=cB9>U32</span><span class=cB0> value)
+<a name="l96"></a>{
+<a name="l97"></a>        write_memory(address,value);
+<a name="l98"></a>}
+<a name="l99"></a>
+<a name="l100"></a></span><span class=cB1>U0</span><span class=cB0> m68k_write_memory_16(</span><span class=cB9>U32</span><span class=cB0> address, </span><span class=cB9>U32</span><span class=cB0> value)
+<a name="l101"></a>{
+<a name="l102"></a>        </span><span class=cB9>U32</span><span class=cB0> range;
+<a name="l103"></a>        address&amp;=GEN_ADDR_MASK;
+<a name="l104"></a>        range=(address&amp;0xFF0000)&gt;&gt;16;
+<a name="l105"></a>        </span><span class=cB1>if</span><span class=cB0> (range&gt;=0xC0 &amp;&amp; range&lt;=0xDF)
+<a name="l106"></a>                vdp_write(address,value);
+<a name="l107"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l108"></a>                write_memory(address,</span><span class=cB7>(</span><span class=cB0>value&gt;&gt;8</span><span class=cB7>)</span><span class=cB0>&amp;0xFF);
+<a name="l109"></a>                write_memory(address+1,value&amp;0xFF);
+<a name="l110"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l111"></a>}
+<a name="l112"></a>
+<a name="l113"></a></span><span class=cB1>U0</span><span class=cB0> m68k_write_memory_32(</span><span class=cB9>U32</span><span class=cB0> address, </span><span class=cB9>U32</span><span class=cB0> value)
+<a name="l114"></a>{
+<a name="l115"></a>        m68k_write_memory_16(address,</span><span class=cB7>(</span><span class=cB0>value&gt;&gt;16</span><span class=cB7>)</span><span class=cB0>&amp;0xFFFF);
+<a name="l116"></a>        m68k_write_memory_16(address+2,value&amp;0xFFFF);
+<a name="l117"></a>}
+<a name="l118"></a>
+<a name="l119"></a></span><span class=cB1>U0</span><span class=cB0> GenSetIrq(</span><span class=cB9>I64</span><span class=cB0> level)
+<a name="l120"></a>{
+<a name="l121"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>m68ki_cpu.int_level&gt;&gt;8</span><span class=cB7>)</span><span class=cB0>&gt;level)
+<a name="l122"></a>                </span><span class=cB1>return</span><span class=cB0>;
+<a name="l123"></a>        m68k_set_irq(level);
+<a name="l124"></a>}
+<a name="l125"></a>
+<a name="l126"></a></span><span class=cB1>U0</span><span class=cB0> GenExec(</span><span class=cB9>I64</span><span class=cB0> mcycles)
+<a name="l127"></a>{
+<a name="l128"></a>        m68k_execute(mcycles);
+<a name="l129"></a>        Z80Run(mcycles);
+<a name="l130"></a>}
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>U0</span><span class=cB0> GenFrame()
+<a name="l133"></a>{
+<a name="l134"></a>        </span><span class=cB9>I64</span><span class=cB0> hint_counter=vdp_reg[10];
+<a name="l135"></a>        cycle_counter=0;
+<a name="l136"></a>        screen_width=T(vdp_reg[12]&amp;0x01,320,256);
+<a name="l137"></a>        screen_height=T(vdp_reg[1]&amp;0x08,240,224);
+<a name="l138"></a>        vdp_clear_vblank;
+<a name="l139"></a>        VDPClearCanvas;
+<a name="l140"></a>        </span><span class=cB1>for</span><span class=cB0> (line=0; line&lt;screen_height; line++) </span><span class=cB7>{</span><span class=cB0>
+<a name="l141"></a>                GenExec(2560+120);
+<a name="l142"></a>                vdp_render_line(line);
+<a name="l143"></a>                </span><span class=cB1>if</span><span class=cB0> (--hint_counter&lt;0) {
+<a name="l144"></a>                        hint_counter=vdp_reg[10];
+<a name="l145"></a>                        </span><span class=cB1>if</span><span class=cB0> (vdp_reg[0]&amp;0x10)
+<a name="l146"></a>                                GenSetIrq(4);
+<a name="l147"></a>                }
+<a name="l148"></a>                vdp_set_hblank;
+<a name="l149"></a>                GenExec(64+313+259);
+<a name="l150"></a>                vdp_clear_hblank;
+<a name="l151"></a>                GenExec(104);
+<a name="l152"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l153"></a>        vdp_set_vblank;
+<a name="l154"></a>        GenExec(588);
+<a name="l155"></a>        vdp_status|=0x80;
+<a name="l156"></a>        GenExec(200);
+<a name="l157"></a>        </span><span class=cB1>if</span><span class=cB0> (vdp_reg[1]&amp;0x20)
+<a name="l158"></a>                GenSetIrq(6);
+<a name="l159"></a>        Z80SetIrq(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l160"></a>        GenExec(3420-788);
+<a name="l161"></a>        Z80SetIrq(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l162"></a>        line++;
+<a name="l163"></a>        </span><span class=cB1>for</span><span class=cB0> (;line&lt;lines_per_frame;line++)
+<a name="l164"></a>                GenExec(3420);
+<a name="l165"></a>        GenSwapCanvas;
+<a name="l166"></a>        GenSndFrame;
+<a name="l167"></a>}
+</span></div></pre></body>
+</html>

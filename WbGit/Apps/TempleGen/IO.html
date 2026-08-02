@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.20">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> PAD_UP          0
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_DOWN        1
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_LEFT        2
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_RIGHT       3
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_B           4
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_C           5
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_A           6
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> PAD_S           7
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB9>U16</span><span class=cB0> button_state[3];
+<a name="l11"></a></span><span class=cB9>U16</span><span class=cB0> pad_state[3];
+<a name="l12"></a></span><span class=cB1>U8</span><span class=cB0> io_reg[16] = {0xA0, 0x7F, 0x7F, 0x7F, 0, 0,    0, 0xFF,
+<a name="l13"></a>                 0,    0,    0xFF, 0,    0, 0xFF, 0, 0};
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>U0</span><span class=cB0> GenJoypadInit()
+<a name="l16"></a>{
+<a name="l17"></a>        </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l18"></a>        </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 3; i++)
+<a name="l19"></a>                button_state[i] = pad_state[i] = 0;
+<a name="l20"></a>}
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>U0</span><span class=cB0> GenJoypadScan()
+<a name="l23"></a>{
+<a name="l24"></a>        </span><span class=cB9>I64</span><span class=cB0> b = 0;
+<a name="l25"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3975"></span><span class=cB3>SC_CURSOR_UP</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l26"></a>                b |= 1 &lt;&lt; PAD_UP;
+<a name="l27"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3976"></span><span class=cB3>SC_CURSOR_DOWN</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l28"></a>                b |= 1 &lt;&lt; PAD_DOWN;
+<a name="l29"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3977"></span><span class=cB3>SC_CURSOR_LEFT</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l30"></a>                b |= 1 &lt;&lt; PAD_LEFT;
+<a name="l31"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3978"></span><span class=cB3>SC_CURSOR_RIGHT</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l32"></a>                b |= 1 &lt;&lt; PAD_RIGHT;
+<a name="l33"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB0>(</span><span class=cB6>'z'</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l34"></a>                b |= 1 &lt;&lt; PAD_A;
+<a name="l35"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB0>(</span><span class=cB6>'x'</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l36"></a>                b |= 1 &lt;&lt; PAD_B;
+<a name="l37"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Keyboard.html#l126"></span><span class=cB5>Char2ScanCode</a></span><span class=cB0>(</span><span class=cB6>'c'</span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l38"></a>                b |= 1 &lt;&lt; PAD_C;
+<a name="l39"></a>        </span><span class=cB1>if</span><span class=cB0> (KeyDown</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3967"></span><span class=cB3>SC_ENTER</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l40"></a>                b |= 1 &lt;&lt; PAD_S;
+<a name="l41"></a>        button_state[0] = b;
+<a name="l42"></a>        button_state[1] = 0;
+<a name="l43"></a>        button_state[2] = 0;
+<a name="l44"></a>}
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>U0</span><span class=cB0> pad_write(</span><span class=cB9>I64</span><span class=cB0> pad, </span><span class=cB9>I64</span><span class=cB0> value)
+<a name="l47"></a>{
+<a name="l48"></a>        </span><span class=cB9>I64</span><span class=cB0> mask = io_reg[pad + 4];
+<a name="l49"></a>        pad_state[pad] &amp;= ~mask;
+<a name="l50"></a>        pad_state[pad] |= value &amp; mask;
+<a name="l51"></a>}
+<a name="l52"></a>
+<a name="l53"></a></span><span class=cB1>U8</span><span class=cB0> pad_read(</span><span class=cB9>I64</span><span class=cB0> pad)
+<a name="l54"></a>{
+<a name="l55"></a>        </span><span class=cB9>I64</span><span class=cB0> value;
+<a name="l56"></a>        value = pad_state[pad] &amp; 0x40;
+<a name="l57"></a>        value |= 0x3F;
+<a name="l58"></a>        </span><span class=cB1>if</span><span class=cB0> (value &amp; 0x40)
+<a name="l59"></a>                value &amp;= ~(button_state[pad] &amp; 0x3F);
+<a name="l60"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l61"></a>                value &amp;= ~(0xC | </span><span class=cB7>(</span><span class=cB0>button_state[pad] &amp; 3</span><span class=cB7>)</span><span class=cB0> |
+<a name="l62"></a>                        </span><span class=cB7>(</span><span class=cB0>(button_state[pad] &gt;&gt; 2) &amp; 0x30</span><span class=cB7>)</span><span class=cB0>);
+<a name="l63"></a>        </span><span class=cB1>return</span><span class=cB0> value;
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>U0</span><span class=cB0> io_write_memory(</span><span class=cB9>U32</span><span class=cB0> address, </span><span class=cB9>U32</span><span class=cB0> value)
+<a name="l67"></a>{
+<a name="l68"></a>        address &gt;&gt;= 1;
+<a name="l69"></a>        </span><span class=cB1>if</span><span class=cB0> (address &gt;= 0x1 &amp;&amp; address &lt; 0x4) </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>                io_reg[address] = value;
+<a name="l71"></a>                pad_write(address - 1, value);
+<a name="l72"></a>        </span><span class=cB7>}</span><span class=cB0> </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (address &gt;= 0x4 &amp;&amp; address &lt; 0x7) </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>                </span><span class=cB1>if</span><span class=cB0> (io_reg[address] != value) {
+<a name="l74"></a>                        io_reg[address] = value;
+<a name="l75"></a>                        pad_write(address - 4, io_reg[address - 3]);
+<a name="l76"></a>                }
+<a name="l77"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB9>U32</span><span class=cB0> io_read_memory(</span><span class=cB9>U32</span><span class=cB0> address)
+<a name="l81"></a>{
+<a name="l82"></a>        </span><span class=cB9>I64</span><span class=cB0> mask, value;
+<a name="l83"></a>        address &gt;&gt;= 1;
+<a name="l84"></a>        </span><span class=cB1>if</span><span class=cB0> (address &gt;= 0x1 &amp;&amp; address &lt; 0x4) </span><span class=cB7>{</span><span class=cB0>
+<a name="l85"></a>                mask = 0x80 | io_reg[address + 3];
+<a name="l86"></a>                value = io_reg[address] &amp; mask;
+<a name="l87"></a>                value |= pad_read(address - 1) &amp; ~mask;
+<a name="l88"></a>                </span><span class=cB1>return</span><span class=cB0> value;
+<a name="l89"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l90"></a>        </span><span class=cB1>return</span><span class=cB0> io_reg[address];
+<a name="l91"></a>}
+</span></div></pre></body>
+</html>
