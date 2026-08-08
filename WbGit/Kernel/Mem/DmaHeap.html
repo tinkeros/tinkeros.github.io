@@ -44,31 +44,29 @@
 <a name="l4"></a>
 <a name="l5"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l5"></span><span class=cBD>DmaHeapUncacheRange</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *addr,</span><span class=cB9>I64</span><span class=cB0> len)
 <a name="l6"></a>{
-<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB1>end</span><span class=cB0>=addr+len-1;
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> *p=addr(</span><span class=cB9>I64</span><span class=cB0>)&amp;~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>-1),*</span><span class=cB1>end</span><span class=cB0>=addr+len-1;
 <a name="l8"></a>
-<a name="l9"></a>  *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(addr)=*<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(addr)&amp;~0x18 |0x11;
-<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>InvlPg</a></span><span class=cB0>(addr);
-<a name="l11"></a>
-<a name="l12"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB7>(</span><span class=cB1>end</span><span class=cB7>)</span><span class=cB0>!=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB7>(</span><span class=cB0>addr</span><span class=cB7>)</span><span class=cB0>)
-<a name="l13"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l14"></a>    *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>)=*<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>)&amp;~0x18 |0x11;
-<a name="l15"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>InvlPg</a></span><span class=cB0>(</span><span class=cB1>end</span><span class=cB0>);
-<a name="l16"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l17"></a>}
-<a name="l18"></a>
-<a name="l19"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l19"></span><span class=cBD>DmaHeapInit</a></span><span class=cB0>()
-<a name="l20"></a>{
-<a name="l21"></a>  </span><span class=cB1>U8</span><span class=cB0> *raw;
-<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> size=DMA_HEAP_PAGES*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>while</span><span class=cB0> (p&lt;=</span><span class=cB1>end</span><span class=cB0>)
+<a name="l10"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>    *<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(p)=*<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/PageTables.html#l207"></span><span class=cB5>MemPageTable</a></span><span class=cB0>(p)&amp;~0x18 |0x11;
+<a name="l12"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l288"></span><span class=cB5>InvlPg</a></span><span class=cB0>(p);
+<a name="l13"></a>    p+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>;
+<a name="l14"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l15"></a>}
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l17"></span><span class=cBD>DmaHeapInit</a></span><span class=cB0>()
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB1>U8</span><span class=cB0> *raw;
+<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> size=DMA_HEAP_PAGES*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>;
+<a name="l21"></a>
+<a name="l22"></a>  raw=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(size,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>-&gt;code_heap);
 <a name="l23"></a>
-<a name="l24"></a>  raw=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(size,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l289"></span><span class=cB6>mem_page_size</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>-&gt;code_heap);
+<a name="l24"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l5"></span><span class=cBD>DmaHeapUncacheRange</a></span><span class=cB0>(raw,size);
 <a name="l25"></a>
-<a name="l26"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l5"></span><span class=cBD>DmaHeapUncacheRange</a></span><span class=cB0>(raw,size);
-<a name="l27"></a>
-<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3303"></span><span class=cB9>CBlkPool</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1"></span><span class=cB5>BlkPoolAdd</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>,raw,size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3286"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>);
-<a name="l30"></a>
-<a name="l31"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/HeapCtrl.html#l1"></span><span class=cB5>HeapCtrlInit</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>);
-<a name="l32"></a>}
+<a name="l26"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3303"></span><span class=cB9>CBlkPool</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l27"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/BlkPool.html#l1"></span><span class=cB5>BlkPoolAdd</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>,raw,size&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3286"></span><span class=cB3>MEM_PAG_BITS</a></span><span class=cB0>);
+<a name="l28"></a>
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/HeapCtrl.html#l1"></span><span class=cB5>HeapCtrlInit</a></span><span class=cB0>(,<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/DmaHeap.html#l3"></span><span class=cBD>dma_blk_pool</a></span><span class=cB0>);
+<a name="l30"></a>}
 </span></div></pre></body>
 </html>
