@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -58,76 +58,93 @@
 <a name="l20"></a>
 <a name="l21"></a></span><span class=cB6>&quot;The four high bits as a 4-bit bitfield = %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l113"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4);
 <a name="l22"></a>
-<a name="l23"></a></span><span class=cB2>// TinkerOS also supports parsing bitfield info from classes:</span><span class=cB0>
-<a name="l24"></a>
-<a name="l25"></a></span><span class=cB1>class</span><span class=cB0> BFtest {
-<a name="l26"></a></span><span class=cB2>// bitfield variables should be a union!</span><span class=cB0>
-<a name="l27"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l28"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_0 : 1;
-<a name="l29"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_1 : 1;
-<a name="l30"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_2 : 1;
-<a name="l31"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_3 : 1;
-<a name="l32"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_4 : 1;
-<a name="l33"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_5 : 1;
-<a name="l34"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_6 : 1;
-<a name="l35"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_7 : 1;
-<a name="l36"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l37"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l38"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_0 : 4;
-<a name="l39"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_1 : 4;
-<a name="l40"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_2 : 4;
-<a name="l41"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_3 : 4;
+<a name="l23"></a></span><span class=cB2>// TinkerOS also supports real, C-like bitfield members on classes.</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>// Annotate a member with &quot;:width&quot; inside a union and the compiler tracks</span><span class=cB0>
+<a name="l25"></a></span><span class=cB2>// its bit offset and width -- plain &quot;.&quot; and &quot;-&gt;&quot; access on that member</span><span class=cB0>
+<a name="l26"></a></span><span class=cB2>// then automatically reads/writes just those bits, read-modify-write,</span><span class=cB0>
+<a name="l27"></a></span><span class=cB2>// exactly like C bitfields (including silent truncation if you write a</span><span class=cB0>
+<a name="l28"></a></span><span class=cB2>// value wider than the field).</span><span class=cB0>
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB1>class</span><span class=cB0> BFtest {
+<a name="l31"></a></span><span class=cB2>// bitfield variables should be a union!</span><span class=cB0>
+<a name="l32"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_0 : 1;
+<a name="l34"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_1 : 1;
+<a name="l35"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_2 : 1;
+<a name="l36"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_3 : 1;
+<a name="l37"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_4 : 1;
+<a name="l38"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_5 : 1;
+<a name="l39"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_6 : 1;
+<a name="l40"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_7 : 1;
+<a name="l41"></a>    </span><span class=cB1>U8</span><span class=cB0> whole_byte;
 <a name="l42"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l43"></a>};
-<a name="l44"></a>
-<a name="l45"></a>BFtest bftest;
-<a name="l46"></a>
-<a name="l47"></a></span><span class=cB2>// Normal HolyC behaves just like default, has no awareness of bitfields</span><span class=cB0>
-<a name="l48"></a>bftest.bit_0=0x55;  </span><span class=cB2>// sets full U8 union to 0x55</span><span class=cB0>
-<a name="l49"></a>bftest.nibble_0=0xf0f0; </span><span class=cB2>// sets full U16 union to 0xff00</span><span class=cB0>
-<a name="l50"></a>
-<a name="l51"></a></span><span class=cB6>&quot;The normal value of bftest.bit_0 is %02x\n&quot;</span><span class=cB0>,bftest.bit_0;
-<a name="l52"></a></span><span class=cB6>&quot;The normal value of bftest.nibble_0 is %04x\n&quot;</span><span class=cB0>,bftest.nibble_0;
+<a name="l43"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l44"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_0 : 4;
+<a name="l45"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_1 : 4;
+<a name="l46"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_2 : 4;
+<a name="l47"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_3 : 4;
+<a name="l48"></a>    </span><span class=cB9>U16</span><span class=cB0> whole_word;
+<a name="l49"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l50"></a>};
+<a name="l51"></a>
+<a name="l52"></a>BFtest bftest,*pbftest=&amp;bftest;
 <a name="l53"></a>
-<a name="l54"></a></span><span class=cB6>&quot;ClassRep shows bitfield info:\n&quot;</span><span class=cB0>;
-<a name="l55"></a><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l206"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;bftest);
+<a name="l54"></a>bftest.whole_byte=0x55;   </span><span class=cB2>// 01010101</span><span class=cB0>
+<a name="l55"></a>bftest.whole_word=0xff00; </span><span class=cB2>// 11111111000000</span><span class=cB0>
 <a name="l56"></a>
-<a name="l57"></a></span><span class=cB2>// TinkerOS extension to read/write bitfield values via CBFG/CBFS</span><span class=cB0>
-<a name="l58"></a></span><span class=cB2>// Crashes QEMU on some machines, might be a bug, don't use yet</span><span class=cB0>
-<a name="l59"></a></span><span class=cB2>/*</span><span class=cB0>
-<a name="l60"></a></span><span class=cB2>&quot;The bitfield value of bit_0 is %d\n&quot;,CBFG(&quot;bftest.bit_0&quot;);</span><span class=cB0>
-<a name="l61"></a></span><span class=cB2>&quot;The bitfield value of bit_1 is %d\n&quot;,CBFG(&quot;bftest.bit_1&quot;);</span><span class=cB0>
-<a name="l62"></a></span><span class=cB2>&quot;The bitfield value of bit_2 is %d\n&quot;,CBFG(&quot;bftest.bit_2&quot;);</span><span class=cB0>
-<a name="l63"></a></span><span class=cB2>&quot;The bitfield value of bit_3 is %d\n&quot;,CBFG(&quot;bftest.bit_3&quot;);</span><span class=cB0>
-<a name="l64"></a></span><span class=cB2>&quot;The bitfield value of bit_4 is %d\n&quot;,CBFG(&quot;bftest.bit_4&quot;);</span><span class=cB0>
-<a name="l65"></a></span><span class=cB2>&quot;The bitfield value of bit_5 is %d\n&quot;,CBFG(&quot;bftest.bit_5&quot;);</span><span class=cB0>
-<a name="l66"></a></span><span class=cB2>&quot;The bitfield value of bit_6 is %d\n&quot;,CBFG(&quot;bftest.bit_6&quot;);</span><span class=cB0>
-<a name="l67"></a></span><span class=cB2>&quot;The bitfield value of bit_7 is %d\n&quot;,CBFG(&quot;bftest.bit_7&quot;);</span><span class=cB0>
-<a name="l68"></a></span><span class=cB2>&quot;\n&quot;;</span><span class=cB0>
-<a name="l69"></a></span><span class=cB2>&quot;The bitfield value of nibble_0 is %01X\n&quot;,CBFG(&quot;bftest.nibble_0&quot;);</span><span class=cB0>
-<a name="l70"></a></span><span class=cB2>&quot;The bitfield value of nibble_1 is %01X\n&quot;,CBFG(&quot;bftest.nibble_1&quot;);</span><span class=cB0>
-<a name="l71"></a></span><span class=cB2>&quot;The bitfield value of nibble_2 is %01X\n&quot;,CBFG(&quot;bftest.nibble_2&quot;);</span><span class=cB0>
-<a name="l72"></a></span><span class=cB2>&quot;The bitfield value of nibble_3 is %01X\n&quot;,CBFG(&quot;bftest.nibble_3&quot;);</span><span class=cB0>
-<a name="l73"></a></span><span class=cB2>&quot;\n&quot;;</span><span class=cB0>
-<a name="l74"></a></span><span class=cB2>&quot;Setting bit 1 to 1\n&quot;;</span><span class=cB0>
-<a name="l75"></a></span><span class=cB2>CBFS(&quot;bftest.bit_1&quot;,1);</span><span class=cB0>
-<a name="l76"></a></span><span class=cB2>&quot;Setting nibbles to their index with CBFS\n&quot;;</span><span class=cB0>
-<a name="l77"></a></span><span class=cB2>CBFS(&quot;bftest.nibble_0&quot;,0);</span><span class=cB0>
-<a name="l78"></a></span><span class=cB2>CBFS(&quot;bftest.nibble_1&quot;,1);</span><span class=cB0>
-<a name="l79"></a></span><span class=cB2>CBFS(&quot;bftest.nibble_2&quot;,2);</span><span class=cB0>
-<a name="l80"></a></span><span class=cB2>CBFS(&quot;bftest.nibble_3&quot;,3);</span><span class=cB0>
-<a name="l81"></a></span><span class=cB2>&quot;Now the bitfield value of nibble_0 is %01X\n&quot;,CBFG(&quot;bftest.nibble_0&quot;);</span><span class=cB0>
-<a name="l82"></a></span><span class=cB2>&quot;Now the bitfield value of nibble_1 is %01X\n&quot;,CBFG(&quot;bftest.nibble_1&quot;);</span><span class=cB0>
-<a name="l83"></a></span><span class=cB2>&quot;Now the bitfield value of nibble_2 is %01X\n&quot;,CBFG(&quot;bftest.nibble_2&quot;);</span><span class=cB0>
-<a name="l84"></a></span><span class=cB2>&quot;Now the bitfield value of nibble_3 is %01X\n&quot;,CBFG(&quot;bftest.nibble_3&quot;);</span><span class=cB0>
-<a name="l85"></a></span><span class=cB2>&quot;\n&quot;;</span><span class=cB0>
-<a name="l86"></a>
-<a name="l87"></a></span><span class=cB2>// Accessing with normal HolyC</span><span class=cB0>
-<a name="l88"></a></span><span class=cB2>// shows full changed value of</span><span class=cB0>
-<a name="l89"></a></span><span class=cB2>// all nibbles of the full U16</span><span class=cB0>
-<a name="l90"></a></span><span class=cB2>&quot;The normal value of bftest.bit_0 is now %02x\n&quot;,bftest.bit_0;</span><span class=cB0>
-<a name="l91"></a></span><span class=cB2>&quot;The normal value of bftest.nibble_0 is now %04x\n&quot;,bftest.nibble_0;</span><span class=cB0>
-<a name="l92"></a></span><span class=cB2>*/</span><span class=cB0>
-<a name="l93"></a>
+<a name="l57"></a>
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB6>&quot;\n=== ClassRep shows each member's bit offset/width ===\n\n&quot;</span><span class=cB0>;
+<a name="l60"></a><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l223"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;bftest);
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB6>&quot;\n=== Testing each bit field via bftest.bit_N ===\n\n&quot;</span><span class=cB0>;
+<a name="l63"></a></span><span class=cB6>&quot;bftest.bit_0=%b\n&quot;</span><span class=cB0>,bftest.bit_0;
+<a name="l64"></a></span><span class=cB6>&quot;bftest.bit_1=%b\n&quot;</span><span class=cB0>,bftest.bit_1;
+<a name="l65"></a></span><span class=cB6>&quot;bftest.bit_2=%b\n&quot;</span><span class=cB0>,bftest.bit_2;
+<a name="l66"></a></span><span class=cB6>&quot;bftest.bit_3=%b\n&quot;</span><span class=cB0>,bftest.bit_3;
+<a name="l67"></a></span><span class=cB6>&quot;bftest.bit_4=%b\n&quot;</span><span class=cB0>,bftest.bit_4;
+<a name="l68"></a></span><span class=cB6>&quot;bftest.bit_5=%b\n&quot;</span><span class=cB0>,bftest.bit_5;
+<a name="l69"></a></span><span class=cB6>&quot;bftest.bit_6=%b\n&quot;</span><span class=cB0>,bftest.bit_6;
+<a name="l70"></a></span><span class=cB6>&quot;bftest.bit_7=%b\n&quot;</span><span class=cB0>,bftest.bit_7;
+<a name="l71"></a>
+<a name="l72"></a></span><span class=cB6>&quot;\n=== Testing each nibble field via bftest.nibble_N ===\n\n&quot;</span><span class=cB0>;
+<a name="l73"></a></span><span class=cB6>&quot;bftest.nibble_0=%b\n&quot;</span><span class=cB0>,bftest.nibble_0;
+<a name="l74"></a></span><span class=cB6>&quot;bftest.nibble_1=%b\n&quot;</span><span class=cB0>,bftest.nibble_1;
+<a name="l75"></a></span><span class=cB6>&quot;bftest.nibble_2=%b\n&quot;</span><span class=cB0>,bftest.nibble_2;
+<a name="l76"></a></span><span class=cB6>&quot;bftest.nibble_3=%b\n&quot;</span><span class=cB0>,bftest.nibble_3;
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB6>&quot;\n=== Change one bit and show the new whole_byte (bftest) ===\n\n&quot;</span><span class=cB0>;
+<a name="l79"></a>bftest.bit_3=1;
+<a name="l80"></a></span><span class=cB6>&quot;After bftest.bit_3=1, bftest.whole_byte=%b\n\n&quot;</span><span class=cB0>,bftest.whole_byte;
+<a name="l81"></a>
+<a name="l82"></a></span><span class=cB6>&quot;\n=== Change one nibble and show the new whole_word (bftest) ===\n\n&quot;</span><span class=cB0>;
+<a name="l83"></a>bftest.nibble_1=0xA;
+<a name="l84"></a></span><span class=cB6>&quot;After bftest.nibble_1=0xA, bftest.whole_word=%b\n\n&quot;</span><span class=cB0>,bftest.whole_word;
+<a name="l85"></a>
+<a name="l86"></a></span><span class=cB6>&quot;\n=== Testing each bit field via pbftest-&gt;bit_N ===\n\n&quot;</span><span class=cB0>;
+<a name="l87"></a></span><span class=cB6>&quot;pbftest-&gt;bit_0=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_0;
+<a name="l88"></a></span><span class=cB6>&quot;pbftest-&gt;bit_1=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_1;
+<a name="l89"></a></span><span class=cB6>&quot;pbftest-&gt;bit_2=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_2;
+<a name="l90"></a></span><span class=cB6>&quot;pbftest-&gt;bit_3=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_3;
+<a name="l91"></a></span><span class=cB6>&quot;pbftest-&gt;bit_4=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_4;
+<a name="l92"></a></span><span class=cB6>&quot;pbftest-&gt;bit_5=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_5;
+<a name="l93"></a></span><span class=cB6>&quot;pbftest-&gt;bit_6=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_6;
+<a name="l94"></a></span><span class=cB6>&quot;pbftest-&gt;bit_7=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_7;
+<a name="l95"></a>
+<a name="l96"></a></span><span class=cB6>&quot;\n=== Testing each nibble field via pbftest-&gt;nibble_N ===\n\n&quot;</span><span class=cB0>;
+<a name="l97"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_0=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_0;
+<a name="l98"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_1=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_1;
+<a name="l99"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_2=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_2;
+<a name="l100"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_3=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_3;
+<a name="l101"></a>
+<a name="l102"></a></span><span class=cB6>&quot;\n=== Change one bit and show the new whole_byte (pbftest) ===\n\n&quot;</span><span class=cB0>;
+<a name="l103"></a>pbftest-&gt;bit_5=1;
+<a name="l104"></a></span><span class=cB6>&quot;After pbftest-&gt;bit_5=1, pbftest-&gt;whole_byte=%b\n\n&quot;</span><span class=cB0>,pbftest-&gt;whole_byte;
+<a name="l105"></a>
+<a name="l106"></a></span><span class=cB6>&quot;\n=== Change one nibble and show the new whole_word (pbftest) ===\n\n&quot;</span><span class=cB0>;
+<a name="l107"></a>pbftest-&gt;nibble_3=0x3;
+<a name="l108"></a></span><span class=cB6>&quot;After pbftest-&gt;nibble_3=0x3, pbftest-&gt;whole_word=%b\n\n&quot;</span><span class=cB0>,pbftest-&gt;whole_word;
+<a name="l109"></a>
+<a name="l110"></a>
 </span></div></pre></body>
 </html>

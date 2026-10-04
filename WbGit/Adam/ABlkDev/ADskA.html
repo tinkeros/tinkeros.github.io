@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -98,12 +98,66 @@
 <a name="l58"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocEd.html#l3"></span><span class=cB5>View</a></span><span class=cB0>)
 <a name="l59"></a>      </span><span class=cB7>{</span><span class=cB0>
 <a name="l60"></a>        </span><span class=cB6>&quot;Write\n&quot;</span><span class=cB0>;
-<a name="l61"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB0>(filename,buf,size);
+<a name="l61"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(filename,buf,size);
 <a name="l62"></a>      </span><span class=cB7>}</span><span class=cB0>
 <a name="l63"></a>    }
 <a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l65"></a>  </span><span class=cB1>return</span><span class=cB0> buf;
 <a name="l66"></a>}
 <a name="l67"></a>
+<a name="l68"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/ADskA.html#l68"></span><span class=cB5>AtaMkPrt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> size_mb=0,</span><span class=cB9>I64</span><span class=cB0> num_prts=1,</span><span class=cB1>Bool</span><span class=cB0> just_ide=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l69"></a>{</span><span class=cB2>//Write a fresh DOS(MBR) partition table w/ up to 4 FAT32 partitions to a plain ATA/SATA hard drive.</span><span class=cB0>
+<a name="l70"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3097"></span><span class=cB9>CBlkDev</a></span><span class=cB0> *bd;
+<a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2412"></span><span class=cB9>CMasterBoot</a></span><span class=cB0> *mbr;
+<a name="l72"></a>  </span><span class=cB9>I64</span><span class=cB0> i,start_sect=2048,size_sects,avail_sects; </span><span class=cB2>//1MiB-aligned start</span><span class=cB0>
+<a name="l73"></a>  </span><span class=cB1>Bool</span><span class=cB0> res;
+<a name="l74"></a>  </span><span class=cB1>if</span><span class=cB0> (drv_let &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l313"></span><span class=cB5>Let2BlkDev</a></span><span class=cB7>(</span><span class=cB0>drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l75"></a>    drv_let=0;
+<a name="l76"></a>  </span><span class=cB1>if</span><span class=cB0> (!drv_let &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>drv_let=<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l234"></span><span class=cB5>MountWholeDrvNoFmt</a></span><span class=cB0>(just_ide)</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l77"></a>      !</span><span class=cB7>(</span><span class=cB0>bd=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l313"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l78"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    </span><span class=cB6>&quot;AtaMkPrt: Failed to mount an ATA/SATA hard drive!\n&quot;</span><span class=cB0>;
+<a name="l80"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB1>if</span><span class=cB0> (bd-&gt;type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3047"></span><span class=cB3>BDT_ATA</a></span><span class=cB0> &amp;&amp; bd-&gt;type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3052"></span><span class=cB3>BDT_AHCI_SATA</a></span><span class=cB0>)
+<a name="l83"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l84"></a>    </span><span class=cB6>&quot;AtaMkPrt: Drive %C is not a plain ATA/SATA hard drive!\n&quot;</span><span class=cB0>,drv_let;
+<a name="l85"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB1>if</span><span class=cB0> (num_prts&lt;1) num_prts=1;
+<a name="l88"></a>  </span><span class=cB1>if</span><span class=cB0> (num_prts&gt;4) num_prts=4;
+<a name="l89"></a>  avail_sects=bd-&gt;max_blk+1-start_sect;
+<a name="l90"></a>  </span><span class=cB1>if</span><span class=cB0> (size_mb&lt;=0)
+<a name="l91"></a>    size_mb=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(2048,</span><span class=cB7>(</span><span class=cB0>avail_sects/num_prts</span><span class=cB7>)</span><span class=cB0>&gt;&gt;</span><span class=cB7>(</span><span class=cB0>20-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l92"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (size_mb&lt;256)
+<a name="l93"></a>    size_mb=256;
+<a name="l94"></a>  size_sects=size_mb&lt;&lt;(20-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
+<a name="l95"></a>  </span><span class=cB1>if</span><span class=cB0> (size_mb&lt;=0 || start_sect+num_prts*size_sects&gt;bd-&gt;max_blk+1)
+<a name="l96"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l97"></a>    </span><span class=cB6>&quot;AtaMkPrt: Drive %C too small for %d x %dMB partition(s)!\n&quot;</span><span class=cB0>,drv_let,num_prts,size_mb;
+<a name="l98"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l99"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l100"></a>  mbr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
+<a name="l101"></a>  mbr-&gt;signature=0xAA55;
+<a name="l102"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num_prts;i++)
+<a name="l103"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l104"></a>    </span><span class=cB1>if</span><span class=cB0> (!i) mbr-&gt;p[i].active=0x80; </span><span class=cB2>//only the 1st partition is marked bootable</span><span class=cB0>
+<a name="l105"></a>    mbr-&gt;p[i].type      =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3136"></span><span class=cB3>MBR_PT_FAT32a</a></span><span class=cB0>;
+<a name="l106"></a>    mbr-&gt;p[i].start_head=0;
+<a name="l107"></a>    mbr-&gt;p[i].start_cyl =0x101;
+<a name="l108"></a>    mbr-&gt;p[i].end_head  =0xFE;
+<a name="l109"></a>    mbr-&gt;p[i].end_cyl   =0xFFFF;
+<a name="l110"></a>    mbr-&gt;p[i].</span><span class=cB1>offset</span><span class=cB0>    =start_sect+i*size_sects;
+<a name="l111"></a>    mbr-&gt;p[i].size      =size_sects;
+<a name="l112"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l113"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskATA.html#l641"></span><span class=cB5>ATAWriteBlks</a></span><span class=cB0>(bd,mbr,0,1);
+<a name="l114"></a>  bd-&gt;flags&amp;=~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3061"></span><span class=cB3>BDF_INITIALIZED</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3067"></span><span class=cB3>BDF_INIT_IN_PROGRESS</a></span><span class=cB0>);
+<a name="l115"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l34"></span><span class=cB5>BlkDevAdd</a></span><span class=cB0>(bd,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l116"></a>  </span><span class=cB1>for</span><span class=cB0> (i=bd-&gt;first_drv_let;i&lt;bd-&gt;first_drv_let+num_prts;i++)
+<a name="l117"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFmt.html#l89"></span><span class=cB5>Fmt</a></span><span class=cB0>(i,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l118"></a>  res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l119"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mbr);
+<a name="l120"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l121"></a>}
 </span></div></pre></body>
 </html>

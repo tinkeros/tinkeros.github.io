@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.21">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// Test Cases for RmParens.HC</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> TC_NeededBothSides(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l6"></a>  x=(a+b)*c;              </span><span class=cB2>// keep -- * binds tighter than the inner +</span><span class=cB0>
+<a name="l7"></a>  y=c*(a+b);              </span><span class=cB2>// keep -- symmetric case</span><span class=cB0>
+<a name="l8"></a>}
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>U0</span><span class=cB0> TC_ShiftAdd(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> mask;
+<a name="l13"></a>  mask=1&lt;&lt;n-1;          </span><span class=cB2>// -&gt; mask=1&lt;&lt;n-1;  (&lt;&lt; binds tighter than - in HolyC)</span><span class=cB0>
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>U0</span><span class=cB0> TC_AndAdd(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l19"></a>  x=a&amp;b+c;              </span><span class=cB2>// -&gt; x=a&amp;b+c;</span><span class=cB0>  </span><span class=cB2>(&amp; binds TIGHTER than + in HolyC, unlike C)</span><span class=cB0>
+<a name="l20"></a>  y=a&amp;(b+c);              </span><span class=cB2>// keep -- needed given that same precedence</span><span class=cB0>
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB1>U0</span><span class=cB0> TC_AndOrOr(</span><span class=cB1>Bool</span><span class=cB0> a,</span><span class=cB1>Bool</span><span class=cB0> b,</span><span class=cB1>Bool</span><span class=cB0> c)
+<a name="l24"></a>{
+<a name="l25"></a>  </span><span class=cB1>Bool</span><span class=cB0> x,y;
+<a name="l26"></a>  x=a&amp;&amp;b||c;            </span><span class=cB2>// -&gt; x=a&amp;&amp;b||c;</span><span class=cB0>
+<a name="l27"></a>  y=a&amp;&amp;(b||c);            </span><span class=cB2>// keep</span><span class=cB0>
+<a name="l28"></a>}
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB1>U0</span><span class=cB0> TC_UnaryBare(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> *p)
+<a name="l31"></a>{
+<a name="l32"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,z,w,v;
+<a name="l33"></a>  x=-a;                 </span><span class=cB2>// -&gt; x=-a;</span><span class=cB0>
+<a name="l34"></a>  y=!a;                 </span><span class=cB2>// -&gt; y=!a;</span><span class=cB0>
+<a name="l35"></a>  z=~a;                 </span><span class=cB2>// -&gt; z=~a;</span><span class=cB0>
+<a name="l36"></a>  w=*p;                 </span><span class=cB2>// -&gt; w=*p;</span><span class=cB0>
+<a name="l37"></a>  v=++a;                </span><span class=cB2>// -&gt; v=++a;</span><span class=cB0>
+<a name="l38"></a>}
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB1>U0</span><span class=cB0> TC_UnaryBinary(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b)
+<a name="l41"></a>{
+<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l43"></a>  x=-(a+b);               </span><span class=cB2>// keep -- -a+b would mean (-a)+b, not -(a+b)</span><span class=cB0>
+<a name="l44"></a>}
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>U0</span><span class=cB0> TC_BareAtom(</span><span class=cB9>I64</span><span class=cB0> a)
+<a name="l47"></a>{
+<a name="l48"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l49"></a>  x=a;                  </span><span class=cB2>// -&gt; x=a;</span><span class=cB0>
+<a name="l50"></a>}
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB1>U0</span><span class=cB0> TC_DoubleWrapCondition(</span><span class=cB9>I64</span><span class=cB0> a)
+<a name="l53"></a>{
+<a name="l54"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l55"></a>  </span><span class=cB1>if</span><span class=cB0> (a==1)             </span><span class=cB2>// -&gt; if (a==1)  (outer, mandatory if-parens untouched)</span><span class=cB0>
+<a name="l56"></a>    x=1;
+<a name="l57"></a>}
+<a name="l58"></a>
+<a name="l59"></a></span><span class=cB1>U0</span><span class=cB0> TC_DoubleWrapGroup(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l60"></a>{
+<a name="l61"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l62"></a>  x=(a+b)*c;            </span><span class=cB2>// -&gt; x=(a+b)*c;  (inner pair redundant, outer pair needed)</span><span class=cB0>
+<a name="l63"></a>}
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB1>U0</span><span class=cB0> Foo(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c){}
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> TC_CallArgs(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l68"></a>{
+<a name="l69"></a>  Foo(a,b,c);           </span><span class=cB2>// -&gt; Foo(a,b,c);</span><span class=cB0>
+<a name="l70"></a>  Foo(a,b+c,a*2);     </span><span class=cB2>// -&gt; Foo(a,b+c,a*2);  (each arg scanned on its own)</span><span class=cB0>
+<a name="l71"></a>}
+<a name="l72"></a>
+<a name="l73"></a></span><span class=cB1>U0</span><span class=cB0> TC_Subscript(</span><span class=cB9>I64</span><span class=cB0> *arr,</span><span class=cB9>I64</span><span class=cB0> i)
+<a name="l74"></a>{
+<a name="l75"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l76"></a>  x=arr[i];             </span><span class=cB2>// -&gt; x=arr[i];</span><span class=cB0>
+<a name="l77"></a>  x=arr[i+1];           </span><span class=cB2>// -&gt; x=arr[i+1];</span><span class=cB0>
+<a name="l78"></a>}
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB9>I64</span><span class=cB0> TC_Return(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b)
+<a name="l81"></a>{
+<a name="l82"></a>  </span><span class=cB1>return</span><span class=cB0> a+b;           </span><span class=cB2>// -&gt; return a+b;</span><span class=cB0>
+<a name="l83"></a>}
+<a name="l84"></a>
+<a name="l85"></a></span><span class=cB1>U0</span><span class=cB0> TC_ChainAssign(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l86"></a>{
+<a name="l87"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y;
+<a name="l88"></a>  x=a=b;                </span><span class=cB2>// -&gt; x=a=b;</span><span class=cB0>
+<a name="l89"></a>  y=(a=b)+c;              </span><span class=cB2>// keep -- assignment is the loosest operator</span><span class=cB0>
+<a name="l90"></a>}
+<a name="l91"></a>
+<a name="l92"></a></span><span class=cB1>U0</span><span class=cB0> TC_PostfixTouch(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l927"></span><span class=cB9>CMemberLst</a></span><span class=cB0> *f)
+<a name="l93"></a>{
+<a name="l94"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l95"></a>  x=(f)-&gt;next;            </span><span class=cB2>// keep -- the real compiler never flags a paren with a postfix touching it</span><span class=cB0>
+<a name="l96"></a>}
+<a name="l97"></a>
+<a name="l98"></a></span><span class=cB1>U0</span><span class=cB0> TC_ForLoop(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l99"></a>{
+<a name="l100"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l101"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;n+1;i=i+1) </span><span class=cB2>// -&gt; for (i=0;i&lt;n+1;i=i+1)</span><span class=cB0>
+<a name="l102"></a>    ;
+<a name="l103"></a>}
+<a name="l104"></a>
+<a name="l105"></a></span><span class=cB1>U0</span><span class=cB0> TC_NoChange(</span><span class=cB9>I64</span><span class=cB0> a,</span><span class=cB9>I64</span><span class=cB0> b)
+<a name="l106"></a>{
+<a name="l107"></a>  </span><span class=cB9>I64</span><span class=cB0> x;
+<a name="l108"></a>  x=a+b*2;                </span><span class=cB2>// keep -- no parens here to begin with</span><span class=cB0>
+<a name="l109"></a>}
+<a name="l110"></a>
+</span></div></pre></body>
+</html>

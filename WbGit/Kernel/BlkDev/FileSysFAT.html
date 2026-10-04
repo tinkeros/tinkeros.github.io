@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -576,539 +576,761 @@
 <a name="l535"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l536"></a>  </span><span class=cB1>catch</span><span class=cB0>
 <a name="l537"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l538"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l539"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l540"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l541"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l542"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l543"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l544"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l545"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l546"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l547"></a>  </span><span class=cB1>return</span><span class=cB0> first;
-<a name="l548"></a>}
-<a name="l549"></a>
-<a name="l550"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l550"></span><span class=cBD>FAT32AllocContiguousClus</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> cnt)
-<a name="l551"></a>{
-<a name="l552"></a>  </span><span class=cB9>I64</span><span class=cB0> i,first=1;
-<a name="l553"></a>  </span><span class=cB1>Bool</span><span class=cB0> cont,unlock,unlock_break;
-<a name="l554"></a>  </span><span class=cB1>if</span><span class=cB0> (cnt&lt;=0) </span><span class=cB1>return</span><span class=cB0> 0x0FFFFFFF;
-<a name="l555"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l556"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l557"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
-<a name="l558"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l559"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
-<a name="l560"></a>    {
-<a name="l561"></a>      first++;
-<a name="l562"></a>      i=0;
-<a name="l563"></a>      cont=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l564"></a>      </span><span class=cB1>while</span><span class=cB0> (cont &amp;&amp; i&lt;cnt)
-<a name="l565"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l566"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>first+i+1</span><span class=cB7>)</span><span class=cB0>*dv-&gt;spc+dv-&gt;data_area&gt;dv-&gt;size+dv-&gt;drv_offset)
-<a name="l567"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
-<a name="l568"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i);
-<a name="l569"></a>        </span><span class=cB1>if</span><span class=cB0> (dv-&gt;cur_fat_blk[</span><span class=cB7>(</span><span class=cB0>first+i</span><span class=cB7>)</span><span class=cB0>&amp;</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1</span><span class=cB7>)</span><span class=cB0>])
-<a name="l570"></a>          cont=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l571"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l572"></a>          i++;
-<a name="l573"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l574"></a>      </span><span class=cB1>if</span><span class=cB0> (!cont)
-<a name="l575"></a>        first=first+i;
-<a name="l576"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l577"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l578"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv);
-<a name="l579"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
-<a name="l580"></a>        {
-<a name="l581"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i,0);
-<a name="l582"></a>          </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
-<a name="l583"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
-<a name="l584"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l585"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=first+i+1;
-<a name="l586"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
-<a name="l587"></a>        }
-<a name="l588"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,0);
-<a name="l589"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
-<a name="l590"></a>        {
-<a name="l591"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i,1);
-<a name="l592"></a>          </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
-<a name="l593"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
-<a name="l594"></a>          </span><span class=cB1>else</span><span class=cB0>
-<a name="l595"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=first+i+1;
-<a name="l596"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
-<a name="l597"></a>        }
-<a name="l598"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,1);
-<a name="l599"></a>        </span><span class=cB1>break</span><span class=cB0>;
-<a name="l600"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l601"></a>    }
-<a name="l602"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l603"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l604"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l605"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l606"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l607"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l608"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l609"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l610"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l611"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l612"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l613"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l614"></a>  </span><span class=cB1>return</span><span class=cB0> first;
-<a name="l615"></a>}
-<a name="l616"></a>
-<a name="l617"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l617"></span><span class=cBD>FAT32DirNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,</span><span class=cB1>Bool</span><span class=cB0> free_old_chain)
-<a name="l618"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Doc/CutCorners.html#l1"><span class=cB4>::/Doc/CutCorners.DD</span></a><span class=cB2>.</span><span class=cB0>
-<a name="l619"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf,*last_buf,*tmp_buf,de[3];
-<a name="l620"></a>  </span><span class=cB9>I64</span><span class=cB0> i,attr,avail_cnt,de_cnt,c,
-<a name="l621"></a>      cur_dir_entry,entries_per_clus,
-<a name="l622"></a>      cur_dir_clus,xsum=0,last_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
-<a name="l623"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
-<a name="l624"></a>  </span><span class=cB1>Bool</span><span class=cB0> written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,unlock,unlock_break;
-<a name="l625"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> long_name;
-<a name="l626"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(&amp;de,tmpde,&amp;de_cnt,dv-&gt;fat32_local_time_offset);
-<a name="l627"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l538"></a>    </span><span class=cB1>if</span><span class=cB0> (0&lt;first&lt;0x0FFFFFF8)
+<a name="l539"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,first);
+<a name="l540"></a>    first=0x0FFFFFFF;
+<a name="l541"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l542"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l543"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l544"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l545"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l546"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l547"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l548"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l549"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l550"></a>  </span><span class=cB1>return</span><span class=cB0> first;
+<a name="l551"></a>}
+<a name="l552"></a>
+<a name="l553"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l553"></span><span class=cBD>FAT32AllocContiguousClus</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l554"></a>{
+<a name="l555"></a>  </span><span class=cB9>I64</span><span class=cB0> i,first=1;
+<a name="l556"></a>  </span><span class=cB1>Bool</span><span class=cB0> cont,unlock,unlock_break;
+<a name="l557"></a>  </span><span class=cB1>if</span><span class=cB0> (cnt&lt;=0) </span><span class=cB1>return</span><span class=cB0> 0x0FFFFFFF;
+<a name="l558"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l559"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l560"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
+<a name="l561"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l562"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l563"></a>    {
+<a name="l564"></a>      first++;
+<a name="l565"></a>      i=0;
+<a name="l566"></a>      cont=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l567"></a>      </span><span class=cB1>while</span><span class=cB0> (cont &amp;&amp; i&lt;cnt)
+<a name="l568"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l569"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>first+i+1</span><span class=cB7>)</span><span class=cB0>*dv-&gt;spc+dv-&gt;data_area&gt;dv-&gt;size+dv-&gt;drv_offset)
+<a name="l570"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
+<a name="l571"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i);
+<a name="l572"></a>        </span><span class=cB1>if</span><span class=cB0> (dv-&gt;cur_fat_blk[</span><span class=cB7>(</span><span class=cB0>first+i</span><span class=cB7>)</span><span class=cB0>&amp;</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1</span><span class=cB7>)</span><span class=cB0>])
+<a name="l573"></a>          cont=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l574"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l575"></a>          i++;
+<a name="l576"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l577"></a>      </span><span class=cB1>if</span><span class=cB0> (!cont)
+<a name="l578"></a>        first=first+i;
+<a name="l579"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l580"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l581"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv);
+<a name="l582"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l583"></a>        {
+<a name="l584"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i,0);
+<a name="l585"></a>          </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
+<a name="l586"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
+<a name="l587"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l588"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=first+i+1;
+<a name="l589"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
+<a name="l590"></a>        }
+<a name="l591"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,0);
+<a name="l592"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l593"></a>        {
+<a name="l594"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,first+i,1);
+<a name="l595"></a>          </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
+<a name="l596"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
+<a name="l597"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l598"></a>            dv-&gt;cur_fat_blk[(first+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=first+i+1;
+<a name="l599"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
+<a name="l600"></a>        }
+<a name="l601"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,1);
+<a name="l602"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l603"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l604"></a>    }
+<a name="l605"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l606"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l607"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l608"></a>    first=0x0FFFFFFF;
+<a name="l609"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l610"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l611"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l612"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l613"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l614"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l615"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l616"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l617"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l618"></a>  </span><span class=cB1>return</span><span class=cB0> first;
+<a name="l619"></a>}
+<a name="l620"></a>
+<a name="l621"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l621"></span><span class=cBD>FAT32AllocClusAt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> cnt)
+<a name="l622"></a>{</span><span class=cB2>//Alloc the EXACT run the caller chose -- never searches elsewhere, and</span><span class=cB0>
+<a name="l623"></a> </span><span class=cB2>//fails outright (0x0FFFFFFF) if any cluster in the run isn't free.</span><span class=cB0>
+<a name="l624"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l625"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock,unlock_break;
+<a name="l626"></a>  </span><span class=cB1>if</span><span class=cB0> (cnt&lt;=0) </span><span class=cB1>return</span><span class=cB0> 0x0FFFFFFF;
+<a name="l627"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB1>start</span><span class=cB0>&lt;1) </span><span class=cB1>return</span><span class=cB0> 0x0FFFFFFF;
 <a name="l628"></a>  </span><span class=cB1>try</span><span class=cB0>
 <a name="l629"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l630"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
 <a name="l631"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l632"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir);
-<a name="l633"></a>    buf     =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l634"></a>    last_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l635"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
-<a name="l636"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l637"></a>    cur_dir_entry=0;
-<a name="l638"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
-<a name="l639"></a>    {
-<a name="l640"></a>      attr=buf[cur_dir_entry].attr;
-<a name="l641"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l642"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
-<a name="l643"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l644"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l645"></a>        avail_cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-cur_dir_entry
-<a name="l646"></a>                  &amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1);
-<a name="l647"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;avail_cnt; i++)
-<a name="l648"></a>          </span><span class=cB1>if</span><span class=cB0> (*buf[cur_dir_entry+i].name!=0xE5)
-<a name="l649"></a>          {
-<a name="l650"></a>            </span><span class=cB1>if</span><span class=cB0> (*buf[cur_dir_entry+i].name)
-<a name="l651"></a>              avail_cnt=i;
-<a name="l652"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l653"></a>          }
-<a name="l654"></a>        </span><span class=cB1>if</span><span class=cB0> (ch==0xE5 &amp;&amp; !written &amp;&amp; avail_cnt&gt;=de_cnt)
-<a name="l655"></a>        {
-<a name="l656"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de,de_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l657"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp; -<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l658"></a>                   dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l659"></a>                   +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
-<a name="l660"></a>          cur_dir_entry+=de_cnt-1; </span><span class=cB2>//gets inc'ed</span><span class=cB0>
-<a name="l661"></a>          written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l662"></a>        }
-<a name="l663"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l664"></a>        {
-<a name="l665"></a>          </span><span class=cB1>if</span><span class=cB0> (xsum!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l666"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l667"></a>          </span><span class=cB1>if</span><span class=cB0> (!*long_name.name)
-<a name="l668"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l176"></span><span class=cBD>FATFromName</a></span><span class=cB0>(long_name.name,buf[cur_dir_entry].name);
-<a name="l669"></a></span><span class=cB2>//Del old entry with same name</span><span class=cB0>
-<a name="l670"></a>          </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>long_name.name,tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l671"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l672"></a>            </span><span class=cB1>if</span><span class=cB0> (free_old_chain)
-<a name="l673"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,buf[cur_dir_entry].clus_lo+
-<a name="l674"></a>                            buf[cur_dir_entry].clus_hi&lt;&lt;16);
-<a name="l675"></a>            </span><span class=cB1>if</span><span class=cB0> (!written)
-<a name="l676"></a>            {
-<a name="l677"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de[de_cnt-1],</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l678"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp; -<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l679"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l680"></a>                       +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
-<a name="l681"></a>              written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l682"></a>            }
-<a name="l683"></a>            </span><span class=cB1>else</span><span class=cB0>
-<a name="l684"></a>            {
-<a name="l685"></a>              *buf[cur_dir_entry].name=0xE5;
-<a name="l686"></a>              i=1;
-<a name="l687"></a>              </span><span class=cB1>while</span><span class=cB0> (i&lt;=cur_dir_entry &amp;&amp;
-<a name="l688"></a>                     buf[cur_dir_entry-i].attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>
-<a name="l689"></a>                     ==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l690"></a>                *buf[cur_dir_entry-i++].name=0xE5;
-<a name="l691"></a>              i--;
-<a name="l692"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l693"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l694"></a>                       +</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
-<a name="l695"></a>                       </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
-<a name="l696"></a>              </span><span class=cB1>if</span><span class=cB0> (i==cur_dir_entry &amp;&amp; 0&lt;last_dir_clus&lt;0x0FFFFFF8)
-<a name="l697"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l698"></a>                i=1;
-<a name="l699"></a>                </span><span class=cB1>while</span><span class=cB0> (i&lt;=entries_per_clus &amp;&amp;
-<a name="l700"></a>                       last_buf[entries_per_clus-i].attr
-<a name="l701"></a>                       &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l702"></a>                  *last_buf[entries_per_clus-i++].name=0xE5;
-<a name="l703"></a>                </span><span class=cB1>if</span><span class=cB0> (--i&gt;0)
-<a name="l704"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l705"></a>                           dv-&gt;data_area+last_dir_clus*dv-&gt;spc
-<a name="l706"></a>                           +</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
-<a name="l707"></a>                           </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
-<a name="l708"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l709"></a>            }
-<a name="l710"></a>            </span><span class=cB1>break</span><span class=cB0>;
-<a name="l711"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l712"></a>        }
-<a name="l713"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l714"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l715"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
-<a name="l716"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l717"></a>        last_dir_clus=cur_dir_clus;
-<a name="l718"></a>        tmp_buf=buf;
-<a name="l719"></a>        buf=last_buf;
-<a name="l720"></a>        last_buf=tmp_buf;
-<a name="l721"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus);
-<a name="l722"></a>        </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;c&lt;0x0FFFFFF8</span><span class=cB7>)</span><span class=cB0>)
-<a name="l723"></a>        {
-<a name="l724"></a>          c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l725"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l726"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,c,1);
-<a name="l727"></a>        }
-<a name="l728"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l729"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,c,1);
-<a name="l730"></a>        cur_dir_clus=c;
-<a name="l731"></a>        cur_dir_entry=0;
-<a name="l732"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l733"></a>    }
-<a name="l734"></a>    </span><span class=cB1>if</span><span class=cB0> (!written)
-<a name="l735"></a>    {
-<a name="l736"></a>      avail_cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-cur_dir_entry &amp; (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1);
-<a name="l737"></a>      </span><span class=cB1>if</span><span class=cB0> (avail_cnt&lt;de_cnt)
-<a name="l738"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l739"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;avail_cnt; i++)
-<a name="l740"></a>          *buf[cur_dir_entry+i].name=0xE5;
-<a name="l741"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l742"></a>                 dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l743"></a>                 +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
-<a name="l744"></a>        cur_dir_entry+=avail_cnt;
-<a name="l745"></a>        </span><span class=cB1>if</span><span class=cB0> (cur_dir_entry==entries_per_clus)
-<a name="l746"></a>        {
-<a name="l747"></a>          last_dir_clus=cur_dir_clus;
-<a name="l748"></a>          tmp_buf=buf;
-<a name="l749"></a>          buf=last_buf;
-<a name="l750"></a>          last_buf=tmp_buf;
-<a name="l751"></a>          cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1);
-<a name="l752"></a>          cur_dir_entry=0;
-<a name="l753"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l754"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l755"></a>        }
-<a name="l756"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l757"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de,de_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l758"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l759"></a>               dv-&gt;data_area+cur_dir_clus*dv-&gt;spc+
-<a name="l760"></a>               cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
-<a name="l761"></a>      cur_dir_entry+=de_cnt;
-<a name="l762"></a>      </span><span class=cB1>if</span><span class=cB0> (cur_dir_entry==entries_per_clus)
-<a name="l763"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l764"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1);
-<a name="l765"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l766"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l767"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l768"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l769"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l770"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;buf[cur_dir_entry],0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l771"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l772"></a>                 dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l773"></a>                 +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l632"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB1>start</span><span class=cB0>+cnt</span><span class=cB7>)</span><span class=cB0>*dv-&gt;spc+dv-&gt;data_area&gt;dv-&gt;size+dv-&gt;drv_offset)
+<a name="l633"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
+<a name="l634"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l635"></a>    {
+<a name="l636"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,</span><span class=cB1>start</span><span class=cB0>+i);
+<a name="l637"></a>      </span><span class=cB1>if</span><span class=cB0> (dv-&gt;cur_fat_blk[</span><span class=cB7>(</span><span class=cB1>start</span><span class=cB0>+i</span><span class=cB7>)</span><span class=cB0>&amp;</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1</span><span class=cB7>)</span><span class=cB0>])
+<a name="l638"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'Drv'</span><span class=cB0>);
+<a name="l639"></a>    }
+<a name="l640"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv);
+<a name="l641"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l642"></a>    {
+<a name="l643"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,</span><span class=cB1>start</span><span class=cB0>+i,0);
+<a name="l644"></a>      </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
+<a name="l645"></a>        dv-&gt;cur_fat_blk[(</span><span class=cB1>start</span><span class=cB0>+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
+<a name="l646"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l647"></a>        dv-&gt;cur_fat_blk[(</span><span class=cB1>start</span><span class=cB0>+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=</span><span class=cB1>start</span><span class=cB0>+i+1;
+<a name="l648"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
+<a name="l649"></a>    }
+<a name="l650"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,0);
+<a name="l651"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;cnt; i++)
+<a name="l652"></a>    {
+<a name="l653"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l129"></span><span class=cBD>DrvFATBlkSet</a></span><span class=cB0>(dv,</span><span class=cB1>start</span><span class=cB0>+i,1);
+<a name="l654"></a>      </span><span class=cB1>if</span><span class=cB0> (i+1==cnt)
+<a name="l655"></a>        dv-&gt;cur_fat_blk[(</span><span class=cB1>start</span><span class=cB0>+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=0x0FFFFFFF;
+<a name="l656"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l657"></a>        dv-&gt;cur_fat_blk[(</span><span class=cB1>start</span><span class=cB0>+i)&amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>/4-1)]=</span><span class=cB1>start</span><span class=cB0>+i+1;
+<a name="l658"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;dv-&gt;fat_blk_dirty,0);
+<a name="l659"></a>    }
+<a name="l660"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l106"></span><span class=cBD>DrvFATBlkClean</a></span><span class=cB0>(dv,1);
+<a name="l661"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l662"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l663"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l664"></a>    </span><span class=cB1>start</span><span class=cB0>=0x0FFFFFFF;
+<a name="l665"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l666"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l667"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l668"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l669"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l670"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l671"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l672"></a>  </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l673"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l674"></a>  </span><span class=cB1>return</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>;
+<a name="l675"></a>}
+<a name="l676"></a>
+<a name="l677"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l677"></span><span class=cBD>FAT32DirNew</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,</span><span class=cB1>Bool</span><span class=cB0> free_old_chain)
+<a name="l678"></a>{</span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Doc/CutCorners.html#l1"><span class=cB4>::/Doc/CutCorners.DD</span></a><span class=cB2>.</span><span class=cB0>
+<a name="l679"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf,*last_buf,*tmp_buf,de[3];
+<a name="l680"></a>  </span><span class=cB9>I64</span><span class=cB0> i,attr,avail_cnt,de_cnt,c,
+<a name="l681"></a>      cur_dir_entry,entries_per_clus,
+<a name="l682"></a>      cur_dir_clus,xsum=0,last_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>;
+<a name="l683"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
+<a name="l684"></a>  </span><span class=cB1>Bool</span><span class=cB0> written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,unlock,unlock_break;
+<a name="l685"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> long_name;
+<a name="l686"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(&amp;de,tmpde,&amp;de_cnt,dv-&gt;fat32_local_time_offset);
+<a name="l687"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l688"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l689"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l690"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
+<a name="l691"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l692"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir);
+<a name="l693"></a>    buf     =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l694"></a>    last_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l695"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
+<a name="l696"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l697"></a>    cur_dir_entry=0;
+<a name="l698"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
+<a name="l699"></a>    {
+<a name="l700"></a>      attr=buf[cur_dir_entry].attr;
+<a name="l701"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l702"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
+<a name="l703"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l704"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l705"></a>        avail_cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-cur_dir_entry
+<a name="l706"></a>                  &amp;(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1);
+<a name="l707"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;avail_cnt; i++)
+<a name="l708"></a>          </span><span class=cB1>if</span><span class=cB0> (*buf[cur_dir_entry+i].name!=0xE5)
+<a name="l709"></a>          {
+<a name="l710"></a>            </span><span class=cB1>if</span><span class=cB0> (*buf[cur_dir_entry+i].name)
+<a name="l711"></a>              avail_cnt=i;
+<a name="l712"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l713"></a>          }
+<a name="l714"></a>        </span><span class=cB1>if</span><span class=cB0> (ch==0xE5 &amp;&amp; !written &amp;&amp; avail_cnt&gt;=de_cnt)
+<a name="l715"></a>        {
+<a name="l716"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de,de_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l717"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp; -<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l718"></a>                   dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l719"></a>                   +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l720"></a>          cur_dir_entry+=de_cnt-1; </span><span class=cB2>//gets inc'ed</span><span class=cB0>
+<a name="l721"></a>          written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l722"></a>        }
+<a name="l723"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l724"></a>        {
+<a name="l725"></a>          </span><span class=cB1>if</span><span class=cB0> (xsum!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l726"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l727"></a>          </span><span class=cB1>if</span><span class=cB0> (!*long_name.name)
+<a name="l728"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l176"></span><span class=cBD>FATFromName</a></span><span class=cB0>(long_name.name,buf[cur_dir_entry].name);
+<a name="l729"></a></span><span class=cB2>//Del old entry with same name</span><span class=cB0>
+<a name="l730"></a>          </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>long_name.name,tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l731"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l732"></a>            </span><span class=cB1>if</span><span class=cB0> (free_old_chain)
+<a name="l733"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,buf[cur_dir_entry].clus_lo+
+<a name="l734"></a>                            buf[cur_dir_entry].clus_hi&lt;&lt;16);
+<a name="l735"></a>            </span><span class=cB1>if</span><span class=cB0> (!written)
+<a name="l736"></a>            {
+<a name="l737"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de[de_cnt-1],</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l738"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp; -<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l739"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l740"></a>                       +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l741"></a>              written=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l742"></a>            }
+<a name="l743"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l744"></a>            {
+<a name="l745"></a>              *buf[cur_dir_entry].name=0xE5;
+<a name="l746"></a>              i=1;
+<a name="l747"></a>              </span><span class=cB1>while</span><span class=cB0> (i&lt;=cur_dir_entry &amp;&amp;
+<a name="l748"></a>                     buf[cur_dir_entry-i].attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>
+<a name="l749"></a>                     ==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l750"></a>                *buf[cur_dir_entry-i++].name=0xE5;
+<a name="l751"></a>              i--;
+<a name="l752"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l753"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l754"></a>                       +</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
+<a name="l755"></a>                       </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
+<a name="l756"></a>              </span><span class=cB1>if</span><span class=cB0> (i==cur_dir_entry &amp;&amp; 0&lt;last_dir_clus&lt;0x0FFFFFF8)
+<a name="l757"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l758"></a>                i=1;
+<a name="l759"></a>                </span><span class=cB1>while</span><span class=cB0> (i&lt;=entries_per_clus &amp;&amp;
+<a name="l760"></a>                       last_buf[entries_per_clus-i].attr
+<a name="l761"></a>                       &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l762"></a>                  *last_buf[entries_per_clus-i++].name=0xE5;
+<a name="l763"></a>                </span><span class=cB1>if</span><span class=cB0> (--i&gt;0)
+<a name="l764"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l765"></a>                           dv-&gt;data_area+last_dir_clus*dv-&gt;spc
+<a name="l766"></a>                           +</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
+<a name="l767"></a>                           </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
+<a name="l768"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l769"></a>            }
+<a name="l770"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l771"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l772"></a>        }
+<a name="l773"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l774"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l775"></a>    }
-<a name="l776"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(last_buf);
-<a name="l777"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l778"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l779"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l780"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l781"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l782"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l783"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l784"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l785"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
-<a name="l786"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l787"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l788"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l789"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l790"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l791"></a>}
-<a name="l792"></a>
-<a name="l793"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l793"></span><span class=cBD>FAT32FilesDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *files_find_mask,</span><span class=cB9>I64</span><span class=cB0> fuf_flags,
-<a name="l794"></a>                  </span><span class=cB1>Bool</span><span class=cB0> del_dir,</span><span class=cB1>Bool</span><span class=cB0> print_msg)
-<a name="l795"></a>{
-<a name="l796"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf,*last_buf,*tmp_buf;
-<a name="l797"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res=0,attr,xsum=0,last_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>,
-<a name="l798"></a>        cur_dir_entry,entries_per_clus,cur_dir_clus;
-<a name="l799"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
-<a name="l800"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_break;
-<a name="l801"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> long_name;
-<a name="l802"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l803"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l804"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l805"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
-<a name="l806"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l807"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir);
-<a name="l808"></a>    buf     =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l809"></a>    last_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l810"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
-<a name="l811"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l812"></a>    cur_dir_entry=0;
-<a name="l813"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
-<a name="l814"></a>    {
-<a name="l815"></a>      attr=buf[cur_dir_entry].attr;
-<a name="l816"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; ch!=</span><span class=cB6>'.'</span><span class=cB0>)
-<a name="l817"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l818"></a>        </span><span class=cB1>if</span><span class=cB0> (attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l819"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
-<a name="l820"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l821"></a>        {
-<a name="l822"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l823"></a>              </span><span class=cB7>(</span><span class=cB0>del_dir || !(attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
-<a name="l824"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l825"></a>            </span><span class=cB1>if</span><span class=cB0> (xsum!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l826"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l827"></a>            </span><span class=cB1>if</span><span class=cB0> (!*long_name.name)
-<a name="l828"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l176"></span><span class=cBD>FATFromName</a></span><span class=cB0>(long_name.name,buf[cur_dir_entry].name);
-<a name="l829"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l42"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>long_name.name,files_find_mask,fuf_flags</span><span class=cB7>)</span><span class=cB0>)
-<a name="l830"></a>            {
-<a name="l831"></a>              </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB7>)</span><span class=cB0>) res++;
-<a name="l832"></a>              </span><span class=cB1>if</span><span class=cB0> (print_msg)
-<a name="l833"></a>                </span><span class=cB6>&quot;Del %s\n&quot;</span><span class=cB0>,long_name.name;
-<a name="l834"></a>              *buf[cur_dir_entry].name=0xE5;
-<a name="l835"></a>              i=1;
-<a name="l836"></a>              </span><span class=cB1>while</span><span class=cB0> (i&lt;=cur_dir_entry &amp;&amp;
-<a name="l837"></a>                     buf[cur_dir_entry-i].attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>
-<a name="l838"></a>                     ==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l839"></a>                *buf[cur_dir_entry-i++].name=0xE5;
-<a name="l840"></a>              i--;
-<a name="l841"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l842"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
-<a name="l843"></a>                       +</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
-<a name="l844"></a>                       </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
-<a name="l845"></a>              </span><span class=cB1>if</span><span class=cB0> (i==cur_dir_entry &amp;&amp; last_dir_clus!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
-<a name="l846"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l847"></a>                i=1;
-<a name="l848"></a>                </span><span class=cB1>while</span><span class=cB0> (i&lt;=entries_per_clus &amp;&amp;
-<a name="l849"></a>                       last_buf[entries_per_clus-i].attr
-<a name="l850"></a>                       &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l851"></a>                  *last_buf[entries_per_clus-i++].name=0xE5;
-<a name="l852"></a>                </span><span class=cB1>if</span><span class=cB0> (--i&gt;0)
-<a name="l853"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
-<a name="l854"></a>                           dv-&gt;data_area+last_dir_clus*dv-&gt;spc
-<a name="l855"></a>                           +</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
-<a name="l856"></a>                           </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
-<a name="l857"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l858"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,buf[cur_dir_entry].clus_lo+
-<a name="l859"></a>                            buf[cur_dir_entry].clus_hi&lt;&lt;16);
-<a name="l860"></a>            }
-<a name="l861"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l862"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l863"></a>        }
-<a name="l864"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l865"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l866"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l867"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
-<a name="l868"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l869"></a>        last_dir_clus=cur_dir_clus;
-<a name="l870"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus,1);
-<a name="l871"></a>        tmp_buf=buf;
-<a name="l872"></a>        buf=last_buf;
-<a name="l873"></a>        last_buf=tmp_buf;
-<a name="l874"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l875"></a>        cur_dir_entry=0;
-<a name="l876"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l877"></a>    }
-<a name="l878"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l879"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(last_buf);
-<a name="l880"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l881"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l882"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l883"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l884"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l885"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l886"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l887"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l888"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l889"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l890"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l891"></a>}
-<a name="l892"></a>
-<a name="l893"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l893"></span><span class=cBD>FAT32FileWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> size,
-<a name="l894"></a>                   <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l188"></span><span class=cB9>CDate</a></span><span class=cB0> cdt,</span><span class=cB9>I64</span><span class=cB0> attr)
-<a name="l895"></a>{
-<a name="l896"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> de;
-<a name="l897"></a>  </span><span class=cB9>I64</span><span class=cB0> c=0,blk_cnt;
-<a name="l898"></a>  </span><span class=cB1>Bool</span><span class=cB0> contiguous;
-<a name="l899"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;de,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l900"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;0) size=0;
-<a name="l901"></a>  </span><span class=cB1>if</span><span class=cB0> (dv-&gt;fs_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3125"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>)
-<a name="l902"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not FAT32 Drv\n&quot;</span><span class=cB0>);
-<a name="l903"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l1"></span><span class=cBD>CFileNameTo</a></span><span class=cB7>(</span><span class=cB0>de.name,name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l904"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid FileName: \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,name);
-<a name="l905"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l906"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l907"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l793"></span><span class=cBD>FAT32FilesDel</a></span><span class=cB0>(dv,cur_dir,de.name,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l908"></a>    </span><span class=cB1>if</span><span class=cB0> (attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2667"></span><span class=cB3>RS_ATTR_CONTIGUOUS</a></span><span class=cB0>)
-<a name="l909"></a>      contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l910"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l911"></a>      contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l912"></a>    de.size=size;
-<a name="l913"></a>    </span><span class=cB1>if</span><span class=cB0> (blk_cnt=</span><span class=cB7>(</span><span class=cB0>size+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>)
-<a name="l914"></a>      c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,0,</span><span class=cB7>(</span><span class=cB0>blk_cnt+dv-&gt;spc-1</span><span class=cB7>)</span><span class=cB0>/dv-&gt;spc,contiguous);
-<a name="l915"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l916"></a>      c=0x0FFFFFFF;
-<a name="l917"></a>    de.clus=c;
-<a name="l918"></a>    de.attr=attr;
-<a name="l919"></a>    de.datetime=cdt;
-<a name="l920"></a>    </span><span class=cB1>if</span><span class=cB0> (blk_cnt)
-<a name="l921"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l101"></span><span class=cB5>ClusBlkWrite</a></span><span class=cB0>(dv,buf,c,blk_cnt);
-<a name="l922"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l617"></span><span class=cBD>FAT32DirNew</a></span><span class=cB0>(dv,cur_dir,&amp;de,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l923"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l924"></a>  </span><span class=cB1>return</span><span class=cB0> c;
-<a name="l925"></a>}
-<a name="l926"></a>
-<a name="l927"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l927"></span><span class=cBD>FAT32FilesFind</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask,
-<a name="l928"></a>                          </span><span class=cB9>I64</span><span class=cB0> fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *parent=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> *_dir_size=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l929"></a>{
-<a name="l930"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv;
-<a name="l931"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf;
-<a name="l932"></a>  </span><span class=cB9>I64</span><span class=cB0> attr,xsum=0,dir_size=0,sub_dir_size,
-<a name="l933"></a>           cur_dir_clus,cur_dir_entry,entries_per_clus;
-<a name="l934"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
-<a name="l935"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*tmpde,long_name;
-<a name="l936"></a>  </span><span class=cB1>if</span><span class=cB0> (fuf_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2751"></span><span class=cB3>FUG_FILES_FIND</a></span><span class=cB0>)
-<a name="l937"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'FUF'</span><span class=cB0>);
-<a name="l938"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l939"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l940"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l941"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l942"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
-<a name="l943"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
-<a name="l944"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
-<a name="l945"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l946"></a>    dir_size+=dv-&gt;spc*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
-<a name="l947"></a>    cur_dir_entry=0;
-<a name="l948"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
-<a name="l949"></a>    {
-<a name="l950"></a>      attr=buf[cur_dir_entry].attr;
-<a name="l951"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5)
-<a name="l952"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l953"></a>        </span><span class=cB1>if</span><span class=cB0> (attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
-<a name="l954"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
-<a name="l955"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l956"></a>        {
-<a name="l957"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0>)
-<a name="l958"></a>          </span><span class=cB7>{</span><span class=cB0>
-<a name="l959"></a>            tmpde=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l960"></a>            </span><span class=cB1>if</span><span class=cB0> (xsum==<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l961"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmpde,&amp;long_name,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l962"></a>            </span><span class=cB1>else</span><span class=cB0>
-<a name="l963"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(tmpde,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l964"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l239"></span><span class=cBD>FAT32CDirFill</a></span><span class=cB7>(</span><span class=cB0>tmpde,&amp;buf[cur_dir_entry],
-<a name="l965"></a>                              dv-&gt;fat32_local_time_offset</span><span class=cB7>)</span><span class=cB0>)
-<a name="l966"></a>            {
-<a name="l967"></a>              tmpde-&gt;parent=parent;
-<a name="l968"></a>              </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2695"></span><span class=cB3>FUf_RECURSE</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0> &amp;&amp;
-<a name="l969"></a>                  *tmpde-&gt;name!=</span><span class=cB6>'.'</span><span class=cB0>)
-<a name="l970"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l971"></a>                tmpde-&gt;next=res;
-<a name="l972"></a>                res=tmpde;
-<a name="l973"></a>                tmpde-&gt;full_name=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l133"></span><span class=cB5>DirNameAbs</a></span><span class=cB0>(tmpde-&gt;name);
-<a name="l974"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l975"></a>                </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l976"></a>                {
-<a name="l977"></a>                  tmpde-&gt;sub=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l927"></span><span class=cBD>FAT32FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags,
-<a name="l978"></a>                                            tmpde,&amp;sub_dir_size);
-<a name="l979"></a>                  tmpde-&gt;size=sub_dir_size;
-<a name="l980"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);
-<a name="l981"></a>                }
-<a name="l982"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
-<a name="l983"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l984"></a>              </span><span class=cB1>else</span><span class=cB0>
-<a name="l985"></a>              </span><span class=cB7>{</span><span class=cB0>
-<a name="l986"></a>                tmpde-&gt;full_name=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l205"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(tmpde-&gt;name);
-<a name="l987"></a>                </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0> || !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2707"></span><span class=cB3>FUf_JUST_DIRS</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l988"></a>                    !</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2695"></span><span class=cB3>FUf_RECURSE</a></span><span class=cB0>) &amp;&amp;
-<a name="l989"></a>                      *tmpde-&gt;name==</span><span class=cB6>'.'</span><span class=cB0> &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
-<a name="l990"></a>                    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l42"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;full_name,files_find_mask,
-<a name="l991"></a>                                   fuf_flags</span><span class=cB7>)</span><span class=cB0>)
-<a name="l992"></a>                {
-<a name="l993"></a>                  tmpde-&gt;next=res;
-<a name="l994"></a>                  res=tmpde;
-<a name="l995"></a>                }
-<a name="l996"></a>                </span><span class=cB1>else</span><span class=cB0>
-<a name="l997"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
-<a name="l998"></a>              </span><span class=cB7>}</span><span class=cB0>
-<a name="l999"></a>            }
-<a name="l1000"></a>            </span><span class=cB1>else</span><span class=cB0>
-<a name="l1001"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
-<a name="l1002"></a>          </span><span class=cB7>}</span><span class=cB0>
-<a name="l1003"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l1004"></a>        }
-<a name="l1005"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l1006"></a>      </span><span class=cB1>else</span><span class=cB0>
-<a name="l1007"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l1008"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
-<a name="l1009"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l1010"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus);
-<a name="l1011"></a>        </span><span class=cB1>if</span><span class=cB0> (cur_dir_clus==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
-<a name="l1012"></a>          </span><span class=cB1>break</span><span class=cB0>;
-<a name="l1013"></a>        </span><span class=cB1>else</span><span class=cB0>
-<a name="l1014"></a>        {
-<a name="l1015"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
-<a name="l1016"></a>          dir_size+=dv-&gt;spc*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
-<a name="l1017"></a>          cur_dir_entry=0;
-<a name="l1018"></a>        }
-<a name="l1019"></a>      </span><span class=cB7>}</span><span class=cB0>
-<a name="l1020"></a>    }
-<a name="l1021"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l1022"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l1023"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1024"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l1025"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
-<a name="l1026"></a>  </span><span class=cB1>if</span><span class=cB0> (_dir_size)
-<a name="l1027"></a>    *_dir_size=dir_size;
-<a name="l1028"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l1029"></a>}
-<a name="l1030"></a>
-<a name="l1031"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1031"></span><span class=cBD>FAT32MkDir</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> entry_cnt)
-<a name="l1032"></a>{
-<a name="l1033"></a>  </span><span class=cB9>I64</span><span class=cB0> c,cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir),
-<a name="l1034"></a></span><span class=cB2>//Rough estimate of size</span><span class=cB0>
-<a name="l1035"></a>        size=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l41"></span><span class=cB5>CeilU64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>entry_cnt+2</span><span class=cB7>)</span><span class=cB0>&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
-<a name="l1036"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(size);
-<a name="l1037"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> d_native;
-<a name="l1038"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *dFAT=buf;
-<a name="l1039"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_break;
-<a name="l1040"></a>  </span><span class=cB1>try</span><span class=cB0>
-<a name="l1041"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l1042"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
-<a name="l1043"></a>    c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB0>(name,buf,size,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>);
-<a name="l1044"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;d_native,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l1045"></a>    d_native.attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>;
-<a name="l1046"></a>    *d_native.name=</span><span class=cB6>'.'</span><span class=cB0>;
-<a name="l1047"></a>    d_native.name[1]=0;
-<a name="l1048"></a>    d_native.clus=c;
-<a name="l1049"></a>    d_native.size=0;
-<a name="l1050"></a>    d_native.datetime=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l195"></span><span class=cB5>Now</a></span><span class=cB0>;
-<a name="l1051"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(dFAT,&amp;d_native,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,dv-&gt;fat32_local_time_offset);
-<a name="l1052"></a>    dFAT++;
-<a name="l1053"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;d_native,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
-<a name="l1054"></a>    d_native.attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>;
-<a name="l1055"></a>    *d_native.name=</span><span class=cB6>'.'</span><span class=cB0>;
-<a name="l1056"></a>    d_native.name[1]=</span><span class=cB6>'.'</span><span class=cB0>;
-<a name="l1057"></a>    d_native.name[2]=0;
-<a name="l1058"></a>    d_native.clus=cur_dir_clus;
-<a name="l1059"></a>    d_native.size=0;
-<a name="l1060"></a>    d_native.datetime=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l195"></span><span class=cB5>Now</a></span><span class=cB0>;
-<a name="l1061"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(dFAT,&amp;d_native,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,dv-&gt;fat32_local_time_offset);
-<a name="l1062"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,c,1);
-<a name="l1063"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
-<a name="l1064"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l1065"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l1066"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l1067"></a>  </span><span class=cB1>catch</span><span class=cB0>
-<a name="l1068"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
-<a name="l1069"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
-<a name="l1070"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l1071"></a>}
+<a name="l775"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
+<a name="l776"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l777"></a>        last_dir_clus=cur_dir_clus;
+<a name="l778"></a>        tmp_buf=buf;
+<a name="l779"></a>        buf=last_buf;
+<a name="l780"></a>        last_buf=tmp_buf;
+<a name="l781"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus);
+<a name="l782"></a>        </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;c&lt;0x0FFFFFF8</span><span class=cB7>)</span><span class=cB0>)
+<a name="l783"></a>        {
+<a name="l784"></a>          c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l785"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l786"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,c,1);
+<a name="l787"></a>        }
+<a name="l788"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l789"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,c,1);
+<a name="l790"></a>        cur_dir_clus=c;
+<a name="l791"></a>        cur_dir_entry=0;
+<a name="l792"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l793"></a>    }
+<a name="l794"></a>    </span><span class=cB1>if</span><span class=cB0> (!written)
+<a name="l795"></a>    {
+<a name="l796"></a>      avail_cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-cur_dir_entry &amp; (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1);
+<a name="l797"></a>      </span><span class=cB1>if</span><span class=cB0> (avail_cnt&lt;de_cnt)
+<a name="l798"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l799"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;avail_cnt; i++)
+<a name="l800"></a>          *buf[cur_dir_entry+i].name=0xE5;
+<a name="l801"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l802"></a>                 dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l803"></a>                 +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l804"></a>        cur_dir_entry+=avail_cnt;
+<a name="l805"></a>        </span><span class=cB1>if</span><span class=cB0> (cur_dir_entry==entries_per_clus)
+<a name="l806"></a>        {
+<a name="l807"></a>          last_dir_clus=cur_dir_clus;
+<a name="l808"></a>          tmp_buf=buf;
+<a name="l809"></a>          buf=last_buf;
+<a name="l810"></a>          last_buf=tmp_buf;
+<a name="l811"></a>          cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1);
+<a name="l812"></a>          cur_dir_entry=0;
+<a name="l813"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l814"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l815"></a>        }
+<a name="l816"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l817"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(&amp;buf[cur_dir_entry],&amp;de,de_cnt*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l818"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l819"></a>               dv-&gt;data_area+cur_dir_clus*dv-&gt;spc+
+<a name="l820"></a>               cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l821"></a>      cur_dir_entry+=de_cnt;
+<a name="l822"></a>      </span><span class=cB1>if</span><span class=cB0> (cur_dir_entry==entries_per_clus)
+<a name="l823"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l824"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,cur_dir_clus,1);
+<a name="l825"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l826"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l827"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l828"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l829"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l830"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;buf[cur_dir_entry],0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l831"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry &amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l832"></a>                 dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l833"></a>                 +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l834"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l835"></a>    }
+<a name="l836"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(last_buf);
+<a name="l837"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l838"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l839"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l840"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l841"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l842"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l843"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l844"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l845"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l846"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l847"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l848"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l849"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l850"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l851"></a>}
+<a name="l852"></a>
+<a name="l853"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l853"></span><span class=cBD>FAT32FilesDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *files_find_mask,</span><span class=cB9>I64</span><span class=cB0> fuf_flags,
+<a name="l854"></a>                  </span><span class=cB1>Bool</span><span class=cB0> del_dir,</span><span class=cB1>Bool</span><span class=cB0> print_msg)
+<a name="l855"></a>{
+<a name="l856"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf,*last_buf,*tmp_buf;
+<a name="l857"></a>  </span><span class=cB9>I64</span><span class=cB0> i,res=0,attr,xsum=0,last_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>,
+<a name="l858"></a>        cur_dir_entry,entries_per_clus,cur_dir_clus;
+<a name="l859"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
+<a name="l860"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_break;
+<a name="l861"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> long_name;
+<a name="l862"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l863"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l864"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l865"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
+<a name="l866"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l867"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir);
+<a name="l868"></a>    buf     =<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l869"></a>    last_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l870"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
+<a name="l871"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l872"></a>    cur_dir_entry=0;
+<a name="l873"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
+<a name="l874"></a>    {
+<a name="l875"></a>      attr=buf[cur_dir_entry].attr;
+<a name="l876"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; ch!=</span><span class=cB6>'.'</span><span class=cB0>)
+<a name="l877"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l878"></a>        </span><span class=cB1>if</span><span class=cB0> (attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l879"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
+<a name="l880"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l881"></a>        {
+<a name="l882"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l883"></a>              </span><span class=cB7>(</span><span class=cB0>del_dir || !(attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l884"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l885"></a>            </span><span class=cB1>if</span><span class=cB0> (xsum!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l886"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l887"></a>            </span><span class=cB1>if</span><span class=cB0> (!*long_name.name)
+<a name="l888"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l176"></span><span class=cBD>FATFromName</a></span><span class=cB0>(long_name.name,buf[cur_dir_entry].name);
+<a name="l889"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l42"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>long_name.name,files_find_mask,fuf_flags</span><span class=cB7>)</span><span class=cB0>)
+<a name="l890"></a>            {
+<a name="l891"></a>              </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB7>)</span><span class=cB0>) res++;
+<a name="l892"></a>              </span><span class=cB1>if</span><span class=cB0> (print_msg)
+<a name="l893"></a>                </span><span class=cB6>&quot;Del %s\n&quot;</span><span class=cB0>,long_name.name;
+<a name="l894"></a>              *buf[cur_dir_entry].name=0xE5;
+<a name="l895"></a>              i=1;
+<a name="l896"></a>              </span><span class=cB1>while</span><span class=cB0> (i&lt;=cur_dir_entry &amp;&amp;
+<a name="l897"></a>                     buf[cur_dir_entry-i].attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>
+<a name="l898"></a>                     ==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l899"></a>                *buf[cur_dir_entry-i++].name=0xE5;
+<a name="l900"></a>              i--;
+<a name="l901"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l902"></a>                       dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l903"></a>                       +</span><span class=cB7>(</span><span class=cB0>cur_dir_entry-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
+<a name="l904"></a>                       </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
+<a name="l905"></a>              </span><span class=cB1>if</span><span class=cB0> (i==cur_dir_entry &amp;&amp; last_dir_clus!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
+<a name="l906"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l907"></a>                i=1;
+<a name="l908"></a>                </span><span class=cB1>while</span><span class=cB0> (i&lt;=entries_per_clus &amp;&amp;
+<a name="l909"></a>                       last_buf[entries_per_clus-i].attr
+<a name="l910"></a>                       &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l911"></a>                  *last_buf[entries_per_clus-i++].name=0xE5;
+<a name="l912"></a>                </span><span class=cB1>if</span><span class=cB0> (--i&gt;0)
+<a name="l913"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l914"></a>                           dv-&gt;data_area+last_dir_clus*dv-&gt;spc
+<a name="l915"></a>                           +</span><span class=cB7>(</span><span class=cB0>entries_per_clus-i</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
+<a name="l916"></a>                           </span><span class=cB7>(</span><span class=cB0>i+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>);
+<a name="l917"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l918"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,buf[cur_dir_entry].clus_lo+
+<a name="l919"></a>                            buf[cur_dir_entry].clus_hi&lt;&lt;16);
+<a name="l920"></a>            }
+<a name="l921"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l922"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l923"></a>        }
+<a name="l924"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l925"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l926"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l927"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
+<a name="l928"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l929"></a>        last_dir_clus=cur_dir_clus;
+<a name="l930"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus,1);
+<a name="l931"></a>        tmp_buf=buf;
+<a name="l932"></a>        buf=last_buf;
+<a name="l933"></a>        last_buf=tmp_buf;
+<a name="l934"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l935"></a>        cur_dir_entry=0;
+<a name="l936"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l937"></a>    }
+<a name="l938"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l939"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(last_buf);
+<a name="l940"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l941"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l942"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l943"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l944"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l945"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l946"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l947"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l948"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l949"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l950"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l951"></a>}
+<a name="l952"></a>
+<a name="l953"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l953"></span><span class=cBD>FAT32FileWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> size,
+<a name="l954"></a>                   <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l188"></span><span class=cB9>CDate</a></span><span class=cB0> cdt,</span><span class=cB9>I64</span><span class=cB0> attr,</span><span class=cB9>I64</span><span class=cB0> at_clus=0)
+<a name="l955"></a>{</span><span class=cB2>//at_clus&gt;0 forces the data onto that exact cluster run instead of</span><span class=cB0>
+<a name="l956"></a> </span><span class=cB2>//letting the allocator search for space.</span><span class=cB0>
+<a name="l957"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> de;
+<a name="l958"></a>  </span><span class=cB9>I64</span><span class=cB0> c=0,blk_cnt;
+<a name="l959"></a>  </span><span class=cB1>Bool</span><span class=cB0> contiguous;
+<a name="l960"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;de,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l961"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;0) size=0;
+<a name="l962"></a>  </span><span class=cB1>if</span><span class=cB0> (dv-&gt;fs_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3125"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>)
+<a name="l963"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Not FAT32 Drv\n&quot;</span><span class=cB0>);
+<a name="l964"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l1"></span><span class=cBD>CFileNameTo</a></span><span class=cB7>(</span><span class=cB0>de.name,name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l965"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1073"></span><span class=cB5>PrintErr</a></span><span class=cB0>(</span><span class=cB6>&quot;Invalid FileName: \&quot;%s\&quot;.\n&quot;</span><span class=cB0>,name);
+<a name="l966"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l967"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l968"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l853"></span><span class=cBD>FAT32FilesDel</a></span><span class=cB0>(dv,cur_dir,de.name,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l969"></a>    </span><span class=cB1>if</span><span class=cB0> (attr &amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2667"></span><span class=cB3>RS_ATTR_CONTIGUOUS</a></span><span class=cB0>)
+<a name="l970"></a>      contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l971"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l972"></a>      contiguous=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l973"></a>    de.size=size;
+<a name="l974"></a>    </span><span class=cB1>if</span><span class=cB0> (blk_cnt=</span><span class=cB7>(</span><span class=cB0>size+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>)
+<a name="l975"></a>    {
+<a name="l976"></a>      </span><span class=cB1>if</span><span class=cB0> (at_clus)
+<a name="l977"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l621"></span><span class=cBD>FAT32AllocClusAt</a></span><span class=cB0>(dv,at_clus,</span><span class=cB7>(</span><span class=cB0>blk_cnt+dv-&gt;spc-1</span><span class=cB7>)</span><span class=cB0>/dv-&gt;spc);
+<a name="l978"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l979"></a>        c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l147"></span><span class=cB5>ClusAlloc</a></span><span class=cB0>(dv,0,</span><span class=cB7>(</span><span class=cB0>blk_cnt+dv-&gt;spc-1</span><span class=cB7>)</span><span class=cB0>/dv-&gt;spc,contiguous);
+<a name="l980"></a>    }
+<a name="l981"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l982"></a>      c=0x0FFFFFFF;
+<a name="l983"></a>    de.clus=c;
+<a name="l984"></a>    de.attr=attr;
+<a name="l985"></a>    de.datetime=cdt;
+<a name="l986"></a>    </span><span class=cB1>if</span><span class=cB0> (blk_cnt)
+<a name="l987"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l101"></span><span class=cB5>ClusBlkWrite</a></span><span class=cB0>(dv,buf,c,blk_cnt);
+<a name="l988"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l677"></span><span class=cBD>FAT32DirNew</a></span><span class=cB0>(dv,cur_dir,&amp;de,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l989"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l990"></a>  </span><span class=cB1>return</span><span class=cB0> c;
+<a name="l991"></a>}
+<a name="l992"></a>
+<a name="l993"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l993"></span><span class=cBD>FAT32FilesFind</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask,
+<a name="l994"></a>                          </span><span class=cB9>I64</span><span class=cB0> fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *parent=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> *_dir_size=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l995"></a>{
+<a name="l996"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv;
+<a name="l997"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf;
+<a name="l998"></a>  </span><span class=cB9>I64</span><span class=cB0> attr,xsum=0,dir_size=0,sub_dir_size,
+<a name="l999"></a>           cur_dir_clus,cur_dir_entry,entries_per_clus;
+<a name="l1000"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
+<a name="l1001"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*tmpde,long_name;
+<a name="l1002"></a>  </span><span class=cB1>if</span><span class=cB0> (fuf_flags&amp;~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2751"></span><span class=cB3>FUG_FILES_FIND</a></span><span class=cB0>)
+<a name="l1003"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l85"></span><span class=cB5>throw</a></span><span class=cB0>(</span><span class=cB6>'FUF'</span><span class=cB0>);
+<a name="l1004"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l1005"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1006"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1007"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l1008"></a>    cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dir);
+<a name="l1009"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l1010"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
+<a name="l1011"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l1012"></a>    dir_size+=dv-&gt;spc*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
+<a name="l1013"></a>    cur_dir_entry=0;
+<a name="l1014"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
+<a name="l1015"></a>    {
+<a name="l1016"></a>      attr=buf[cur_dir_entry].attr;
+<a name="l1017"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5)
+<a name="l1018"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1019"></a>        </span><span class=cB1>if</span><span class=cB0> (attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l1020"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
+<a name="l1021"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1022"></a>        {
+<a name="l1023"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l1024"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l1025"></a>            tmpde=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1026"></a>            </span><span class=cB1>if</span><span class=cB0> (xsum==<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1027"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(tmpde,&amp;long_name,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1028"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l1029"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(tmpde,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1030"></a>            </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l239"></span><span class=cBD>FAT32CDirFill</a></span><span class=cB7>(</span><span class=cB0>tmpde,&amp;buf[cur_dir_entry],
+<a name="l1031"></a>                              dv-&gt;fat32_local_time_offset</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1032"></a>            {
+<a name="l1033"></a>              tmpde-&gt;parent=parent;
+<a name="l1034"></a>              </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2695"></span><span class=cB3>FUf_RECURSE</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0> &amp;&amp;
+<a name="l1035"></a>                  *tmpde-&gt;name!=</span><span class=cB6>'.'</span><span class=cB0>)
+<a name="l1036"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l1037"></a>                tmpde-&gt;next=res;
+<a name="l1038"></a>                res=tmpde;
+<a name="l1039"></a>                tmpde-&gt;full_name=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l133"></span><span class=cB5>DirNameAbs</a></span><span class=cB0>(tmpde-&gt;name);
+<a name="l1040"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1041"></a>                </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1042"></a>                {
+<a name="l1043"></a>                  tmpde-&gt;sub=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l993"></span><span class=cBD>FAT32FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags,
+<a name="l1044"></a>                                            tmpde,&amp;sub_dir_size);
+<a name="l1045"></a>                  tmpde-&gt;size=sub_dir_size;
+<a name="l1046"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB0>(</span><span class=cB6>&quot;..&quot;</span><span class=cB0>);
+<a name="l1047"></a>                }
+<a name="l1048"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l1049"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l1050"></a>              </span><span class=cB1>else</span><span class=cB0>
+<a name="l1051"></a>              </span><span class=cB7>{</span><span class=cB0>
+<a name="l1052"></a>                tmpde-&gt;full_name=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l205"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(tmpde-&gt;name);
+<a name="l1053"></a>                </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0> || !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2707"></span><span class=cB3>FUf_JUST_DIRS</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l1054"></a>                    !</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2695"></span><span class=cB3>FUf_RECURSE</a></span><span class=cB0>) &amp;&amp;
+<a name="l1055"></a>                      *tmpde-&gt;name==</span><span class=cB6>'.'</span><span class=cB0> &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l1056"></a>                    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l42"></span><span class=cB5>FilesFindMatch</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;full_name,files_find_mask,
+<a name="l1057"></a>                                   fuf_flags</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1058"></a>                {
+<a name="l1059"></a>                  tmpde-&gt;next=res;
+<a name="l1060"></a>                  res=tmpde;
+<a name="l1061"></a>                }
+<a name="l1062"></a>                </span><span class=cB1>else</span><span class=cB0>
+<a name="l1063"></a>                  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
+<a name="l1064"></a>              </span><span class=cB7>}</span><span class=cB0>
+<a name="l1065"></a>            }
+<a name="l1066"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l1067"></a>              <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l18"></span><span class=cB5>DirEntryDel</a></span><span class=cB0>(tmpde);
+<a name="l1068"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l1069"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1070"></a>        }
+<a name="l1071"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1072"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1073"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1074"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
+<a name="l1075"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1076"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus);
+<a name="l1077"></a>        </span><span class=cB1>if</span><span class=cB0> (cur_dir_clus==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2398"></span><span class=cB3>INVALID_CLUS</a></span><span class=cB0>)
+<a name="l1078"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1079"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l1080"></a>        {
+<a name="l1081"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l1082"></a>          dir_size+=dv-&gt;spc*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>;
+<a name="l1083"></a>          cur_dir_entry=0;
+<a name="l1084"></a>        }
+<a name="l1085"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1086"></a>    }
+<a name="l1087"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l1088"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1089"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1090"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1091"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1092"></a>  </span><span class=cB1>if</span><span class=cB0> (_dir_size)
+<a name="l1093"></a>    *_dir_size=dir_size;
+<a name="l1094"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l1095"></a>}
+<a name="l1096"></a>
+<a name="l1097"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1097"></span><span class=cBD>FAT32MkDir</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> entry_cnt)
+<a name="l1098"></a>{
+<a name="l1099"></a>  </span><span class=cB9>I64</span><span class=cB0> c,cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir),
+<a name="l1100"></a></span><span class=cB2>//Rough estimate of size</span><span class=cB0>
+<a name="l1101"></a>        size=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l41"></span><span class=cB5>CeilU64</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>entry_cnt+2</span><span class=cB7>)</span><span class=cB0>&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2394"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>);
+<a name="l1102"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(size);
+<a name="l1103"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> d_native;
+<a name="l1104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *dFAT=buf;
+<a name="l1105"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock_break;
+<a name="l1106"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l1107"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1108"></a>    unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
+<a name="l1109"></a>    c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(name,buf,size,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>);
+<a name="l1110"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;d_native,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1111"></a>    d_native.attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>;
+<a name="l1112"></a>    *d_native.name=</span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l1113"></a>    d_native.name[1]=0;
+<a name="l1114"></a>    d_native.clus=c;
+<a name="l1115"></a>    d_native.size=0;
+<a name="l1116"></a>    d_native.datetime=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l195"></span><span class=cB5>Now</a></span><span class=cB0>;
+<a name="l1117"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(dFAT,&amp;d_native,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,dv-&gt;fat32_local_time_offset);
+<a name="l1118"></a>    dFAT++;
+<a name="l1119"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;d_native,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1120"></a>    d_native.attr=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>;
+<a name="l1121"></a>    *d_native.name=</span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l1122"></a>    d_native.name[1]=</span><span class=cB6>'.'</span><span class=cB0>;
+<a name="l1123"></a>    d_native.name[2]=0;
+<a name="l1124"></a>    d_native.clus=cur_dir_clus;
+<a name="l1125"></a>    d_native.size=0;
+<a name="l1126"></a>    d_native.datetime=<a href="http://tinkeros.github.io/WbGit/Kernel/KDate.html#l195"></span><span class=cB5>Now</a></span><span class=cB0>;
+<a name="l1127"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l254"></span><span class=cBD>FAT32DirFill</a></span><span class=cB0>(dFAT,&amp;d_native,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,dv-&gt;fat32_local_time_offset);
+<a name="l1128"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,c,1);
+<a name="l1129"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l1130"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l1131"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l1132"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1133"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1134"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l1135"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l1136"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1137"></a>}
+<a name="l1138"></a>
+<a name="l1139"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1139"></span><span class=cBD>FAT32ClusChainCnt</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> c)
+<a name="l1140"></a>{</span><span class=cB2>//Cluster count of a FAT32 chain starting at c.</span><span class=cB0>
+<a name="l1141"></a>  </span><span class=cB9>I64</span><span class=cB0> cnt=0;
+<a name="l1142"></a>  </span><span class=cB1>while</span><span class=cB0> (0&lt;c&lt;0x0FFFFFF8)
+<a name="l1143"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1144"></a>    cnt++;
+<a name="l1145"></a>    c=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,c,1);
+<a name="l1146"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1147"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;
+<a name="l1148"></a>}
+<a name="l1149"></a>
+<a name="l1150"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1150"></span><span class=cBD>FAT32DirEntryClusSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> cur_dir_clus,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> new_clus)
+<a name="l1151"></a>{</span><span class=cB2>//Patches just the clus_lo/clus_hi of the on-disk entry &quot;name&quot; inside</span><span class=cB0>
+<a name="l1152"></a> </span><span class=cB2>//the directory chain at cur_dir_clus.</span><span class=cB0>
+<a name="l1153"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf;
+<a name="l1154"></a>  </span><span class=cB9>I64</span><span class=cB0> xsum=0,cur_dir_entry,entries_per_clus,attr;
+<a name="l1155"></a>  </span><span class=cB1>U8</span><span class=cB0> ch;
+<a name="l1156"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,unlock;
+<a name="l1157"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> long_name;
+<a name="l1158"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1159"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l1160"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1161"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l1162"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l1163"></a>    entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>;
+<a name="l1164"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l1165"></a>    cur_dir_entry=0;
+<a name="l1166"></a>    </span><span class=cB1>while</span><span class=cB0> (ch=*buf[cur_dir_entry].name)
+<a name="l1167"></a>    {
+<a name="l1168"></a>      attr=buf[cur_dir_entry].attr;
+<a name="l1169"></a>      </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB0>)
+<a name="l1170"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l208"></span><span class=cBD>DirLongNameFill</a></span><span class=cB0>(&amp;long_name,&amp;buf[cur_dir_entry],&amp;xsum);
+<a name="l1171"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ch!=0xE5 &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l1172"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1173"></a>        </span><span class=cB1>if</span><span class=cB0> (xsum!=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l165"></span><span class=cBD>FATNameXSum</a></span><span class=cB7>(</span><span class=cB0>buf[cur_dir_entry].name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1174"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1175"></a>        </span><span class=cB1>if</span><span class=cB0> (!*long_name.name)
+<a name="l1176"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l176"></span><span class=cBD>FATFromName</a></span><span class=cB0>(long_name.name,buf[cur_dir_entry].name);
+<a name="l1177"></a>        </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>long_name.name,name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1178"></a>        {
+<a name="l1179"></a>          buf[cur_dir_entry].clus_lo=new_clus.u16[0];
+<a name="l1180"></a>          buf[cur_dir_entry].clus_hi=new_clus.u16[1];
+<a name="l1181"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlk.html#l99"></span><span class=cB5>BlkWrite</a></span><span class=cB0>(dv,&amp;buf[cur_dir_entry&amp;-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2506"></span><span class=cB3>FAT32_ENTRIES_PER_BLK</a></span><span class=cB0>],
+<a name="l1182"></a>                   dv-&gt;data_area+cur_dir_clus*dv-&gt;spc
+<a name="l1183"></a>                   +cur_dir_entry&gt;&gt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,1);
+<a name="l1184"></a>          res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l1185"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1186"></a>        }
+<a name="l1187"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1188"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1189"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l1190"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;long_name,0,</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l1191"></a>      </span><span class=cB1>if</span><span class=cB0> (++cur_dir_entry==entries_per_clus)
+<a name="l1192"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l1193"></a>        cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l1"></span><span class=cB5>ClusNumNext</a></span><span class=cB0>(dv,cur_dir_clus,1);
+<a name="l1194"></a>        </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>0&lt;cur_dir_clus&lt;0x0FFFFFF8</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1195"></a>          </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1196"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,cur_dir_clus,1);
+<a name="l1197"></a>        cur_dir_entry=0;
+<a name="l1198"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l1199"></a>    }
+<a name="l1200"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l1201"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1202"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1203"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1204"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1205"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1206"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1207"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l1208"></a>}
+<a name="l1209"></a>
+<a name="l1210"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1210"></span><span class=cBD>FAT32DirDotDotSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB9>I64</span><span class=cB0> dir_clus,</span><span class=cB9>I64</span><span class=cB0> new_parent_clus)
+<a name="l1211"></a>{</span><span class=cB2>//Patches a directory's own &quot;..&quot; entry, always the 2nd entry of its 1st clus.</span><span class=cB0>
+<a name="l1212"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf;
+<a name="l1213"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock;
+<a name="l1214"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l1215"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l1216"></a>    unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l1217"></a>    buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>*dv-&gt;spc);
+<a name="l1218"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,dir_clus,1);
+<a name="l1219"></a>    buf[1].clus_lo=new_parent_clus.u16[0];
+<a name="l1220"></a>    buf[1].clus_hi=new_parent_clus.u16[1];
+<a name="l1221"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,dir_clus,1);
+<a name="l1222"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l1223"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1224"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1225"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l1226"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1227"></a>    </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1228"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1229"></a>}
+<a name="l1230"></a>
+<a name="l1231"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1231"></span><span class=cBD>FAT32DirMove</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv,</span><span class=cB1>U8</span><span class=cB0> *cur_dir,</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> at_clus)
+<a name="l1232"></a>{</span><span class=cB2>//Relocates an existing directory's own cluster chain to an exact clus</span><span class=cB0>
+<a name="l1233"></a> </span><span class=cB2>//run, fixing up its &quot;.&quot; self-ref, each child's &quot;..&quot; back-ref, and the</span><span class=cB0>
+<a name="l1234"></a> </span><span class=cB2>//parent entry that points to it.</span><span class=cB0>
+<a name="l1235"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> de;
+<a name="l1236"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2478"></span><span class=cB9>CFAT32DirEntry</a></span><span class=cB0> *buf;
+<a name="l1237"></a>  </span><span class=cB9>I64</span><span class=cB0> cur_dir_clus=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrB.html#l10"></span><span class=cB5>Name2DirClus</a></span><span class=cB0>(dv,cur_dir),old_clus=0,cnt,
+<a name="l1238"></a>      target=0x0FFFFFFF,entries_per_clus=dv-&gt;spc&lt;&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2507"></span><span class=cB3>FAT32_ENTRIES_BITS</a></span><span class=cB0>,
+<a name="l1239"></a>      i,total_entries,child_clus,attr;
+<a name="l1240"></a>  </span><span class=cB1>Bool</span><span class=cB0> unlock,unlock_break;
+<a name="l1241"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l312"></span><span class=cBD>FAT32FileFind</a></span><span class=cB7>(</span><span class=cB0>dv,cur_dir_clus,name,&amp;de,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2735"></span><span class=cB3>FUF_JUST_DIRS</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l1242"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>de.name,</span><span class=cB6>&quot;.&quot;</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>de.name,</span><span class=cB6>&quot;..&quot;</span><span class=cB7>)</span><span class=cB0>)
+<a name="l1243"></a>    old_clus=de.clus;
+<a name="l1244"></a>  </span><span class=cB1>if</span><span class=cB0> (0&lt;old_clus&lt;0x0FFFFFF8)
+<a name="l1245"></a>    </span><span class=cB1>try</span><span class=cB0>
+<a name="l1246"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l1247"></a>      unlock_break=<a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l135"></span><span class=cB5>BreakLock</a></span><span class=cB0>;
+<a name="l1248"></a>      unlock=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l1"></span><span class=cB5>DrvLock</a></span><span class=cB0>(dv);
+<a name="l1249"></a>      cnt=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1139"></span><span class=cBD>FAT32ClusChainCnt</a></span><span class=cB0>(dv,old_clus);
+<a name="l1250"></a>      target=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l621"></span><span class=cBD>FAT32AllocClusAt</a></span><span class=cB0>(dv,at_clus,cnt);
+<a name="l1251"></a>      </span><span class=cB1>if</span><span class=cB0> (target!=0x0FFFFFFF)
+<a name="l1252"></a>      {
+<a name="l1253"></a>        total_entries=cnt*entries_per_clus;
+<a name="l1254"></a>        buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(cnt*dv-&gt;spc*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
+<a name="l1255"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l96"></span><span class=cB5>ClusRead</a></span><span class=cB0>(dv,buf,old_clus,cnt);
+<a name="l1256"></a>        buf[0].clus_lo=target.u16[0];
+<a name="l1257"></a>        buf[0].clus_hi=target.u16[1];
+<a name="l1258"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskClus.html#l142"></span><span class=cB5>ClusWrite</a></span><span class=cB0>(dv,buf,target,cnt);
+<a name="l1259"></a>        </span><span class=cB1>for</span><span class=cB0> (i=2; i&lt;total_entries; i++)
+<a name="l1260"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l1261"></a>          </span><span class=cB1>if</span><span class=cB0> (!*buf[i].name)
+<a name="l1262"></a>            </span><span class=cB1>break</span><span class=cB0>;
+<a name="l1263"></a>          </span><span class=cB1>if</span><span class=cB0> (*buf[i].name!=0xE5)
+<a name="l1264"></a>          {
+<a name="l1265"></a>            attr=buf[i].attr;
+<a name="l1266"></a>            </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2663"></span><span class=cB3>RS_ATTR_LONG_NAME_MASK</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2661"></span><span class=cB3>RS_ATTR_LONG_NAME</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp;
+<a name="l1267"></a>                !</span><span class=cB7>(</span><span class=cB0>attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2658"></span><span class=cB3>RS_ATTR_VOL_ID</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp; attr&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2659"></span><span class=cB3>RS_ATTR_DIR</a></span><span class=cB0>)
+<a name="l1268"></a>            </span><span class=cB7>{</span><span class=cB0>
+<a name="l1269"></a>              child_clus=buf[i].clus_lo+buf[i].clus_hi&lt;&lt;16;
+<a name="l1270"></a>              </span><span class=cB1>if</span><span class=cB0> (0&lt;child_clus&lt;0x0FFFFFF8)
+<a name="l1271"></a>                <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1210"></span><span class=cBD>FAT32DirDotDotSet</a></span><span class=cB0>(dv,child_clus,target);
+<a name="l1272"></a>            </span><span class=cB7>}</span><span class=cB0>
+<a name="l1273"></a>          }
+<a name="l1274"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l1275"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l1276"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l1150"></span><span class=cBD>FAT32DirEntryClusSet</a></span><span class=cB0>(dv,cur_dir_clus,de.name,target);
+<a name="l1277"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/FileSysFAT.html#l438"></span><span class=cB5>FAT32FreeClus</a></span><span class=cB0>(dv,old_clus);
+<a name="l1278"></a>      }
+<a name="l1279"></a>      </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1280"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1281"></a>      </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l1282"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l1283"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l1284"></a>    </span><span class=cB1>catch</span><span class=cB0>
+<a name="l1285"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l1286"></a>      target=0x0FFFFFFF;
+<a name="l1287"></a>      </span><span class=cB1>if</span><span class=cB0> (unlock)
+<a name="l1288"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l16"></span><span class=cB5>DrvUnlock</a></span><span class=cB0>(dv);
+<a name="l1289"></a>      </span><span class=cB1>if</span><span class=cB0> (unlock_break)
+<a name="l1290"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KExcept.html#l141"></span><span class=cB5>BreakUnlock</a></span><span class=cB0>;
+<a name="l1291"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l1292"></a>  </span><span class=cB1>return</span><span class=cB0> target;
+<a name="l1293"></a>}
 </span></div></pre></body>
 </html>

@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.21">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"><span class=cB5>Cd</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2123"></span><span class=cB3>__DIR__</a></span><span class=cB0>);;
+<a name="l2"></a>#</span><span class=cB1>include</span><span class=cB0> </span><span class=cB6>&quot;RmParens&quot;</span><span class=cB0>
+<a name="l3"></a>
+<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> RmParTest()
+<a name="l5"></a>{
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> *tmp_file=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l7"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*expected_hash=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*result_hash=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l9"></a>
+<a name="l10"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrvB.html#l1"></span><span class=cB5>DrvMounted</a></span><span class=cB7>(</span><span class=cB6>'B'</span><span class=cB7>)</span><span class=cB0>)
+<a name="l11"></a>    tmp_file=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;B:/RmParTestCases.HC&quot;</span><span class=cB0>);
+<a name="l12"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l238"></span><span class=cB5>DrvIsWritable</a></span><span class=cB7>()</span><span class=cB0>)
+<a name="l13"></a>    tmp_file=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/RmParTestCases.HC&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l169"></span><span class=cB5>Drv2Let</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv</span><span class=cB7>)</span><span class=cB0>);
+<a name="l14"></a>
+<a name="l15"></a>  </span><span class=cB1>if</span><span class=cB0> (!tmp_file)
+<a name="l16"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l17"></a>    </span><span class=cB6>&quot;RmParTest: SKIP -- no writable drive available for temp file\n&quot;</span><span class=cB0>;
+<a name="l18"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l19"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l20"></a>
+<a name="l21"></a>  buf=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(</span><span class=cB6>&quot;RmParTestCases.HC&quot;</span><span class=cB0>,&amp;size);
+<a name="l22"></a>  </span><span class=cB1>if</span><span class=cB0> (!buf)
+<a name="l23"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    </span><span class=cB6>&quot;RmParTest: can't read 'RmParTestCases.HC'\n&quot;</span><span class=cB0>;
+<a name="l25"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmp_file);
+<a name="l26"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(tmp_file,buf,size);
+<a name="l29"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
+<a name="l30"></a>
+<a name="l31"></a>  RmParens(tmp_file);
+<a name="l32"></a>
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l141"></span><span class=cB5>md5</a></span><span class=cB0>(</span><span class=cB6>&quot;RmParExpected.HC&quot;</span><span class=cB0>,&amp;expected_hash);
+<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/MD5.html#l141"></span><span class=cB5>md5</a></span><span class=cB0>(tmp_file,&amp;result_hash);
+<a name="l35"></a>
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (expected_hash &amp;&amp; result_hash &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>expected_hash,result_hash</span><span class=cB7>)</span><span class=cB0>)
+<a name="l37"></a>    </span><span class=cB6>&quot;RmParTest: PASS -- '%s' matches RmParExpected.HC (MD5 %s)\n&quot;</span><span class=cB0>,
+<a name="l38"></a>        tmp_file,expected_hash;
+<a name="l39"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l40"></a>    </span><span class=cB6>&quot;RmParTest: FAIL -- MD5 mismatch (expected %s, got %s)\n&quot;</span><span class=cB0>,
+<a name="l41"></a>        expected_hash,result_hash;
+<a name="l42"></a>
+<a name="l43"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(expected_hash);
+<a name="l44"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(result_hash);
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l97"></span><span class=cB5>Del</a></span><span class=cB0>(tmp_file,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmp_file);
+<a name="l47"></a>}
+<a name="l48"></a>
+<a name="l49"></a>RmParTest;
+</span></div></pre></body>
+</html>

@@ -4,9 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
 .cF1{color:#0000aa;background-color:#ffffff;}
 .cF2{color:#00aa00;background-color:#ffffff;}
@@ -30,12 +33,85 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB0>
-<a name="l2"></a>There is a python server for TinkerOS tos_server.py which runs on Linux machines 
-<a name="l3"></a>(in either server or client mode) which can connect to TinkerOS over real or 
-<a name="l4"></a>virtual serial ports to exchange files, clipboard contents, fetch URLs or 
-<a name="l5"></a>execute commands on the remote server.
-<a name="l6"></a>
-<a name="l7"></a>If properly setup, the following functions may be available to you:
-<a name="l8"></a></span></div></pre></body>
+<a name="l1"></a><span class=cB5>                                   <h1><center>TOSClient</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>There is a python server for TinkerOS </span><a href="http://tinkeros.github.io/WbGit/Python/tos_server.html#l1"><span class=cB4>tos_server.py</span></a><span class=cB0> which runs on Linux machines 
+<a name="l4"></a>(in either server or client mode) which can connect to TinkerOS over real or 
+<a name="l5"></a>virtual serial ports to exchange files, clipboard contents, fetch URLs or 
+<a name="l6"></a>execute commands on the remote server.
+<a name="l7"></a>
+<a name="l8"></a>See </span><a href="http://tinkeros.github.io/WbGit/Python/README.html#l1"><span class=cB4>::/Python/README.md</span></a><span class=cB0> for how to set up and run </span><span class=cB2>tos_server.py</span><span class=cB0>.  Once it is 
+<a name="l9"></a>running and reachable over a COM port, the following functions may be available 
+<a name="l10"></a>to you:
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB5>Connecting</span><span class=cB4>
+<a name="l13"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l368"><span class=cB4>InitTOSClient</span></a><span class=cB0>() Probes the COM ports for a running </span><span class=cB2>tos_server.py</span><span class=cB0> and remembers 
+<a name="l14"></a>which port it's on.  You normally don't need to call this yourself -- every 
+<a name="l15"></a>function below calls it for you (via </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l382"><span class=cB4>TOSServerCheck</span></a><span class=cB0>()) the first time it's 
+<a name="l16"></a>needed.
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB5>Files</span><span class=cB4>
+<a name="l19"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l398"><span class=cB4>Fget</span></a><span class=cB0>(filename, local_name=NULL) Downloads </span><span class=cB2>filename</span><span class=cB0> from the host's transfer 
+<a name="l20"></a>directory to </span><span class=cB2>local_name</span><span class=cB0> (or the file's base name if omitted).  Returns the 
+<a name="l21"></a>number of bytes transferred, or 0 on failure.
+<a name="l22"></a></span><span class=cB4>
+<a name="l23"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l454"><span class=cB4>Fput</span></a><span class=cB0>(filename, remote_name=NULL)        Uploads </span><span class=cB2>filename</span><span class=cB0> to the host's transfer 
+<a name="l24"></a>directory as </span><span class=cB2>remote_name</span><span class=cB0> (or the same name if omitted).  Returns the number of 
+<a name="l25"></a>bytes transferred, or 0 on failure.
+<a name="l26"></a></span><span class=cB4>
+<a name="l27"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l601"><span class=cB4>Dput</span></a><span class=cB0>(src_files_find_mask, remote_dir=NULL, no_mask=TRUE, sync=FALSE, 
+<a name="l28"></a>bin_files=TRUE) Uploads a whole directory tree matching </span><span class=cB2>src_files_find_mask</span><span class=cB0> to </span><span class=cB2>r
+<a name="l29"></a>emote_dir</span><span class=cB0> on the host.  Returns the count of files copied.
+<a name="l30"></a></span><span class=cB4>
+<a name="l31"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l638"><span class=cB4>Dsync</span></a><span class=cB0>(src_files_find_mask, remote_dir=NULL, no_mask=TRUE, bin_files=FALSE)      
+<a name="l32"></a>Like </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l601"><span class=cB4>Dput</span></a><span class=cB0>() but skips files whose remote MD5 hash already matches (via </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l504"><span class=cB4>FCmpHash</span></a><span class=cB0>(
+<a name="l33"></a>)), so only changed files are actually transferred.  Skips binary/data files by 
+<a name="l34"></a>default.
+<a name="l35"></a></span><span class=cB4>
+<a name="l36"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l833"><span class=cB4>Dget</span></a><span class=cB0>(dir=&quot;.&quot;, strip=0)  Downloads every file under </span><span class=cB2>dir</span><span class=cB0> on the host into the 
+<a name="l37"></a>current directory, recreating subdirectories as needed and skipping files whose 
+<a name="l38"></a>local copy already matches by hash.
+<a name="l39"></a></span><span class=cB4>
+<a name="l40"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l709"><span class=cB4>Hdir</span></a><span class=cB0>(dir=&quot;.&quot;)   Prints a listing of </span><span class=cB2>dir</span><span class=cB0> (relative to the host's transfer 
+<a name="l41"></a>directory), non-recursive.
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB5>Clipboard</span><span class=cB4>
+<a name="l44"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l860"><span class=cB4>ClipGetStr</span></a><span class=cB0>()    Returns the host clipboard text as a string, or NULL on failure.
+<a name="l45"></a></span><span class=cB4>
+<a name="l46"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l881"><span class=cB4>ClipGet</span></a><span class=cB0>()       Prints the host clipboard text.
+<a name="l47"></a></span><span class=cB4>
+<a name="l48"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l893"><span class=cB4>ClipPutStr</span></a><span class=cB0>(send_text)   Sets the host clipboard to </span><span class=cB2>send_text</span><span class=cB0>.
+<a name="l49"></a></span><span class=cB4>
+<a name="l50"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l1000"><span class=cB4>ClipPut</span></a><span class=cB0>()       Copies the current TinkerOS clipboard to the host clipboard.
+<a name="l51"></a></span><span class=cB4>
+<a name="l52"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l986"><span class=cB4>ClientClipHijack</span></a><span class=cB0>()      Hijacks the cut/copy/paste key handlers so TinkerOS's 
+<a name="l53"></a>clipboard is automatically mirrored to/from the host clipboard, as long as a 
+<a name="l54"></a>server is found.
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB5>URLs</span><span class=cB4>
+<a name="l57"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l645"><span class=cB4>URLGet</span></a><span class=cB0>(url, filename)   Has the host fetch </span><span class=cB2>url</span><span class=cB0> (unmodified/raw bytes) and saves 
+<a name="l58"></a>the result to </span><span class=cB2>filename</span><span class=cB0>.
+<a name="l59"></a></span><span class=cB4>
+<a name="l60"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l673"><span class=cB4>URLGetTextStr</span></a><span class=cB0>(url)      Has the host fetch </span><span class=cB2>url</span><span class=cB0> and HTML-strip it, returning the 
+<a name="l61"></a>extracted text as a string.
+<a name="l62"></a></span><span class=cB4>
+<a name="l63"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l699"><span class=cB4>URLGetText</span></a><span class=cB0>(url) Like </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l673"><span class=cB4>URLGetTextStr</span></a><span class=cB0>() but prints the result instead of returning 
+<a name="l64"></a>it.
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB5>Host Info</span><span class=cB4>
+<a name="l67"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l904"><span class=cB4>HGetOSStr</span></a><span class=cB0>()     Returns the host OS name (e.g. </span><span class=cB2>&quot;Linux&quot;</span><span class=cB0>) as a string, or NULL on 
+<a name="l68"></a>failure.
+<a name="l69"></a></span><span class=cB4>
+<a name="l70"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l925"><span class=cB4>HGetOS</span></a><span class=cB0>()        Like </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l904"><span class=cB4>HGetOSStr</span></a><span class=cB0>() but prints the result instead of returning it.
+<a name="l71"></a>
+<a name="l72"></a></span><span class=cB5>Remote Execution</span><span class=cB4>
+<a name="l73"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l937"><span class=cB4>HExecToStr</span></a><span class=cB0>(cmd) Runs </span><span class=cB2>cmd</span><span class=cB0> as a non-interactive shell command on the host and 
+<a name="l74"></a>returns its output as a string.
+<a name="l75"></a></span><span class=cB4>
+<a name="l76"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l959"><span class=cB4>HExec</span></a><span class=cB0>(cmd)      Like </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l937"><span class=cB4>HExecToStr</span></a><span class=cB0>() but prints the output instead of returning it.
+<a name="l77"></a>
+<a name="l78"></a></span><span class=cB5>Misc</span><span class=cB4>
+<a name="l79"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l753"><span class=cB4>DirMks</span></a><span class=cB0>(dirs)    Local helper: creates an entire local directory tree (like </span><span class=cB2>mkdir 
+<a name="l80"></a>-p</span><span class=cB0>), used internally by </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l833"><span class=cB4>Dget</span></a><span class=cB0>() when recreating remote directory structure.
+</span></div></pre></body>
 </html>

@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.21">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB9>I64</span><span class=cB0> tests_run=0,tests_passed=0;
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> TOSCheck(</span><span class=cB1>Bool</span><span class=cB0> cond, </span><span class=cB1>U8</span><span class=cB0> *name)
+<a name="l4"></a>{</span><span class=cB2>//Records and prints the pass/fail result of a single check</span><span class=cB0>
+<a name="l5"></a>  tests_run++;
+<a name="l6"></a>  </span><span class=cB1>if</span><span class=cB0> (cond)
+<a name="l7"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l8"></a>    tests_passed++;
+<a name="l9"></a>    </span><span class=cB6>&quot;PASS %s\n&quot;</span><span class=cB0>,name;
+<a name="l10"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l11"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l12"></a>    </span><span class=cB6>&quot;FAIL %s\n&quot;</span><span class=cB0>,name;
+<a name="l13"></a>}
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>U0</span><span class=cB0> TestConnection()
+<a name="l16"></a>{</span><span class=cB2>//Checks that the client can find and connect to tos_server.py</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l19"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l368"></span><span class=cB5>InitTOSClient</a></span><span class=cB0>,</span><span class=cB6>&quot;InitTOSClient&quot;</span><span class=cB0>);
+<a name="l20"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l382"></span><span class=cB5>TOSServerCheck</a></span><span class=cB0>,</span><span class=cB6>&quot;TOSServerCheck&quot;</span><span class=cB0>);
+<a name="l21"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l22"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l23"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l24"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l25"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestConnection (exception)&quot;</span><span class=cB0>);
+<a name="l26"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l27"></a>}
+<a name="l28"></a>
+<a name="l29"></a></span><span class=cB1>U0</span><span class=cB0> TestDirMks()
+<a name="l30"></a>{</span><span class=cB2>//Creates a nested local directory tree and checks it exists</span><span class=cB0>
+<a name="l31"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l32"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l753"></span><span class=cB5>DirMks</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/DirMksCheck/Nested&quot;</span><span class=cB0>);
+<a name="l34"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l103"></span><span class=cB5>IsDir</a></span><span class=cB7>(</span><span class=cB6>&quot;TOSClientTestTmp/DirMksCheck/Nested&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;DirMks&quot;</span><span class=cB0>);
+<a name="l35"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l37"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l39"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestDirMks (exception)&quot;</span><span class=cB0>);
+<a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a>}
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB1>U0</span><span class=cB0> TestFileRoundTrip()
+<a name="l44"></a>{</span><span class=cB2>//Uploads a file, downloads it back and checks the content matches</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> len1,len2;
+<a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0> *content=</span><span class=cB6>&quot;TOSClient unit test file contents\n&quot;</span><span class=cB0>;
+<a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> *data1=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*data2=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l48"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/FileRoundTripIn.txt&quot;</span><span class=cB0>,content,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>content</span><span class=cB7>)</span><span class=cB0>);
+<a name="l51"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l454"></span><span class=cB5>Fput</a></span><span class=cB7>(</span><span class=cB6>&quot;TOSClientTestTmp/FileRoundTripIn.txt&quot;</span><span class=cB0>,</span><span class=cB6>&quot;unit_tests/FileRoundTrip.txt&quot;</span><span class=cB7>)</span><span class=cB0>&gt;0,</span><span class=cB6>&quot;Fput&quot;</span><span class=cB0>);
+<a name="l52"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l398"></span><span class=cB5>Fget</a></span><span class=cB7>(</span><span class=cB6>&quot;unit_tests/FileRoundTrip.txt&quot;</span><span class=cB0>,</span><span class=cB6>&quot;TOSClientTestTmp/FileRoundTripOut.txt&quot;</span><span class=cB7>)</span><span class=cB0>&gt;0,</span><span class=cB6>&quot;Fget&quot;</span><span class=cB0>);
+<a name="l53"></a>    data1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/FileRoundTripIn.txt&quot;</span><span class=cB0>,&amp;len1);
+<a name="l54"></a>    data2=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/FileRoundTripOut.txt&quot;</span><span class=cB0>,&amp;len2);
+<a name="l55"></a>    TOSCheck(data1 &amp;&amp; data2 &amp;&amp; len1==len2 &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>data1,data2,len1</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;Fput/Fget content match&quot;</span><span class=cB0>);
+<a name="l56"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l57"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l58"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l59"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l60"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestFileRoundTrip (exception)&quot;</span><span class=cB0>);
+<a name="l61"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data1);
+<a name="l63"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data2);
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>U0</span><span class=cB0> TestDirRoundTrip()
+<a name="l67"></a>{</span><span class=cB2>//Uploads a small dir tree, downloads it back and checks the round trip matches</span><span class=cB0>
+<a name="l68"></a>  </span><span class=cB9>I64</span><span class=cB0> up_cnt,down_len,la,lb;
+<a name="l69"></a>  </span><span class=cB1>U8</span><span class=cB0> *a=</span><span class=cB6>&quot;dir round trip file A\n&quot;</span><span class=cB0>,*b=</span><span class=cB6>&quot;dir round trip file B\n&quot;</span><span class=cB0>;
+<a name="l70"></a>  </span><span class=cB1>U8</span><span class=cB0> *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*db=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l71"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l753"></span><span class=cB5>DirMks</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/DirRoundTripSrc/Sub&quot;</span><span class=cB0>);
+<a name="l74"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/DirRoundTripSrc/A.txt&quot;</span><span class=cB0>,a,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>a</span><span class=cB7>)</span><span class=cB0>);
+<a name="l75"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/DirRoundTripSrc/Sub/B.txt&quot;</span><span class=cB0>,b,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>b</span><span class=cB7>)</span><span class=cB0>);
+<a name="l76"></a>    up_cnt=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l601"></span><span class=cB5>Dput</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp/DirRoundTripSrc&quot;</span><span class=cB0>,</span><span class=cB6>&quot;unit_tests/DirRoundTrip&quot;</span><span class=cB0>);
+<a name="l77"></a>    TOSCheck(up_cnt==2,</span><span class=cB6>&quot;Dput file count&quot;</span><span class=cB0>);
+<a name="l78"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l709"></span><span class=cB5>Hdir</a></span><span class=cB7>(</span><span class=cB6>&quot;unit_tests&quot;</span><span class=cB7>)</span><span class=cB0>&gt;0,</span><span class=cB6>&quot;Hdir&quot;</span><span class=cB0>);
+<a name="l79"></a>    down_len=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l833"></span><span class=cB5>Dget</a></span><span class=cB0>(</span><span class=cB6>&quot;unit_tests/DirRoundTrip&quot;</span><span class=cB0>);
+<a name="l80"></a>    TOSCheck(down_len&gt;0,</span><span class=cB6>&quot;Dget&quot;</span><span class=cB0>);
+<a name="l81"></a>    da=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(</span><span class=cB6>&quot;unit_tests/DirRoundTrip/A.txt&quot;</span><span class=cB0>,&amp;la);
+<a name="l82"></a>    db=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(</span><span class=cB6>&quot;unit_tests/DirRoundTrip/Sub/B.txt&quot;</span><span class=cB0>,&amp;lb);
+<a name="l83"></a>    TOSCheck(da &amp;&amp; la==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>a</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>da,a,la</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;Dget content A&quot;</span><span class=cB0>);
+<a name="l84"></a>    TOSCheck(db &amp;&amp; lb==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>b</span><span class=cB7>)</span><span class=cB0> &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>db,b,lb</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;Dget content B&quot;</span><span class=cB0>);
+<a name="l85"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l638"></span><span class=cB5>Dsync</a></span><span class=cB7>(</span><span class=cB6>&quot;TOSClientTestTmp/DirRoundTripSrc&quot;</span><span class=cB0>,</span><span class=cB6>&quot;unit_tests/DirRoundTrip&quot;</span><span class=cB7>)</span><span class=cB0>==2,</span><span class=cB6>&quot;Dsync unchanged files&quot;</span><span class=cB0>);
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l88"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l89"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l90"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestDirRoundTrip (exception)&quot;</span><span class=cB0>);
+<a name="l91"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l92"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(da);
+<a name="l93"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(db);
+<a name="l94"></a>}
+<a name="l95"></a>
+<a name="l96"></a></span><span class=cB1>U0</span><span class=cB0> TestClipboardRoundTrip()
+<a name="l97"></a>{</span><span class=cB2>//Round-trips a known string through the host clipboard</span><span class=cB0>
+<a name="l98"></a>  </span><span class=cB1>U8</span><span class=cB0> *orig,*readback;
+<a name="l99"></a>  </span><span class=cB1>U8</span><span class=cB0> *probe=</span><span class=cB6>&quot;TOSClient clipboard unit test value&quot;</span><span class=cB0>;
+<a name="l100"></a>  orig=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l860"></span><span class=cB5>ClipGetStr</a></span><span class=cB0>;
+<a name="l101"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l102"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l103"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l893"></span><span class=cB5>ClipPutStr</a></span><span class=cB0>(probe);
+<a name="l104"></a>    readback=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l860"></span><span class=cB5>ClipGetStr</a></span><span class=cB0>;
+<a name="l105"></a>    TOSCheck(readback &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l311"></span><span class=cB5>StrCmp</a></span><span class=cB7>(</span><span class=cB0>readback,probe</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;ClipPutStr/ClipGetStr round trip&quot;</span><span class=cB0>);
+<a name="l106"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(readback);
+<a name="l107"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l108"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l109"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l110"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l111"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestClipboardRoundTrip (exception)&quot;</span><span class=cB0>);
+<a name="l112"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l113"></a>  </span><span class=cB1>if</span><span class=cB0> (orig)
+<a name="l114"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l115"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l893"></span><span class=cB5>ClipPutStr</a></span><span class=cB0>(orig);
+<a name="l116"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(orig);
+<a name="l117"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l118"></a>}
+<a name="l119"></a>
+<a name="l120"></a></span><span class=cB1>U0</span><span class=cB0> TestHostExec()
+<a name="l121"></a>{</span><span class=cB2>//Runs a shell command on the host and checks its output</span><span class=cB0>
+<a name="l122"></a>  </span><span class=cB1>U8</span><span class=cB0> *marker=</span><span class=cB6>&quot;TOSClient_Unit_Test_OK&quot;</span><span class=cB0>,*cmd,*res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l123"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l124"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l125"></a>    cmd=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;echo %s&quot;</span><span class=cB0>,marker);
+<a name="l126"></a>    res=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l937"></span><span class=cB5>HExecToStr</a></span><span class=cB0>(cmd);
+<a name="l127"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(cmd);
+<a name="l128"></a>    TOSCheck(res &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l319"></span><span class=cB5>StrMatch</a></span><span class=cB7>(</span><span class=cB0>marker,res</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;HExecToStr&quot;</span><span class=cB0>);
+<a name="l129"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l130"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l131"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l133"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestHostExec (exception)&quot;</span><span class=cB0>);
+<a name="l134"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l135"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(res);
+<a name="l136"></a>}
+<a name="l137"></a>
+<a name="l138"></a></span><span class=cB1>U0</span><span class=cB0> TestHostOS()
+<a name="l139"></a>{</span><span class=cB2>//Gets the host OS and, if it's Linux, confirms we can exec a command there</span><span class=cB0>
+<a name="l140"></a>  </span><span class=cB1>U8</span><span class=cB0> *os_name=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l141"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l142"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l143"></a>    os_name=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l904"></span><span class=cB5>HGetOSStr</a></span><span class=cB0>;
+<a name="l144"></a>    TOSCheck(os_name &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>os_name</span><span class=cB7>)</span><span class=cB0>&gt;0,</span><span class=cB6>&quot;HGetOSStr&quot;</span><span class=cB0>);
+<a name="l145"></a>    </span><span class=cB1>if</span><span class=cB0> (os_name &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l319"></span><span class=cB5>StrMatch</a></span><span class=cB7>(</span><span class=cB6>&quot;Linux&quot;</span><span class=cB0>,os_name</span><span class=cB7>)</span><span class=cB0>)
+<a name="l146"></a>    {
+<a name="l147"></a>      res=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l937"></span><span class=cB5>HExecToStr</a></span><span class=cB0>(</span><span class=cB6>&quot;echo Linux&quot;</span><span class=cB0>);
+<a name="l148"></a>      TOSCheck(res &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l319"></span><span class=cB5>StrMatch</a></span><span class=cB7>(</span><span class=cB6>&quot;Linux&quot;</span><span class=cB0>,res</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;HExecToStr echo Linux on Linux host&quot;</span><span class=cB0>);
+<a name="l149"></a>    }
+<a name="l150"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l151"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l152"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l153"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l154"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestHostOS (exception)&quot;</span><span class=cB0>);
+<a name="l155"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l156"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(os_name);
+<a name="l157"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(res);
+<a name="l158"></a>}
+<a name="l159"></a>
+<a name="l160"></a></span><span class=cB1>U0</span><span class=cB0> TestURLFetch()
+<a name="l161"></a>{</span><span class=cB2>//Fetches a URL raw and HTML-stripped through the host</span><span class=cB0>
+<a name="l162"></a>  </span><span class=cB9>I64</span><span class=cB0> raw_len;
+<a name="l163"></a>  </span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l164"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l165"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l166"></a>    raw_len=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l645"></span><span class=cB5>URLGet</a></span><span class=cB0>(</span><span class=cB6>&quot;http://example.com&quot;</span><span class=cB0>,</span><span class=cB6>&quot;TOSClientTestTmp/URLGetOut.html&quot;</span><span class=cB0>);
+<a name="l167"></a>    TOSCheck(raw_len&gt;0,</span><span class=cB6>&quot;URLGet&quot;</span><span class=cB0>);
+<a name="l168"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l673"></span><span class=cB5>URLGetTextStr</a></span><span class=cB0>(</span><span class=cB6>&quot;http://example.com&quot;</span><span class=cB0>);
+<a name="l169"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB7>)</span><span class=cB0>&gt;0,</span><span class=cB6>&quot;URLGetTextStr&quot;</span><span class=cB0>);
+<a name="l170"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l171"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l172"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l173"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l174"></a>    TOSCheck(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,</span><span class=cB6>&quot;TestURLFetch (exception)&quot;</span><span class=cB0>);
+<a name="l175"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l176"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>);
+<a name="l177"></a>}
+<a name="l178"></a>
+<a name="l179"></a></span><span class=cB1>U0</span><span class=cB0> TOSClientUnitTests()
+<a name="l180"></a>{</span><span class=cB2>//Runs every TOSClient test against unit_tests on the server and prints a summary</span><span class=cB0>
+<a name="l181"></a>  tests_run=0;
+<a name="l182"></a>  tests_passed=0;
+<a name="l183"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l753"></span><span class=cB5>DirMks</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp&quot;</span><span class=cB0>);
+<a name="l184"></a>  TestConnection;
+<a name="l185"></a>  TestDirMks;
+<a name="l186"></a>  TestFileRoundTrip;
+<a name="l187"></a>  TestDirRoundTrip;
+<a name="l188"></a>  TestClipboardRoundTrip;
+<a name="l189"></a>  TestHostExec;
+<a name="l190"></a>  TestHostOS;
+<a name="l191"></a>  TestURLFetch;
+<a name="l192"></a>  </span><span class=cB1>try</span><span class=cB0>
+<a name="l193"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l194"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l97"></span><span class=cB5>Del</a></span><span class=cB0>(</span><span class=cB6>&quot;TOSClientTestTmp&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l195"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l97"></span><span class=cB5>Del</a></span><span class=cB0>(</span><span class=cB6>&quot;unit_tests&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l196"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l197"></a>  </span><span class=cB1>catch</span><span class=cB0>
+<a name="l198"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;catch_except=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l199"></a>  </span><span class=cB6>&quot;\n%d/%d tests passed.\n&quot;</span><span class=cB0>,tests_passed,tests_run;
+<a name="l200"></a>}
+<a name="l201"></a>
+<a name="l202"></a>TOSClientUnitTests;
+</span></div></pre></body>
+</html>

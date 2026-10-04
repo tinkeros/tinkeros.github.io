@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -51,7 +51,7 @@
 <a name="l12"></a>  </span><span class=cB1>Bool</span><span class=cB0> pri;
 <a name="l13"></a>};
 <a name="l14"></a>
-<a name="l15"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks=0,</span><span class=cB9>I64</span><span class=cB0> argc,</span><span class=cB9>I64</span><span class=cB0> *argv)
+<a name="l15"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks=0,</span><span class=cB9>I64</span><span class=cB0> argc,</span><span class=cB9>I64</span><span class=cB0> *argv,</span><span class=cB1>Bool</span><span class=cB0> skip_fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
 <a name="l16"></a>{</span><span class=cB2>//Partition disk</span><span class=cB0>
 <a name="l17"></a>  </span><span class=cB2>/*Partition the disk containing partition drv_let.</span><span class=cB0>
 <a name="l18"></a>
@@ -90,7 +90,7 @@
 <a name="l51"></a>  </span><span class=cB6>'\n'</span><span class=cB0>;
 <a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (drv_let &amp;&amp; !<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l313"></span><span class=cB5>Let2BlkDev</a></span><span class=cB7>(</span><span class=cB0>drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l53"></a>    drv_let=0;
-<a name="l54"></a>  </span><span class=cB1>if</span><span class=cB0> (!drv_let &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>drv_let=<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l224"></span><span class=cB5>Mount</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l54"></a>  </span><span class=cB1>if</span><span class=cB0> (!drv_let &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>drv_let=<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/Mount.html#l229"></span><span class=cB5>Mount</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l6"></span><span class=cB6>install_just_ide</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0> ||
 <a name="l55"></a>      !</span><span class=cB7>(</span><span class=cB0>bd=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskBlkDev.html#l313"></span><span class=cB5>Let2BlkDev</a></span><span class=cB0>(drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
 <a name="l56"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l57"></a>    </span><span class=cB6>&quot;Failed to mount block device to partition!\n&quot;</span><span class=cB0>;
@@ -235,34 +235,35 @@
 <a name="l196"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l197"></a>  bd-&gt;flags&amp;=~(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3061"></span><span class=cB3>BDF_INITIALIZED</a></span><span class=cB0> | <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3067"></span><span class=cB3>BDF_INIT_IN_PROGRESS</a></span><span class=cB0>);
 <a name="l198"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskAddDev.html#l34"></span><span class=cB5>BlkDevAdd</a></span><span class=cB0>(bd,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
-<a name="l199"></a>  </span><span class=cB1>for</span><span class=cB0> (i=bd-&gt;first_drv_let; i&lt;drv_let2; i++)
-<a name="l200"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFmt.html#l89"></span><span class=cB5>Fmt</a></span><span class=cB0>(i,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l201"></a>pd_done:
-<a name="l202"></a>  </span><span class=cB1>while</span><span class=cB0> (head.next!=&amp;head)
-<a name="l203"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l204"></a>    tmppp=head.next;
-<a name="l205"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(tmppp);
-<a name="l206"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmppp);
-<a name="l207"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l208"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;user_data=1;
-<a name="l209"></a>  </span><span class=cB1>return</span><span class=cB0> total;
-<a name="l210"></a>}
-<a name="l211"></a>
-<a name="l212"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l212"></span><span class=cB5>DskPrt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,...)
-<a name="l213"></a>{
-<a name="l214"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, 0, argc, argv);
-<a name="l215"></a>}
-<a name="l216"></a>
-<a name="l217"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l217"></span><span class=cB5>DskPrtOne</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks)
-<a name="l218"></a>{
-<a name="l219"></a>  </span><span class=cB1>F64</span><span class=cB0> percent=1.0;
-<a name="l220"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, max_blks, 1, &amp;percent);
-<a name="l221"></a>}
-<a name="l222"></a>
-<a name="l223"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l223"></span><span class=cB5>DskPrtMax</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks,...)
-<a name="l224"></a>{
-<a name="l225"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, max_blks, argc, argv);
-<a name="l226"></a>}
-<a name="l227"></a>
+<a name="l199"></a>  </span><span class=cB1>if</span><span class=cB0> (!skip_fmt)
+<a name="l200"></a>    </span><span class=cB1>for</span><span class=cB0> (i=bd-&gt;first_drv_let; i&lt;drv_let2; i++)
+<a name="l201"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFmt.html#l89"></span><span class=cB5>Fmt</a></span><span class=cB0>(i,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l202"></a>pd_done:
+<a name="l203"></a>  </span><span class=cB1>while</span><span class=cB0> (head.next!=&amp;head)
+<a name="l204"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>    tmppp=head.next;
+<a name="l206"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l72"></span><span class=cB5>QueRem</a></span><span class=cB0>(tmppp);
+<a name="l207"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmppp);
+<a name="l208"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l209"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;user_data=1;
+<a name="l210"></a>  </span><span class=cB1>return</span><span class=cB0> total;
+<a name="l211"></a>}
+<a name="l212"></a>
+<a name="l213"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l213"></span><span class=cB5>DskPrt</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,...)
+<a name="l214"></a>{
+<a name="l215"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, 0, argc, argv);
+<a name="l216"></a>}
+<a name="l217"></a>
+<a name="l218"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l218"></span><span class=cB5>DskPrtOne</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks)
+<a name="l219"></a>{
+<a name="l220"></a>  </span><span class=cB1>F64</span><span class=cB0> percent=1.0;
+<a name="l221"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, max_blks, 1, &amp;percent);
+<a name="l222"></a>}
+<a name="l223"></a>
+<a name="l224"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l224"></span><span class=cB5>DskPrtMax</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> max_blks,...)
+<a name="l225"></a>{
+<a name="l226"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/DskPrt.html#l15"></span><span class=cB5>DskPrtExt</a></span><span class=cB0>(drv_let, max_blks, argc, argv);
+<a name="l227"></a>}
+<a name="l228"></a>
 </span></div></pre></body>
 </html>

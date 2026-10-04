@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.20">
+<meta name="generator" content="TinkerOS V5.21">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -442,7 +442,7 @@
 <a name="l402"></a>  </span><span class=cB9>I64</span><span class=cB0>   size;
 <a name="l403"></a>  </span><span class=cB1>U8</span><span class=cB0>    *st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l248"></span><span class=cB5>ExtDft</a></span><span class=cB0>(filename,</span><span class=cB6>&quot;GR.Z&quot;</span><span class=cB0>),
 <a name="l404"></a>       *src=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l303"></span><span class=cB5>DCSave</a></span><span class=cB0>(dc,&amp;size,dcsf_flags);
-<a name="l405"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l110"></span><span class=cB5>FileWrite</a></span><span class=cB0>(st,src,size);
+<a name="l405"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l165"></span><span class=cB5>FileWrite</a></span><span class=cB0>(st,src,size);
 <a name="l406"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
 <a name="l407"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(src);
 <a name="l408"></a>  </span><span class=cB1>return</span><span class=cB0> size;
@@ -475,17 +475,10 @@
 <a name="l435"></a>{</span><span class=cB2>//Capture scrn to a device context.</span><span class=cB0>
 <a name="l436"></a>  </span><span class=cB1>no_warn</span><span class=cB0> include_zoom;
 <a name="l437"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc;
-<a name="l438"></a>  </span><span class=cB1>U8</span><span class=cB0> *dst;
-<a name="l439"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l36"></span><span class=cB5>Refresh</a></span><span class=cB0>(0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
-<a name="l440"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l258"></span><span class=cB5>DCCopy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l50"></span><span class=cB6>gr</a></span><span class=cB0>.scrn_image,task);
-<a name="l441"></a>  dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4063"></span><span class=cB3>DCF_SCRN_BITMAP</a></span><span class=cB0>;
-<a name="l442"></a>  dst=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(dc-&gt;width_internal*dc-&gt;height,task);
-<a name="l443"></a>  </span><span class=cB2>//Pick background color that never occurs. COLOR_INVALID</span><span class=cB0>
-<a name="l444"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l668"></span><span class=cB5>GrBitMap4ToBitMap8</a></span><span class=cB0>(dst,dc-&gt;body,
-<a name="l445"></a>      </span><span class=cB7>(</span><span class=cB0>dc-&gt;width_internal*dc-&gt;height</span><span class=cB7>)</span><span class=cB0>&gt;&gt;1,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3386"></span><span class=cB3>COLOR_INVALID</a></span><span class=cB0>);
-<a name="l446"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(dc-&gt;body);
-<a name="l447"></a>  dc-&gt;body=dst;
-<a name="l448"></a>  </span><span class=cB1>return</span><span class=cB0> dc;
-<a name="l449"></a>}
+<a name="l438"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l36"></span><span class=cB5>Refresh</a></span><span class=cB0>(0,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>);
+<a name="l439"></a>  dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l258"></span><span class=cB5>DCCopy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l50"></span><span class=cB6>gr</a></span><span class=cB0>.dc2,task);
+<a name="l440"></a>  dc-&gt;flags&amp;=~<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4063"></span><span class=cB3>DCF_SCRN_BITMAP</a></span><span class=cB0>;
+<a name="l441"></a>  </span><span class=cB1>return</span><span class=cB0> dc;
+<a name="l442"></a>}
 </span></div></pre></body>
 </html>
