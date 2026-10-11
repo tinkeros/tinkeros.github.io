@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.21">
+<meta name="generator" content="TinkerOS V5.22">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
 .cB7{color:#aaaaaa;background-color:#55ffff;}
@@ -36,115 +37,287 @@
 	  margin-left:auto; margin-right:auto; width:800px; ">
 <pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
-<a name="l1"></a><span class=cB2>// TinkerOS has functions to use a I64</span><span class=cB0>
-<a name="l2"></a></span><span class=cB2>// as a simple 64-bit bitfield as done below.</span><span class=cB0>
-<a name="l3"></a>
-<a name="l4"></a></span><span class=cB9>I64</span><span class=cB0> my_bitfield=0;
-<a name="l5"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
-<a name="l6"></a></span><span class=cB6>&quot;my_bitfield in binary is %b\n\n&quot;</span><span class=cB0>,my_bitfield;
-<a name="l7"></a></span><span class=cB6>&quot;Setting 4 high bits to 4-bit integer 15.\n\n&quot;</span><span class=cB0>;
+<a name="l1"></a><span class=cB2>// TinkerOS can treat an I64 as a manual 64-bit bitfield via BitFieldSet/Get,</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>// and also supports real, C-like bitfield class members: annotate a member</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>// with &quot;:width&quot; inside a union and the compiler tracks its bit offset/width --</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>// plain &quot;.&quot; and &quot;-&gt;&quot; access then reads/writes just those bits, read-modify-write,</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>// exactly like C (including silent truncation when a write is too wide).</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>// &quot;BF PASS/FAIL&quot; lines below are unit-test checks.</span><span class=cB0>
 <a name="l8"></a>
-<a name="l9"></a></span><span class=cB2>// Use the 4 high bits as an integer</span><span class=cB0>
-<a name="l10"></a></span><span class=cB2>// whose size is 4 bits with value 15</span><span class=cB0>
-<a name="l11"></a>
-<a name="l12"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l106"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4, 15);
-<a name="l13"></a>
-<a name="l14"></a></span><span class=cB2>// Show high bits are now 4 ones in</span><span class=cB0>
-<a name="l15"></a></span><span class=cB2>// binary</span><span class=cB0>
-<a name="l16"></a></span><span class=cB6>&quot;my_bitfield in binary is now %b\n\n&quot;</span><span class=cB0>,my_bitfield;
-<a name="l17"></a>
-<a name="l18"></a></span><span class=cB2>// Get the value of the 4-bit integer</span><span class=cB0>
-<a name="l19"></a></span><span class=cB2>// stored in the bitfield</span><span class=cB0>
-<a name="l20"></a>
-<a name="l21"></a></span><span class=cB6>&quot;The four high bits as a 4-bit bitfield = %d\n&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l113"></span><span class=cB5>BitFieldGet</a></span><span class=cB0>(&amp;my_bitfield, 59, 4);
-<a name="l22"></a>
-<a name="l23"></a></span><span class=cB2>// TinkerOS also supports real, C-like bitfield members on classes.</span><span class=cB0>
-<a name="l24"></a></span><span class=cB2>// Annotate a member with &quot;:width&quot; inside a union and the compiler tracks</span><span class=cB0>
-<a name="l25"></a></span><span class=cB2>// its bit offset and width -- plain &quot;.&quot; and &quot;-&gt;&quot; access on that member</span><span class=cB0>
-<a name="l26"></a></span><span class=cB2>// then automatically reads/writes just those bits, read-modify-write,</span><span class=cB0>
-<a name="l27"></a></span><span class=cB2>// exactly like C bitfields (including silent truncation if you write a</span><span class=cB0>
-<a name="l28"></a></span><span class=cB2>// value wider than the field).</span><span class=cB0>
-<a name="l29"></a>
-<a name="l30"></a></span><span class=cB1>class</span><span class=cB0> BFtest {
-<a name="l31"></a></span><span class=cB2>// bitfield variables should be a union!</span><span class=cB0>
-<a name="l32"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l33"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_0 : 1;
-<a name="l34"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_1 : 1;
-<a name="l35"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_2 : 1;
-<a name="l36"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_3 : 1;
-<a name="l37"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_4 : 1;
-<a name="l38"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_5 : 1;
-<a name="l39"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_6 : 1;
-<a name="l40"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_7 : 1;
-<a name="l41"></a>    </span><span class=cB1>U8</span><span class=cB0> whole_byte;
-<a name="l42"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l43"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
-<a name="l44"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_0 : 4;
-<a name="l45"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_1 : 4;
-<a name="l46"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_2 : 4;
-<a name="l47"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_3 : 4;
-<a name="l48"></a>    </span><span class=cB9>U16</span><span class=cB0> whole_word;
-<a name="l49"></a></span><span class=cB7>}</span><span class=cB0>
-<a name="l50"></a>};
-<a name="l51"></a>
-<a name="l52"></a>BFtest bftest,*pbftest=&amp;bftest;
-<a name="l53"></a>
-<a name="l54"></a>bftest.whole_byte=0x55;   </span><span class=cB2>// 01010101</span><span class=cB0>
-<a name="l55"></a>bftest.whole_word=0xff00; </span><span class=cB2>// 11111111000000</span><span class=cB0>
-<a name="l56"></a>
-<a name="l57"></a>
+<a name="l9"></a></span><span class=cB9>I64</span><span class=cB0> bf_pass=0,bf_fail=0;
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>U0</span><span class=cB0> BfChk(</span><span class=cB1>U8</span><span class=cB0> *name,</span><span class=cB9>I64</span><span class=cB0> got,</span><span class=cB9>I64</span><span class=cB0> exp)
+<a name="l12"></a>{
+<a name="l13"></a>  </span><span class=cB1>if</span><span class=cB0> (got==exp)
+<a name="l14"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l15"></a>    bf_pass++;
+<a name="l16"></a>    </span><span class=cB6>&quot;BF PASS %s\n&quot;</span><span class=cB0>,name;
+<a name="l17"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l18"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l19"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    bf_fail++;
+<a name="l21"></a>    </span><span class=cB6>&quot;BF FAIL %s got %X exp %X\n&quot;</span><span class=cB0>,name,got,exp;
+<a name="l22"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l23"></a>}
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB6>&quot;\n=== I64 as a manual 64-bit bitfield ===\n\n&quot;</span><span class=cB0>;
+<a name="l26"></a></span><span class=cB9>I64</span><span class=cB0> my_bitfield=0;
+<a name="l27"></a><a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l106"></span><span class=cB5>BitFieldSet</a></span><span class=cB0>(&amp;my_bitfield,59,4,15); </span><span class=cB2>// 4-bit field at bit 59, value 15</span><span class=cB0>
+<a name="l28"></a></span><span class=cB6>&quot;my_bitfield in binary is now %b\n\n&quot;</span><span class=cB0>,my_bitfield;
+<a name="l29"></a>BfChk(</span><span class=cB6>&quot;I64 BitFieldSet raw value&quot;</span><span class=cB0>,my_bitfield,0x7800000000000000);
+<a name="l30"></a>BfChk(</span><span class=cB6>&quot;I64 BitFieldGet value&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/AMisc.html#l113"></span><span class=cB5>BitFieldGet</a></span><span class=cB7>(</span><span class=cB0>&amp;my_bitfield,59,4</span><span class=cB7>)</span><span class=cB0>,15);
+<a name="l31"></a>
+<a name="l32"></a></span><span class=cB2>// Real class bitfields: annotate members with &quot;:width&quot; inside a union.</span><span class=cB0>
+<a name="l33"></a></span><span class=cB1>class</span><span class=cB0> BFtest
+<a name="l34"></a>{
+<a name="l35"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l36"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_0 : 1;
+<a name="l37"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_1 : 1;
+<a name="l38"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_2 : 1;
+<a name="l39"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_3 : 1;
+<a name="l40"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_4 : 1;
+<a name="l41"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_5 : 1;
+<a name="l42"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_6 : 1;
+<a name="l43"></a>    </span><span class=cB1>U8</span><span class=cB0> bit_7 : 1;
+<a name="l44"></a>    </span><span class=cB1>U8</span><span class=cB0> whole_byte;
+<a name="l45"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l46"></a></span><span class=cB1>union</span><span class=cB0> </span><span class=cB7>{</span><span class=cB0>
+<a name="l47"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_0 : 4;
+<a name="l48"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_1 : 4;
+<a name="l49"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_2 : 4;
+<a name="l50"></a>    </span><span class=cB9>U16</span><span class=cB0> nibble_3 : 4;
+<a name="l51"></a>    </span><span class=cB9>U16</span><span class=cB0> whole_word;
+<a name="l52"></a></span><span class=cB7>}</span><span class=cB0>
+<a name="l53"></a>};
+<a name="l54"></a>
+<a name="l55"></a>BFtest bftest,*pbftest=&amp;bftest;
+<a name="l56"></a>bftest.whole_byte=0x55;   </span><span class=cB2>// 0101 0101</span><span class=cB0>
+<a name="l57"></a>bftest.whole_word=0xFF00; </span><span class=cB2>// 1111 1111 0000 0000</span><span class=cB0>
 <a name="l58"></a>
-<a name="l59"></a></span><span class=cB6>&quot;\n=== ClassRep shows each member's bit offset/width ===\n\n&quot;</span><span class=cB0>;
+<a name="l59"></a></span><span class=cB6>&quot;=== ClassRep shows each member's bit offset/width ===\n\n&quot;</span><span class=cB0>;
 <a name="l60"></a><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l223"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;bftest);
 <a name="l61"></a>
-<a name="l62"></a></span><span class=cB6>&quot;\n=== Testing each bit field via bftest.bit_N ===\n\n&quot;</span><span class=cB0>;
-<a name="l63"></a></span><span class=cB6>&quot;bftest.bit_0=%b\n&quot;</span><span class=cB0>,bftest.bit_0;
-<a name="l64"></a></span><span class=cB6>&quot;bftest.bit_1=%b\n&quot;</span><span class=cB0>,bftest.bit_1;
-<a name="l65"></a></span><span class=cB6>&quot;bftest.bit_2=%b\n&quot;</span><span class=cB0>,bftest.bit_2;
-<a name="l66"></a></span><span class=cB6>&quot;bftest.bit_3=%b\n&quot;</span><span class=cB0>,bftest.bit_3;
-<a name="l67"></a></span><span class=cB6>&quot;bftest.bit_4=%b\n&quot;</span><span class=cB0>,bftest.bit_4;
-<a name="l68"></a></span><span class=cB6>&quot;bftest.bit_5=%b\n&quot;</span><span class=cB0>,bftest.bit_5;
-<a name="l69"></a></span><span class=cB6>&quot;bftest.bit_6=%b\n&quot;</span><span class=cB0>,bftest.bit_6;
-<a name="l70"></a></span><span class=cB6>&quot;bftest.bit_7=%b\n&quot;</span><span class=cB0>,bftest.bit_7;
-<a name="l71"></a>
-<a name="l72"></a></span><span class=cB6>&quot;\n=== Testing each nibble field via bftest.nibble_N ===\n\n&quot;</span><span class=cB0>;
-<a name="l73"></a></span><span class=cB6>&quot;bftest.nibble_0=%b\n&quot;</span><span class=cB0>,bftest.nibble_0;
-<a name="l74"></a></span><span class=cB6>&quot;bftest.nibble_1=%b\n&quot;</span><span class=cB0>,bftest.nibble_1;
-<a name="l75"></a></span><span class=cB6>&quot;bftest.nibble_2=%b\n&quot;</span><span class=cB0>,bftest.nibble_2;
-<a name="l76"></a></span><span class=cB6>&quot;bftest.nibble_3=%b\n&quot;</span><span class=cB0>,bftest.nibble_3;
-<a name="l77"></a>
-<a name="l78"></a></span><span class=cB6>&quot;\n=== Change one bit and show the new whole_byte (bftest) ===\n\n&quot;</span><span class=cB0>;
-<a name="l79"></a>bftest.bit_3=1;
-<a name="l80"></a></span><span class=cB6>&quot;After bftest.bit_3=1, bftest.whole_byte=%b\n\n&quot;</span><span class=cB0>,bftest.whole_byte;
-<a name="l81"></a>
-<a name="l82"></a></span><span class=cB6>&quot;\n=== Change one nibble and show the new whole_word (bftest) ===\n\n&quot;</span><span class=cB0>;
-<a name="l83"></a>bftest.nibble_1=0xA;
-<a name="l84"></a></span><span class=cB6>&quot;After bftest.nibble_1=0xA, bftest.whole_word=%b\n\n&quot;</span><span class=cB0>,bftest.whole_word;
-<a name="l85"></a>
-<a name="l86"></a></span><span class=cB6>&quot;\n=== Testing each bit field via pbftest-&gt;bit_N ===\n\n&quot;</span><span class=cB0>;
-<a name="l87"></a></span><span class=cB6>&quot;pbftest-&gt;bit_0=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_0;
-<a name="l88"></a></span><span class=cB6>&quot;pbftest-&gt;bit_1=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_1;
-<a name="l89"></a></span><span class=cB6>&quot;pbftest-&gt;bit_2=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_2;
-<a name="l90"></a></span><span class=cB6>&quot;pbftest-&gt;bit_3=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_3;
-<a name="l91"></a></span><span class=cB6>&quot;pbftest-&gt;bit_4=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_4;
-<a name="l92"></a></span><span class=cB6>&quot;pbftest-&gt;bit_5=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_5;
-<a name="l93"></a></span><span class=cB6>&quot;pbftest-&gt;bit_6=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_6;
-<a name="l94"></a></span><span class=cB6>&quot;pbftest-&gt;bit_7=%b\n&quot;</span><span class=cB0>,pbftest-&gt;bit_7;
-<a name="l95"></a>
-<a name="l96"></a></span><span class=cB6>&quot;\n=== Testing each nibble field via pbftest-&gt;nibble_N ===\n\n&quot;</span><span class=cB0>;
-<a name="l97"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_0=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_0;
-<a name="l98"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_1=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_1;
-<a name="l99"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_2=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_2;
-<a name="l100"></a></span><span class=cB6>&quot;pbftest-&gt;nibble_3=%b\n&quot;</span><span class=cB0>,pbftest-&gt;nibble_3;
-<a name="l101"></a>
-<a name="l102"></a></span><span class=cB6>&quot;\n=== Change one bit and show the new whole_byte (pbftest) ===\n\n&quot;</span><span class=cB0>;
-<a name="l103"></a>pbftest-&gt;bit_5=1;
-<a name="l104"></a></span><span class=cB6>&quot;After pbftest-&gt;bit_5=1, pbftest-&gt;whole_byte=%b\n\n&quot;</span><span class=cB0>,pbftest-&gt;whole_byte;
-<a name="l105"></a>
-<a name="l106"></a></span><span class=cB6>&quot;\n=== Change one nibble and show the new whole_word (pbftest) ===\n\n&quot;</span><span class=cB0>;
-<a name="l107"></a>pbftest-&gt;nibble_3=0x3;
-<a name="l108"></a></span><span class=cB6>&quot;After pbftest-&gt;nibble_3=0x3, pbftest-&gt;whole_word=%b\n\n&quot;</span><span class=cB0>,pbftest-&gt;whole_word;
-<a name="l109"></a>
-<a name="l110"></a>
+<a name="l62"></a>BfChk(</span><span class=cB6>&quot;bit_0&quot;</span><span class=cB0>,bftest.bit_0,1);
+<a name="l63"></a>BfChk(</span><span class=cB6>&quot;bit_1&quot;</span><span class=cB0>,bftest.bit_1,0);
+<a name="l64"></a>BfChk(</span><span class=cB6>&quot;bit_2&quot;</span><span class=cB0>,bftest.bit_2,1);
+<a name="l65"></a>BfChk(</span><span class=cB6>&quot;bit_3&quot;</span><span class=cB0>,bftest.bit_3,0);
+<a name="l66"></a>BfChk(</span><span class=cB6>&quot;bit_4&quot;</span><span class=cB0>,bftest.bit_4,1);
+<a name="l67"></a>BfChk(</span><span class=cB6>&quot;bit_5&quot;</span><span class=cB0>,bftest.bit_5,0);
+<a name="l68"></a>BfChk(</span><span class=cB6>&quot;bit_6&quot;</span><span class=cB0>,bftest.bit_6,1);
+<a name="l69"></a>BfChk(</span><span class=cB6>&quot;bit_7&quot;</span><span class=cB0>,bftest.bit_7,0);
+<a name="l70"></a>BfChk(</span><span class=cB6>&quot;nibble_0&quot;</span><span class=cB0>,bftest.nibble_0,0x0);
+<a name="l71"></a>BfChk(</span><span class=cB6>&quot;nibble_1&quot;</span><span class=cB0>,bftest.nibble_1,0x0);
+<a name="l72"></a>BfChk(</span><span class=cB6>&quot;nibble_2&quot;</span><span class=cB0>,bftest.nibble_2,0xF);
+<a name="l73"></a>BfChk(</span><span class=cB6>&quot;nibble_3&quot;</span><span class=cB0>,bftest.nibble_3,0xF);
+<a name="l74"></a>
+<a name="l75"></a></span><span class=cB2>// Writing one bit/nibble is a read-modify-write of the rest of the byte/word.</span><span class=cB0>
+<a name="l76"></a>bftest.bit_3=1;
+<a name="l77"></a>BfChk(</span><span class=cB6>&quot;bit_3=1 -&gt; whole_byte&quot;</span><span class=cB0>,bftest.whole_byte,0x5D);
+<a name="l78"></a>bftest.nibble_1=0xA;
+<a name="l79"></a>BfChk(</span><span class=cB6>&quot;nibble_1=0xA -&gt; whole_word&quot;</span><span class=cB0>,bftest.whole_word,0xFFA0);
+<a name="l80"></a>pbftest-&gt;bit_5=1;
+<a name="l81"></a>BfChk(</span><span class=cB6>&quot;ptr bit_5=1 -&gt; whole_byte&quot;</span><span class=cB0>,pbftest-&gt;whole_byte,0x7D);
+<a name="l82"></a>pbftest-&gt;nibble_3=0x3;
+<a name="l83"></a>BfChk(</span><span class=cB6>&quot;ptr nibble_3=3 -&gt; whole_word&quot;</span><span class=cB0>,pbftest-&gt;whole_word,0x3FA0);
+<a name="l84"></a>
+<a name="l85"></a></span><span class=cB2>// A packed status-register style class: several widths sharing one U32.</span><span class=cB0>
+<a name="l86"></a></span><span class=cB1>class</span><span class=cB0> BfReg
+<a name="l87"></a>{
+<a name="l88"></a>  </span><span class=cB1>union</span><span class=cB0>
+<a name="l89"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l90"></a>    </span><span class=cB9>U32</span><span class=cB0> raw;
+<a name="l91"></a>    </span><span class=cB9>U32</span><span class=cB0> count   : 12;
+<a name="l92"></a>    </span><span class=cB9>U32</span><span class=cB0> rsvd0   : 4;
+<a name="l93"></a>    </span><span class=cB9>U32</span><span class=cB0> flag_a  : 1;
+<a name="l94"></a>    </span><span class=cB9>U32</span><span class=cB0> flag_b  : 1;
+<a name="l95"></a>    </span><span class=cB9>U32</span><span class=cB0> mode    : 2;
+<a name="l96"></a>    </span><span class=cB9>U32</span><span class=cB0> flag_c  : 1;
+<a name="l97"></a>    </span><span class=cB9>U32</span><span class=cB0> rsvd1   : 11;
+<a name="l98"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l99"></a>};
+<a name="l100"></a>
+<a name="l101"></a></span><span class=cB2>// Outside a union, same-type bitfields share one storage unit, like C.</span><span class=cB0>
+<a name="l102"></a></span><span class=cB1>class</span><span class=cB0> BfPacked
+<a name="l103"></a>{
+<a name="l104"></a>  </span><span class=cB1>U8</span><span class=cB0> lo:4;
+<a name="l105"></a>  </span><span class=cB1>U8</span><span class=cB0> hi:4;
+<a name="l106"></a>  </span><span class=cB1>U8</span><span class=cB0> plain;
+<a name="l107"></a>  </span><span class=cB9>U16</span><span class=cB0> three:3;
+<a name="l108"></a>  </span><span class=cB9>U16</span><span class=cB0> thirteen:13;
+<a name="l109"></a>  </span><span class=cB9>U32</span><span class=cB0> after;
+<a name="l110"></a>};
+<a name="l111"></a>
+<a name="l112"></a>BfReg bf_glbl;
+<a name="l113"></a>
+<a name="l114"></a></span><span class=cB1>U0</span><span class=cB0> BfTestUnionRead()
+<a name="l115"></a>{
+<a name="l116"></a>  BfReg t;
+<a name="l117"></a>  t.raw=0x00010000;
+<a name="l118"></a>  BfChk(</span><span class=cB6>&quot;union read flag_a&quot;</span><span class=cB0>,t.flag_a,1);
+<a name="l119"></a>  BfChk(</span><span class=cB6>&quot;union read flag_b&quot;</span><span class=cB0>,t.flag_b,0);
+<a name="l120"></a>  t.raw=0x001F0FFF;
+<a name="l121"></a>  BfChk(</span><span class=cB6>&quot;union read count&quot;</span><span class=cB0>,t.count,0xFFF);
+<a name="l122"></a>  BfChk(</span><span class=cB6>&quot;union read flag_a2&quot;</span><span class=cB0>,t.flag_a,1);
+<a name="l123"></a>  BfChk(</span><span class=cB6>&quot;union read flag_b2&quot;</span><span class=cB0>,t.flag_b,1);
+<a name="l124"></a>  BfChk(</span><span class=cB6>&quot;union read mode&quot;</span><span class=cB0>,t.mode,3);
+<a name="l125"></a>  BfChk(</span><span class=cB6>&quot;union read flag_c&quot;</span><span class=cB0>,t.flag_c,1);
+<a name="l126"></a>}
+<a name="l127"></a>
+<a name="l128"></a></span><span class=cB1>U0</span><span class=cB0> BfTestUnionWriteLocal()
+<a name="l129"></a>{
+<a name="l130"></a>  BfReg t;
+<a name="l131"></a>  t.raw=0;
+<a name="l132"></a>  t.flag_a=1;
+<a name="l133"></a>  BfChk(</span><span class=cB6>&quot;local write flag_a&quot;</span><span class=cB0>,t.raw,0x00010000);
+<a name="l134"></a>  t.mode=3;
+<a name="l135"></a>  BfChk(</span><span class=cB6>&quot;local write mode&quot;</span><span class=cB0>,t.raw,0x000D0000);
+<a name="l136"></a>  t.count=0xFFF;
+<a name="l137"></a>  BfChk(</span><span class=cB6>&quot;local write count&quot;</span><span class=cB0>,t.raw,0x000D0FFF);
+<a name="l138"></a>  t.flag_a=0;
+<a name="l139"></a>  BfChk(</span><span class=cB6>&quot;local clear flag_a&quot;</span><span class=cB0>,t.raw,0x000C0FFF);
+<a name="l140"></a>}
+<a name="l141"></a>
+<a name="l142"></a></span><span class=cB1>U0</span><span class=cB0> BfTestUnionWritePtr()
+<a name="l143"></a>{
+<a name="l144"></a>  BfReg t,*p=&amp;t;
+<a name="l145"></a>  p-&gt;raw=0xFFFFFFFF;
+<a name="l146"></a>  p-&gt;count=0;
+<a name="l147"></a>  BfChk(</span><span class=cB6>&quot;ptr write count keeps rest&quot;</span><span class=cB0>,p-&gt;raw,0xFFFFF000);
+<a name="l148"></a>  p-&gt;flag_b=0;
+<a name="l149"></a>  BfChk(</span><span class=cB6>&quot;ptr clear flag_b&quot;</span><span class=cB0>,p-&gt;raw,0xFFFDF000);
+<a name="l150"></a>  BfChk(</span><span class=cB6>&quot;ptr read via other name&quot;</span><span class=cB0>,t.flag_b,0);
+<a name="l151"></a>}
+<a name="l152"></a>
+<a name="l153"></a></span><span class=cB1>U0</span><span class=cB0> BfTestUnionWriteGlobal()
+<a name="l154"></a>{
+<a name="l155"></a>  bf_glbl.raw=0;
+<a name="l156"></a>  bf_glbl.flag_c=1;
+<a name="l157"></a>  BfChk(</span><span class=cB6>&quot;global write flag_c&quot;</span><span class=cB0>,bf_glbl.raw,0x00100000);
+<a name="l158"></a>  bf_glbl.flag_b=1;
+<a name="l159"></a>  BfChk(</span><span class=cB6>&quot;global write flag_b&quot;</span><span class=cB0>,bf_glbl.raw,0x00120000);
+<a name="l160"></a>}
+<a name="l161"></a>
+<a name="l162"></a></span><span class=cB1>U0</span><span class=cB0> BfTestTruncate()
+<a name="l163"></a>{
+<a name="l164"></a>  BfReg t;
+<a name="l165"></a>  t.raw=0;
+<a name="l166"></a>  t.mode=7; </span><span class=cB2>// 2-bit field truncates to 3</span><span class=cB0>
+<a name="l167"></a>  BfChk(</span><span class=cB6>&quot;truncate mode value&quot;</span><span class=cB0>,t.mode,3);
+<a name="l168"></a>  BfChk(</span><span class=cB6>&quot;truncate mode raw&quot;</span><span class=cB0>,t.raw,0x000C0000);
+<a name="l169"></a>  t.raw=0;
+<a name="l170"></a>  t.count=0xFFFF; </span><span class=cB2>// 12-bit field truncates to 0xFFF</span><span class=cB0>
+<a name="l171"></a>  BfChk(</span><span class=cB6>&quot;truncate count raw&quot;</span><span class=cB0>,t.raw,0xFFF);
+<a name="l172"></a>}
+<a name="l173"></a>
+<a name="l174"></a></span><span class=cB1>U0</span><span class=cB0> BfTestExpr()
+<a name="l175"></a>{
+<a name="l176"></a>  BfReg t;
+<a name="l177"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
+<a name="l178"></a>  t.raw=0x00010009; </span><span class=cB2>// flag_a=1, count=9</span><span class=cB0>
+<a name="l179"></a>  n=t.count+1;
+<a name="l180"></a>  BfChk(</span><span class=cB6>&quot;expr count+1&quot;</span><span class=cB0>,n,10);
+<a name="l181"></a>  n=0;
+<a name="l182"></a>  </span><span class=cB1>if</span><span class=cB0> (t.flag_a &amp;&amp; !t.flag_b)
+<a name="l183"></a>    n=1;
+<a name="l184"></a>  BfChk(</span><span class=cB6>&quot;expr in if&quot;</span><span class=cB0>,n,1);
+<a name="l185"></a>  BfChk(</span><span class=cB6>&quot;expr two fields&quot;</span><span class=cB0>,t.count*2+t.flag_a,19);
+<a name="l186"></a>}
+<a name="l187"></a>
+<a name="l188"></a></span><span class=cB1>U0</span><span class=cB0> BfTestPacked()
+<a name="l189"></a>{
+<a name="l190"></a>  BfPacked x;
+<a name="l191"></a>  </span><span class=cB1>U8</span><span class=cB0> *b=&amp;x;
+<a name="l192"></a>  </span><span class=cB9>U16</span><span class=cB0> *w=&amp;x;
+<a name="l193"></a>  BfChk(</span><span class=cB6>&quot;packed sizeof&quot;</span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BfPacked</span><span class=cB7>)</span><span class=cB0>,8);
+<a name="l194"></a>  BfChk(</span><span class=cB6>&quot;packed offset plain&quot;</span><span class=cB0>,</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>BfPacked.plain</span><span class=cB7>)</span><span class=cB0>,1);
+<a name="l195"></a>  BfChk(</span><span class=cB6>&quot;packed offset thirteen&quot;</span><span class=cB0>,</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>BfPacked.thirteen</span><span class=cB7>)</span><span class=cB0>,2);
+<a name="l196"></a>  BfChk(</span><span class=cB6>&quot;packed offset after&quot;</span><span class=cB0>,</span><span class=cB1>offset</span><span class=cB7>(</span><span class=cB0>BfPacked.after</span><span class=cB7>)</span><span class=cB0>,4);
+<a name="l197"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;x,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BfPacked</span><span class=cB7>)</span><span class=cB0>);
+<a name="l198"></a>  x.lo=3;
+<a name="l199"></a>  x.hi=0xA;
+<a name="l200"></a>  BfChk(</span><span class=cB6>&quot;packed byte0&quot;</span><span class=cB0>,b[0],0xA3);
+<a name="l201"></a>  BfChk(</span><span class=cB6>&quot;packed read lo&quot;</span><span class=cB0>,x.lo,3);
+<a name="l202"></a>  BfChk(</span><span class=cB6>&quot;packed read hi&quot;</span><span class=cB0>,x.hi,0xA);
+<a name="l203"></a>  x.plain=0x55;
+<a name="l204"></a>  x.three=5;
+<a name="l205"></a>  x.thirteen=0x1ABC;
+<a name="l206"></a>  BfChk(</span><span class=cB6>&quot;packed word&quot;</span><span class=cB0>,w[1],0x1ABC&lt;&lt;3+5);
+<a name="l207"></a>  BfChk(</span><span class=cB6>&quot;packed plain untouched&quot;</span><span class=cB0>,x.plain,0x55);
+<a name="l208"></a>  BfChk(</span><span class=cB6>&quot;packed read thirteen&quot;</span><span class=cB0>,x.thirteen,0x1ABC);
+<a name="l209"></a>  x.after=0xDEADBEEF;
+<a name="l210"></a>  BfChk(</span><span class=cB6>&quot;packed after&quot;</span><span class=cB0>,x.after,0xDEADBEEF);
+<a name="l211"></a>}
+<a name="l212"></a>
+<a name="l213"></a>BfReg bf_arr[3];
+<a name="l214"></a></span><span class=cB9>I64</span><span class=cB0> bf_calls=0;
+<a name="l215"></a>
+<a name="l216"></a>BfReg *BfPick(</span><span class=cB9>I64</span><span class=cB0> i)
+<a name="l217"></a>{</span><span class=cB2>//A bitfield write base with a side effect: counts its calls.</span><span class=cB0>
+<a name="l218"></a>  bf_calls++;
+<a name="l219"></a>  </span><span class=cB1>return</span><span class=cB0> &amp;bf_arr[i];
+<a name="l220"></a>}
+<a name="l221"></a>
+<a name="l222"></a></span><span class=cB1>U0</span><span class=cB0> BfTestSideEffects()
+<a name="l223"></a>{</span><span class=cB2>//The base of a bitfield write is evaluated once: a call, an assignment.</span><span class=cB0>
+<a name="l224"></a> </span><span class=cB2>//(Not p++: &quot;(p++)-&gt;x=&quot; does not work in HolyC, not even for plain members.)</span><span class=cB0>
+<a name="l225"></a>  BfReg *p;
+<a name="l226"></a>  </span><span class=cB9>I64</span><span class=cB0> i,guard=0x1234;
+<a name="l227"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(bf_arr,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BfReg</span><span class=cB7>)</span><span class=cB0>*3);
+<a name="l228"></a>  bf_calls=0;
+<a name="l229"></a>  BfPick(1)-&gt;mode=3;
+<a name="l230"></a>  BfChk(</span><span class=cB6>&quot;call base called once&quot;</span><span class=cB0>,bf_calls,1);
+<a name="l231"></a>  BfChk(</span><span class=cB6>&quot;call base write&quot;</span><span class=cB0>,bf_arr[1].raw,0x000C0000);
+<a name="l232"></a>  BfChk(</span><span class=cB6>&quot;call base read&quot;</span><span class=cB0>,BfPick</span><span class=cB7>(</span><span class=cB0>1</span><span class=cB7>)</span><span class=cB0>-&gt;mode,3);
+<a name="l233"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;1000; i++)
+<a name="l234"></a>    BfPick(2)-&gt;count=i;
+<a name="l235"></a>  BfChk(</span><span class=cB6>&quot;call base in loop&quot;</span><span class=cB0>,bf_arr[2].count,999);
+<a name="l236"></a>  BfChk(</span><span class=cB6>&quot;call base loop calls&quot;</span><span class=cB0>,bf_calls,1002);
+<a name="l237"></a>  BfChk(</span><span class=cB6>&quot;call base stack intact&quot;</span><span class=cB0>,guard,0x1234);
+<a name="l238"></a>  BfPick(0)-&gt;flag_b=BfPick(1)-&gt;mode-2;
+<a name="l239"></a>  BfChk(</span><span class=cB6>&quot;call base, call value&quot;</span><span class=cB0>,bf_arr[0].raw,0x00020000);
+<a name="l240"></a>  (p=&amp;bf_arr[2])-&gt;flag_c=1;
+<a name="l241"></a>  BfChk(</span><span class=cB6>&quot;assign base&quot;</span><span class=cB0>,bf_arr[2].raw,0x001003E7);
+<a name="l242"></a>  BfChk(</span><span class=cB6>&quot;assign base sets p&quot;</span><span class=cB0>,p==&amp;bf_arr[2],<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>);
+<a name="l243"></a>}
+<a name="l244"></a>
+<a name="l245"></a></span><span class=cB1>U0</span><span class=cB0> BfUnitTests()
+<a name="l246"></a>{
+<a name="l247"></a>  BfTestUnionRead;
+<a name="l248"></a>  BfTestUnionWriteLocal;
+<a name="l249"></a>  BfTestUnionWritePtr;
+<a name="l250"></a>  BfTestUnionWriteGlobal;
+<a name="l251"></a>  BfTestTruncate;
+<a name="l252"></a>  BfTestExpr;
+<a name="l253"></a>  BfTestPacked;
+<a name="l254"></a>  BfTestSideEffects;
+<a name="l255"></a>}
+<a name="l256"></a>
+<a name="l257"></a></span><span class=cB1>U0</span><span class=cB0> BfReport()
+<a name="l258"></a>{
+<a name="l259"></a>  </span><span class=cB6>&quot;BF RESULT pass %d fail %d\n&quot;</span><span class=cB0>,bf_pass,bf_fail;
+<a name="l260"></a>}
+<a name="l261"></a>
+<a name="l262"></a></span><span class=cB6>&quot;\n=== Unit tests ===\n\n&quot;</span><span class=cB0>;
+<a name="l263"></a>BfUnitTests;
+<a name="l264"></a>
+<a name="l265"></a></span><span class=cB6>&quot;\n=== ClassRep of a packed class: lo=3 hi=A three=5 thirteen=1ABC ===\n\n&quot;</span><span class=cB0>;
+<a name="l266"></a>BfPacked bf_pk;
+<a name="l267"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(&amp;bf_pk,0,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>BfPacked</span><span class=cB7>)</span><span class=cB0>);
+<a name="l268"></a>bf_pk.lo=3;
+<a name="l269"></a>bf_pk.hi=0xA;
+<a name="l270"></a>bf_pk.plain=0x55;
+<a name="l271"></a>bf_pk.three=5;
+<a name="l272"></a>bf_pk.thirteen=0x1ABC;
+<a name="l273"></a>bf_pk.after=0xDEADBEEF;
+<a name="l274"></a><a href="http://tinkeros.github.io/WbGit/Adam/ADbg.html#l223"></span><span class=cB5>ClassRep</a></span><span class=cB0>(&amp;bf_pk);
+<a name="l275"></a>BfChk(</span><span class=cB6>&quot;final packed lo&quot;</span><span class=cB0>,bf_pk.lo,3);
+<a name="l276"></a>BfChk(</span><span class=cB6>&quot;final packed hi&quot;</span><span class=cB0>,bf_pk.hi,0xA);
+<a name="l277"></a>BfChk(</span><span class=cB6>&quot;final packed three&quot;</span><span class=cB0>,bf_pk.three,5);
+<a name="l278"></a>BfChk(</span><span class=cB6>&quot;final packed thirteen&quot;</span><span class=cB0>,bf_pk.thirteen,0x1ABC);
+<a name="l279"></a>BfChk(</span><span class=cB6>&quot;final packed after&quot;</span><span class=cB0>,bf_pk.after,0xDEADBEEF);
+<a name="l280"></a>
+<a name="l281"></a></span><span class=cB6>&quot;\n&quot;</span><span class=cB0>;
+<a name="l282"></a>BfReport;
 </span></div></pre></body>
 </html>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.21">
+<meta name="generator" content="TinkerOS V5.22">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -202,51 +202,5 @@
 <a name="l161"></a>  </span><span class=cB1>return</span><span class=cB0> cnt;
 <a name="l162"></a>}
 <a name="l163"></a>
-<a name="l164"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskB.html#l164"></span><span class=cB5>Zip</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask=</span><span class=cB6>&quot;*&quot;</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *fu_flags=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l165"></a>{</span><span class=cB2>//Compress files by moving to .Z filename.</span><span class=cB0>
-<a name="l166"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
-<a name="l167"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1;
-<a name="l168"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0,fuf_flags=0;
-<a name="l169"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l107"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;+r+f+F+O&quot;</span><span class=cB0>);
-<a name="l170"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l107"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,fu_flags);
-<a name="l171"></a>  tmpde=tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags);
-<a name="l172"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
-<a name="l173"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l174"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l24"></span><span class=cB5>IsDotZ</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;full_name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l175"></a>    {
-<a name="l176"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s.Z&quot;</span><span class=cB0>,tmpde-&gt;full_name);
-<a name="l177"></a>      res+=<a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskA.html#l41"></span><span class=cB5>Move</a></span><span class=cB0>(tmpde-&gt;full_name,st);
-<a name="l178"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
-<a name="l179"></a>    }
-<a name="l180"></a>    tmpde=tmpde-&gt;next;
-<a name="l181"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l182"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde1);
-<a name="l183"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l184"></a>}
-<a name="l185"></a>
-<a name="l186"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskB.html#l186"></span><span class=cB5>Unzip</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *files_find_mask=</span><span class=cB6>&quot;*.Z&quot;</span><span class=cB0>,</span><span class=cB1>U8</span><span class=cB0> *fu_flags=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
-<a name="l187"></a>{</span><span class=cB2>//Uncompress files by moving to not .Z filename.</span><span class=cB0>
-<a name="l188"></a></span><span class=cB2>//You don't have to do this for normal operation.</span><span class=cB0>
-<a name="l189"></a>  </span><span class=cB2>//It automatically unzips &quot;.Z&quot; files.</span><span class=cB0>
-<a name="l190"></a>  </span><span class=cB1>U8</span><span class=cB0> *st;
-<a name="l191"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde,*tmpde1;
-<a name="l192"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0,fuf_flags=0;
-<a name="l193"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l107"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;+r+f+F+O&quot;</span><span class=cB0>);
-<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrB.html#l107"></span><span class=cB5>ScanFlags</a></span><span class=cB0>(&amp;fuf_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KDefine.html#l49"></span><span class=cB5>Define</a></span><span class=cB7>(</span><span class=cB6>&quot;ST_FILE_UTIL_FLAGS&quot;</span><span class=cB7>)</span><span class=cB0>,fu_flags);
-<a name="l195"></a>  tmpde=tmpde1=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(files_find_mask,fuf_flags);
-<a name="l196"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
-<a name="l197"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l198"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l24"></span><span class=cB5>IsDotZ</a></span><span class=cB7>(</span><span class=cB0>tmpde-&gt;full_name</span><span class=cB7>)</span><span class=cB0>)
-<a name="l199"></a>    {
-<a name="l200"></a>      st=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(tmpde-&gt;full_name);
-<a name="l201"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l653"></span><span class=cB5>StrLastRem</a></span><span class=cB0>(st,</span><span class=cB6>&quot;.&quot;</span><span class=cB0>);
-<a name="l202"></a>      res+=<a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskA.html#l41"></span><span class=cB5>Move</a></span><span class=cB0>(tmpde-&gt;full_name,st);
-<a name="l203"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
-<a name="l204"></a>    }
-<a name="l205"></a>    tmpde=tmpde-&gt;next;
-<a name="l206"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l207"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde1);
-<a name="l208"></a>  </span><span class=cB1>return</span><span class=cB0> res;
-<a name="l209"></a>}
 </span></div></pre></body>
 </html>

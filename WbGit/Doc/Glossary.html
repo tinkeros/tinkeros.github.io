@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.21">
+<meta name="generator" content="TinkerOS V5.22">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
@@ -222,7 +222,7 @@
 <a name="l187"></a>  calling routines </span><span class=cB2>+/-2Gig</span><span class=cB0> from the current code location.  To prevent 
 <a name="l188"></a>  out-of-range issues, I decided to separate code and data, placing all code 
 <a name="l189"></a>  within the lowest </span><span class=cB2>2Gig</span><span class=cB0> of memory, addresses </span><span class=cB2>00000000</span><span class=cB0>-</span><span class=cB2>7FFFFFFF</span><span class=cB0>.  The compiler 
-<a name="l190"></a>  and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l213"><span class=cB4>Load</span></a><span class=cB0>()er alloc memory from the code heap to store code and glbl vars, 
+<a name="l190"></a>  and </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l243"><span class=cB4>Load</span></a><span class=cB0>()er alloc memory from the code heap to store code and glbl vars, 
 <a name="l191"></a>  unless the compiler option </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1635"><span class=cB4>OPTf_GLBLS_ON_DATA_HEAP</span></a><span class=cB0> is used.  When programs 
 <a name="l192"></a>  call </span><a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"><span class=cB4>MAlloc</span></a><span class=cB0>() is from the data heap, which in not limited in size, except by 
 <a name="l193"></a>  physical RAM memory.  You can alloc from any heap in any task at any time on 
@@ -245,12 +245,12 @@
 <a name="l210"></a>  JIT</span><span class=cB0> compiling.
 <a name="l211"></a>  
 <a name="l212"></a>  In </span><span class=cB2>AOT</span><span class=cB0> mode, </span><span class=cB2>.PRJ</span><span class=cB0> files are compiled to </span><span class=cB2>.BIN</span><span class=cB0> files, skipping </span><span class=cB2>.OBJ</span><span class=cB0> files.  
-<a name="l213"></a>  After compiling, </span><span class=cB2>.BIN</span><span class=cB0> files are </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l213"><span class=cB4>Load</span></a><span class=cB0>()ed.
+<a name="l213"></a>  After compiling, </span><span class=cB2>.BIN</span><span class=cB0> files are </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l243"><span class=cB4>Load</span></a><span class=cB0>()ed.
 <a name="l214"></a>  
 <a name="l215"></a>  There is no </span><span class=cB2>main()</span><span class=cB0> routine.  Instead, stmts outside functions are 
 <a name="l216"></a>  automatically executed upon loading.  There is no way to unload except by 
 <a name="l217"></a>  killing the task.  To invoke </span><span class=cB2>AOT Compiled Mode</span><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l502"><span class=cB4>Cmp</span></a><span class=cB0>() is used.  The </span><span class=cB2>Kernel</span><span class=cB0> 
-<a name="l218"></a>  module and compiler are made in </span><span class=cB2>AOT</span><span class=cB0> compiled mode.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l25"><span class=cB4>BootHDIns</span></a><span class=cB0>()  which 
+<a name="l218"></a>  module and compiler are made in </span><span class=cB2>AOT</span><span class=cB0> compiled mode.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l26"><span class=cB4>BootHDIns</span></a><span class=cB0>()  which 
 <a name="l219"></a>  calls </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Boot/BootHDIns.html#l17"><span class=cB4>MakeAll</span></a><span class=cB0>() where </span><a href="http://tinkeros.github.io/WbGit/Kernel/Kernel.html#l1"><span class=cB4>::/Kernel.BIN.C</span></a><span class=cB0> and </span><a href="http://tinkeros.github.io/WbGit/Compiler/Compiler.html#l1"><span class=cB4>::/Compiler/Compiler.BIN</span></a><span class=cB0> are 
 <a name="l220"></a>  created.
 <a name="l221"></a></span><span class=cB5><u>-] JIT Compile Mode</span><span class=cB0>
@@ -321,7 +321,7 @@
 <a name="l286"></a>  </span><span class=cB5>*.MAP.Z;*.MAP</span><span class=cB0>
 <a name="l287"></a>    Compiler &quot;map&quot; files
 <a name="l288"></a>  </span><span class=cB5>*.BIN.Z;*.BIN.C;*.BIN</span><span class=cB0>
-<a name="l289"></a>    Binary executable files, created by </span><a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l502"><span class=cB4>Cmp</span></a><span class=cB0>() and read by </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l213"><span class=cB4>Load</span></a><span class=cB0>().
+<a name="l289"></a>    Binary executable files, created by </span><a href="http://tinkeros.github.io/WbGit/Compiler/CMain.html#l502"><span class=cB4>Cmp</span></a><span class=cB0>() and read by </span><a href="http://tinkeros.github.io/WbGit/Kernel/KLoad.html#l243"><span class=cB4>Load</span></a><span class=cB0>().
 <a name="l290"></a>  </span><span class=cB5>*.DATA.Z;*.DATA</span><span class=cB0>
 <a name="l291"></a>    Data files
 <a name="l292"></a>  </span><span class=cB5>*.ISO</span><span class=cB0>
