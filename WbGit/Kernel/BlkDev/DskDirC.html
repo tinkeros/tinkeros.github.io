@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.22">
+<meta name="generator" content="TinkerOS V5.23">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -49,12 +49,24 @@
 <a name="l11"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l294"></span><span class=cB5>Silent</a></span><span class=cB0>(old_silent);
 <a name="l12"></a>  </span><span class=cB1>return</span><span class=cB0> res&gt;0;
 <a name="l13"></a>}
-<a name="l14"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l14"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dirname=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> make_dirs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
-<a name="l15"></a>{</span><span class=cB2>//Change directory and list contents</span><span class=cB0>
-<a name="l16"></a>  </span><span class=cB1>if</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>dirname,make_dirs</span><span class=cB7>)</span><span class=cB0>)
-<a name="l17"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"></span><span class=cB5>Dir</a></span><span class=cB0>&gt;0;
-<a name="l18"></a>  </span><span class=cB1>else</span><span class=cB0>
-<a name="l19"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l20"></a>}
+<a name="l14"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l14"></span><span class=cB5>IsFileZorNotZ</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0>* filename)
+<a name="l15"></a>{</span><span class=cB2>//Test if file exists, trying filename with .Z toggled if not found as-is.</span><span class=cB0>
+<a name="l16"></a>  </span><span class=cB1>U8</span><span class=cB0> *altname;
+<a name="l17"></a>  </span><span class=cB1>Bool</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l1"></span><span class=cB5>IsFile</a></span><span class=cB0>(filename);
+<a name="l18"></a>  </span><span class=cB1>if</span><span class=cB0> (!res)
+<a name="l19"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l20"></a>    altname=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l302"></span><span class=cB5>ToggleZorNotZ</a></span><span class=cB0>(filename);
+<a name="l21"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l1"></span><span class=cB5>IsFile</a></span><span class=cB0>(altname);
+<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(altname);
+<a name="l23"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l24"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l25"></a>}
+<a name="l26"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirC.html#l26"></span><span class=cB5>Cdd</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dirname=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,</span><span class=cB1>Bool</span><span class=cB0> make_dirs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)
+<a name="l27"></a>{</span><span class=cB2>//Change directory and list contents</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l9"></span><span class=cB5>Cd</a></span><span class=cB7>(</span><span class=cB0>dirname,make_dirs</span><span class=cB7>)</span><span class=cB0>)
+<a name="l29"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirB.html#l123"></span><span class=cB5>Dir</a></span><span class=cB0>&gt;0;
+<a name="l30"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l31"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l32"></a>}
 </span></div></pre></body>
 </html>
