@@ -4,12 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
-.cB5{color:#aa00aa;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
 .cF1{color:#0000aa;background-color:#ffffff;}
@@ -38,53 +37,58 @@
 <a name="l2"></a>
 <a name="l3"></a></span><span class=cB1>class</span><span class=cB0> CUDPMsgQue:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
 <a name="l4"></a>{ </span><span class=cB2>// each bound socket queues data. recv functions &amp; hndlr use this.</span><span class=cB0>
-<a name="l5"></a>        </span><span class=cB1>U8</span><span class=cB0>                                              *data;                          </span><span class=cB2>// contains the UDP payload data.</span><span class=cB0>
-<a name="l6"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              data_length;           </span><span class=cB2>// size of payload data.</span><span class=cB0>
-<a name="l7"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              received_length;       </span><span class=cB2>// amount of the data received so far.</span><span class=cB0>
-<a name="l8"></a>        CSocketAddressStorage    from_address;  </span><span class=cB2>// when UDP Handler sees UDP packet, this is filled with where packet came from.</span><span class=cB0>
-<a name="l9"></a>                                                                                        </span><span class=cB2>// recvfrom uses this to fill its address_out parameter.</span><span class=cB0>
-<a name="l10"></a>};
-<a name="l11"></a>
-<a name="l12"></a></span><span class=cB1>class</span><span class=cB0> CUDPSocket
-<a name="l13"></a>{
-<a name="l14"></a>        CSocket                                 *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l257"></span><span class=cB5>socket</a></span><span class=cB0>;
-<a name="l15"></a>        CUDPMsgQue              *receive_queue;
-<a name="l16"></a>        CSocketAddressStorage    receive_address;       </span><span class=cB2>// based on -&gt;family, cast or assign to a var as IPV4/IPV6 CSocketAddress</span><span class=cB0>
-<a name="l17"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              receive_timeout_ms;
-<a name="l18"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              receive_max_timeout;
-<a name="l19"></a>        </span><span class=cB9>U16</span><span class=cB0>                                              bound_to;                      </span><span class=cB2>// represents the currently bound port</span><span class=cB0>
-<a name="l20"></a>};
-<a name="l21"></a>
-<a name="l22"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeQue:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
-<a name="l23"></a>{
-<a name="l24"></a>        CUDPSocket              *<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l257"></span><span class=cB5>socket</a></span><span class=cB0>;
-<a name="l25"></a>};
+<a name="l5"></a>        </span><span class=cB1>U8</span><span class=cB0>                                              *data;
+<a name="l6"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              data_len;
+<a name="l7"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              received_len;
+<a name="l8"></a>        CSockAddrStorage         from_addr;
+<a name="l9"></a>};
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB1>class</span><span class=cB0> CUDPSock
+<a name="l12"></a>{
+<a name="l13"></a>        CSock                                   *sock;
+<a name="l14"></a>        CUDPMsgQue              *rx_queue;
+<a name="l15"></a>        CSockAddrStorage         rx_addr;
+<a name="l16"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              rx_timeout_ms;
+<a name="l17"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              rx_max_timeout;
+<a name="l18"></a>        </span><span class=cB9>U16</span><span class=cB0>                                              bound_to;
+<a name="l19"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              rx_queue_depth;
+<a name="l20"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              rx_lock;
+<a name="l21"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              handler_refs;
+<a name="l22"></a>        </span><span class=cB9>I64</span><span class=cB0>                                              close_lock;
+<a name="l23"></a>};
+<a name="l24"></a>
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> UDP_RECV_QUEUE_MAX      32
 <a name="l26"></a>
-<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeNode:CBST
+<a name="l27"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeQue:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
 <a name="l28"></a>{
-<a name="l29"></a>        CUDPTreeQue     *queue;
+<a name="l29"></a>        CUDPSock                *sock;
 <a name="l30"></a>};
 <a name="l31"></a>
-<a name="l32"></a></span><span class=cB1>class</span><span class=cB0> CUDPRepEntry:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
+<a name="l32"></a></span><span class=cB1>class</span><span class=cB0> CUDPTreeNode:CBST
 <a name="l33"></a>{
-<a name="l34"></a>        CUDPTreeNode *node;
+<a name="l34"></a>        CUDPTreeQue     *queue;
 <a name="l35"></a>};
 <a name="l36"></a>
-<a name="l37"></a></span><span class=cB1>class</span><span class=cB0> CUDPHeader
+<a name="l37"></a></span><span class=cB1>class</span><span class=cB0> CUDPRepEnt:<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l124"></span><span class=cB9>CQue</a></span><span class=cB0>
 <a name="l38"></a>{
-<a name="l39"></a>        </span><span class=cB9>U16</span><span class=cB0> source_port;
-<a name="l40"></a>        </span><span class=cB9>U16</span><span class=cB0> destination_port;
-<a name="l41"></a>        </span><span class=cB9>U16</span><span class=cB0> length;
-<a name="l42"></a>        </span><span class=cB9>U16</span><span class=cB0> checksum;
-<a name="l43"></a>};
-<a name="l44"></a>
-<a name="l45"></a>
-<a name="l46"></a></span><span class=cB1>class</span><span class=cB0> CUDPGlbls
-<a name="l47"></a>{
-<a name="l48"></a>
-<a name="l49"></a>        CUDPTreeNode *bound_socket_tree;
+<a name="l39"></a>        CUDPTreeNode *node;
+<a name="l40"></a>};
+<a name="l41"></a>
+<a name="l42"></a></span><span class=cB1>class</span><span class=cB0> CUDPHdr
+<a name="l43"></a>{
+<a name="l44"></a>        </span><span class=cB9>U16</span><span class=cB0> src_port;
+<a name="l45"></a>        </span><span class=cB9>U16</span><span class=cB0> dst_port;
+<a name="l46"></a>        </span><span class=cB9>U16</span><span class=cB0> len;
+<a name="l47"></a>        </span><span class=cB9>U16</span><span class=cB0> checksum;
+<a name="l48"></a>};
+<a name="l49"></a>
 <a name="l50"></a>
-<a name="l51"></a>} udp_globals;
-<a name="l52"></a>
+<a name="l51"></a></span><span class=cB1>class</span><span class=cB0> CUDPGlbls
+<a name="l52"></a>{
+<a name="l53"></a>
+<a name="l54"></a>        CUDPTreeNode *bound_sock_tree;
+<a name="l55"></a>
+<a name="l56"></a>} udp_globals;
+<a name="l57"></a>
 </span></div></pre></body>
 </html>

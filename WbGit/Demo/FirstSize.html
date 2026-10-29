@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
 .cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
@@ -57,5 +58,31 @@
 <a name="l20"></a>StructInfo(&amp;a);
 <a name="l21"></a>StructInfo(&amp;s);
 <a name="l22"></a>
+<a name="l23"></a></span><span class=cB2>//ClassCpy() uses firstsize the same way, so copying a class onto</span><span class=cB0>
+<a name="l24"></a></span><span class=cB2>//another of the same class needs no sizeof() at the call.</span><span class=cB0>
+<a name="l25"></a>Student b,roster[3],backup[3];
+<a name="l26"></a></span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l27"></a>
+<a name="l28"></a>a.next=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l29"></a>a.age=85;
+<a name="l30"></a><a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(a.name,</span><span class=cB6>&quot;Grace Hopper&quot;</span><span class=cB0>);
+<a name="l31"></a>
+<a name="l32"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(&amp;b,&amp;a);
+<a name="l33"></a></span><span class=cB6>&quot;\nClassCpy(&amp;b,&amp;a) copied %d bytes, no sizeof needed.\n&quot;</span><span class=cB0>,</span><span class=cB1>sizeof</span><span class=cB0>(Student);
+<a name="l34"></a></span><span class=cB6>&quot;b is \&quot;%s\&quot;, age %d.\n&quot;</span><span class=cB0>,b.name,b.age;
+<a name="l35"></a>
+<a name="l36"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l129"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(&amp;b);
+<a name="l37"></a></span><span class=cB6>&quot;After ZeroClass(&amp;b): \&quot;%s\&quot;, age %d.\n&quot;</span><span class=cB0>,b.name,b.age;
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB2>//The third arg is an element count, dft 1, so whole arrays work too.</span><span class=cB0>
+<a name="l40"></a></span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;3; i++)
+<a name="l41"></a>{
+<a name="l42"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(&amp;roster[i],&amp;a);
+<a name="l43"></a>  roster[i].age=i;
+<a name="l44"></a>}
+<a name="l45"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(backup,roster,3);
+<a name="l46"></a></span><span class=cB6>&quot;\nClassCpy(backup,roster,3) copied %d bytes.\n&quot;</span><span class=cB0>,3*</span><span class=cB1>sizeof</span><span class=cB0>(Student);
+<a name="l47"></a></span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;3; i++)
+<a name="l48"></a>  </span><span class=cB6>&quot;backup[%d] is \&quot;%s\&quot;, age %d.\n&quot;</span><span class=cB0>,i,backup[i].name,backup[i].age;
 </span></div></pre></body>
 </html>

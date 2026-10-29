@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> USB_PCI_UHCI 0x0C0300
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> USB_PCI_OHCI 0x0C0310
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> USB_PCI_EHCI 0x0C0320
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> USB_PCI_XHCI 0x0C0330
+<a name="l5"></a>
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_GET_STATUS  0
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_CLR_FEATURE 1
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_SET_FEATURE 3
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_SET_ADDR    5
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_GET_DESC    6
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_SET_DESC    7
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_GET_CFG     8
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_SET_CFG     9
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_GET_IF      10
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> USB_REQ_SET_IF      11
+<a name="l16"></a>
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_DEV     1
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_CFG     2
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_STR     3
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_IF      4
+<a name="l21"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_EP      5
+<a name="l22"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_HID     0x21
+<a name="l23"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DT_REPORT  0x22
+<a name="l24"></a>
+<a name="l25"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_AUDIO 1
+<a name="l26"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_HID   3
+<a name="l27"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_PRN   7
+<a name="l28"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_HUB   9
+<a name="l29"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_MSD   8
+<a name="l30"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_CDC_CTL  2
+<a name="l31"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_CDC_DATA 0x0A
+<a name="l32"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CLS_VIDEO 0x0E
+<a name="l33"></a>
+<a name="l34"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_IN     0x80
+<a name="l35"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_STD    0x00
+<a name="l36"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_CLS    0x20
+<a name="l37"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_DEV    0
+<a name="l38"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_IF     1
+<a name="l39"></a>#</span><span class=cB1>define</span><span class=cB0> USB_RT_EP     2
+<a name="l40"></a>
+<a name="l41"></a>#</span><span class=cB1>define</span><span class=cB0> USB_EP_IN     0x80
+<a name="l42"></a>#</span><span class=cB1>define</span><span class=cB0> USB_EP_CTRL   0
+<a name="l43"></a>#</span><span class=cB1>define</span><span class=cB0> USB_EP_INT    3
+<a name="l44"></a>#</span><span class=cB1>define</span><span class=cB0> USB_EP_BULK   2
+<a name="l45"></a>
+<a name="l46"></a></span><span class=cB1>class</span><span class=cB0> CUsbSetup
+<a name="l47"></a>{
+<a name="l48"></a>  </span><span class=cB1>U8</span><span class=cB0> rt, req;
+<a name="l49"></a>  </span><span class=cB9>U16</span><span class=cB0> val, idx, len;
+<a name="l50"></a>};
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB1>class</span><span class=cB0> CUsbDev
+<a name="l53"></a>{
+<a name="l54"></a>  </span><span class=cB1>U8</span><span class=cB0> len, type;
+<a name="l55"></a>  </span><span class=cB9>U16</span><span class=cB0> bcd_usb;
+<a name="l56"></a>  </span><span class=cB1>U8</span><span class=cB0> cls, sub, proto, mps0;
+<a name="l57"></a>  </span><span class=cB9>U16</span><span class=cB0> vid, pid, bcd_dev;
+<a name="l58"></a>  </span><span class=cB1>U8</span><span class=cB0> i_mfr, i_prod, i_ser, cfgs;
+<a name="l59"></a>};
+<a name="l60"></a>
+<a name="l61"></a></span><span class=cB1>class</span><span class=cB0> CUsbEp
+<a name="l62"></a>{
+<a name="l63"></a>  </span><span class=cB1>U8</span><span class=cB0> len, type;
+<a name="l64"></a>  </span><span class=cB1>union</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l66"></a>    </span><span class=cB1>U8</span><span class=cB0> addr;
+<a name="l67"></a>    </span><span class=cB1>U8</span><span class=cB0> ep_num:4;
+<a name="l68"></a>    </span><span class=cB1>U8</span><span class=cB0> rsvd:3;
+<a name="l69"></a>    </span><span class=cB1>U8</span><span class=cB0> ep_in:1;
+<a name="l70"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l71"></a>  </span><span class=cB1>union</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l73"></a>    </span><span class=cB1>U8</span><span class=cB0> attr;
+<a name="l74"></a>    </span><span class=cB1>U8</span><span class=cB0> xfer:2;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB9>U16</span><span class=cB0> mps;
+<a name="l77"></a>  </span><span class=cB1>U8</span><span class=cB0> interval;
+<a name="l78"></a>};
+<a name="l79"></a>
+<a name="l80"></a></span><span class=cB1>class</span><span class=cB0> CUsbCfg
+<a name="l81"></a>{
+<a name="l82"></a>  </span><span class=cB1>U8</span><span class=cB0> len, type;
+<a name="l83"></a>  </span><span class=cB9>U16</span><span class=cB0> total;
+<a name="l84"></a>  </span><span class=cB1>U8</span><span class=cB0> nif, cval, istr, attr, pwr;
+<a name="l85"></a>};
+<a name="l86"></a>
+<a name="l87"></a></span><span class=cB1>class</span><span class=cB0> CUsbIf
+<a name="l88"></a>{
+<a name="l89"></a>  </span><span class=cB1>U8</span><span class=cB0> len, type, num, alt, neps, cls, sub, proto, istr;
+<a name="l90"></a>};
+<a name="l91"></a>
+<a name="l92"></a></span><span class=cB1>class</span><span class=cB0> CUsbCbw
+<a name="l93"></a>{
+<a name="l94"></a>  </span><span class=cB9>U32</span><span class=cB0> sig, tag, dlen;
+<a name="l95"></a>  </span><span class=cB1>U8</span><span class=cB0> flags, lun, cbl;
+<a name="l96"></a>  </span><span class=cB1>U8</span><span class=cB0> cdb[16];
+<a name="l97"></a>};
+<a name="l98"></a>
+<a name="l99"></a></span><span class=cB1>class</span><span class=cB0> CUsbCsw
+<a name="l100"></a>{
+<a name="l101"></a>  </span><span class=cB9>U32</span><span class=cB0> sig, tag, resid;
+<a name="l102"></a>  </span><span class=cB1>U8</span><span class=cB0> status;
+<a name="l103"></a>};
+<a name="l104"></a>
+<a name="l105"></a>#</span><span class=cB1>define</span><span class=cB0> USB_HC_UHCI 1
+<a name="l106"></a>#</span><span class=cB1>define</span><span class=cB0> USB_HC_EHCI 2
+<a name="l107"></a>#</span><span class=cB1>define</span><span class=cB0> USB_HC_OHCI 3
+<a name="l108"></a>#</span><span class=cB1>define</span><span class=cB0> USB_HC_XHCI 4
+<a name="l109"></a>#</span><span class=cB1>define</span><span class=cB0> USB_HC_NUM  5
+<a name="l110"></a>
+<a name="l111"></a>#</span><span class=cB1>define</span><span class=cB0> USB_SPD_FS 0
+<a name="l112"></a>#</span><span class=cB1>define</span><span class=cB0> USB_SPD_LS 1
+<a name="l113"></a>#</span><span class=cB1>define</span><span class=cB0> USB_SPD_HS 2
+<a name="l114"></a>#</span><span class=cB1>define</span><span class=cB0> USB_SPD_SS 3
+<a name="l115"></a>
+<a name="l116"></a>#</span><span class=cB1>define</span><span class=cB0> USB_NFN        16
+<a name="l117"></a>#</span><span class=cB1>define</span><span class=cB0> USB_BUF_SETUP  0
+<a name="l118"></a>#</span><span class=cB1>define</span><span class=cB0> USB_BUF_DATA   64
+<a name="l119"></a>#</span><span class=cB1>define</span><span class=cB0> USB_DATA_MAX   4096
+<a name="l120"></a>#</span><span class=cB1>define</span><span class=cB0> USB_BUF_INT    4608     </span><span class=cB2>//USB_NFN interrupt-IN slots of USB_INT_SZ</span><span class=cB0>
+<a name="l121"></a>#</span><span class=cB1>define</span><span class=cB0> USB_INT_SZ     64
+<a name="l122"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CBW_SIG    0x43425355
+<a name="l123"></a>#</span><span class=cB1>define</span><span class=cB0> USB_CSW_SIG    0x53425355
+<a name="l124"></a>#</span><span class=cB1>define</span><span class=cB0> USB_MS_BLKS    8
+<a name="l125"></a>
+<a name="l126"></a></span><span class=cB1>class</span><span class=cB0> CUsbTab
+<a name="l127"></a>{</span><span class=cB2>//HID absolute pointer and relative mouse field bit offsets, -1 if absent.</span><span class=cB0>
+<a name="l128"></a>  </span><span class=cB9>I64</span><span class=cB0> rid, btn, x, xs, xmax, y, ys, ymax;
+<a name="l129"></a>  </span><span class=cB9>I64</span><span class=cB0> mrid, mbtn, mnb, mx, mxs, my, mys, mw, mws;
+<a name="l130"></a>};
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>class</span><span class=cB0> CUsbFn
+<a name="l133"></a>{</span><span class=cB2>//An enumerated device and the interface we drive.</span><span class=cB0>
+<a name="l134"></a>  </span><span class=cB9>I64</span><span class=cB0> hc, hci, port, hub, hport, tt_adr, tt_port, speed, adr, mps0, kind, ifn, on;
+<a name="l135"></a>  </span><span class=cB9>I64</span><span class=cB0> ep, mps, tog;
+<a name="l136"></a>  </span><span class=cB9>I64</span><span class=cB0> bin, bout, bmps, btog_i, btog_o;
+<a name="l137"></a>  </span><span class=cB9>I64</span><span class=cB0> nports, chg;
+<a name="l138"></a>  </span><span class=cB1>U8</span><span class=cB0> *hq, *ht;
+<a name="l139"></a>  </span><span class=cB1>U8</span><span class=cB0> prev[8], hpen[16];
+<a name="l140"></a>  CUsbTab tab;
+<a name="l141"></a>  </span><span class=cB9>I64</span><span class=cB0> vid, pid, cls, gen;
+<a name="l142"></a>  </span><span class=cB1>U8</span><span class=cB0> *hx;
+<a name="l143"></a>  </span><span class=cB1>U8</span><span class=cB0> *bht;
+<a name="l144"></a>  </span><span class=cB9>I64</span><span class=cB0> blen;
+<a name="l145"></a>  </span><span class=cB9>I64</span><span class=cB0> par;
+<a name="l146"></a>  </span><span class=cB9>I64</span><span class=cB0> alt;
+<a name="l147"></a>  </span><span class=cB9>I64</span><span class=cB0> dalt;
+<a name="l148"></a>  </span><span class=cB9>I64</span><span class=cB0> mstr;
+<a name="l149"></a>  </span><span class=cB1>U8</span><span class=cB0> *iso;
+<a name="l150"></a>};
+<a name="l151"></a>
+<a name="l152"></a>#</span><span class=cB1>define</span><span class=cB0> USB_ISO_NFR  32
+<a name="l153"></a>#</span><span class=cB1>define</span><span class=cB0> USB_ISO_NU   64
+<a name="l154"></a>#</span><span class=cB1>define</span><span class=cB0> USB_ISO_FIFO 128
+<a name="l155"></a>
+<a name="l156"></a></span><span class=cB1>class</span><span class=cB0> CUsbIso
+<a name="l157"></a>{</span><span class=cB2>//An isochronous stream (UsbVenIsoStart).</span><span class=cB0>
+<a name="l158"></a>  </span><span class=cB9>I64</span><span class=cB0> ep, dirin, mps, mult, maxlen,
+<a name="l159"></a>        per_fr, step,
+<a name="l160"></a>        interval,
+<a name="l161"></a>        nu, fr_bytes, nxt, next_slot, dci;
+<a name="l162"></a>  </span><span class=cB1>Bool</span><span class=cB0> split;
+<a name="l163"></a>  </span><span class=cB1>U8</span><span class=cB0> *td, *buf;
+<a name="l164"></a>  </span><span class=cB9>I64</span><span class=cB0> slot[USB_ISO_NU], ulen[USB_ISO_NU];
+<a name="l165"></a>  </span><span class=cB9>U32</span><span class=cB0> tpa[USB_ISO_NU];
+<a name="l166"></a>  </span><span class=cB9>I64</span><span class=cB0> done[USB_ISO_NU], cc[USB_ISO_NU], res[USB_ISO_NU];
+<a name="l167"></a>  </span><span class=cB1>U8</span><span class=cB0> *fifo;
+<a name="l168"></a>  </span><span class=cB9>I64</span><span class=cB0> flen[USB_ISO_FIFO], fin, fout;
+<a name="l169"></a>  </span><span class=cB9>I64</span><span class=cB0> frames, pkts, errs, missed, resync, under;
+<a name="l170"></a>};
+<a name="l171"></a>
+<a name="l172"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l172"></span><span class=cBD>UsbIsoTake</a></span><span class=cB0>(CUsbIso *s, </span><span class=cB1>U8</span><span class=cB0> *dst)
+<a name="l173"></a>{</span><span class=cB2>//The next queued OUT packet into dst: its length, 0 if none (underrun).</span><span class=cB0>
+<a name="l174"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
+<a name="l175"></a>  </span><span class=cB1>if</span><span class=cB0> (s-&gt;fin == s-&gt;fout)
+<a name="l176"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l177"></a>    s-&gt;under++;
+<a name="l178"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l179"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l180"></a>  n = s-&gt;flen[s-&gt;fout &amp; (USB_ISO_FIFO - 1)];
+<a name="l181"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst, s-&gt;fifo + </span><span class=cB7>(</span><span class=cB0>s-&gt;fout &amp; (USB_ISO_FIFO - 1)</span><span class=cB7>)</span><span class=cB0> * s-&gt;maxlen, n);
+<a name="l182"></a>  s-&gt;fout++;
+<a name="l183"></a>  </span><span class=cB1>return</span><span class=cB0> n;
+<a name="l184"></a>}
+<a name="l185"></a>
+<a name="l186"></a></span><span class=cB1>class</span><span class=cB0> CUsbHcOps
+<a name="l187"></a>{</span><span class=cB2>//What the shared layer needs from a host controller driver.</span><span class=cB0>
+<a name="l188"></a>  </span><span class=cB9>I64</span><span class=cB0> (*ctl)(CUsbFn *f, </span><span class=cB9>I64</span><span class=cB0> len, </span><span class=cB9>I64</span><span class=cB0> dirin);
+<a name="l189"></a>  </span><span class=cB9>I64</span><span class=cB0> (*bulk)(CUsbFn *f, </span><span class=cB9>I64</span><span class=cB0> dirin, </span><span class=cB1>U8</span><span class=cB0> *dp, </span><span class=cB9>I64</span><span class=cB0> len);
+<a name="l190"></a>  </span><span class=cB1>U0</span><span class=cB0> (*int_init)(</span><span class=cB9>I64</span><span class=cB0> k);
+<a name="l191"></a>  </span><span class=cB1>U0</span><span class=cB0> (*int_stop)(CUsbFn *f);
+<a name="l192"></a>  </span><span class=cB1>U0</span><span class=cB0> (*bulk_rst)(CUsbFn *f);
+<a name="l193"></a>  </span><span class=cB1>Bool</span><span class=cB0> (*dev_new)(CUsbFn *t);
+<a name="l194"></a>  </span><span class=cB1>U0</span><span class=cB0> (*dev_off)(CUsbFn *f);
+<a name="l195"></a>  </span><span class=cB1>Bool</span><span class=cB0> (*bin_arm)(CUsbFn *f, </span><span class=cB1>U8</span><span class=cB0> *buf, </span><span class=cB9>I64</span><span class=cB0> len);
+<a name="l196"></a>  </span><span class=cB9>I64</span><span class=cB0> (*bin_poll)(CUsbFn *f);
+<a name="l197"></a>  </span><span class=cB1>U0</span><span class=cB0> (*bin_stop)(CUsbFn *f);
+<a name="l198"></a>  </span><span class=cB1>Bool</span><span class=cB0> (*iso_start)(CUsbFn *f, CUsbIso *s);
+<a name="l199"></a>  </span><span class=cB9>I64</span><span class=cB0> (*iso_poll)(CUsbFn *f, CUsbIso *s, </span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB9>I64</span><span class=cB0> *lens, </span><span class=cB9>I64</span><span class=cB0> max);
+<a name="l200"></a>  </span><span class=cB1>U0</span><span class=cB0> (*iso_stop)(CUsbFn *f, CUsbIso *s);
+<a name="l201"></a>};
+<a name="l202"></a>
+<a name="l203"></a>CUsbHcOps <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[USB_HC_NUM];
+<a name="l204"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l204"></span><span class=cBD>usb_buf</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, *<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l204"></span><span class=cBD>usb_bd</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l205"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_lock</a></span><span class=cB0> = 0, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_n</a></span><span class=cB0> = 0;
+<a name="l206"></a>CUsbFn *<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_efn</a></span><span class=cB0>;
+<a name="l207"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l207"></span><span class=cBD>usb_efail</a></span><span class=cB0> = 0;
+<a name="l208"></a>
+<a name="l209"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l209"></span><span class=cBD>UsbIntOn</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l210"></a>{</span><span class=cB2>//Start the interrupt pipes of device k and of its other interfaces.</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB9>I64</span><span class=cB0> j;
+<a name="l212"></a>  </span><span class=cB1>for</span><span class=cB0> (j = 0; j &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_n</a></span><span class=cB0>; j++)
+<a name="l213"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>j == k || <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[j].par == k + 1</span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[j].on &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[j].ep)
+<a name="l214"></a>      (*<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[j].hc].int_init)(j);
+<a name="l215"></a>}
+<a name="l216"></a>
+<a name="l217"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l217"></span><span class=cBD>DbgS6</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *s)
+<a name="l218"></a>{
+<a name="l219"></a>  </span><span class=cB1>while</span><span class=cB0> (*s)
+<a name="l220"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(0xE9, *s++);
+<a name="l221"></a>}
+<a name="l222"></a>
+<a name="l223"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l223"></span><span class=cBD>UsbWait</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>ms</a></span><span class=cB0>)
+<a name="l224"></a>{</span><span class=cB2>//Spin on the TSC during boot, Busy() is too short in a VM.</span><span class=cB0>
+<a name="l225"></a>  </span><span class=cB9>I64</span><span class=cB0> </span><span class=cB1>end</span><span class=cB0>;
+<a name="l226"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0> != <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0> || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l41"></span><span class=cB6>sys_run_level</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l596"></span><span class=cB3>RLf_ADAM_SERVER</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l227"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>ms</a></span><span class=cB0>);
+<a name="l228"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l229"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l230"></a>    </span><span class=cB1>end</span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l296"></span><span class=cB5>GetTSC</a></span><span class=cB0> + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>ms</a></span><span class=cB0> / 1000;
+<a name="l231"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l296"></span><span class=cB5>GetTSC</a></span><span class=cB0> &lt; </span><span class=cB1>end</span><span class=cB0>)
+<a name="l232"></a>      </span><span class=cB1>PAUSE</span><span class=cB0>
+<a name="l233"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l234"></a>}
+<a name="l235"></a>
+<a name="l236"></a></span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l236"></span><span class=cBD>UsbRd</a></span><span class=cB0>(</span><span class=cB9>U32</span><span class=cB0> *r)
+<a name="l237"></a>{</span><span class=cB2>//Dword MMIO read: EHCI/xHCI registers need dword access.</span><span class=cB0>
+<a name="l238"></a>  </span><span class=cB1>return</span><span class=cB0> *r;
+<a name="l239"></a>}
+<a name="l240"></a>
+<a name="l241"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l241"></span><span class=cBD>UsbEnd</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>ms</a></span><span class=cB0>)
+<a name="l242"></a>{</span><span class=cB2>//Deadline for transfer waits.</span><span class=cB0>
+<a name="l243"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l296"></span><span class=cB5>GetTSC</a></span><span class=cB0> + <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l28"></span><span class=cB6>cnts</a></span><span class=cB0>.time_stamp_freq * <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l32"></span><span class=cB6>ms</a></span><span class=cB0> / 1000;
+<a name="l244"></a>}
+<a name="l245"></a>
+<a name="l246"></a></span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l246"></span><span class=cBD>UsbPa</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *p)
+<a name="l247"></a>{
+<a name="l248"></a>  </span><span class=cB1>return</span><span class=cB0> p(</span><span class=cB9>I64</span><span class=cB0>);
+<a name="l249"></a>}
+<a name="l250"></a>
+<a name="l251"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l251"></span><span class=cBD>UsbLock</a></span><span class=cB0>()
+<a name="l252"></a>{</span><span class=cB2>//Yield, never spin: scheduling is cooperative.</span><span class=cB0>
+<a name="l253"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_lock</a></span><span class=cB0>, 0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l254"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l255"></a>}
+<a name="l256"></a>
+<a name="l257"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l257"></span><span class=cBD>UsbUnlock</a></span><span class=cB0>()
+<a name="l258"></a>{
+<a name="l259"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_lock</a></span><span class=cB0>, 0);
+<a name="l260"></a>}
+<a name="l261"></a>
+<a name="l262"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l262"></span><span class=cBD>UsbBufInit</a></span><span class=cB0>()
+<a name="l263"></a>{
+<a name="l264"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l204"></span><span class=cBD>usb_buf</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l265"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l204"></span><span class=cBD>usb_buf</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(8192, 4096, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l104"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l266"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l204"></span><span class=cBD>usb_bd</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(16384, 16384, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l104"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l267"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(USB_NFN * </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CUsbFn</span><span class=cB7>)</span><span class=cB0>);
+<a name="l268"></a>}
+<a name="l269"></a>
+<a name="l270"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l204"></span><span class=cBD>UsbEnum</a></span><span class=cB0>(CUsbFn *t);
+<a name="l271"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l759"></span><span class=cBD>UsbIntRep</a></span><span class=cB0>(CUsbFn *f, </span><span class=cB1>U8</span><span class=cB0> *rep);
+<a name="l272"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l804"></span><span class=cBD>UsbFnOff</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k);
+<a name="l273"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1486"></span><span class=cB5>UsbRep</a></span><span class=cB0>();
+<a name="l274"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l740"></span><span class=cBD>UsbEvt</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k, </span><span class=cB1>Bool</span><span class=cB0> on);
+<a name="l275"></a></span><span class=cB1>extern</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1043"></span><span class=cBD>UsbFnFree</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k);
+</span></div></pre></body>
+</html>

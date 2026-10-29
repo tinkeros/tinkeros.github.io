@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -60,121 +60,115 @@
 <a name="l22"></a>  CBST *last_tree = temp_tree;
 <a name="l23"></a>  </span><span class=cB1>while</span><span class=cB0> (temp_tree)
 <a name="l24"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l25"></a>    </span><span class=cB2>// loop ends when temp_tree hits a NULL node.</span><span class=cB0>
-<a name="l26"></a>    </span><span class=cB1>if</span><span class=cB0> (node-&gt;value &lt; temp_tree-&gt;value)
-<a name="l27"></a>    {
-<a name="l28"></a>      </span><span class=cB2>// if node smaller, go left</span><span class=cB0>
-<a name="l29"></a>      last_tree = temp_tree;
-<a name="l30"></a>      temp_tree = temp_tree-&gt;left;
-<a name="l31"></a>    }
-<a name="l32"></a>    </span><span class=cB1>else</span><span class=cB0>
-<a name="l33"></a>    {
-<a name="l34"></a>      </span><span class=cB2>// if node equal or larger, go right</span><span class=cB0>
-<a name="l35"></a>      last_tree = temp_tree;
-<a name="l36"></a>      temp_tree = temp_tree-&gt;right;
-<a name="l37"></a>    }
-<a name="l38"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l39"></a>  </span><span class=cB2>// once while loop ends, this results in last_tree</span><span class=cB0>
-<a name="l40"></a>  </span><span class=cB2>// being the resulting tree to store the node inside of.</span><span class=cB0>
-<a name="l41"></a>  </span><span class=cB2>// recompute the direction and set.</span><span class=cB0>
-<a name="l42"></a>  </span><span class=cB1>if</span><span class=cB0> (node-&gt;value &lt; last_tree-&gt;value)</span><span class=cB2>// if node smaller, go left</span><span class=cB0>
-<a name="l43"></a>    last_tree-&gt;left = node;
-<a name="l44"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>// if node equal or larger, go right</span><span class=cB0>
-<a name="l45"></a>    last_tree-&gt;right = node;
-<a name="l46"></a>}
-<a name="l47"></a>
-<a name="l48"></a>CBST *BSTParamAdd(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
-<a name="l49"></a>{</span><span class=cB2>// add a node using params, return pointer to the node</span><span class=cB0>
-<a name="l50"></a>  CBST *result = BSTInit;
-<a name="l51"></a>  result-&gt;value = value;
-<a name="l52"></a>  BSTAdd(result, tree);
-<a name="l53"></a>  </span><span class=cB1>return</span><span class=cB0> result;
-<a name="l54"></a>}
-<a name="l55"></a>
-<a name="l56"></a>CBST *BSTParamInit(</span><span class=cB9>I64</span><span class=cB0> value)
-<a name="l57"></a>{
-<a name="l58"></a>  CBST *result = BSTInit;
-<a name="l59"></a>  result-&gt;value = value;
-<a name="l60"></a>  </span><span class=cB1>return</span><span class=cB0> result;
-<a name="l61"></a>}
-<a name="l62"></a>
-<a name="l63"></a>CBST *BSTFind(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
-<a name="l64"></a>{
-<a name="l65"></a>  CBST *temp_tree = tree;
-<a name="l66"></a>  </span><span class=cB1>while</span><span class=cB0> (temp_tree)
-<a name="l67"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l68"></a>    </span><span class=cB1>if</span><span class=cB0> (value &lt; temp_tree-&gt;value) </span><span class=cB2>// if value smaller, go left</span><span class=cB0>
-<a name="l69"></a>      temp_tree = temp_tree-&gt;left;
-<a name="l70"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (value &gt; temp_tree-&gt;value) </span><span class=cB2>// if value larger, go right</span><span class=cB0>
-<a name="l71"></a>      temp_tree = temp_tree-&gt;right;
-<a name="l72"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>// if value equal, match found.</span><span class=cB0>
-<a name="l73"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l74"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l75"></a>  </span><span class=cB1>return</span><span class=cB0> temp_tree; </span><span class=cB2>// ! NULL if not found.</span><span class=cB0>
-<a name="l76"></a>}
-<a name="l77"></a>
-<a name="l78"></a>CBST *BSTPop(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
-<a name="l79"></a>{</span><span class=cB2>// mimics TreeNodeFind. pops whole sub-tree, original tree loses whole branch.</span><span class=cB0>
-<a name="l80"></a>  CBST  *parent_tree    = tree;
-<a name="l81"></a>  CBST  *temp_tree      = parent_tree;
-<a name="l82"></a>  </span><span class=cB1>Bool</span><span class=cB0>   is_left        = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l83"></a>  </span><span class=cB1>Bool</span><span class=cB0>   is_right       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l84"></a>  </span><span class=cB1>while</span><span class=cB0> (temp_tree)
-<a name="l85"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l86"></a>    </span><span class=cB1>if</span><span class=cB0> (value &lt; temp_tree-&gt;value)
-<a name="l87"></a>    {
-<a name="l88"></a>      parent_tree   = temp_tree;
-<a name="l89"></a>      temp_tree = temp_tree-&gt;left;
-<a name="l90"></a>      is_right  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l91"></a>      is_left       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l92"></a>    }
-<a name="l93"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (value &gt; temp_tree-&gt;value)
-<a name="l94"></a>    {
-<a name="l95"></a>      parent_tree   = temp_tree;
-<a name="l96"></a>      temp_tree = temp_tree-&gt;right;
-<a name="l97"></a>      is_right  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
-<a name="l98"></a>      is_left       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l99"></a>    }
-<a name="l100"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB2>// if value equal, match found.</span><span class=cB0>
-<a name="l101"></a>      </span><span class=cB1>break</span><span class=cB0>;
-<a name="l102"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l103"></a>  </span><span class=cB1>if</span><span class=cB0> (temp_tree)
-<a name="l104"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l105"></a>    </span><span class=cB2>//if we found it, clear its parents link to the node</span><span class=cB0>
-<a name="l106"></a>    </span><span class=cB1>if</span><span class=cB0> (is_left)
-<a name="l107"></a>    {
-<a name="l108"></a>      parent_tree-&gt;left = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l109"></a>    }
-<a name="l110"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (is_right)
-<a name="l111"></a>    {
-<a name="l112"></a>      parent_tree-&gt;right = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l113"></a>    }
-<a name="l114"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l115"></a>  </span><span class=cB1>return</span><span class=cB0> temp_tree; </span><span class=cB2>// NULL if not found.</span><span class=cB0>
-<a name="l116"></a>}
-<a name="l117"></a>
-<a name="l118"></a>CBST *BSTSinglePop(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
-<a name="l119"></a>{</span><span class=cB2>// pop a tree off, then add back in its sub-trees to main tree.</span><span class=cB0>
-<a name="l120"></a>  </span><span class=cB2>// original node sub-trees are cleared.</span><span class=cB0>
-<a name="l121"></a>  CBST *node    = BSTPop(value, tree);
-<a name="l122"></a>  CBST *left    = node-&gt;left;
-<a name="l123"></a>  CBST *right   = node-&gt;right;
-<a name="l124"></a>  </span><span class=cB1>if</span><span class=cB0> (node)
-<a name="l125"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l126"></a>    </span><span class=cB1>if</span><span class=cB0> (left)
-<a name="l127"></a>    {
-<a name="l128"></a>      </span><span class=cB2>// if node has left tree, add the tree</span><span class=cB0>
-<a name="l129"></a>      BSTAdd(left, tree);
-<a name="l130"></a>      node-&gt;left = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l25"></a>    </span><span class=cB1>if</span><span class=cB0> (node-&gt;value &lt; temp_tree-&gt;value)
+<a name="l26"></a>    {
+<a name="l27"></a>      last_tree = temp_tree;
+<a name="l28"></a>      temp_tree = temp_tree-&gt;left;
+<a name="l29"></a>    }
+<a name="l30"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l31"></a>    {
+<a name="l32"></a>      last_tree = temp_tree;
+<a name="l33"></a>      temp_tree = temp_tree-&gt;right;
+<a name="l34"></a>    }
+<a name="l35"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (node-&gt;value &lt; last_tree-&gt;value)
+<a name="l37"></a>    last_tree-&gt;left = node;
+<a name="l38"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l39"></a>    last_tree-&gt;right = node;
+<a name="l40"></a>}
+<a name="l41"></a>
+<a name="l42"></a>CBST *BSTParamAdd(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
+<a name="l43"></a>{</span><span class=cB2>// add a node using params, return pointer to the node</span><span class=cB0>
+<a name="l44"></a>  CBST *result = BSTInit;
+<a name="l45"></a>  result-&gt;value = value;
+<a name="l46"></a>  BSTAdd(result, tree);
+<a name="l47"></a>  </span><span class=cB1>return</span><span class=cB0> result;
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a>CBST *BSTParamInit(</span><span class=cB9>I64</span><span class=cB0> value)
+<a name="l51"></a>{
+<a name="l52"></a>  CBST *result = BSTInit;
+<a name="l53"></a>  result-&gt;value = value;
+<a name="l54"></a>  </span><span class=cB1>return</span><span class=cB0> result;
+<a name="l55"></a>}
+<a name="l56"></a>
+<a name="l57"></a>CBST *BSTFind(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
+<a name="l58"></a>{
+<a name="l59"></a>  CBST *temp_tree = tree;
+<a name="l60"></a>  </span><span class=cB1>while</span><span class=cB0> (temp_tree)
+<a name="l61"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l62"></a>    </span><span class=cB1>if</span><span class=cB0> (value &lt; temp_tree-&gt;value)
+<a name="l63"></a>      temp_tree = temp_tree-&gt;left;
+<a name="l64"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (value &gt; temp_tree-&gt;value)
+<a name="l65"></a>      temp_tree = temp_tree-&gt;right;
+<a name="l66"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l67"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB1>return</span><span class=cB0> temp_tree;
+<a name="l70"></a>}
+<a name="l71"></a>
+<a name="l72"></a>CBST *BSTPop(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
+<a name="l73"></a>{</span><span class=cB2>// mimics TreeNodeFind. pops whole sub-tree, original tree loses whole branch.</span><span class=cB0>
+<a name="l74"></a>  CBST  *parent_tree    = tree;
+<a name="l75"></a>  CBST  *temp_tree      = parent_tree;
+<a name="l76"></a>  </span><span class=cB1>Bool</span><span class=cB0>   is_left        = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l77"></a>  </span><span class=cB1>Bool</span><span class=cB0>   is_right       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l78"></a>  </span><span class=cB1>while</span><span class=cB0> (temp_tree)
+<a name="l79"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l80"></a>    </span><span class=cB1>if</span><span class=cB0> (value &lt; temp_tree-&gt;value)
+<a name="l81"></a>    {
+<a name="l82"></a>      parent_tree   = temp_tree;
+<a name="l83"></a>      temp_tree = temp_tree-&gt;left;
+<a name="l84"></a>      is_right  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l85"></a>      is_left       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l86"></a>    }
+<a name="l87"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (value &gt; temp_tree-&gt;value)
+<a name="l88"></a>    {
+<a name="l89"></a>      parent_tree   = temp_tree;
+<a name="l90"></a>      temp_tree = temp_tree-&gt;right;
+<a name="l91"></a>      is_right  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l92"></a>      is_left       = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l93"></a>    }
+<a name="l94"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l95"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l97"></a>  </span><span class=cB1>if</span><span class=cB0> (temp_tree)
+<a name="l98"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l99"></a>    </span><span class=cB1>if</span><span class=cB0> (is_left)
+<a name="l100"></a>    {
+<a name="l101"></a>      parent_tree-&gt;left = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l102"></a>    }
+<a name="l103"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (is_right)
+<a name="l104"></a>    {
+<a name="l105"></a>      parent_tree-&gt;right = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l106"></a>    }
+<a name="l107"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l108"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l109"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l110"></a>  </span><span class=cB1>return</span><span class=cB0> temp_tree;
+<a name="l111"></a>}
+<a name="l112"></a>
+<a name="l113"></a>CBST *BSTSinglePop(</span><span class=cB9>I64</span><span class=cB0> value, CBST *tree)
+<a name="l114"></a>{</span><span class=cB2>// pop a tree off, then add back in its sub-trees to main tree.</span><span class=cB0>
+<a name="l115"></a>  </span><span class=cB2>// original node sub-trees are cleared.</span><span class=cB0>
+<a name="l116"></a>  CBST *node    = BSTPop(value, tree);
+<a name="l117"></a>  CBST *left, *right;
+<a name="l118"></a>  </span><span class=cB1>if</span><span class=cB0> (node)
+<a name="l119"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l120"></a>    left = node-&gt;left;
+<a name="l121"></a>    right = node-&gt;right;
+<a name="l122"></a>    </span><span class=cB1>if</span><span class=cB0> (left)
+<a name="l123"></a>    {
+<a name="l124"></a>      BSTAdd(left, tree);
+<a name="l125"></a>      node-&gt;left = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l126"></a>    }
+<a name="l127"></a>    </span><span class=cB1>if</span><span class=cB0> (right)
+<a name="l128"></a>    {
+<a name="l129"></a>      BSTAdd(right, tree);
+<a name="l130"></a>      node-&gt;right = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l131"></a>    }
-<a name="l132"></a>    </span><span class=cB1>if</span><span class=cB0> (right)
-<a name="l133"></a>    {
-<a name="l134"></a>      </span><span class=cB2>// if node has right tree, add the tree.</span><span class=cB0>
-<a name="l135"></a>      BSTAdd(right, tree);
-<a name="l136"></a>      node-&gt;right = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l137"></a>    }
-<a name="l138"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l139"></a>  </span><span class=cB1>return</span><span class=cB0> node;
-<a name="l140"></a>}
+<a name="l132"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l133"></a>  </span><span class=cB1>return</span><span class=cB0> node;
+<a name="l134"></a>}
 </span></div></pre></body>
 </html>

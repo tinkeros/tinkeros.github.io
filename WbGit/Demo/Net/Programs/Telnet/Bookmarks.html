@@ -1,0 +1,193 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> TT_MAX_ENTS 64
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>class</span><span class=cB0> TTConnEntForm
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB1>U8</span><span class=cB0> name[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>] format </span><span class=cB6>&quot;$DA-P,A=\&quot;Name:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> host[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>] format </span><span class=cB6>&quot;$DA-P,A=\&quot;Host:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> port format </span><span class=cB6>&quot;$DA,A=\&quot;Port:%d\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l8"></a>  </span><span class=cB1>U8</span><span class=cB0> user[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>] format </span><span class=cB6>&quot;$DA-P,A=\&quot;Username:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l9"></a>  </span><span class=cB1>U8</span><span class=cB0> pass[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>] format </span><span class=cB6>&quot;$DA-P,A=\&quot;Password:%s\&quot;$\n&quot;</span><span class=cB0>;
+<a name="l10"></a>};
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB1>class</span><span class=cB0> TTConnEnt {
+<a name="l13"></a>  </span><span class=cB1>U8</span><span class=cB0> name[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l14"></a>  </span><span class=cB1>U8</span><span class=cB0> host[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l15"></a>  </span><span class=cB9>I64</span><span class=cB0> port;
+<a name="l16"></a>  </span><span class=cB1>U8</span><span class=cB0> user[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l17"></a>  </span><span class=cB1>U8</span><span class=cB0> pass[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l18"></a>};
+<a name="l19"></a>
+<a name="l20"></a>TTConnEnt *conn_ents;
+<a name="l21"></a>
+<a name="l22"></a>TTConnEnt *conn_rc_ents;
+<a name="l23"></a>
+<a name="l24"></a>TTConnEntForm *add_form;
+<a name="l25"></a>TTConnEntForm *edit_form;
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB9>I64</span><span class=cB0> conn_len=0;
+<a name="l28"></a></span><span class=cB9>I64</span><span class=cB0> conn_idx=0;
+<a name="l29"></a>
+<a name="l30"></a></span><span class=cB1>U8</span><span class=cB0> *conn_list;
+<a name="l31"></a></span><span class=cB1>U8</span><span class=cB0> *conn_edlist;
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB1>U0</span><span class=cB0> ConnEntsRecalc()
+<a name="l34"></a>{
+<a name="l35"></a>
+<a name="l36"></a>  </span><span class=cB9>I64</span><span class=cB0> oi=0;
+<a name="l37"></a>  </span><span class=cB9>I64</span><span class=cB0> ri=0;
+<a name="l38"></a>
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> p=0;
+<a name="l40"></a>  </span><span class=cB1>while</span><span class=cB0> (p&lt;</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>TTConnEnt</span><span class=cB7>)</span><span class=cB0>*TT_MAX_ENTS)
+<a name="l41"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l42"></a>    conn_list[p]=0;
+<a name="l43"></a>    conn_edlist[p]=0;
+<a name="l44"></a>    conn_rc_ents(</span><span class=cB1>U8</span><span class=cB0>*)[p]=0;
+<a name="l45"></a>    p++;
+<a name="l46"></a>  </span><span class=cB7>}</span><span class=cB0>;
+<a name="l47"></a> 
+<a name="l48"></a>  </span><span class=cB1>while</span><span class=cB0> (oi&lt;TT_MAX_ENTS)
+<a name="l49"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l50"></a>    </span><span class=cB1>if</span><span class=cB0> (conn_ents[oi].port&gt;0)
+<a name="l51"></a>    {
+<a name="l52"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_rc_ents[ri].name,conn_ents[oi].name);
+<a name="l53"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_rc_ents[ri].host,conn_ents[oi].host);
+<a name="l54"></a>      conn_rc_ents[ri].port=conn_ents[oi].port;
+<a name="l55"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_rc_ents[ri].user,conn_ents[oi].user);
+<a name="l56"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_rc_ents[ri].pass,conn_ents[oi].pass);
+<a name="l57"></a>      ri++;
+<a name="l58"></a>    };
+<a name="l59"></a>    oi++;
+<a name="l60"></a>  </span><span class=cB7>}</span><span class=cB0>;
+<a name="l61"></a>
+<a name="l62"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(conn_ents, conn_rc_ents, TT_MAX_ENTS);
+<a name="l63"></a>
+<a name="l64"></a>  conn_idx=0;
+<a name="l65"></a>  conn_len=0;
+<a name="l66"></a>
+<a name="l67"></a>  </span><span class=cB1>while</span><span class=cB0> (conn_idx&lt;TT_MAX_ENTS)
+<a name="l68"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l69"></a>    </span><span class=cB1>if</span><span class=cB0> (conn_ents[conn_idx].port&gt;0)
+<a name="l70"></a>    {
+<a name="l71"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_list+conn_len,conn_ents[conn_idx].name);
+<a name="l72"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1043"></span><span class=cB5>StrPrint</a></span><span class=cB0>(conn_edlist+conn_len,conn_ents[conn_idx].name);
+<a name="l73"></a>      conn_len+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(conn_ents[conn_idx].name)+1;
+<a name="l74"></a>      conn_idx++;
+<a name="l75"></a>    }
+<a name="l76"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l77"></a>    {
+<a name="l78"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l79"></a>    };
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>
+<a name="l82"></a>}
+<a name="l83"></a>
+<a name="l84"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> PopUpBookmarkLst(</span><span class=cB1>U8</span><span class=cB0> *lst)
+<a name="l85"></a>{</span><span class=cB2>//Prompt for lst entry in PopUp win task.</span><span class=cB0>
+<a name="l86"></a>  </span><span class=cB9>I64</span><span class=cB0> res,i=0;
+<a name="l87"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1494"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l88"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$GREEN$$TX+CX,\&quot;Connection List\&quot;$\n\n&quot;</span><span class=cB0>);
+<a name="l89"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$LTBLUE$&quot;</span><span class=cB0>);
+<a name="l90"></a>  </span><span class=cB1>while</span><span class=cB0> (*lst) </span><span class=cB7>{</span><span class=cB0>
+<a name="l91"></a>    </span><span class=cB1>if</span><span class=cB0> (*lst==</span><span class=cB6>'@'</span><span class=cB0>) {</span><span class=cB2>//Check for '@' alias lst entry</span><span class=cB0>
+<a name="l92"></a>      i--;
+<a name="l93"></a>      lst++;
+<a name="l94"></a>    }
+<a name="l95"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;%s\&quot;,LE=%d$\n&quot;</span><span class=cB0>,lst,i++);
+<a name="l96"></a>    lst+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(lst)+1;
+<a name="l97"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n$MU,\&quot;Add Entry\&quot;,LE=%d$\n&quot;</span><span class=cB0>,i++);
+<a name="l99"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$RED$&quot;</span><span class=cB0>);
+<a name="l100"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;Delete Entry\&quot;,LE=%d$\n&quot;</span><span class=cB0>,i++);
+<a name="l101"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$LTBLUE$&quot;</span><span class=cB0>);
+<a name="l102"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;Edit Entry\&quot;,LE=%d$\n&quot;</span><span class=cB0>,i++);
+<a name="l103"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n$MU,\&quot;CANCEL\&quot;,LE=DOCM_CANCEL$\n&quot;</span><span class=cB0>);
+<a name="l104"></a>
+<a name="l105"></a>  res=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc);
+<a name="l106"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l107"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l108"></a>}
+<a name="l109"></a>
+<a name="l110"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> PopUpDelLst(</span><span class=cB1>U8</span><span class=cB0> *lst)
+<a name="l111"></a>{</span><span class=cB2>//Prompt for lst entry in PopUp win task.</span><span class=cB0>
+<a name="l112"></a>  </span><span class=cB9>I64</span><span class=cB0> res,i=0;
+<a name="l113"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1494"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l114"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$RED$$TX+CX,\&quot;Delete Entry\&quot;$\n\n&quot;</span><span class=cB0>);
+<a name="l115"></a>  </span><span class=cB1>while</span><span class=cB0> (*lst) </span><span class=cB7>{</span><span class=cB0>
+<a name="l116"></a>    </span><span class=cB1>if</span><span class=cB0> (*lst==</span><span class=cB6>'@'</span><span class=cB0>) {</span><span class=cB2>//Check for '@' alias lst entry</span><span class=cB0>
+<a name="l117"></a>      i--;
+<a name="l118"></a>      lst++;
+<a name="l119"></a>    }
+<a name="l120"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;%s\&quot;,LE=%d$\n&quot;</span><span class=cB0>,lst,i++);
+<a name="l121"></a>    lst+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(lst)+1;
+<a name="l122"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l123"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n$LTBLUE$&quot;</span><span class=cB0>);
+<a name="l124"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;CANCEL\&quot;,LE=DOCM_CANCEL$\n&quot;</span><span class=cB0>);
+<a name="l125"></a>
+<a name="l126"></a>  res=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc);
+<a name="l127"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l128"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l129"></a>}
+<a name="l130"></a>
+<a name="l131"></a>
+<a name="l132"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> PopUpEditLst(</span><span class=cB1>U8</span><span class=cB0> *lst)
+<a name="l133"></a>{</span><span class=cB2>//Prompt for lst entry in PopUp win task.</span><span class=cB0>
+<a name="l134"></a>  </span><span class=cB9>I64</span><span class=cB0> res,i=0;
+<a name="l135"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1494"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l136"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$BLUE$$TX+CX,\&quot;Edit Entry\&quot;$\n\n&quot;</span><span class=cB0>);
+<a name="l137"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$LTBLUE$&quot;</span><span class=cB0>);
+<a name="l138"></a>  </span><span class=cB1>while</span><span class=cB0> (*lst) </span><span class=cB7>{</span><span class=cB0>
+<a name="l139"></a>    </span><span class=cB1>if</span><span class=cB0> (*lst==</span><span class=cB6>'@'</span><span class=cB0>) {</span><span class=cB2>//Check for '@' alias lst entry</span><span class=cB0>
+<a name="l140"></a>      i--;
+<a name="l141"></a>      lst++;
+<a name="l142"></a>    }
+<a name="l143"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;$MU,\&quot;%s\&quot;,LE=%d$\n&quot;</span><span class=cB0>,lst,i++);
+<a name="l144"></a>    lst+=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(lst)+1;
+<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l146"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(doc,</span><span class=cB6>&quot;\n$MU,\&quot;CANCEL\&quot;,LE=DOCM_CANCEL$\n&quot;</span><span class=cB0>);
+<a name="l147"></a>
+<a name="l148"></a>  res=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocForm.html#l419"></span><span class=cB5>PopUpMenu</a></span><span class=cB0>(doc);
+<a name="l149"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l150"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l151"></a>}
+<a name="l152"></a>
+</span></div></pre></body>
+</html>

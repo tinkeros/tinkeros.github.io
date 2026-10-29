@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -78,7 +78,7 @@
 <a name="l39"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l40"></a>}
 <a name="l41"></a>
-<a name="l42"></a></span><span class=cB1>Bool</span><span class=cB0> FrgFile(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de)
+<a name="l42"></a></span><span class=cB1>Bool</span><span class=cB0> FrgFile(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2679"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *de)
 <a name="l43"></a>{</span><span class=cB2>//Read file/copy to temp/delete original/rename back</span><span class=cB0>
 <a name="l44"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf,*tmp_name;
 <a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> size,attr;
@@ -87,14 +87,14 @@
 <a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (!buf)
 <a name="l49"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l50"></a>  tmp_name=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%s.FRG&quot;</span><span class=cB0>,de-&gt;full_name);
-<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l294"></span><span class=cB5>Silent</a></span><span class=cB0>;
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l313"></span><span class=cB5>Silent</a></span><span class=cB0>;
 <a name="l52"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l169"></span><span class=cB5>FileWrite</a></span><span class=cB7>(</span><span class=cB0>tmp_name,buf,size,de-&gt;datetime,attr</span><span class=cB7>)</span><span class=cB0>)
 <a name="l53"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l54"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskCopy.html#l97"></span><span class=cB5>Del</a></span><span class=cB0>(de-&gt;full_name);
 <a name="l55"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/ADskA.html#l41"></span><span class=cB5>Move</a></span><span class=cB0>(tmp_name,de-&gt;full_name);
 <a name="l56"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l57"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l294"></span><span class=cB5>Silent</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
+<a name="l58"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l313"></span><span class=cB5>Silent</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
 <a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmp_name);
 <a name="l60"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(buf);
 <a name="l61"></a>  </span><span class=cB1>return</span><span class=cB0> res;
@@ -102,11 +102,11 @@
 <a name="l63"></a>
 <a name="l64"></a></span><span class=cB9>I64</span><span class=cB0> FrgPass(</span><span class=cB1>U8</span><span class=cB0> drv_let,</span><span class=cB9>I64</span><span class=cB0> pass_num,</span><span class=cB9>I64</span><span class=cB0> passes,</span><span class=cB9>I64</span><span class=cB0> num_files)
 <a name="l65"></a>{</span><span class=cB2>//Returns number of files scrambled this pass</span><span class=cB0>
-<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tree,*de,**eligible;
+<a name="l66"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2679"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tree,*de,**eligible;
 <a name="l67"></a>  </span><span class=cB1>U8</span><span class=cB0> *mask;
 <a name="l68"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,total=0,done=0;
 <a name="l69"></a>  mask=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;%C:/*&quot;</span><span class=cB0>,drv_let);
-<a name="l70"></a>  tree=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2723"></span><span class=cB3>FUF_RECURSE</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2736"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>);
+<a name="l70"></a>  tree=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2724"></span><span class=cB3>FUF_RECURSE</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2737"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>);
 <a name="l71"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mask);
 <a name="l72"></a>  de=tree;
 <a name="l73"></a>  </span><span class=cB1>while</span><span class=cB0> (de)
@@ -117,7 +117,7 @@
 <a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l79"></a>  </span><span class=cB1>if</span><span class=cB0> (total&gt;0)
 <a name="l80"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l81"></a>    eligible=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(total*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2678"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l81"></a>    eligible=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(total*</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2679"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
 <a name="l82"></a>    i=0;
 <a name="l83"></a>    de=tree;
 <a name="l84"></a>    </span><span class=cB1>while</span><span class=cB0> (de)
@@ -146,16 +146,16 @@
 <a name="l107"></a>
 <a name="l108"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> Fragment(</span><span class=cB1>U8</span><span class=cB0> drv_let=0,</span><span class=cB9>I64</span><span class=cB0> passes=3,</span><span class=cB9>I64</span><span class=cB0> num_files=100)
 <a name="l109"></a>{
-<a name="l110"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3154"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
+<a name="l110"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3174"></span><span class=cB9>CDrv</a></span><span class=cB0> *dv;
 <a name="l111"></a>  </span><span class=cB9>I64</span><span class=cB0> pass;
 <a name="l112"></a>  </span><span class=cB1>if</span><span class=cB0> (!drv_let)
 <a name="l113"></a>    drv_let=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;cur_dv-&gt;drv_let;
-<a name="l114"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l218"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l114"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>dv=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l246"></span><span class=cB5>Let2Drv</a></span><span class=cB0>(drv_let,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>)</span><span class=cB7>)</span><span class=cB0>)
 <a name="l115"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l116"></a>    </span><span class=cB6>&quot;Drive %C: is not mounted!\n&quot;</span><span class=cB0>,drv_let;
 <a name="l117"></a>    </span><span class=cB1>return</span><span class=cB0>;
 <a name="l118"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l119"></a>  </span><span class=cB1>if</span><span class=cB0> (dv-&gt;fs_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3125"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>)
+<a name="l119"></a>  </span><span class=cB1>if</span><span class=cB0> (dv-&gt;fs_type!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3145"></span><span class=cB3>FSt_FAT32</a></span><span class=cB0>)
 <a name="l120"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l121"></a>    </span><span class=cB6>&quot;Drive %C: is not a FAT32, nothing to do!\n&quot;</span><span class=cB0>,drv_let;
 <a name="l122"></a>    </span><span class=cB1>return</span><span class=cB0>;

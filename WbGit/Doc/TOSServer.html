@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                   <h1><center>TOSServer</center></h1></span><span class=cB0>
+<a name="l2"></a></span><span class=cB4>
+<a name="l3"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSServer.html#l1"><span class=cB4>TOSServer</span></a><span class=cB0> is </span><span class=cB2>tos_server.py</span><span class=cB0> written in HolyC. It answers </span><a href="http://tinkeros.github.io/WbGit/Doc/TOSClient.html#l1"><span class=cB4>TOSClient</span></a><span class=cB0> on a COM port, 
+<a name="l4"></a>so one TinkerOS machine can give another one files, its clipboard, URL fetches 
+<a name="l5"></a>and a HolyC command line, with no Linux machine in between. The client side is 
+<a name="l6"></a>unchanged: </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l319"><span class=cB4>ProbeComm</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l407"><span class=cB4>Fget</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l463"><span class=cB4>Fput</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l842"><span class=cB4>Dget</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l610"><span class=cB4>Dput</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l647"><span class=cB4>Dsync</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l718"><span class=cB4>Hdir</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l890"><span class=cB4>ClipGet</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l1009"><span class=cB4>ClipPut</span></a><span class=cB0>, </span><span class=cB4>
+<a name="l7"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l968"><span class=cB4>HExec</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l934"><span class=cB4>HGetOS</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l654"><span class=cB4>URLGet</span></a><span class=cB0> all work as they do against </span><span class=cB2>tos_server.py</span><span class=cB0>.
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB5>Starting a server</span><span class=cB0>
+<a name="l10"></a>
+<a name="l11"></a></span><span class=cB2>TOSServer(1);</span><span class=cB0>   Serial: a UART (a null-modem cable to the other machine, or a 
+<a name="l12"></a>virtual machine's serial port). Any COM port works.
+<a name="l13"></a>
+<a name="l14"></a>With the network loaded (</span><span class=cB2>#include &quot;::/Demo/Net/Start&quot;;</span><span class=cB0>), the TCP COM ports of </span><span class=cB4>
+<a name="l15"></a></span><a href="http://tinkeros.github.io/WbGit/Demo/Net/Utilities/CommTCP.html#l1"><span class=cB4>CommTCP</span></a><span class=cB0>:
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB2>TOSServerTcp(7777);</span><span class=cB0>     Listen on TCP port 7777, like </span><span class=cB2>tos_server.py --mode 
+<a name="l18"></a>server</span><span class=cB0>. The client machine connects with </span><span class=cB2>AddTcpCommCli(&quot;&lt;this machine's 
+<a name="l19"></a>ip&gt;&quot;,7777);</span><span class=cB0>.
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB2>TOSServerTcpCli(&quot;192.168.1.20&quot;,7777);</span><span class=cB0>   Connect out, like </span><span class=cB2>tos_server.py --mode 
+<a name="l22"></a>client</span><span class=cB0>. The client machine listens first with </span><span class=cB2>AddTcpCommSrv(7777);</span><span class=cB0>.
+<a name="l23"></a>
+<a name="l24"></a>On the client machine, </span><span class=cB2>ProbeComm;</span><span class=cB0> then finds the server, and every TOSClient 
+<a name="l25"></a>call works.
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB5>Arguments</span><span class=cB0>
+<a name="l28"></a>
+<a name="l29"></a>All four take, after the port: </span><span class=cB2>dir=&quot;~/TOSXfr&quot;</span><span class=cB0>, the transfer directory (made if 
+<a name="l30"></a>missing; the client's names are relative to it, and names that leave it are 
+<a name="l31"></a>refused), </span><span class=cB2>exec=FALSE</span><span class=cB0> and </span><span class=cB2>bg=TRUE</span><span class=cB0>.
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB2>exec</span><span class=cB0>    </span><span class=cB2>TRUE</span><span class=cB0> lets the client's </span><span class=cB2>HExec</span><span class=cB0> run HolyC on this machine, in the server's 
+<a name="l34"></a>task, and get back what it printed. Off by default: a client could run anything 
+<a name="l35"></a>in ring 0. Over TCP that means anyone who can reach the port.
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB2>bg</span><span class=cB0>      </span><span class=cB2>TRUE</span><span class=cB0> runs the server in a background task (any number of them, one per 
+<a name="l38"></a>COM port). </span><span class=cB2>FALSE</span><span class=cB0> runs it in the current task, printing each request, until Esc.
+<a name="l39"></a>
+<a name="l40"></a></span><span class=cB5>Managing servers</span><span class=cB0>
+<a name="l41"></a></span><span class=cB4>
+<a name="l42"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSServer.html#l816"><span class=cB4>TOSServerRep</span></a><span class=cB0>;   What each server has done: requests, files in and out, bytes, 
+<a name="l43"></a>errors, the last request.</span><span class=cB4>
+<a name="l44"></a></span><a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSServer.html#l786"><span class=cB4>TOSServerStop</span></a><span class=cB0>;  Stop all of them, or </span><span class=cB2>TOSServerStop(com);</span><span class=cB0> one. A port that </span><span class=cB2>TOSSer
+<a name="l45"></a>verTcp</span><span class=cB0>/</span><span class=cB2>TOSServerTcpCli</span><span class=cB0> made is closed too.
+<a name="l46"></a>
+<a name="l47"></a>Background servers log each request to the Adam log (</span><span class=cB2>AdamLog</span><span class=cB0>).
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB5>Differences from tos_server.py</span><span class=cB0>
+<a name="l50"></a>
+<a name="l51"></a>  
+<a name="l52"></a>  * </span><span class=cB2>HExec</span><span class=cB0> runs HolyC, not a shell command, and only with </span><span class=cB2>exec=TRUE</span><span class=cB0>.
+<a name="l53"></a>  * </span><span class=cB2>HGetOS</span><span class=cB0> answers </span><span class=cB2>TinkerOS</span><span class=cB0>.
+<a name="l54"></a>  * URLs: </span><span class=cB2>http://</span><span class=cB0> only (no https), and only with the network loaded. </span><span class=cB2>URLGetTextS
+<a name="l55"></a>  tr</span><span class=cB0> gets the page with its tags, scripts and styles removed.
+<a name="l56"></a>  * The socket commands (</span><span class=cB2>create_connection</span><span class=cB0>, </span><span class=cB2>send</span><span class=cB0>, </span><span class=cB2>recv</span><span class=cB0>) also need the network. </span><span class=cB2>r
+<a name="l57"></a>  ecv</span><span class=cB0> waits at most 200 ms for data.
+<a name="l58"></a>  * A file sent to </span><span class=cB2>Foo.HC</span><span class=cB0> when </span><span class=cB2>Foo.HC.Z</span><span class=cB0> exists replaces </span><span class=cB2>Foo.HC.Z</span><span class=cB0>, and </span><span class=cB2>Fget(&quot;Foo.
+<a name="l59"></a>  HC&quot;)</span><span class=cB0> finds </span><span class=cB2>Foo.HC.Z</span><span class=cB0>, as on the client side. Other names keep their </span><span class=cB2>.Z</span><span class=cB0> 
+<a name="l60"></a>  (compressed on disk).
+<a name="l61"></a>  * </span><span class=cB2>Dsync</span><span class=cB0> and </span><span class=cB2>Dget</span><span class=cB0> compare MD5 sums of the uncompressed contents on both sides.
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cB5>Notes</span><span class=cB0>
+<a name="l64"></a>
+<a name="l65"></a>  
+<a name="l66"></a>  * </span><span class=cB2>ProbeComm</span><span class=cB0> skips a COM port this machine's own TOSServer runs on, so one 
+<a name="l67"></a>  machine can be server and client at once (on two ports wired together).
+<a name="l68"></a>  * The network part is in </span><a href="http://tinkeros.github.io/WbGit/Demo/Net/Utilities/TOSSrvNet.html#l1"><span class=cB4>TOSSrvNet</span></a><span class=cB0>, which </span><span class=cB2>Demo/Net/Load.HC</span><span class=cB0> includes. Including </span><span class=cB2>
+<a name="l69"></a>  TOSServer.HC</span><span class=cB0> again afterwards drops it (include </span><span class=cB2>TOSSrvNet</span><span class=cB0> again).
+<a name="l70"></a>  * Serial speed is 115200 baud, about 11 KB/s. A TCP port is several times 
+<a name="l71"></a>  faster.
+<a name="l72"></a>
+</span></div></pre></body>
+</html>

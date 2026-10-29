@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB5>                                     <h1><center>WebCam</center></h1></span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>Live picture from a USB webcam, in the TinkerOS extended palette (the 16 
+<a name="l4"></a>standard colors plus the 214 web-safe ones, see </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l11"><span class=cB4>GrSetExtPalette</span></a><span class=cB0>). Take pictures 
+<a name="l5"></a>and save them as </span><span class=cB2>.GR</span><span class=cB0> files.
+<a name="l6"></a>
+<a name="l7"></a></span><span class=cB2>#include &quot;::/Apps/WebCam/WebCam&quot;;</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>WebCam;</span><span class=cB0> 320x240 window. </span><span class=cB2>WebCam(640,480);</span><span class=cB0> for VGA, </span><span class=cB2>WebCam(1280,720);</span><span class=cB0> for 720p 
+<a name="l9"></a>(MJPEG). A picture bigger than the window is shown at half size and saved at 
+<a name="l10"></a>full size. </span><span class=cB2>WebCam(640,480,,,UVC_MJPEG);</span><span class=cB0> asks for MJPEG even where YUY2 has the 
+<a name="l11"></a>size.
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB5>Keys</span><span class=cB0>
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB2>Space</span><span class=cB0>   Take a picture (the picture stays), again: back to live.
+<a name="l16"></a></span><span class=cB2>S</span><span class=cB0> or </span><span class=cB2>Enter</span><span class=cB0>      Save the picture as </span><span class=cB2>~/Pictures/CamNNN.GR</span><span class=cB0> (the first free 
+<a name="l17"></a>number). </span><span class=cB2>WebCam(320,240,&quot;C:/Pics&quot;);</span><span class=cB0> saves elsewhere.
+<a name="l18"></a></span><span class=cB2>D</span><span class=cB0>       Dithered (ordered 4x4, the default) or each pixel's nearest color.
+<a name="l19"></a></span><span class=cB2>P</span><span class=cB0>       All the extended palette's colors (the default) or just the 16 standard 
+<a name="l20"></a>ones. </span><span class=cB2>WebCam(320,240,,,,UVC_PAL_16);</span><span class=cB0> starts with 16.
+<a name="l21"></a></span><span class=cB2>Esc</span><span class=cB0>     Quit.
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB5>Streaming window</span><span class=cB0>
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB2>CamStream;</span><span class=cB0>      The picture at half size in a small window in the lower right 
+<a name="l26"></a>corner that stays on top and never takes the keyboard, so you keep working in 
+<a name="l27"></a>your own window. </span><span class=cB2>CamStream(640,480);</span><span class=cB0> for a 320x240 window, </span><span class=cB2>CamStream(320,240,FAL
+<a name="l28"></a>SE,UVC_PAL_16);</span><span class=cB0> for 16 colors without dithering (arguments: width, height, 
+<a name="l29"></a>dither, colors, camera, format).
+<a name="l30"></a></span><span class=cB2>CamStream16;</span><span class=cB0>    The same in the 16 standard colors, dithered (</span><span class=cB2>CamStream16(320,24
+<a name="l31"></a>0,FALSE);</span><span class=cB0>: nearest of the 16, not dithered).
+<a name="l32"></a></span><span class=cB2>CamStreamColors(UVC_PAL_ALL);</span><span class=cB0>   Change a running stream's colors from the next 
+<a name="l33"></a>frame: </span><span class=cB2>UVC_PAL_ALL</span><span class=cB0> or </span><span class=cB2>UVC_PAL_16</span><span class=cB0>, then dithered (</span><span class=cB2>TRUE</span><span class=cB0>, the default) or not.
+<a name="l34"></a></span><span class=cB2>CamStreamStop;</span><span class=cB0>  Close it (</span><span class=cB2>CamStream;</span><span class=cB0> again does too). One of </span><span class=cB2>WebCam</span><span class=cB0> and </span><span class=cB2>CamStrea
+<a name="l35"></a>m</span><span class=cB0> at a time: they share the camera.
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB5>Other calls</span><span class=cB0>
+<a name="l38"></a>
+<a name="l39"></a></span><span class=cB2>CamSnap;</span><span class=cB0>        One 640x480 picture without a window (</span><span class=cB2>CamSnap(,1280,720);</span><span class=cB0> for 
+<a name="l40"></a>720p): saves </span><span class=cB2>~/Pictures/CamNNN.GR</span><span class=cB0> and returns its name.
+<a name="l41"></a></span><span class=cB2>CamRep;</span><span class=cB0> The camera's formats, frame sizes, frame rates and streaming bandwidths.
+<a name="l42"></a></span><span class=cB2>CamDiag;</span><span class=cB0>        Stream 320x240 for 3 seconds and report: frames, why any were 
+<a name="l43"></a>dropped, the payloads and the kernel's counters. </span><span class=cB2>CamDiag(640,480);</span><span class=cB0> for another 
+<a name="l44"></a>size, </span><span class=cB2>CamDiag(640,480,3,UVC_MJPEG);</span><span class=cB0> for MJPEG.
+<a name="l45"></a></span><span class=cB2>CamDiagAll;</span><span class=cB0>     Each common size and frame rate for 2 seconds, one line each: 
+<a name="l46"></a>frames whole or short (and by how many lines), MJPEG frames decoded.
+<a name="l47"></a></span><span class=cB2>CamCap;</span><span class=cB0> Record every packet for 4 seconds into </span><span class=cB2>~/TOSXfr/cap.bin</span><span class=cB0> (length and 
+<a name="l48"></a>payload header each) for </span><span class=cB2>tools/uvccap.py</span><span class=cB0> on another machine.
+<a name="l49"></a>
+<a name="l50"></a>Pictures open in </span><span class=cB2>GrPaint</span><span class=cB0> and anything else that reads </span><span class=cB2>.GR</span><span class=cB0> files (</span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l411"><span class=cB4>GRRead</span></a><span class=cB0>).
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB5>Cameras</span><span class=cB0>
+<a name="l53"></a>
+<a name="l54"></a>USB Video Class (UVC) cameras that send uncompressed YUY2 or MJPEG, on EHCI 
+<a name="l55"></a>(high speed) or xHCI. YUY2 is used when the camera has the size, MJPEG otherwise 
+<a name="l56"></a>(often the only way to get 720p). That includes the built-in cameras of the 
+<a name="l57"></a>ThinkPad T420 (Chicony </span><span class=cB2>04f2:b221</span><span class=cB0>), T430 (</span><span class=cB2>04f2:b2db</span><span class=cB0>, </span><span class=cB2>04f2:b2ea</span><span class=cB0>) and T440p (Bison </span><span class=cB2>
+<a name="l58"></a>5986:0268</span><span class=cB0>), and most external USB 2.0 webcams plugged into an EHCI port. </span><span class=cB2>UsbRep;</span><span class=cB0> 
+<a name="l59"></a>lists a camera as </span><span class=cB2>video</span><span class=cB0>.
+<a name="l60"></a>
+<a name="l61"></a>Not supported: H.264-only cameras. Full-speed (USB 1.1) cameras on EHCI go 
+<a name="l62"></a>through the hub's split transactions (siTDs): written to the EHCI spec, not 
+<a name="l63"></a>tested on real hardware yet.
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB5>How it works</span><span class=cB0>
+<a name="l66"></a>
+<a name="l67"></a>The kernel enumerates the camera (</span><span class=cB2>USB_KIND_VIDEO</span><span class=cB0>) and streams its isochronous 
+<a name="l68"></a>endpoint (EHCI iTDs or siTDs, xHCI Isoch TRBs: </span><a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l367"><span class=cB4>UsbVenIsoStart</span></a><span class=cB0>, </span><a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l403"><span class=cB4>UsbVenIsoRead</span></a><span class=cB0>). </span><span class=cB4>
+<a name="l69"></a></span><a href="http://tinkeros.github.io/WbGit/Apps/WebCam/Uvc.html#l1"><span class=cB4>Uvc.HC</span></a><span class=cB0> does the rest: descriptors, probe/commit, payload headers, frame assembly 
+<a name="l70"></a>and the conversion to the palette. </span><a href="http://tinkeros.github.io/WbGit/Apps/WebCam/Jpeg.html#l1"><span class=cB4>Jpeg.HC</span></a><span class=cB0> decodes MJPEG frames, and any 
+<a name="l71"></a>baseline .jpg: </span><span class=cB2>JpgFileDecode(&quot;photo.jpg&quot;,&amp;w,&amp;h)</span><span class=cB0> gives RGB.
+</span></div></pre></body>
+</html>

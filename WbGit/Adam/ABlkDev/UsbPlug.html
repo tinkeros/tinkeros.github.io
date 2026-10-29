@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB4{color:#aa0000;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;USB&quot;</span><span class=cB0>
+<a name="l2"></a></span><span class=cB1>U8</span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l2"></span><span class=cB5>UsbLetsStr</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *buf,</span><span class=cB9>I64</span><span class=cB0> m)
+<a name="l3"></a>{</span><span class=cB2>//Drive letters of a </span><a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1029"><span class=cB4>UsbDevLets</span></a><span class=cB2> mask, e.g. &quot;VW&quot;.</span><span class=cB0>
+<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j=0;
+<a name="l5"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;26; i++)
+<a name="l6"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;m,i</span><span class=cB7>)</span><span class=cB0>)
+<a name="l7"></a>      buf[j++]=i+</span><span class=cB6>'A'</span><span class=cB0>;
+<a name="l8"></a>  buf[j]=0;
+<a name="l9"></a>  </span><span class=cB1>return</span><span class=cB0> buf;
+<a name="l10"></a>}
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB2>//Mount a stick on plug-in and open a terminal on it, set TRUE in MakeHome.HC</span><span class=cB0>
+<a name="l13"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l13"></span><span class=cB6>usb_automount</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l14"></a>
+<a name="l15"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l15"></span><span class=cB5>UsbMountTask</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *data)
+<a name="l16"></a>{</span><span class=cB2>//Mount stick data (usb_fn index), tell in the top bar, open a terminal on it.</span><span class=cB0>
+<a name="l17"></a>  </span><span class=cB9>I64</span><span class=cB0> k=data;
+<a name="l18"></a>  </span><span class=cB1>U8</span><span class=cB0> let,buf[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>];
+<a name="l19"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1029"></span><span class=cB5>UsbDevLets</a></span><span class=cB7>(</span><span class=cB0>k</span><span class=cB7>)</span><span class=cB0> &amp;&amp; </span><span class=cB7>(</span><span class=cB0>let=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1141"></span><span class=cB5>UsbMount</a></span><span class=cB0>(k)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l20"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l21"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;+USB DRV %s&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l2"></span><span class=cB5>UsbLetsStr</a></span><span class=cB7>(</span><span class=cB0>buf,<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1029"></span><span class=cB5>UsbDevLets</a></span><span class=cB0>(k)</span><span class=cB7>)</span><span class=cB0>);
+<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l456"></span><span class=cB5>User</a></span><span class=cB0>(</span><span class=cB6>&quot;Cd(\&quot;%c:/\&quot;);Dir;\n&quot;</span><span class=cB0>,let);
+<a name="l23"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l24"></a>}
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l26"></span><span class=cB5>UsbPlugDft</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k,</span><span class=cB1>Bool</span><span class=cB0> on,</span><span class=cB9>I64</span><span class=cB0> kind)
+<a name="l27"></a>{</span><span class=cB2>//Default fp_usb_plug: mount a plugged-in USB stick, open a terminal on it.</span><span class=cB0>
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l43"></span><span class=cB3>STR_LEN</a></span><span class=cB0>],*pm;
+<a name="l29"></a>  </span><span class=cB9>I64</span><span class=cB0> m;
+<a name="l30"></a>  </span><span class=cB1>if</span><span class=cB0> (on) pm=</span><span class=cB6>&quot;+&quot;</span><span class=cB0>;
+<a name="l31"></a>  </span><span class=cB1>else</span><span class=cB0> pm=</span><span class=cB6>&quot;-&quot;</span><span class=cB0>;
+<a name="l32"></a>  </span><span class=cB1>switch</span><span class=cB0> (kind)
+<a name="l33"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l34"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3067"></span><span class=cB3>USB_KIND_KBD</a></span><span class=cB0>:
+<a name="l35"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;%sUSB KB&quot;</span><span class=cB0>,pm);
+<a name="l36"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l37"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3068"></span><span class=cB3>USB_KIND_MOUSE</a></span><span class=cB0>:
+<a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;%sUSB MS&quot;</span><span class=cB0>,pm);
+<a name="l39"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l40"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3071"></span><span class=cB3>USB_KIND_TABLET</a></span><span class=cB0>:
+<a name="l41"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;%sUSB TAB&quot;</span><span class=cB0>,pm);
+<a name="l42"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l43"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3069"></span><span class=cB3>USB_KIND_MSD</a></span><span class=cB0>:
+<a name="l44"></a>    </span><span class=cB1>if</span><span class=cB0> (on)
+<a name="l45"></a>    {
+<a name="l46"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l13"></span><span class=cB6>usb_automount</a></span><span class=cB0>)
+<a name="l47"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l15"></span><span class=cB5>UsbMountTask</a></span><span class=cB0>,k</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB6>&quot;USB Mount&quot;</span><span class=cB0>);
+<a name="l48"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l49"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;+USB MSD&quot;</span><span class=cB0>);
+<a name="l50"></a>    }
+<a name="l51"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (m=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l1029"></span><span class=cB5>UsbDevLets</a></span><span class=cB7>(</span><span class=cB0>k</span><span class=cB7>)</span><span class=cB0>)
+<a name="l52"></a>    {
+<a name="l53"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;-USB DRV %s&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/UsbPlug.html#l2"></span><span class=cB5>UsbLetsStr</a></span><span class=cB7>(</span><span class=cB0>buf,m</span><span class=cB7>)</span><span class=cB0>);
+<a name="l54"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/ABlkDev/Mount.html#l2"></span><span class=cB5>Unmount</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l10"></span><span class=cB5>Bsf</a></span><span class=cB7>(</span><span class=cB0>m</span><span class=cB7>)</span><span class=cB0>+</span><span class=cB6>'A'</span><span class=cB0>);
+<a name="l55"></a>    }
+<a name="l56"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l57"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3072"></span><span class=cB3>USB_KIND_CDC</a></span><span class=cB0>:
+<a name="l58"></a>    </span><span class=cB1>if</span><span class=cB0> (on)
+<a name="l59"></a>      m=<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l56"></span><span class=cB5>CommUsbAttach</a></span><span class=cB0>(k);
+<a name="l60"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l61"></a>      m=<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l70"></span><span class=cB5>CommUsbDetach</a></span><span class=cB0>(k);
+<a name="l62"></a>    </span><span class=cB1>if</span><span class=cB0> (m)
+<a name="l63"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;%sUSB COM%d&quot;</span><span class=cB0>,pm,m);
+<a name="l64"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l65"></a>  </span><span class=cB1>case</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3077"></span><span class=cB3>USB_KIND_VIDEO</a></span><span class=cB0>:
+<a name="l66"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WallPaper.html#l25"></span><span class=cB5>TopBarMsg</a></span><span class=cB0>(</span><span class=cB6>&quot;%sUSB CAM&quot;</span><span class=cB0>,pm);
+<a name="l67"></a>    </span><span class=cB1>break</span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l69"></a>}
+<a name="l70"></a>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;&quot;</span><span class=cB0>
+</span></div></pre></body>
+</html>

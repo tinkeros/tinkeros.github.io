@@ -1,0 +1,322 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;DolDoc/Menu&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l3"></span><span class=cB3>MENU_COLS</a></span><span class=cB0>       37
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l4"></span><span class=cB3>MENU_CELL_W</a></span><span class=cB0>     8
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l5"></span><span class=cB3>MENU_ROW_MAX</a></span><span class=cB0>    8
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l6"></span><span class=cB3>MENU_GAP</a></span><span class=cB0>        2
+<a name="l7"></a>
+<a name="l8"></a></span><span class=cB1>class</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0>
+<a name="l9"></a>{
+<a name="l10"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *next;
+<a name="l11"></a>  </span><span class=cB1>U8</span><span class=cB0> *name,*name2,*lm,*cat,*elems;
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> rank,w,h,pad,pad2;
+<a name="l13"></a>};
+<a name="l14"></a>
+<a name="l15"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1494"></span><span class=cB9>CDoc</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l16"></a><a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,*<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l5"></span><span class=cB3>MENU_ROW_MAX</a></span><span class=cB0>];
+<a name="l17"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>=0,<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>=0,<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB0>=0;
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l20"></a>{
+<a name="l21"></a>  </span><span class=cB1>while</span><span class=cB0> (n--&gt;0)
+<a name="l22"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot; &quot;</span><span class=cB0>);
+<a name="l23"></a>}
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l25"></span><span class=cB5>MenuSplit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm,</span><span class=cB9>I64</span><span class=cB0> max)
+<a name="l26"></a>{</span><span class=cB2>//Wrap a label longer than max at its most central space.</span><span class=cB0>
+<a name="l27"></a>  </span><span class=cB1>U8</span><span class=cB0> *st=tmpm-&gt;name,*best=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l28"></a>  </span><span class=cB9>I64</span><span class=cB0> i,len=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(st),b=len;
+<a name="l29"></a>  </span><span class=cB1>if</span><span class=cB0> (len&gt;max)
+<a name="l30"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;len; i++)
+<a name="l31"></a>      </span><span class=cB1>if</span><span class=cB0> (st[i]==</span><span class=cB6>' '</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>i,len-1-i</span><span class=cB7>)</span><span class=cB0>&lt;b)
+<a name="l32"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l33"></a>        b=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(i,len-1-i);
+<a name="l34"></a>        best=st+i;
+<a name="l35"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l36"></a>  </span><span class=cB1>if</span><span class=cB0> (best)
+<a name="l37"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l38"></a>    *best=0;
+<a name="l39"></a>    tmpm-&gt;name2=best+1;
+<a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a>}
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l43"></span><span class=cB5>MenuIcon</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> size)
+<a name="l44"></a>{</span><span class=cB2>//Sprite shifted to sit centered MENU_GAP above its label.</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> i,x1,x2,y1,y2,w,len,len2=0;
+<a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0> *res;
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l107"></span><span class=cB9>CSpritePtMeshU8s</a></span><span class=cB0> *m;
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l38"></span><span class=cB9>CSpritePt</a></span><span class=cB0> *s;
+<a name="l49"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l130"></span><span class=cB9>CD3I32</a></span><span class=cB0> *p;
+<a name="l50"></a>  </span><span class=cB1>F64</span><span class=cB0> r=0;
+<a name="l51"></a>  </span><span class=cB1>if</span><span class=cB0> (*data==<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l145"></span><span class=cB3>SPT_SHIFTABLE_MESH</a></span><span class=cB0>)
+<a name="l52"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l53"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(size);
+<a name="l54"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(res,data,size);
+<a name="l55"></a>    m=res;
+<a name="l56"></a>    p=&amp;m-&gt;u;
+<a name="l57"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;m-&gt;vertex_cnt; i++,p++)
+<a name="l58"></a>      r=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l18"></span><span class=cB5>Max</a></span><span class=cB0>(r,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(p-&gt;x)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(p-&gt;y)+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l106"></span><span class=cB5>Sqr</a></span><span class=cB0>(p-&gt;z)</span><span class=cB7>)</span><span class=cB0>);
+<a name="l59"></a>    i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l123"></span><span class=cB5>Ceil</a></span><span class=cB0>(r);
+<a name="l60"></a>    x1=-i;
+<a name="l61"></a>    x2=i;
+<a name="l62"></a>    y1=-i;
+<a name="l63"></a>    y2=i;
+<a name="l64"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l65"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l66"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l330"></span><span class=cB5>SpriteExtents</a></span><span class=cB0>(data,&amp;x1,&amp;x2,&amp;y1,&amp;y2);
+<a name="l67"></a>  w=x2-x1+1;
+<a name="l68"></a>  i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l4"></span><span class=cB3>MENU_CELL_W</a></span><span class=cB0>,</span><span class=cB7>(</span><span class=cB0>w+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4055"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4055"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>);
+<a name="l69"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l25"></span><span class=cB5>MenuSplit</a></span><span class=cB0>(tmpm,i);
+<a name="l70"></a>  len=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(tmpm-&gt;name);
+<a name="l71"></a>  </span><span class=cB1>if</span><span class=cB0> (tmpm-&gt;name2)
+<a name="l72"></a>    len2=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(tmpm-&gt;name2);
+<a name="l73"></a>  </span><span class=cB1>if</span><span class=cB0> (len&gt;=len2)
+<a name="l74"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l75"></a>    tmpm-&gt;w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(i,len+1);
+<a name="l76"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>tmpm-&gt;w-len</span><span class=cB7>)</span><span class=cB0>&amp;1)
+<a name="l77"></a>      tmpm-&gt;w++;
+<a name="l78"></a>    tmpm-&gt;pad=(tmpm-&gt;w-len)/2;
+<a name="l79"></a>    tmpm-&gt;pad2=tmpm-&gt;pad+(len-len2)/2;
+<a name="l80"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l81"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l83"></a>    tmpm-&gt;w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(i,len2+1);
+<a name="l84"></a>    </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>tmpm-&gt;w-len2</span><span class=cB7>)</span><span class=cB0>&amp;1)
+<a name="l85"></a>      tmpm-&gt;w++;
+<a name="l86"></a>    tmpm-&gt;pad2=(tmpm-&gt;w-len2)/2;
+<a name="l87"></a>    tmpm-&gt;pad=tmpm-&gt;pad2+(len2-len)/2;
+<a name="l88"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l89"></a>  tmpm-&gt;h=y2-y1+1;
+<a name="l90"></a>  i=tmpm-&gt;w*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4055"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>/2-(tmpm-&gt;pad+len)*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4055"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>;
+<a name="l91"></a>  </span><span class=cB1>if</span><span class=cB0> (*data==<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l145"></span><span class=cB3>SPT_SHIFTABLE_MESH</a></span><span class=cB0>)
+<a name="l92"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l93"></a>    m-&gt;x=i;
+<a name="l94"></a>    m-&gt;y=-<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l6"></span><span class=cB3>MENU_GAP</a></span><span class=cB0>-1-y2;
+<a name="l95"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l97"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l98"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l38"></span><span class=cB9>CSpritePt</a></span><span class=cB7>)</span><span class=cB0>+size);
+<a name="l99"></a>    s=res;
+<a name="l100"></a>    s-&gt;type=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l127"></span><span class=cB3>SPT_SHIFT</a></span><span class=cB0>;
+<a name="l101"></a>    s-&gt;x1=i-w/2-x1;
+<a name="l102"></a>    s-&gt;y1=-<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l6"></span><span class=cB3>MENU_GAP</a></span><span class=cB0>-1-y2;
+<a name="l103"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(res+</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Gr/Gr.html#l38"></span><span class=cB9>CSpritePt</a></span><span class=cB7>)</span><span class=cB0>,data,size);
+<a name="l104"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l105"></a>  tmpm-&gt;elems=res;
+<a name="l106"></a>}
+<a name="l107"></a>
+<a name="l108"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>()
+<a name="l109"></a>{
+<a name="l110"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,pad,h=0;
+<a name="l111"></a>  </span><span class=cB1>U8</span><span class=cB0> *fmt;
+<a name="l112"></a>  </span><span class=cB1>Bool</span><span class=cB0> two=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l113"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm;
+<a name="l114"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>)
+<a name="l115"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l116"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>; i++)
+<a name="l117"></a>    {
+<a name="l118"></a>      h=<a href="http://tinkeros.github.io/WbGit/Kernel/KMathB.html#l18"></span><span class=cB5>Max</a></span><span class=cB0>(h,<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[i]-&gt;h);
+<a name="l119"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[i]-&gt;name2)
+<a name="l120"></a>        two=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l121"></a>    }
+<a name="l122"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;</span><span class=cB7>(</span><span class=cB0>h+<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l6"></span><span class=cB3>MENU_GAP</a></span><span class=cB0>+<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4056"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>-1</span><span class=cB7>)</span><span class=cB0>/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4056"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>; i++)
+<a name="l123"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l124"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l3"></span><span class=cB3>MENU_COLS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB7>)</span><span class=cB0>/2);
+<a name="l125"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>; i++)
+<a name="l126"></a>    {
+<a name="l127"></a>      tmpm=<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[i];
+<a name="l128"></a>      j=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(tmpm-&gt;name);
+<a name="l129"></a>      pad=tmpm-&gt;pad;
+<a name="l130"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(pad);
+<a name="l131"></a>      fmt=<a href="http://tinkeros.github.io/WbGit/Kernel/StrPrint.html#l1065"></span><span class=cB5>MStrPrint</a></span><span class=cB0>(</span><span class=cB6>&quot;$SP+PU,\&quot;%Q\&quot;,LM=\&quot;%Q\&quot;,BI=%%d$&quot;</span><span class=cB0>,tmpm-&gt;name,tmpm-&gt;lm);
+<a name="l132"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrSpritePlot.html#l484"></span><span class=cB5>DocSprite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,tmpm-&gt;elems,fmt);
+<a name="l133"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(fmt);
+<a name="l134"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(tmpm-&gt;w-pad-j);
+<a name="l135"></a>    }
+<a name="l136"></a>    </span><span class=cB1>if</span><span class=cB0> (two)
+<a name="l137"></a>    {
+<a name="l138"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;\n&quot;</span><span class=cB0>);
+<a name="l139"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l3"></span><span class=cB3>MENU_COLS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB7>)</span><span class=cB0>/2);
+<a name="l140"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>; i++)
+<a name="l141"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l142"></a>        tmpm=<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[i];
+<a name="l143"></a>        </span><span class=cB1>if</span><span class=cB0> (tmpm-&gt;name2)
+<a name="l144"></a>        {
+<a name="l145"></a>          j=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(tmpm-&gt;name2);
+<a name="l146"></a>          <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(tmpm-&gt;pad2);
+<a name="l147"></a>          <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;$FG,%d$%s$FG$&quot;</span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1268"></span><span class=cB3>DOC_COLOR_MACRO</a></span><span class=cB0>,tmpm-&gt;name2);
+<a name="l148"></a>          <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(tmpm-&gt;w-tmpm-&gt;pad2-j);
+<a name="l149"></a>        }
+<a name="l150"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l151"></a>          <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(tmpm-&gt;w);
+<a name="l152"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l153"></a>    }
+<a name="l154"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>);
+<a name="l155"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>=0;
+<a name="l156"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB0>=0;
+<a name="l157"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l158"></a>}
+<a name="l159"></a>
+<a name="l160"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l160"></span><span class=cB5>MenuApp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm)
+<a name="l161"></a>{</span><span class=cB2>//Add an app to the current row.</span><span class=cB0>
+<a name="l162"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>==<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l5"></span><span class=cB3>MENU_ROW_MAX</a></span><span class=cB0> || <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB0>+tmpm-&gt;w&gt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l3"></span><span class=cB3>MENU_COLS</a></span><span class=cB0>)
+<a name="l163"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>;
+<a name="l164"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_row</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>++]=tmpm;
+<a name="l165"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB0>+=tmpm-&gt;w;
+<a name="l166"></a>}
+<a name="l167"></a>
+<a name="l168"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l168"></span><span class=cB5>MenuCat</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *title)
+<a name="l169"></a>{</span><span class=cB2>//Start a category.</span><span class=cB0>
+<a name="l170"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>;
+<a name="l171"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;\n\n&quot;</span><span class=cB0>);
+<a name="l172"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l19"></span><span class=cB5>MenuSpaces</a></span><span class=cB0>(</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l3"></span><span class=cB3>MENU_COLS</a></span><span class=cB0>-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB0>(title)</span><span class=cB7>)</span><span class=cB0>/2);
+<a name="l173"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,</span><span class=cB6>&quot;$FG,5$%s$FG$\n&quot;</span><span class=cB0>,title);
+<a name="l174"></a>}
+<a name="l175"></a>
+<a name="l176"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l176"></span><span class=cB5>MenuAppCmp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *e1,<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *e2)
+<a name="l177"></a>{
+<a name="l178"></a>  </span><span class=cB9>I64</span><span class=cB0> res=e1-&gt;rank-e2-&gt;rank;
+<a name="l179"></a>  </span><span class=cB1>if</span><span class=cB0> (!res)
+<a name="l180"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(e1-&gt;cat,e2-&gt;cat);
+<a name="l181"></a>  </span><span class=cB1>if</span><span class=cB0> (!res)
+<a name="l182"></a>    res=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB0>(e1-&gt;name,e2-&gt;name);
+<a name="l183"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l184"></a>}
+<a name="l185"></a>
+<a name="l186"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l186"></span><span class=cB5>MenuBegin</a></span><span class=cB0>()
+<a name="l187"></a>{</span><span class=cB2>//Start a new menu doc.</span><span class=cB0>
+<a name="l188"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l376"></span><span class=cB5>DocNew</a></span><span class=cB0>;
+<a name="l189"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l190"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>=0;
+<a name="l191"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_cnt</a></span><span class=cB0>=0;
+<a name="l192"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_row_w</a></span><span class=cB0>=0;
+<a name="l193"></a>}
+<a name="l194"></a>
+<a name="l195"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l195"></span><span class=cB5>MenuFile</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename)
+<a name="l196"></a>{</span><span class=cB2>//Insert a DolDoc text file (no sprites) as is.</span><span class=cB0>
+<a name="l197"></a>  </span><span class=cB1>U8</span><span class=cB0> *st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename);
+<a name="l198"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>;
+<a name="l199"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l18"></span><span class=cB5>DocPutS</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>,st);
+<a name="l200"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l201"></a>}
+<a name="l202"></a>
+<a name="l203"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l203"></span><span class=cB5>MenuScan</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *mask)
+<a name="l204"></a>{</span><span class=cB2>//Collect the icon files matching mask (recursive) that have a category.</span><span class=cB0>
+<a name="l205"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
+<a name="l206"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2679"></span><span class=cB9>CDirEntry</a></span><span class=cB0> *tmpde=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFind.html#l32"></span><span class=cB5>FilesFind</a></span><span class=cB0>(mask,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2724"></span><span class=cB3>FUF_RECURSE</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2737"></span><span class=cB3>FUF_JUST_FILES</a></span><span class=cB0>),*tmpde1=tmpde;
+<a name="l207"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1494"></span><span class=cB9>CDoc</a></span><span class=cB0> *doc;
+<a name="l208"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1318"></span><span class=cB9>CDocEntry</a></span><span class=cB0> *doc_e;
+<a name="l209"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm;
+<a name="l210"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpde)
+<a name="l211"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l212"></a>    doc=<a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l38"></span><span class=cB5>DocRead</a></span><span class=cB0>(tmpde-&gt;full_name);
+<a name="l213"></a>    doc_e=doc-&gt;head.next;
+<a name="l214"></a>    </span><span class=cB1>while</span><span class=cB0> (doc_e!=doc &amp;&amp; doc_e-&gt;type_u8!=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1068"></span><span class=cB3>DOCT_SPRITE</a></span><span class=cB0>)
+<a name="l215"></a>      doc_e=doc_e-&gt;next;
+<a name="l216"></a>    </span><span class=cB1>if</span><span class=cB0> (doc_e!=doc &amp;&amp; doc_e-&gt;de_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1098"></span><span class=cB3>DOCEF_AUX_STR</a></span><span class=cB0> &amp;&amp; doc_e-&gt;bin_data)
+<a name="l217"></a>    {
+<a name="l218"></a>      tmpm=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l219"></a>      tmpm-&gt;name=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(doc_e-&gt;tag);
+<a name="l220"></a>      </span><span class=cB1>if</span><span class=cB0> (doc_e-&gt;de_flags&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1102"></span><span class=cB3>DOCEF_LEFT_MACRO</a></span><span class=cB0>)
+<a name="l221"></a>        tmpm-&gt;lm=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(doc_e-&gt;left_macro);
+<a name="l222"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l223"></a>        tmpm-&gt;lm=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(</span><span class=cB6>&quot;&quot;</span><span class=cB0>);
+<a name="l224"></a>      tmpm-&gt;cat=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l478"></span><span class=cB5>StrNew</a></span><span class=cB0>(doc_e-&gt;aux_str);
+<a name="l225"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l43"></span><span class=cB5>MenuIcon</a></span><span class=cB0>(tmpm,doc_e-&gt;bin_data-&gt;data,doc_e-&gt;bin_data-&gt;size);
+<a name="l226"></a>      tmpm-&gt;next=<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>;
+<a name="l227"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>=tmpm;
+<a name="l228"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>++;
+<a name="l229"></a>      res++;
+<a name="l230"></a>    }
+<a name="l231"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(doc);
+<a name="l232"></a>    tmpde=tmpde-&gt;next;
+<a name="l233"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l234"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDirA.html#l39"></span><span class=cB5>DirTreeDel</a></span><span class=cB0>(tmpde1);
+<a name="l235"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l236"></a>}
+<a name="l237"></a>
+<a name="l238"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l238"></span><span class=cB5>MenuApps</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *cats=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>)
+<a name="l239"></a>{</span><span class=cB2>//Lay out the collected apps by category, cats first, then the rest.</span><span class=cB0>
+<a name="l240"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l241"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm=<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>,**a=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB1>U8</span><span class=cB0> *</span><span class=cB7>)</span><span class=cB0>);
+<a name="l242"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>; i++)
+<a name="l243"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l244"></a>    tmpm-&gt;rank=<a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l439"></span><span class=cB5>LstMatch</a></span><span class=cB0>(tmpm-&gt;cat,cats,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4251"></span><span class=cB3>LMF_IGNORE_CASE</a></span><span class=cB0>|<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4252"></span><span class=cB3>LMF_EXACT</a></span><span class=cB0>);
+<a name="l245"></a>    </span><span class=cB1>if</span><span class=cB0> (tmpm-&gt;rank&lt;0)
+<a name="l246"></a>      tmpm-&gt;rank=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
+<a name="l247"></a>    a[i]=tmpm;
+<a name="l248"></a>    tmpm=tmpm-&gt;next;
+<a name="l249"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l250"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/QSort.html#l1"></span><span class=cB5>QSortI64</a></span><span class=cB0>(a,<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>,&amp;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l176"></span><span class=cB5>MenuAppCmp</a></span><span class=cB0>);
+<a name="l251"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>; i++)
+<a name="l252"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l253"></a>    </span><span class=cB1>if</span><span class=cB0> (!i || <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l313"></span><span class=cB5>StrICmp</a></span><span class=cB7>(</span><span class=cB0>a[i]-&gt;cat,a[i-1]-&gt;cat</span><span class=cB7>)</span><span class=cB0>)
+<a name="l254"></a>      <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l168"></span><span class=cB5>MenuCat</a></span><span class=cB0>(a[i]-&gt;cat);
+<a name="l255"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l160"></span><span class=cB5>MenuApp</a></span><span class=cB0>(a[i]);
+<a name="l256"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l257"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>;
+<a name="l258"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(a);
+<a name="l259"></a>}
+<a name="l260"></a>
+<a name="l261"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l261"></span><span class=cB5>MenuEnd</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *filename=</span><span class=cB6>&quot;::/PersonalMenu.DD&quot;</span><span class=cB0>)
+<a name="l262"></a>{</span><span class=cB2>//Save the menu doc.</span><span class=cB0>
+<a name="l263"></a>  </span><span class=cB1>U8</span><span class=cB0> *st=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskStrA.html#l205"></span><span class=cB5>FileNameAbs</a></span><span class=cB0>(filename);
+<a name="l264"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l8"></span><span class=cB9>CMenuItem</a></span><span class=cB0> *tmpm;
+<a name="l265"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l108"></span><span class=cB5>MenuRowFlush</a></span><span class=cB0>;
+<a name="l266"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l323"></span><span class=cB5>StrCpy</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>-&gt;filename.name,st);
+<a name="l267"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocFile.html#l191"></span><span class=cB5>DocWrite</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>);
+<a name="l268"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocNew.html#l326"></span><span class=cB5>DocDel</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>);
+<a name="l269"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l15"></span><span class=cB6>menu_doc</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l270"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(st);
+<a name="l271"></a>  </span><span class=cB1>while</span><span class=cB0> (tmpm=<a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>)
+<a name="l272"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l273"></a>    <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l16"></span><span class=cB6>menu_apps</a></span><span class=cB0>=tmpm-&gt;next;
+<a name="l274"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpm-&gt;name);
+<a name="l275"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpm-&gt;lm);
+<a name="l276"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpm-&gt;cat);
+<a name="l277"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpm-&gt;elems);
+<a name="l278"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(tmpm);
+<a name="l279"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l280"></a>  <a href="http://tinkeros.github.io/WbGit/Misc/MakeMenu.html#l17"></span><span class=cB6>menu_app_cnt</a></span><span class=cB0>=0;
+<a name="l281"></a>}
+</span></div></pre></body>
+</html>

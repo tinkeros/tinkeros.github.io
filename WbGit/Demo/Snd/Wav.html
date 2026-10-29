@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -66,7 +66,7 @@
 <a name="l27"></a>  </span><span class=cB1>F64</span><span class=cB0> src_rate,step,pos,fade_frames;
 <a name="l28"></a>  </span><span class=cB1>Bool</span><span class=cB0> playing;
 <a name="l29"></a>} wav;
-<a name="l30"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l115"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(&amp;wav);
+<a name="l30"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l129"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(&amp;wav);
 <a name="l31"></a>
 <a name="l32"></a></span><span class=cB9>I64</span><span class=cB0> wav_mixer_idx=-1;
 <a name="l33"></a>
@@ -84,7 +84,7 @@
 <a name="l45"></a>{
 <a name="l46"></a>  </span><span class=cB9>I64</span><span class=cB0> pos,cksize;
 <a name="l47"></a>  </span><span class=cB1>U8</span><span class=cB0> *id;
-<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l115"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(h);
+<a name="l48"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l129"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(h);
 <a name="l49"></a>  h-&gt;pcm_off=-1;
 <a name="l50"></a>  </span><span class=cB1>if</span><span class=cB0> (size&lt;12 || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf,</span><span class=cB6>&quot;RIFF&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0> || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>buf+8,</span><span class=cB6>&quot;WAVE&quot;</span><span class=cB0>,4</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
 <a name="l51"></a>    </span><span class=cB6>&quot;Wav: not a RIFF/WAVE file.\n&quot;</span><span class=cB0>;
@@ -229,13 +229,13 @@
 <a name="l190"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> WavWait()
 <a name="l191"></a>{
 <a name="l192"></a>  </span><span class=cB1>while</span><span class=cB0> (wav.playing)
-<a name="l193"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l193"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
 <a name="l194"></a>}
 <a name="l195"></a>
 <a name="l196"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> WavStop()
 <a name="l197"></a>{
 <a name="l198"></a>  wav.playing=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l199"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l199"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
 <a name="l200"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wav.file_buf);
 <a name="l201"></a>  wav.file_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l202"></a>}
@@ -250,7 +250,7 @@
 <a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (!WavParseHeader</span><span class=cB7>(</span><span class=cB0>data,size,&amp;h</span><span class=cB7>)</span><span class=cB0>)
 <a name="l212"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l213"></a>  WavWait;
-<a name="l214"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l214"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
 <a name="l215"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(wav.file_buf);
 <a name="l216"></a>  wav.file_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(size);
 <a name="l217"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(wav.file_buf,data,size);

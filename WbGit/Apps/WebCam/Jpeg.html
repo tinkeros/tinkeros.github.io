@@ -1,0 +1,523 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> JPG_LOOK        9
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>class</span><span class=cB0> CJpgHuff
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> maxcode[18],valptr[17],mincode[17];
+<a name="l6"></a>  </span><span class=cB1>U8</span><span class=cB0> vals[256],look_len[1&lt;&lt;JPG_LOOK],look_val[1&lt;&lt;JPG_LOOK];
+<a name="l7"></a>  </span><span class=cB1>Bool</span><span class=cB0> ok;
+<a name="l8"></a>};
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>class</span><span class=cB0> CJpgComp
+<a name="l11"></a>{
+<a name="l12"></a>  </span><span class=cB9>I64</span><span class=cB0> id,h,v,tq,td,ta,pred,
+<a name="l13"></a>        pw,ph;
+<a name="l14"></a>  </span><span class=cB1>U8</span><span class=cB0> *plane;
+<a name="l15"></a>};
+<a name="l16"></a>
+<a name="l17"></a></span><span class=cB1>class</span><span class=cB0> CJpg
+<a name="l18"></a>{
+<a name="l19"></a>  </span><span class=cB1>U8</span><span class=cB0> *p,*</span><span class=cB1>end</span><span class=cB0>;
+<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> acc,nbits,w,h,nc,hmax,vmax,dri;
+<a name="l21"></a>  </span><span class=cB9>I64</span><span class=cB0> q[4*64];
+<a name="l22"></a>  CJpgHuff dc[4],<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[4];
+<a name="l23"></a>  CJpgComp c[3];
+<a name="l24"></a>  </span><span class=cB1>Bool</span><span class=cB0> q_ok[4];
+<a name="l25"></a>};
+<a name="l26"></a>
+<a name="l27"></a></span><span class=cB1>U8</span><span class=cB0> jpg_zz[64]={0,1,8,16,9,2,3,10,17,24,32,25,18,11,4,5,12,19,26,33,40,48,
+<a name="l28"></a>        41,34,27,20,13,6,7,14,21,28,35,42,49,56,57,50,43,36,29,22,15,23,30,37,
+<a name="l29"></a>        44,51,58,59,52,45,38,31,39,46,53,60,61,54,47,55,62,63};
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>U8</span><span class=cB0> jpg_dc_l[28]={0,1,5,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11};
+<a name="l32"></a></span><span class=cB1>U8</span><span class=cB0> jpg_dc_c[28]={0,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11};
+<a name="l33"></a></span><span class=cB1>U8</span><span class=cB0> jpg_ac_l[178]={0,2,1,3,3,2,4,3,5,5,4,4,0,0,1,0x7D,
+<a name="l34"></a>        0x01,0x02,0x03,0x00,0x04,0x11,0x05,0x12,0x21,0x31,0x41,0x06,0x13,0x51,0x61,
+<a name="l35"></a>        0x07,0x22,0x71,0x14,0x32,0x81,0x91,0xA1,0x08,0x23,0x42,0xB1,0xC1,0x15,0x52,
+<a name="l36"></a>        0xD1,0xF0,0x24,0x33,0x62,0x72,0x82,0x09,0x0A,0x16,0x17,0x18,0x19,0x1A,0x25,
+<a name="l37"></a>        0x26,0x27,0x28,0x29,0x2A,0x34,0x35,0x36,0x37,0x38,0x39,0x3A,0x43,0x44,0x45,
+<a name="l38"></a>        0x46,0x47,0x48,0x49,0x4A,0x53,0x54,0x55,0x56,0x57,0x58,0x59,0x5A,0x63,0x64,
+<a name="l39"></a>        0x65,0x66,0x67,0x68,0x69,0x6A,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7A,0x83,
+<a name="l40"></a>        0x84,0x85,0x86,0x87,0x88,0x89,0x8A,0x92,0x93,0x94,0x95,0x96,0x97,0x98,0x99,
+<a name="l41"></a>        0x9A,0xA2,0xA3,0xA4,0xA5,0xA6,0xA7,0xA8,0xA9,0xAA,0xB2,0xB3,0xB4,0xB5,0xB6,
+<a name="l42"></a>        0xB7,0xB8,0xB9,0xBA,0xC2,0xC3,0xC4,0xC5,0xC6,0xC7,0xC8,0xC9,0xCA,0xD2,0xD3,
+<a name="l43"></a>        0xD4,0xD5,0xD6,0xD7,0xD8,0xD9,0xDA,0xE1,0xE2,0xE3,0xE4,0xE5,0xE6,0xE7,0xE8,
+<a name="l44"></a>        0xE9,0xEA,0xF1,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA};
+<a name="l45"></a></span><span class=cB1>U8</span><span class=cB0> jpg_ac_c[178]={0,2,1,2,4,4,3,4,7,5,4,4,0,1,2,0x77,
+<a name="l46"></a>        0x00,0x01,0x02,0x03,0x11,0x04,0x05,0x21,0x31,0x06,0x12,0x41,0x51,0x07,0x61,
+<a name="l47"></a>        0x71,0x13,0x22,0x32,0x81,0x08,0x14,0x42,0x91,0xA1,0xB1,0xC1,0x09,0x23,0x33,
+<a name="l48"></a>        0x52,0xF0,0x15,0x62,0x72,0xD1,0x0A,0x16,0x24,0x34,0xE1,0x25,0xF1,0x17,0x18,
+<a name="l49"></a>        0x19,0x1A,0x26,0x27,0x28,0x29,0x2A,0x35,0x36,0x37,0x38,0x39,0x3A,0x43,0x44,
+<a name="l50"></a>        0x45,0x46,0x47,0x48,0x49,0x4A,0x53,0x54,0x55,0x56,0x57,0x58,0x59,0x5A,0x63,
+<a name="l51"></a>        0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x73,0x74,0x75,0x76,0x77,0x78,0x79,0x7A,
+<a name="l52"></a>        0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8A,0x92,0x93,0x94,0x95,0x96,0x97,
+<a name="l53"></a>        0x98,0x99,0x9A,0xA2,0xA3,0xA4,0xA5,0xA6,0xA7,0xA8,0xA9,0xAA,0xB2,0xB3,0xB4,
+<a name="l54"></a>        0xB5,0xB6,0xB7,0xB8,0xB9,0xBA,0xC2,0xC3,0xC4,0xC5,0xC6,0xC7,0xC8,0xC9,0xCA,
+<a name="l55"></a>        0xD2,0xD3,0xD4,0xD5,0xD6,0xD7,0xD8,0xD9,0xDA,0xE2,0xE3,0xE4,0xE5,0xE6,0xE7,
+<a name="l56"></a>        0xE8,0xE9,0xEA,0xF2,0xF3,0xF4,0xF5,0xF6,0xF7,0xF8,0xF9,0xFA};
+<a name="l57"></a>
+<a name="l58"></a></span><span class=cB9>I64</span><span class=cB0> jpg_cos[64];
+<a name="l59"></a></span><span class=cB9>I64</span><span class=cB0> jpg_cr_r[256],jpg_cb_g[256],jpg_cr_g[256],jpg_cb_b[256];
+<a name="l60"></a></span><span class=cB1>U8</span><span class=cB0> jpg_clip[1024];
+<a name="l61"></a></span><span class=cB1>Bool</span><span class=cB0> jpg_tab_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l62"></a>
+<a name="l63"></a></span><span class=cB1>U0</span><span class=cB0> JpgTabInit()
+<a name="l64"></a>{
+<a name="l65"></a>  </span><span class=cB9>I64</span><span class=cB0> x,u;
+<a name="l66"></a>  </span><span class=cB1>F64</span><span class=cB0> cu;
+<a name="l67"></a>  </span><span class=cB1>if</span><span class=cB0> (jpg_tab_ok) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;8; x++)
+<a name="l69"></a>    </span><span class=cB1>for</span><span class=cB0> (u=0; u&lt;8; u++)
+<a name="l70"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l71"></a>      </span><span class=cB1>if</span><span class=cB0> (u) cu=1.0;
+<a name="l72"></a>      </span><span class=cB1>else</span><span class=cB0> cu=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l109"></span><span class=cB5>Sqrt</a></span><span class=cB0>(0.5);
+<a name="l73"></a>      jpg_cos[x*8+u]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l139"></span><span class=cB5>Round</a></span><span class=cB7>(</span><span class=cB0>4096*cu*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l98"></span><span class=cB5>Cos</a></span><span class=cB0>(</span><span class=cB7>(</span><span class=cB0>2*x+1</span><span class=cB7>)</span><span class=cB0>*u*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l52"></span><span class=cB3>pi</a></span><span class=cB0>/16)/2</span><span class=cB7>)</span><span class=cB0>);
+<a name="l74"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l75"></a>  </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;256; x++)
+<a name="l76"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l77"></a>    jpg_cr_r[x]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(1.402*65536)*(x-128);
+<a name="l78"></a>    jpg_cb_g[x]=-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(0.344136*65536)*(x-128);
+<a name="l79"></a>    jpg_cr_g[x]=-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(0.714136*65536)*(x-128)+32768;
+<a name="l80"></a>    jpg_cb_b[x]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(1.772*65536)*(x-128);
+<a name="l81"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l82"></a>  </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;1024; x++)
+<a name="l83"></a>    jpg_clip[x]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(x-384,0,255);
+<a name="l84"></a>  jpg_tab_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l85"></a>}
+<a name="l86"></a>
+<a name="l87"></a></span><span class=cB1>Bool</span><span class=cB0> JpgHuffBuild(CJpgHuff *t,</span><span class=cB1>U8</span><span class=cB0> *bits,</span><span class=cB1>U8</span><span class=cB0> *vals)
+<a name="l88"></a>{</span><span class=cB2>//bits: 16 counts, vals: the symbols. Canonical codes, plus the fast table.</span><span class=cB0>
+<a name="l89"></a>  </span><span class=cB9>I64</span><span class=cB0> l,i,j,k=0,code=0,n=0,fill;
+<a name="l90"></a>  </span><span class=cB1>for</span><span class=cB0> (l=0; l&lt;16; l++)
+<a name="l91"></a>    n+=bits[l];
+<a name="l92"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;256) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l93"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(t-&gt;vals,vals,n);
+<a name="l94"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(t-&gt;look_len,0,1&lt;&lt;JPG_LOOK);
+<a name="l95"></a>  </span><span class=cB1>for</span><span class=cB0> (l=1; l&lt;=16; l++)
+<a name="l96"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l97"></a>    t-&gt;valptr[l]=k;
+<a name="l98"></a>    t-&gt;mincode[l]=code;
+<a name="l99"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;bits[l-1]; i++)
+<a name="l100"></a>    {
+<a name="l101"></a>      </span><span class=cB1>if</span><span class=cB0> (l&lt;=JPG_LOOK)
+<a name="l102"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l103"></a>        fill=1&lt;&lt;(JPG_LOOK-l);
+<a name="l104"></a>        </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;fill; j++)
+<a name="l105"></a>        {
+<a name="l106"></a>          t-&gt;look_len[code&lt;&lt;(JPG_LOOK-l)+j]=l;
+<a name="l107"></a>          t-&gt;look_val[code&lt;&lt;(JPG_LOOK-l)+j]=vals[k];
+<a name="l108"></a>        }
+<a name="l109"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l110"></a>      code++;
+<a name="l111"></a>      k++;
+<a name="l112"></a>    }
+<a name="l113"></a>    </span><span class=cB1>if</span><span class=cB0> (bits[l-1])
+<a name="l114"></a>      t-&gt;maxcode[l]=code-1;
+<a name="l115"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l116"></a>      t-&gt;maxcode[l]=-1;
+<a name="l117"></a>    code&lt;&lt;=1;
+<a name="l118"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l119"></a>  t-&gt;maxcode[17]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
+<a name="l120"></a>  t-&gt;ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l121"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l122"></a>}
+<a name="l123"></a>
+<a name="l124"></a></span><span class=cB1>U0</span><span class=cB0> JpgFill(CJpg *j)
+<a name="l125"></a>{</span><span class=cB2>//Keep at least 48 bits. Stops at a marker: zero bits past it.</span><span class=cB0>
+<a name="l126"></a>  </span><span class=cB9>I64</span><span class=cB0> b;
+<a name="l127"></a>  </span><span class=cB1>while</span><span class=cB0> (j-&gt;nbits&lt;=48)
+<a name="l128"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l129"></a>    b=0;
+<a name="l130"></a>    </span><span class=cB1>if</span><span class=cB0> (j-&gt;p&lt;j-&gt;</span><span class=cB1>end</span><span class=cB0>)
+<a name="l131"></a>    {
+<a name="l132"></a>      b=*j-&gt;p;
+<a name="l133"></a>      </span><span class=cB1>if</span><span class=cB0> (b==0xFF)
+<a name="l134"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l135"></a>        </span><span class=cB1>if</span><span class=cB0> (j-&gt;p+1&lt;j-&gt;</span><span class=cB1>end</span><span class=cB0> &amp;&amp; !j-&gt;p[1])
+<a name="l136"></a>          j-&gt;p+=2;
+<a name="l137"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l138"></a>          b=0;
+<a name="l139"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l140"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l141"></a>        j-&gt;p++;
+<a name="l142"></a>    }
+<a name="l143"></a>    j-&gt;acc=j-&gt;acc&lt;&lt;8|b;
+<a name="l144"></a>    j-&gt;nbits+=8;
+<a name="l145"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l146"></a>}
+<a name="l147"></a>
+<a name="l148"></a></span><span class=cB9>I64</span><span class=cB0> JpgBits(CJpg *j,</span><span class=cB9>I64</span><span class=cB0> n)
+<a name="l149"></a>{
+<a name="l150"></a>  </span><span class=cB9>I64</span><span class=cB0> v;
+<a name="l151"></a>  </span><span class=cB1>if</span><span class=cB0> (!n) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l152"></a>  </span><span class=cB1>if</span><span class=cB0> (j-&gt;nbits&lt;n) JpgFill(j);
+<a name="l153"></a>  j-&gt;nbits-=n;
+<a name="l154"></a>  v=j-&gt;acc&gt;&gt;j-&gt;nbits&amp;(1&lt;&lt;n-1);
+<a name="l155"></a>  </span><span class=cB1>return</span><span class=cB0> v;
+<a name="l156"></a>}
+<a name="l157"></a>
+<a name="l158"></a></span><span class=cB9>I64</span><span class=cB0> JpgHuff(CJpg *j,CJpgHuff *t)
+<a name="l159"></a>{
+<a name="l160"></a>  </span><span class=cB9>I64</span><span class=cB0> look,l,code;
+<a name="l161"></a>  </span><span class=cB1>if</span><span class=cB0> (j-&gt;nbits&lt;16) JpgFill(j);
+<a name="l162"></a>  look=j-&gt;acc&gt;&gt;(j-&gt;nbits-JPG_LOOK)&amp;(1&lt;&lt;JPG_LOOK-1);
+<a name="l163"></a>  </span><span class=cB1>if</span><span class=cB0> (l=t-&gt;look_len[look])
+<a name="l164"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l165"></a>    j-&gt;nbits-=l;
+<a name="l166"></a>    </span><span class=cB1>return</span><span class=cB0> t-&gt;look_val[look];
+<a name="l167"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l168"></a>  code=JpgBits(j,JPG_LOOK);
+<a name="l169"></a>  </span><span class=cB1>for</span><span class=cB0> (l=JPG_LOOK+1; l&lt;=16; l++)
+<a name="l170"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l171"></a>    code=code&lt;&lt;1|JpgBits(j,1);
+<a name="l172"></a>    </span><span class=cB1>if</span><span class=cB0> (code&lt;=t-&gt;maxcode[l])
+<a name="l173"></a>      </span><span class=cB1>return</span><span class=cB0> t-&gt;vals[t-&gt;valptr[l]+code-t-&gt;mincode[l]];
+<a name="l174"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l175"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l176"></a>}
+<a name="l177"></a>
+<a name="l178"></a></span><span class=cB9>I64</span><span class=cB0> JpgExt(</span><span class=cB9>I64</span><span class=cB0> v,</span><span class=cB9>I64</span><span class=cB0> s)
+<a name="l179"></a>{</span><span class=cB2>//JPEG F.12 EXTEND</span><span class=cB0>
+<a name="l180"></a>  </span><span class=cB1>if</span><span class=cB0> (s &amp;&amp; v&lt;1&lt;&lt;</span><span class=cB7>(</span><span class=cB0>s-1</span><span class=cB7>)</span><span class=cB0>)
+<a name="l181"></a>    v+=-1&lt;&lt;s+1;
+<a name="l182"></a>  </span><span class=cB1>return</span><span class=cB0> v;
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>U0</span><span class=cB0> JpgIdct(</span><span class=cB9>I64</span><span class=cB0> *f,</span><span class=cB1>U8</span><span class=cB0> *dst,</span><span class=cB9>I64</span><span class=cB0> stride)
+<a name="l186"></a>{</span><span class=cB2>//8x8 inverse DCT, separable, into dst (level shifted, clipped).</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,u,s,tmp[64],*cs;
+<a name="l188"></a>  </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l189"></a>  </span><span class=cB1>for</span><span class=cB0> (u=1; u&lt;64; u++)
+<a name="l190"></a>    </span><span class=cB1>if</span><span class=cB0> (f[u])
+<a name="l191"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l192"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l193"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l194"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l195"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>)
+<a name="l196"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l197"></a>    s=jpg_clip[(f[0]+4)&gt;&gt;3+128+384];
+<a name="l198"></a>    </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;8; y++)
+<a name="l199"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(dst+y*stride,s,8);
+<a name="l200"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l201"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l202"></a>  </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;8; y++)
+<a name="l203"></a>    </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;8; x++)
+<a name="l204"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l205"></a>      cs=&amp;jpg_cos[x*8];
+<a name="l206"></a>      s=0;
+<a name="l207"></a>      </span><span class=cB1>for</span><span class=cB0> (u=0; u&lt;8; u++)
+<a name="l208"></a>        s+=cs[u]*f[y*8+u];
+<a name="l209"></a>      tmp[y*8+x]=s;
+<a name="l210"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;8; x++)
+<a name="l212"></a>    </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;8; y++)
+<a name="l213"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l214"></a>      cs=&amp;jpg_cos[y*8];
+<a name="l215"></a>      s=0;
+<a name="l216"></a>      </span><span class=cB1>for</span><span class=cB0> (u=0; u&lt;8; u++)
+<a name="l217"></a>        s+=cs[u]*tmp[u*8+x];
+<a name="l218"></a>      dst[y*stride+x]=jpg_clip[(s+1&lt;&lt;23)&gt;&gt;24+128+384];
+<a name="l219"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l220"></a>}
+<a name="l221"></a>
+<a name="l222"></a></span><span class=cB1>Bool</span><span class=cB0> JpgBlock(CJpg *j,CJpgComp *c,</span><span class=cB1>U8</span><span class=cB0> *dst,</span><span class=cB9>I64</span><span class=cB0> stride)
+<a name="l223"></a>{
+<a name="l224"></a>  </span><span class=cB9>I64</span><span class=cB0> f[64],k,s,r,rs,*q=&amp;j-&gt;q[c-&gt;tq*64];
+<a name="l225"></a>  CJpgHuff *<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>=&amp;j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[c-&gt;ta];
+<a name="l226"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(f,0,64*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l227"></a>  s=JpgHuff(j,&amp;j-&gt;dc[c-&gt;td]);
+<a name="l228"></a>  c-&gt;pred+=JpgExt(JpgBits</span><span class=cB7>(</span><span class=cB0>j,s</span><span class=cB7>)</span><span class=cB0>,s);
+<a name="l229"></a>  f[0]=c-&gt;pred*q[0];
+<a name="l230"></a>  </span><span class=cB1>for</span><span class=cB0> (k=1; k&lt;64; k++)
+<a name="l231"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l232"></a>    rs=JpgHuff(j,<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>);
+<a name="l233"></a>    r=rs&gt;&gt;4;
+<a name="l234"></a>    s=rs&amp;15;
+<a name="l235"></a>    </span><span class=cB1>if</span><span class=cB0> (!s)
+<a name="l236"></a>    {
+<a name="l237"></a>      </span><span class=cB1>if</span><span class=cB0> (r!=15) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l238"></a>      k+=15;
+<a name="l239"></a>    }
+<a name="l240"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l241"></a>    {
+<a name="l242"></a>      k+=r;
+<a name="l243"></a>      </span><span class=cB1>if</span><span class=cB0> (k&gt;63) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l244"></a>      f[jpg_zz[k]]=JpgExt(JpgBits</span><span class=cB7>(</span><span class=cB0>j,s</span><span class=cB7>)</span><span class=cB0>,s)*q[k];
+<a name="l245"></a>    }
+<a name="l246"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l247"></a>  JpgIdct(f,dst,stride);
+<a name="l248"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l249"></a>}
+<a name="l250"></a>
+<a name="l251"></a></span><span class=cB9>I64</span><span class=cB0> JpgU16(</span><span class=cB1>U8</span><span class=cB0> *p)
+<a name="l252"></a>{
+<a name="l253"></a>  </span><span class=cB1>return</span><span class=cB0> p[0]&lt;&lt;8|p[1];
+<a name="l254"></a>}
+<a name="l255"></a>
+<a name="l256"></a></span><span class=cB1>Bool</span><span class=cB0> JpgScan(CJpg *j)
+<a name="l257"></a>{</span><span class=cB2>//The entropy-coded data at j-&gt;p: every MCU into the component planes.</span><span class=cB0>
+<a name="l258"></a>  </span><span class=cB9>I64</span><span class=cB0> mx,my,mcux,mcuy,ci,bx,by,n=0,rst=0;
+<a name="l259"></a>  CJpgComp *c;
+<a name="l260"></a>  mcux=(j-&gt;w+8*j-&gt;hmax-1)/(8*j-&gt;hmax);
+<a name="l261"></a>  mcuy=(j-&gt;h+8*j-&gt;vmax-1)/(8*j-&gt;vmax);
+<a name="l262"></a>  j-&gt;acc=j-&gt;nbits=0;
+<a name="l263"></a>  </span><span class=cB1>for</span><span class=cB0> (ci=0; ci&lt;j-&gt;nc; ci++)
+<a name="l264"></a>    j-&gt;c[ci].pred=0;
+<a name="l265"></a>  </span><span class=cB1>for</span><span class=cB0> (my=0; my&lt;mcuy; my++)
+<a name="l266"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l267"></a>    </span><span class=cB1>for</span><span class=cB0> (mx=0; mx&lt;mcux; mx++)
+<a name="l268"></a>    {
+<a name="l269"></a>      </span><span class=cB1>if</span><span class=cB0> (j-&gt;dri &amp;&amp; n &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>n%j-&gt;dri</span><span class=cB7>)</span><span class=cB0>)
+<a name="l270"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l271"></a>        j-&gt;acc=j-&gt;nbits=0;
+<a name="l272"></a>        </span><span class=cB1>while</span><span class=cB0> (j-&gt;p+1&lt;j-&gt;</span><span class=cB1>end</span><span class=cB0> &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>j-&gt;p[0]==0xFF &amp;&amp; 0xD0&lt;=j-&gt;p[1]&lt;=0xD7</span><span class=cB7>)</span><span class=cB0>)
+<a name="l273"></a>          j-&gt;p++;
+<a name="l274"></a>        </span><span class=cB1>if</span><span class=cB0> (j-&gt;p+1&lt;j-&gt;</span><span class=cB1>end</span><span class=cB0>)
+<a name="l275"></a>          j-&gt;p+=2;
+<a name="l276"></a>        </span><span class=cB1>for</span><span class=cB0> (ci=0; ci&lt;j-&gt;nc; ci++)
+<a name="l277"></a>          j-&gt;c[ci].pred=0;
+<a name="l278"></a>        rst++;
+<a name="l279"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l280"></a>      </span><span class=cB1>for</span><span class=cB0> (ci=0; ci&lt;j-&gt;nc; ci++)
+<a name="l281"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l282"></a>        c=&amp;j-&gt;c[ci];
+<a name="l283"></a>        </span><span class=cB1>for</span><span class=cB0> (by=0; by&lt;c-&gt;v; by++)
+<a name="l284"></a>          </span><span class=cB1>for</span><span class=cB0> (bx=0; bx&lt;c-&gt;h; bx++)
+<a name="l285"></a>            </span><span class=cB1>if</span><span class=cB0> (!JpgBlock</span><span class=cB7>(</span><span class=cB0>j,c,c-&gt;plane+(</span><span class=cB7>(</span><span class=cB0>my*c-&gt;v+by</span><span class=cB7>)</span><span class=cB0>*8)*c-&gt;pw+(mx*c-&gt;h+bx)*8,c-&gt;pw</span><span class=cB7>)</span><span class=cB0>)
+<a name="l286"></a>              </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l287"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l288"></a>      n++;
+<a name="l289"></a>    }
+<a name="l290"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>my&amp;7</span><span class=cB7>)</span><span class=cB0>)
+<a name="l291"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l292"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l293"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l294"></a>}
+<a name="l295"></a>
+<a name="l296"></a></span><span class=cB1>U0</span><span class=cB0> JpgFree(CJpg *j)
+<a name="l297"></a>{
+<a name="l298"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l299"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;3; i++)
+<a name="l300"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(j-&gt;c[i].plane);
+<a name="l301"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(j);
+<a name="l302"></a>}
+<a name="l303"></a>
+<a name="l304"></a></span><span class=cB1>U0</span><span class=cB0> JpgToRgb(CJpg *j,</span><span class=cB1>U8</span><span class=cB0> *rgb)
+<a name="l305"></a>{</span><span class=cB2>//Upsample chroma (nearest) and convert to RGB24.</span><span class=cB0>
+<a name="l306"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,yy,cb,cr,o;
+<a name="l307"></a>  CJpgComp *c0=&amp;j-&gt;c[0],*c1=&amp;j-&gt;c[1],*c2=&amp;j-&gt;c[2];
+<a name="l308"></a>  </span><span class=cB1>U8</span><span class=cB0> *py,*pb,*pr;
+<a name="l309"></a>  </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;j-&gt;h; y++)
+<a name="l310"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l311"></a>    py=c0-&gt;plane+y*c0-&gt;v/j-&gt;vmax*c0-&gt;pw;
+<a name="l312"></a>    </span><span class=cB1>if</span><span class=cB0> (j-&gt;nc==3)
+<a name="l313"></a>    {
+<a name="l314"></a>      pb=c1-&gt;plane+y*c1-&gt;v/j-&gt;vmax*c1-&gt;pw;
+<a name="l315"></a>      pr=c2-&gt;plane+y*c2-&gt;v/j-&gt;vmax*c2-&gt;pw;
+<a name="l316"></a>    }
+<a name="l317"></a>    o=y*j-&gt;w*3;
+<a name="l318"></a>    </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;j-&gt;w; x++)
+<a name="l319"></a>    {
+<a name="l320"></a>      yy=py[x*c0-&gt;h/j-&gt;hmax]&lt;&lt;16;
+<a name="l321"></a>      </span><span class=cB1>if</span><span class=cB0> (j-&gt;nc==3)
+<a name="l322"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l323"></a>        cb=pb[x*c1-&gt;h/j-&gt;hmax];
+<a name="l324"></a>        cr=pr[x*c2-&gt;h/j-&gt;hmax];
+<a name="l325"></a>        rgb[o]=jpg_clip[(yy+jpg_cr_r[cr]+32768)&gt;&gt;16+384];
+<a name="l326"></a>        rgb[o+1]=jpg_clip[(yy+jpg_cb_g[cb]+jpg_cr_g[cr])&gt;&gt;16+384];
+<a name="l327"></a>        rgb[o+2]=jpg_clip[(yy+jpg_cb_b[cb]+32768)&gt;&gt;16+384];
+<a name="l328"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l329"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l330"></a>        rgb[o]=rgb[o+1]=rgb[o+2]=yy&gt;&gt;16;
+<a name="l331"></a>      o+=3;
+<a name="l332"></a>    }
+<a name="l333"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l334"></a>}
+<a name="l335"></a>
+<a name="l336"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *JpgDecode(</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I64</span><span class=cB0> len,</span><span class=cB9>I64</span><span class=cB0> *_w,</span><span class=cB9>I64</span><span class=cB0> *_h)
+<a name="l337"></a>{</span><span class=cB2>//JPEG data to RGB24 (w*h*3 bytes, Free it), NULL if not baseline.</span><span class=cB0>
+<a name="l338"></a>  CJpg *j;
+<a name="l339"></a>  CJpgComp *c;
+<a name="l340"></a>  </span><span class=cB1>U8</span><span class=cB0> *p=data,*</span><span class=cB1>end</span><span class=cB0>=data+len,*seg,*rgb=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>,bits[16];
+<a name="l341"></a>  </span><span class=cB9>I64</span><span class=cB0> m,ln,i,k,n,tc,th,ns,id,mcux,mcuy;
+<a name="l342"></a>  </span><span class=cB1>Bool</span><span class=cB0> sof=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l343"></a>  </span><span class=cB1>if</span><span class=cB0> (len&lt;4 || data[0]!=0xFF || data[1]!=0xD8) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l344"></a>  JpgTabInit;
+<a name="l345"></a>  j=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CJpg</span><span class=cB7>)</span><span class=cB0>);
+<a name="l346"></a>  p+=2;
+<a name="l347"></a>  </span><span class=cB1>while</span><span class=cB0> (p+4&lt;=</span><span class=cB1>end</span><span class=cB0>)
+<a name="l348"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l349"></a>    </span><span class=cB1>if</span><span class=cB0> (p[0]!=0xFF)
+<a name="l350"></a>    {
+<a name="l351"></a>      p++;
+<a name="l352"></a>      </span><span class=cB1>goto</span><span class=cB0> jd_next;
+<a name="l353"></a>    }
+<a name="l354"></a>    m=p[1];
+<a name="l355"></a>    </span><span class=cB1>if</span><span class=cB0> (m==0xFF || 0xD0&lt;=m&lt;=0xD7 || m==0x01)
+<a name="l356"></a>    {
+<a name="l357"></a>      p+=1+(m!=0xFF);
+<a name="l358"></a>      </span><span class=cB1>goto</span><span class=cB0> jd_next;
+<a name="l359"></a>    }
+<a name="l360"></a>    </span><span class=cB1>if</span><span class=cB0> (m==0xD9) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l361"></a>    ln=JpgU16(p+2);
+<a name="l362"></a>    seg=p+4;
+<a name="l363"></a>    </span><span class=cB1>if</span><span class=cB0> (ln&lt;2 || p+2+ln&gt;</span><span class=cB1>end</span><span class=cB0>) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l364"></a>    </span><span class=cB1>switch</span><span class=cB0> (m)
+<a name="l365"></a>    {
+<a name="l366"></a>      </span><span class=cB1>case</span><span class=cB0> 0xDB:
+<a name="l367"></a>        i=0;
+<a name="l368"></a>        </span><span class=cB1>while</span><span class=cB0> (i&lt;ln-2)
+<a name="l369"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l370"></a>          tc=seg[i]&gt;&gt;4;
+<a name="l371"></a>          th=seg[i]&amp;3;
+<a name="l372"></a>          </span><span class=cB1>for</span><span class=cB0> (k=0; k&lt;64; k++)
+<a name="l373"></a>            </span><span class=cB1>if</span><span class=cB0> (tc)
+<a name="l374"></a>              j-&gt;q[th*64+k]=JpgU16(seg+i+1+2*k);
+<a name="l375"></a>            </span><span class=cB1>else</span><span class=cB0>
+<a name="l376"></a>              j-&gt;q[th*64+k]=seg[i+1+k];
+<a name="l377"></a>          j-&gt;q_ok[th]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l378"></a>          i+=1+64*(1+tc);
+<a name="l379"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l380"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l381"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC4:
+<a name="l382"></a>        i=0;
+<a name="l383"></a>        </span><span class=cB1>while</span><span class=cB0> (i+17&lt;=ln-2)
+<a name="l384"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l385"></a>          tc=seg[i]&gt;&gt;4;
+<a name="l386"></a>          th=seg[i]&amp;3;
+<a name="l387"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(bits,seg+i+1,16);
+<a name="l388"></a>          </span><span class=cB1>for</span><span class=cB0> (k=n=0; k&lt;16; k++)
+<a name="l389"></a>            n+=bits[k];
+<a name="l390"></a>          </span><span class=cB1>if</span><span class=cB0> (tc)
+<a name="l391"></a>            JpgHuffBuild(&amp;j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[th],bits,seg+i+17);
+<a name="l392"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l393"></a>            JpgHuffBuild(&amp;j-&gt;dc[th],bits,seg+i+17);
+<a name="l394"></a>          i+=17+n;
+<a name="l395"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l396"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l397"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC0:
+<a name="l398"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC1:
+<a name="l399"></a>        </span><span class=cB1>if</span><span class=cB0> (seg[0]!=8) </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l400"></a>        j-&gt;h=JpgU16(seg+1);
+<a name="l401"></a>        j-&gt;w=JpgU16(seg+3);
+<a name="l402"></a>        j-&gt;nc=seg[5];
+<a name="l403"></a>        </span><span class=cB1>if</span><span class=cB0> (j-&gt;nc!=1 &amp;&amp; j-&gt;nc!=3 || !j-&gt;w || !j-&gt;h) </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l404"></a>        j-&gt;hmax=j-&gt;vmax=1;
+<a name="l405"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;j-&gt;nc; i++)
+<a name="l406"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l407"></a>          c=&amp;j-&gt;c[i];
+<a name="l408"></a>          c-&gt;id=seg[6+3*i];
+<a name="l409"></a>          c-&gt;h=seg[7+3*i]&gt;&gt;4;
+<a name="l410"></a>          c-&gt;v=seg[7+3*i]&amp;15;
+<a name="l411"></a>          c-&gt;tq=seg[8+3*i]&amp;3;
+<a name="l412"></a>          </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>1&lt;=c-&gt;h&lt;=2</span><span class=cB7>)</span><span class=cB0> || !</span><span class=cB7>(</span><span class=cB0>1&lt;=c-&gt;v&lt;=2</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l413"></a>          j-&gt;hmax=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(j-&gt;hmax,c-&gt;h);
+<a name="l414"></a>          j-&gt;vmax=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(j-&gt;vmax,c-&gt;v);
+<a name="l415"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l416"></a>        mcux=(j-&gt;w+8*j-&gt;hmax-1)/(8*j-&gt;hmax);
+<a name="l417"></a>        mcuy=(j-&gt;h+8*j-&gt;vmax-1)/(8*j-&gt;vmax);
+<a name="l418"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;j-&gt;nc; i++)
+<a name="l419"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l420"></a>          c=&amp;j-&gt;c[i];
+<a name="l421"></a>          c-&gt;pw=mcux*c-&gt;h*8;
+<a name="l422"></a>          c-&gt;ph=mcuy*c-&gt;v*8;
+<a name="l423"></a>          c-&gt;plane=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(c-&gt;pw*c-&gt;ph);
+<a name="l424"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l425"></a>        sof=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l426"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l427"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC2...0xC3:
+<a name="l428"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC5...0xC7:
+<a name="l429"></a>      </span><span class=cB1>case</span><span class=cB0> 0xC9...0xCB:
+<a name="l430"></a>      </span><span class=cB1>case</span><span class=cB0> 0xCD...0xCF:
+<a name="l431"></a>        </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l432"></a>      </span><span class=cB1>case</span><span class=cB0> 0xDD:
+<a name="l433"></a>        j-&gt;dri=JpgU16(seg);
+<a name="l434"></a>        </span><span class=cB1>break</span><span class=cB0>;
+<a name="l435"></a>      </span><span class=cB1>case</span><span class=cB0> 0xDA:
+<a name="l436"></a>        </span><span class=cB1>if</span><span class=cB0> (!sof) </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l437"></a>        ns=seg[0];
+<a name="l438"></a>        </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;ns; i++)
+<a name="l439"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l440"></a>          id=seg[1+2*i];
+<a name="l441"></a>          </span><span class=cB1>for</span><span class=cB0> (k=0; k&lt;j-&gt;nc; k++)
+<a name="l442"></a>            </span><span class=cB1>if</span><span class=cB0> (j-&gt;c[k].id==id)
+<a name="l443"></a>            {
+<a name="l444"></a>              j-&gt;c[k].td=seg[2+2*i]&gt;&gt;4&amp;3;
+<a name="l445"></a>              j-&gt;c[k].ta=seg[2+2*i]&amp;3;
+<a name="l446"></a>            }
+<a name="l447"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l448"></a>        </span><span class=cB1>if</span><span class=cB0> (!j-&gt;dc[0].ok)
+<a name="l449"></a>          JpgHuffBuild(&amp;j-&gt;dc[0],jpg_dc_l,jpg_dc_l+16);
+<a name="l450"></a>        </span><span class=cB1>if</span><span class=cB0> (!j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[0].ok)
+<a name="l451"></a>          JpgHuffBuild(&amp;j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[0],jpg_ac_l,jpg_ac_l+16);
+<a name="l452"></a>        </span><span class=cB1>if</span><span class=cB0> (!j-&gt;dc[1].ok)
+<a name="l453"></a>          JpgHuffBuild(&amp;j-&gt;dc[1],jpg_dc_c,jpg_dc_c+16);
+<a name="l454"></a>        </span><span class=cB1>if</span><span class=cB0> (!j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[1].ok)
+<a name="l455"></a>          JpgHuffBuild(&amp;j-&gt;<a href="http://tinkeros.github.io/WbGit/Adam/AGlbls.html#l20"></span><span class=cB6>ac</a></span><span class=cB0>[1],jpg_ac_c,jpg_ac_c+16);
+<a name="l456"></a>        j-&gt;p=seg+ln-2;
+<a name="l457"></a>        j-&gt;</span><span class=cB1>end</span><span class=cB0>=</span><span class=cB1>end</span><span class=cB0>;
+<a name="l458"></a>        </span><span class=cB1>if</span><span class=cB0> (!JpgScan</span><span class=cB7>(</span><span class=cB0>j</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>goto</span><span class=cB0> jd_fail;
+<a name="l459"></a>        rgb=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(j-&gt;w*j-&gt;h*3);
+<a name="l460"></a>        JpgToRgb(j,rgb);
+<a name="l461"></a>        *_w=j-&gt;w;
+<a name="l462"></a>        *_h=j-&gt;h;
+<a name="l463"></a>        JpgFree(j);
+<a name="l464"></a>        </span><span class=cB1>return</span><span class=cB0> rgb;
+<a name="l465"></a>    }
+<a name="l466"></a>    p+=2+ln;
+<a name="l467"></a>jd_next:;
+<a name="l468"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l469"></a>jd_fail:
+<a name="l470"></a>  JpgFree(j);
+<a name="l471"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l472"></a>}
+<a name="l473"></a>
+<a name="l474"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *JpgFileDecode(</span><span class=cB1>U8</span><span class=cB0> *filename,</span><span class=cB9>I64</span><span class=cB0> *_w,</span><span class=cB9>I64</span><span class=cB0> *_h)
+<a name="l475"></a>{</span><span class=cB2>//A .jpg file to RGB24 (Free it), NULL on failure.</span><span class=cB0>
+<a name="l476"></a>  </span><span class=cB9>I64</span><span class=cB0> size;
+<a name="l477"></a>  </span><span class=cB1>U8</span><span class=cB0> *data=<a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskFile.html#l7"></span><span class=cB5>FileRead</a></span><span class=cB0>(filename,&amp;size),*rgb=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l478"></a>  </span><span class=cB1>if</span><span class=cB0> (data)
+<a name="l479"></a>    rgb=JpgDecode(data,size,_w,_h);
+<a name="l480"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(data);
+<a name="l481"></a>  </span><span class=cB1>return</span><span class=cB0> rgb;
+<a name="l482"></a>}
+</span></div></pre></body>
+</html>

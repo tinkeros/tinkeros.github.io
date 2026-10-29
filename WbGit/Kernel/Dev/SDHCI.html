@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -91,15 +91,15 @@
 <a name="l51"></a>
 <a name="l52"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l52"></span><span class=cBD>TimerCalc</a></span><span class=cB0>(</span><span class=cB9>U32</span><span class=cB0> t)
 <a name="l53"></a>{
-<a name="l54"></a>  </span><span class=cB9>U32</span><span class=cB0> quit_time = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>*1000)+t;
+<a name="l54"></a>  </span><span class=cB9>U32</span><span class=cB0> quit_time = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>*1000)+t;
 <a name="l55"></a>  </span><span class=cB1>return</span><span class=cB0> quit_time;
 <a name="l56"></a>}
 <a name="l57"></a>
 <a name="l58"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>U32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l58"></span><span class=cBD>TimerCheck</a></span><span class=cB0>(</span><span class=cB9>U32</span><span class=cB0> t)
 <a name="l59"></a>{
 <a name="l60"></a>  </span><span class=cB9>U32</span><span class=cB0> cur_time;
-<a name="l61"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l401"></span><span class=cB5>SYield</a></span><span class=cB0>;
-<a name="l62"></a>  cur_time=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l110"></span><span class=cB5>tS</a></span><span class=cB0>*1000);
+<a name="l61"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l420"></span><span class=cB5>SYield</a></span><span class=cB0>;
+<a name="l62"></a>  cur_time=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l121"></span><span class=cB5>ToI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>*1000);
 <a name="l63"></a>  </span><span class=cB1>if</span><span class=cB0> (t&gt;cur_time) </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l64"></a>  </span><span class=cB1>return</span><span class=cB0> 1;
 <a name="l65"></a>}
@@ -116,14 +116,14 @@
 <a name="l76"></a>    </span><span class=cB1>if</span><span class=cB0> (i==512) end_ts = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l52"></span><span class=cBD>TimerCalc</a></span><span class=cB0>(1000);
 <a name="l77"></a>    </span><span class=cB1>if</span><span class=cB0> (i&gt;516 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l58"></span><span class=cBD>TimerCheck</a></span><span class=cB7>(</span><span class=cB0>end_ts</span><span class=cB7>)</span><span class=cB0>)
 <a name="l78"></a>    {
-<a name="l79"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l401"></span><span class=cB5>SYield</a></span><span class=cB0>;
+<a name="l79"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l420"></span><span class=cB5>SYield</a></span><span class=cB0>;
 <a name="l80"></a>      </span><span class=cB1>return</span><span class=cB0> -1;
 <a name="l81"></a>    }
 <a name="l82"></a>    i++;
 <a name="l83"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l84"></a>}
 <a name="l85"></a>
-<a name="l86"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l86"></span><span class=cBD>SdSetFreq</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>U32</span><span class=cB0> khz)
+<a name="l86"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l86"></span><span class=cBD>SdSetFreq</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>U32</span><span class=cB0> khz)
 <a name="l87"></a>{
 <a name="l88"></a>  </span><span class=cB9>U16</span><span class=cB0> creg,ver = <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l56"></span><span class=cB5>MInU16D</a></span><span class=cB0>(&amp;regs-&gt;controller_version);
 <a name="l89"></a>  </span><span class=cB9>U32</span><span class=cB0> base_freq,divisor,cap = <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l70"></span><span class=cB5>MInU32D</a></span><span class=cB0>(&amp;regs-&gt;cap_lo);
@@ -172,7 +172,7 @@
 <a name="l132"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l133"></a>}
 <a name="l134"></a>
-<a name="l135"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l135"></span><span class=cBD>SdRst</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> flags)
+<a name="l135"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I32</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l135"></span><span class=cBD>SdRst</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> flags)
 <a name="l136"></a>{
 <a name="l137"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l77"></span><span class=cB5>MOutU8D</a></span><span class=cB0>(&amp;regs-&gt;software_reset,flags);
 <a name="l138"></a>
@@ -182,7 +182,7 @@
 <a name="l142"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l143"></a>}
 <a name="l144"></a>
-<a name="l145"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l145"></span><span class=cBD>SdPIO</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> *param)
+<a name="l145"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l145"></span><span class=cBD>SdPIO</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> *param)
 <a name="l146"></a>{
 <a name="l147"></a>  </span><span class=cB9>I64</span><span class=cB0> attempt=0, ret;
 <a name="l148"></a>  </span><span class=cB9>U16</span><span class=cB0> err;
@@ -195,7 +195,7 @@
 <a name="l155"></a>    </span><span class=cB1>if</span><span class=cB0> (state &amp; 1 || cmd &amp; 3 == 3 &amp;&amp; state &amp; 2)
 <a name="l156"></a>    {
 <a name="l157"></a>      </span><span class=cB1>if</span><span class=cB0> (attempt==2) </span><span class=cB1>return</span><span class=cB0> -1;
-<a name="l158"></a>      </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l401"></span><span class=cB5>SYield</a></span><span class=cB0>;
+<a name="l158"></a>      </span><span class=cB1>else</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l420"></span><span class=cB5>SYield</a></span><span class=cB0>;
 <a name="l159"></a>    }
 <a name="l160"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>break</span><span class=cB0>;
 <a name="l161"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -218,12 +218,12 @@
 <a name="l178"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l179"></a>
 <a name="l180"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l84"></span><span class=cB5>MOutU16D</a></span><span class=cB0>(&amp;regs-&gt;irq_status, 1);
-<a name="l181"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(param,regs-&gt;response,</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>U32</span><span class=cB7>)</span><span class=cB0>*4);
+<a name="l181"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(param,regs-&gt;response,4);
 <a name="l182"></a>
 <a name="l183"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l184"></a>}
 <a name="l185"></a>
-<a name="l186"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l186"></span><span class=cBD>SdPIOApp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> *param)
+<a name="l186"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l186"></span><span class=cBD>SdPIOApp</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> *param)
 <a name="l187"></a>{
 <a name="l188"></a>  </span><span class=cB9>U32</span><span class=cB0> aparam[4];
 <a name="l189"></a>  </span><span class=cB9>I64</span><span class=cB0> ret;
@@ -241,7 +241,7 @@
 <a name="l201"></a>  </span><span class=cB1>return</span><span class=cB0> ret;
 <a name="l202"></a>}
 <a name="l203"></a>
-<a name="l204"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l204"></span><span class=cBD>SdPIOXfr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
+<a name="l204"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l204"></span><span class=cBD>SdPIOXfr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
 <a name="l205"></a>{
 <a name="l206"></a>  </span><span class=cB9>I64</span><span class=cB0> i, isread, ret;
 <a name="l207"></a>  </span><span class=cB9>U16</span><span class=cB0> cbit,tmode;
@@ -303,7 +303,7 @@
 <a name="l263"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l264"></a>}
 <a name="l265"></a>
-<a name="l266"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l266"></span><span class=cBD>SdPIOXfrTry</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
+<a name="l266"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l266"></span><span class=cBD>SdPIOXfrTry</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
 <a name="l267"></a>{
 <a name="l268"></a>  </span><span class=cB9>I64</span><span class=cB0> res=<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l204"></span><span class=cBD>SdPIOXfr</a></span><span class=cB0>(drive,cmd,addr,data,count);
 <a name="l269"></a>  </span><span class=cB1>if</span><span class=cB0> (!res)
@@ -322,14 +322,14 @@
 <a name="l282"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l204"></span><span class=cBD>SdPIOXfr</a></span><span class=cB0>(drive,cmd,addr,data,count);
 <a name="l283"></a>}
 <a name="l284"></a>
-<a name="l285"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l285"></span><span class=cBD>SdDmaBufInit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive)
+<a name="l285"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l285"></span><span class=cBD>SdDmaBufInit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive)
 <a name="l286"></a>{
 <a name="l287"></a>  </span><span class=cB9>U32</span><span class=cB0> cap=<a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l70"></span><span class=cB5>MInU32D</a></span><span class=cB0>(&amp;drive-&gt;regs-&gt;cap_lo);
 <a name="l288"></a>  </span><span class=cB9>I64</span><span class=cB0> len=SDHCI_DMA_BUF_BLKS*512;
 <a name="l289"></a>
 <a name="l290"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>cap &amp; 1 &lt;&lt; 22</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l291"></a>
-<a name="l292"></a>  drive-&gt;dma_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(len,32,<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l101"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l292"></a>  drive-&gt;dma_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(len,32,<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l104"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
 <a name="l293"></a>  </span><span class=cB1>if</span><span class=cB0> (!drive-&gt;dma_buf) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l294"></a>
 <a name="l295"></a>  </span><span class=cB1>if</span><span class=cB0> (drive-&gt;dma_buf+len &gt; 0x100000000)
@@ -344,7 +344,7 @@
 <a name="l304"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l305"></a>}
 <a name="l306"></a>
-<a name="l307"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l307"></span><span class=cBD>SdDmaWait</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
+<a name="l307"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l307"></span><span class=cBD>SdDmaWait</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
 <a name="l308"></a>{
 <a name="l309"></a>  </span><span class=cB9>I64</span><span class=cB0> ret;
 <a name="l310"></a>  </span><span class=cB9>U32</span><span class=cB0> next;
@@ -381,7 +381,7 @@
 <a name="l341"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l342"></a>}
 <a name="l343"></a>
-<a name="l344"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l344"></span><span class=cBD>SdDmaXfr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
+<a name="l344"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l344"></span><span class=cBD>SdDmaXfr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
 <a name="l345"></a>{
 <a name="l346"></a>  </span><span class=cB9>I64</span><span class=cB0> isread,ret,len=count*512;
 <a name="l347"></a>  </span><span class=cB9>U16</span><span class=cB0> tmode;
@@ -422,7 +422,7 @@
 <a name="l382"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l383"></a>}
 <a name="l384"></a>
-<a name="l385"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l385"></span><span class=cBD>SdXfrTry</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
+<a name="l385"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l385"></span><span class=cBD>SdXfrTry</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> cmd,</span><span class=cB9>U32</span><span class=cB0> addr,</span><span class=cB1>U8</span><span class=cB0> *data,</span><span class=cB9>I32</span><span class=cB0> count)
 <a name="l386"></a>{
 <a name="l387"></a>  </span><span class=cB9>I64</span><span class=cB0> res;
 <a name="l388"></a>
@@ -456,7 +456,7 @@
 <a name="l416"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l417"></a>}
 <a name="l418"></a>
-<a name="l419"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive, </span><span class=cB9>I32</span><span class=cB0> iswrite, </span><span class=cB9>I64</span><span class=cB0> lba, </span><span class=cB9>I64</span><span class=cB0> count, </span><span class=cB1>U8</span><span class=cB0> *data)
+<a name="l419"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive, </span><span class=cB9>I32</span><span class=cB0> iswrite, </span><span class=cB9>I64</span><span class=cB0> lba, </span><span class=cB9>I64</span><span class=cB0> count, </span><span class=cB1>U8</span><span class=cB0> *data)
 <a name="l420"></a>{
 <a name="l421"></a>  </span><span class=cB9>I64</span><span class=cB0> cmd, ret;
 <a name="l422"></a>
@@ -482,7 +482,7 @@
 <a name="l442"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l443"></a>}
 <a name="l444"></a>
-<a name="l445"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l445"></span><span class=cBD>SdSetPwr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
+<a name="l445"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l445"></span><span class=cBD>SdSetPwr</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
 <a name="l446"></a>{
 <a name="l447"></a>  </span><span class=cB9>U32</span><span class=cB0> volt,vbits,cap = <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l70"></span><span class=cB5>MInU32D</a></span><span class=cB0>(&amp;regs-&gt;cap_lo);
 <a name="l448"></a>  </span><span class=cB1>if</span><span class=cB0> (cap &amp; 1 &lt;&lt; 24)
@@ -503,15 +503,15 @@
 <a name="l463"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>return</span><span class=cB0> -1;
 <a name="l464"></a>
 <a name="l465"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l77"></span><span class=cB5>MOutU8D</a></span><span class=cB0>(&amp;regs-&gt;power_control,0);
-<a name="l466"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l466"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
 <a name="l467"></a>
 <a name="l468"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l77"></span><span class=cB5>MOutU8D</a></span><span class=cB0>(&amp;regs-&gt;power_control,vbits | 1);
-<a name="l469"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l469"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l470"></a>
 <a name="l471"></a>  </span><span class=cB1>return</span><span class=cB0> volt;
 <a name="l472"></a>}
 <a name="l473"></a>
-<a name="l474"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l474"></span><span class=cBD>SdGetCap</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB1>U8</span><span class=cB0> *csd)
+<a name="l474"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l474"></span><span class=cBD>SdGetCap</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB1>U8</span><span class=cB0> *csd)
 <a name="l475"></a>{
 <a name="l476"></a>  </span><span class=cB9>I64</span><span class=cB0> card_size_mult,csd_struct, read_bl_len, ret;
 <a name="l477"></a>  </span><span class=cB9>U16</span><span class=cB0> card_size;
@@ -547,10 +547,10 @@
 <a name="l507"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l507"></span><span class=cB5>SdEraseBlks</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> start_blk, </span><span class=cB9>I64</span><span class=cB0> cnt)
 <a name="l508"></a>{
 <a name="l509"></a>  </span><span class=cB9>U32</span><span class=cB0> end_ts, param[4];
-<a name="l510"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive = <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>;
+<a name="l510"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive = <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>;
 <a name="l511"></a>  </span><span class=cB9>I64</span><span class=cB0> ret, end_blk = start_blk + cnt - 1;
 <a name="l512"></a>
-<a name="l513"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l513"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l514"></a>  </span><span class=cB1>if</span><span class=cB0> (cnt &lt;= 0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l515"></a>
 <a name="l516"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>drive-&gt;card_type &amp; 2</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB7>{</span><span class=cB0>
@@ -588,13 +588,13 @@
 <a name="l548"></a>      </span><span class=cB1>break</span><span class=cB0>;
 <a name="l549"></a>
 <a name="l550"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l58"></span><span class=cBD>TimerCheck</a></span><span class=cB7>(</span><span class=cB0>end_ts</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
-<a name="l551"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
+<a name="l551"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
 <a name="l552"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l553"></a>
 <a name="l554"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l555"></a>}
 <a name="l556"></a>
-<a name="l557"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l557"></span><span class=cBD>SdSetBusWidth4</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>U16</span><span class=cB0> rca)
+<a name="l557"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l557"></span><span class=cBD>SdSetBusWidth4</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>U16</span><span class=cB0> rca)
 <a name="l558"></a>{
 <a name="l559"></a>  </span><span class=cB9>U32</span><span class=cB0> param[4];
 <a name="l560"></a>
@@ -611,7 +611,7 @@
 <a name="l571"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
 <a name="l572"></a>}
 <a name="l573"></a>
-<a name="l574"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l574"></span><span class=cBD>SdCardSetup</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> volt)
+<a name="l574"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l574"></span><span class=cBD>SdCardSetup</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive,</span><span class=cB9>I32</span><span class=cB0> volt)
 <a name="l575"></a>{
 <a name="l576"></a>  </span><span class=cB1>U8</span><span class=cB0> csd[16];
 <a name="l577"></a>  </span><span class=cB9>U16</span><span class=cB0> rca;
@@ -623,13 +623,13 @@
 <a name="l583"></a>  param[2]=0;
 <a name="l584"></a>  param[3]=0;
 <a name="l585"></a>
-<a name="l586"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs = drive-&gt;regs;
+<a name="l586"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs = drive-&gt;regs;
 <a name="l587"></a>
 <a name="l588"></a>  ret = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l86"></span><span class=cBD>SdSetFreq</a></span><span class=cB0>(regs,400);
 <a name="l589"></a>
 <a name="l590"></a>  </span><span class=cB1>if</span><span class=cB0> (ret) </span><span class=cB1>return</span><span class=cB0> ret;
 <a name="l591"></a>
-<a name="l592"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l592"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
 <a name="l593"></a>
 <a name="l594"></a>  ret = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l145"></span><span class=cBD>SdPIO</a></span><span class=cB0>(regs,0,param);
 <a name="l595"></a>
@@ -647,22 +647,22 @@
 <a name="l607"></a>
 <a name="l608"></a>  ret = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l145"></span><span class=cBD>SdPIO</a></span><span class=cB0>(regs,8 &lt;&lt; 8 | 0x1a,param);
 <a name="l609"></a>
-<a name="l610"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l610"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l611"></a>
 <a name="l612"></a>  </span><span class=cB1>if</span><span class=cB0> (!ret &amp;&amp; param[0] == vrange)
 <a name="l613"></a>    hcs = 1 &lt;&lt; 30;
 <a name="l614"></a>
 <a name="l615"></a>  param[0] = 0x00;
-<a name="l616"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l616"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l617"></a>  ret = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l186"></span><span class=cBD>SdPIOApp</a></span><span class=cB0>(regs,41 &lt;&lt; 8 | 2,param);
 <a name="l618"></a>
-<a name="l619"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l619"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l620"></a>
 <a name="l621"></a>  </span><span class=cB1>if</span><span class=cB0> (ret)
 <a name="l622"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l623"></a>    param[0] = 0x00;
 <a name="l624"></a>    ret = <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l145"></span><span class=cBD>SdPIO</a></span><span class=cB0>(regs,1 &lt;&lt; 8 | 2,param);
-<a name="l625"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l625"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l626"></a>    drive-&gt;card_type |= 1;
 <a name="l627"></a>    hcs = 1 &lt;&lt; 30;
 <a name="l628"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -684,7 +684,7 @@
 <a name="l644"></a>
 <a name="l645"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l58"></span><span class=cBD>TimerCheck</a></span><span class=cB7>(</span><span class=cB0>end_ts</span><span class=cB7>)</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> -1;
 <a name="l646"></a>
-<a name="l647"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
+<a name="l647"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(5);
 <a name="l648"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l649"></a>
 <a name="l650"></a>  </span><span class=cB1>if</span><span class=cB0> (param[0] &amp; 1 &lt;&lt; 30)
@@ -735,7 +735,7 @@
 <a name="l695"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
 <a name="l696"></a>}
 <a name="l697"></a>
-<a name="l698"></a></span><span class=cB1>static</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l698"></span><span class=cBD>SdCtrlSetup</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4400"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
+<a name="l698"></a></span><span class=cB1>static</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l698"></span><span class=cBD>SdCtrlSetup</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4420"></span><span class=cB9>sdhci_regs</a></span><span class=cB0> *regs)
 <a name="l699"></a>{
 <a name="l700"></a>  </span><span class=cB9>I64</span><span class=cB0> ret,volt;
 <a name="l701"></a>  </span><span class=cB9>U32</span><span class=cB0> present_state;
@@ -757,7 +757,7 @@
 <a name="l717"></a>
 <a name="l718"></a>  </span><span class=cB1>if</span><span class=cB0> (volt &lt; 0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l719"></a>
-<a name="l720"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive = <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l98"></span><span class=cB5>UncachedDevCAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB7>)</span><span class=cB0>);
+<a name="l720"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive = <a href="http://tinkeros.github.io/WbGit/Kernel/KMiscB.html#l98"></span><span class=cB5>UncachedDevCAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l721"></a>  </span><span class=cB1>if</span><span class=cB0> (!drive)
 <a name="l722"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l723"></a>    </span><span class=cB1>goto</span><span class=cB0> fail;
@@ -799,16 +799,16 @@
 <a name="l759"></a>  </span><span class=cB9>I64</span><span class=cB0> i, res=1, bs=<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l20"></span><span class=cBD>sd_max_xfr_blk_size</a></span><span class=cB0>;
 <a name="l760"></a>
 <a name="l761"></a>  </span><span class=cB1>if</span><span class=cB0> (bs&lt;=1)
-<a name="l762"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk, cnt, buf);
+<a name="l762"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk, cnt, buf);
 <a name="l763"></a>  </span><span class=cB1>else</span><span class=cB0>
 <a name="l764"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l765"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;=bs)
 <a name="l766"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;cnt/bs;i++)
-<a name="l767"></a>        res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk+i*bs, bs, buf+512*i*bs);
+<a name="l767"></a>        res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk+i*bs, bs, buf+512*i*bs);
 <a name="l768"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt%bs&gt;0)
 <a name="l769"></a>    {
 <a name="l770"></a>      i=cnt/bs;
-<a name="l771"></a>      res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk+i*bs, cnt%bs, buf+512*i*bs);
+<a name="l771"></a>      res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 0, blk+i*bs, cnt%bs, buf+512*i*bs);
 <a name="l772"></a>    }
 <a name="l773"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l774"></a>  </span><span class=cB1>return</span><span class=cB0> res;
@@ -819,16 +819,16 @@
 <a name="l779"></a>  </span><span class=cB9>I64</span><span class=cB0> i, res=1, bs=<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l20"></span><span class=cBD>sd_max_xfr_blk_size</a></span><span class=cB0>;
 <a name="l780"></a>
 <a name="l781"></a>  </span><span class=cB1>if</span><span class=cB0> (bs&lt;=1)
-<a name="l782"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk, cnt, buf);
+<a name="l782"></a>    </span><span class=cB1>return</span><span class=cB0> !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk, cnt, buf);
 <a name="l783"></a>  </span><span class=cB1>else</span><span class=cB0>
 <a name="l784"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l785"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt&gt;=bs)
 <a name="l786"></a>      </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;cnt/bs;i++)
-<a name="l787"></a>        res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk+i*bs, bs, buf+512*i*bs);
+<a name="l787"></a>        res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk+i*bs, bs, buf+512*i*bs);
 <a name="l788"></a>    </span><span class=cB1>if</span><span class=cB0> (cnt%bs&gt;0)
 <a name="l789"></a>    {
 <a name="l790"></a>      i=cnt/bs;
-<a name="l791"></a>      res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk+i*bs, cnt%bs, buf+512*i*bs);
+<a name="l791"></a>      res &amp;= !<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l419"></span><span class=cBD>SdBlkRW</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>, 1, blk+i*bs, cnt%bs, buf+512*i*bs);
 <a name="l792"></a>    }
 <a name="l793"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l794"></a>  </span><span class=cB1>return</span><span class=cB0> res;
@@ -836,40 +836,40 @@
 <a name="l796"></a>
 <a name="l797"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l797"></span><span class=cBD>fp_sdhci_blkdev_get_max_impl</a></span><span class=cB0>()
 <a name="l798"></a>{
-<a name="l799"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;sectors;
+<a name="l799"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;sectors;
 <a name="l800"></a>}
 <a name="l801"></a>
 <a name="l802"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l802"></span><span class=cBD>SdhciInitBlkDevFp</a></span><span class=cB0>()
 <a name="l803"></a>{
-<a name="l804"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>)
+<a name="l804"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>)
 <a name="l805"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l806"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;blksize&gt;=512 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;sectors&gt;1024)
+<a name="l806"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;blksize&gt;=512 &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>-&gt;sectors&gt;1024)
 <a name="l807"></a>    {
 <a name="l808"></a>
-<a name="l809"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l61"></span><span class=cB6>fp_sdhci_blkdev_init</a></span><span class=cB0>=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l747"></span><span class=cBD>fp_sdhci_blkdev_init_impl</a></span><span class=cB0>;
-<a name="l810"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l62"></span><span class=cB6>fp_sdhci_blkdev_deinit</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l752"></span><span class=cBD>fp_sdhci_blkdev_deinit_impl</a></span><span class=cB0>;
-<a name="l811"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l63"></span><span class=cB6>fp_sdhci_blkdev_read</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l757"></span><span class=cBD>fp_sdhci_blkdev_read_impl</a></span><span class=cB0>;
-<a name="l812"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l64"></span><span class=cB6>fp_sdhci_blkdev_write</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l777"></span><span class=cBD>fp_sdhci_blkdev_write_impl</a></span><span class=cB0>;
-<a name="l813"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l65"></span><span class=cB6>fp_sdhci_blkdev_get_max</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l797"></span><span class=cBD>fp_sdhci_blkdev_get_max_impl</a></span><span class=cB0>;
+<a name="l809"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l70"></span><span class=cB6>fp_sdhci_blkdev_init</a></span><span class=cB0>=&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l747"></span><span class=cBD>fp_sdhci_blkdev_init_impl</a></span><span class=cB0>;
+<a name="l810"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l71"></span><span class=cB6>fp_sdhci_blkdev_deinit</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l752"></span><span class=cBD>fp_sdhci_blkdev_deinit_impl</a></span><span class=cB0>;
+<a name="l811"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l72"></span><span class=cB6>fp_sdhci_blkdev_read</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l757"></span><span class=cBD>fp_sdhci_blkdev_read_impl</a></span><span class=cB0>;
+<a name="l812"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l73"></span><span class=cB6>fp_sdhci_blkdev_write</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l777"></span><span class=cBD>fp_sdhci_blkdev_write_impl</a></span><span class=cB0>;
+<a name="l813"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l74"></span><span class=cB6>fp_sdhci_blkdev_get_max</a></span><span class=cB0> = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l797"></span><span class=cBD>fp_sdhci_blkdev_get_max_impl</a></span><span class=cB0>;
 <a name="l814"></a>    }
 <a name="l815"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l816"></a>}
 <a name="l817"></a>
 <a name="l818"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l818"></span><span class=cB5>SetupSdhciDrvs</a></span><span class=cB0>()
 <a name="l819"></a>{
-<a name="l820"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'W'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3057"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
-<a name="l821"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'X'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3057"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
-<a name="l822"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'Y'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3057"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
-<a name="l823"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l188"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'Z'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3057"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
+<a name="l820"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'W'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3058"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
+<a name="l821"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'X'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3058"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
+<a name="l822"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'Y'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3058"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
+<a name="l823"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/BlkDev/DskDrv.html#l216"></span><span class=cB5>SetDrvLetType</a></span><span class=cB0>(</span><span class=cB6>'Z'</span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3058"></span><span class=cB3>BDT_SDHCI</a></span><span class=cB0>);
 <a name="l824"></a>}
 <a name="l825"></a>
-<a name="l826"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l826"></span><span class=cB5>SdhciInit</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> device_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB1>Bool</span><span class=cB0> setup_drvs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l826"></a></span><span class=cB1>public</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l826"></span><span class=cB5>SdhciInit</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> vendor_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB9>I64</span><span class=cB0> device_id=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB1>Bool</span><span class=cB0> setup_drvs=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
 <a name="l827"></a>{
 <a name="l828"></a>  </span><span class=cB9>I64</span><span class=cB0> b=0, d=0, f=0;
 <a name="l829"></a>  </span><span class=cB9>U32</span><span class=cB0> bar=0;
 <a name="l830"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l321"></span><span class=cB9>CPciDevInfo</a></span><span class=cB0> *sdhci_pci=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l321"></span><span class=cB9>CPciDevInfo</a></span><span class=cB7>)</span><span class=cB0>);
 <a name="l831"></a>
-<a name="l832"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>;
+<a name="l832"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>;
 <a name="l833"></a>
 <a name="l834"></a>  </span><span class=cB1>if</span><span class=cB0> (setup_drvs) <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l818"></span><span class=cB5>SetupSdhciDrvs</a></span><span class=cB0>;
 <a name="l835"></a>
@@ -917,11 +917,11 @@
 <a name="l877"></a>
 <a name="l878"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l74"></span><span class=cB5>PCIWriteU16</a></span><span class=cB0>(b,d,f,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l296"></span><span class=cB3>PCIR_COMMAND</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB7>(</span><span class=cB0>b,d,f,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l296"></span><span class=cB3>PCIR_COMMAND</a></span><span class=cB7>)</span><span class=cB0>|0x6);
 <a name="l879"></a>
-<a name="l880"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4439"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive=<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l698"></span><span class=cBD>SdCtrlSetup</a></span><span class=cB0>(bar);
+<a name="l880"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4459"></span><span class=cB9>sd_drv</a></span><span class=cB0> *drive=<a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l698"></span><span class=cBD>SdCtrlSetup</a></span><span class=cB0>(bar);
 <a name="l881"></a>
 <a name="l882"></a>  </span><span class=cB1>if</span><span class=cB0> (drive)
 <a name="l883"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l884"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l139"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>=drive;
+<a name="l884"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l144"></span><span class=cB6>sdhci_drv</a></span><span class=cB0>=drive;
 <a name="l885"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Dev/SDHCI.html#l802"></span><span class=cBD>SdhciInitBlkDevFp</a></span><span class=cB0>;
 <a name="l886"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l887"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB6>&quot;Setup failed, no SD card perhalps?\n&quot;</span><span class=cB0>;

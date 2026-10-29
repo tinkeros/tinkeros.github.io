@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -1612,7 +1612,7 @@
 <a name="l1573"></a>      </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>total+n</span><span class=cB7>)</span><span class=cB0>*mp3_nch&gt;cap) </span><span class=cB7>{</span><span class=cB0>
 <a name="l1574"></a>        cap*=2;
 <a name="l1575"></a>        out2=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l422"></span><span class=cB5>AMAlloc</a></span><span class=cB0>(cap*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
-<a name="l1576"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(out2,out,total*mp3_nch*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I16</span><span class=cB7>)</span><span class=cB0>);
+<a name="l1576"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l134"></span><span class=cB5>ClassCpy</a></span><span class=cB0>(out2,out,total*mp3_nch);
 <a name="l1577"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(out);
 <a name="l1578"></a>        out=out2;
 <a name="l1579"></a>      </span><span class=cB7>}</span><span class=cB0>
@@ -1648,7 +1648,7 @@
 <a name="l1609"></a>  mp3_streaming=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l1610"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;mp3_pump_lock,0</span><span class=cB7>)</span><span class=cB0>)
 <a name="l1611"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
-<a name="l1612"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
+<a name="l1612"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(3*SND_BUF_TIME_mS);
 <a name="l1613"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mp3_song);
 <a name="l1614"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mp3_frame_ok);
 <a name="l1615"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(mp3_frame_ofs);
@@ -1675,7 +1675,7 @@
 <a name="l1636"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> MP3Wait()
 <a name="l1637"></a>{
 <a name="l1638"></a>  </span><span class=cB1>while</span><span class=cB0> (mp3_playing)
-<a name="l1639"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l1639"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
 <a name="l1640"></a>}
 <a name="l1641"></a>
 <a name="l1642"></a></span><span class=cB9>I64</span><span class=cB0> Mp3ScanFrames(</span><span class=cB9>I64</span><span class=cB0> *ofs,</span><span class=cB9>I64</span><span class=cB0> max)
@@ -1863,7 +1863,7 @@
 <a name="l1824"></a>      MP3StreamPump(MP3_PUMP_FRAMES);
 <a name="l1825"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
 <a name="l1826"></a>    } </span><span class=cB1>else</span><span class=cB0>
-<a name="l1827"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l140"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
+<a name="l1827"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(20);
 <a name="l1828"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l1829"></a>}
 <a name="l1830"></a>

@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cBD{color:#ff55ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>//USB CDC-ECM Ethernet driver, kernel half. UsbEnum binds a CDC-ECM function</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>//(class 2, subclass 6) as USB_KIND_ECM and calls UsbEcmAttach. The network</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>//stack half is Demo/Net/Drivers/UsbEcm.HC, which calls the public UsbEcm*</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>//API below. The first attached adapter is the NIC.</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>//RX uses the async bulk-IN ops CDC-ACM uses (bin_arm/bin_poll, Usb.HH): one</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>//armed ECM_RX_XFER-byte transfer per adapter. A short packet ends every ECM</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>//frame, so one completion is one Ethernet frame. UsbEcmPoll reaps it into a</span><span class=cB0>
+<a name="l9"></a></span><span class=cB2>//ring of frames and re-arms; it runs every UsbPoll tick (5 ms) and inline</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>//from UsbEcmRecv, so a reader that polls every millisecond gets frames at</span><span class=cB0>
+<a name="l11"></a></span><span class=cB2>//that rate. EHCI and xHCI only: UHCI/OHCI have no bin_arm yet.</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>//</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>//TX is a synchronous bulk OUT under usb_lock. The stack transmits only from</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>//task context (NetHandler is a task), so blocking for one transfer is fine.</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> ECM_RX_XFER 2048
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> ECM_FRAME   2048
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> ECM_RXQ     32
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB1>class</span><span class=cB0> CUsbEcmFrame
+<a name="l21"></a>{
+<a name="l22"></a>  </span><span class=cB9>I64</span><span class=cB0> len;
+<a name="l23"></a>  </span><span class=cB1>U8</span><span class=cB0> data[ECM_FRAME];
+<a name="l24"></a>};
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>class</span><span class=cB0> CUsbEcm
+<a name="l27"></a>{
+<a name="l28"></a>  </span><span class=cB1>U8</span><span class=cB0> *rx_dma, *tx_dma;
+<a name="l29"></a>  CUsbEcmFrame *rxq;
+<a name="l30"></a>  </span><span class=cB9>I64</span><span class=cB0> r_in, r_out;
+<a name="l31"></a>  </span><span class=cB9>I64</span><span class=cB0> armed, rx_frames, rx_drops, rx_err, tx_frames, tx_err;
+<a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0> mac[6];
+<a name="l33"></a>  </span><span class=cB1>Bool</span><span class=cB0> up;
+<a name="l34"></a>};
+<a name="l35"></a>CUsbEcm *<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l36"></a>
+<a name="l37"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l37"></span><span class=cBD>UsbEcmBufInit</a></span><span class=cB0>()
+<a name="l38"></a>{
+<a name="l39"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0> = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(USB_NFN * </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CUsbEcm</span><span class=cB7>)</span><span class=cB0>);
+<a name="l41"></a>}
+<a name="l42"></a>
+<a name="l43"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l43"></span><span class=cBD>UsbEcmFirst</a></span><span class=cB0>()
+<a name="l44"></a>{</span><span class=cB2>//usb_fn index of the first live, attached adapter, else -1.</span><span class=cB0>
+<a name="l45"></a>  </span><span class=cB9>I64</span><span class=cB0> k;
+<a name="l46"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l47"></a>  </span><span class=cB1>for</span><span class=cB0> (k = 0; k &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_n</a></span><span class=cB0>; k++)
+<a name="l48"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].on &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].kind == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3073"></span><span class=cB3>USB_KIND_ECM</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k].up)
+<a name="l49"></a>      </span><span class=cB1>return</span><span class=cB0> k;
+<a name="l50"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l51"></a>}
+<a name="l52"></a>
+<a name="l53"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l53"></span><span class=cBD>UsbEcmHex</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> c)
+<a name="l54"></a>{
+<a name="l55"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'0'</span><span class=cB0> &lt;= c &lt;= </span><span class=cB6>'9'</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> c - </span><span class=cB6>'0'</span><span class=cB0>;
+<a name="l56"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'A'</span><span class=cB0> &lt;= c &lt;= </span><span class=cB6>'F'</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> c - </span><span class=cB6>'A'</span><span class=cB0> + 10;
+<a name="l57"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB6>'a'</span><span class=cB0> &lt;= c &lt;= </span><span class=cB6>'f'</span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0> c - </span><span class=cB6>'a'</span><span class=cB0> + 10;
+<a name="l58"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l59"></a>}
+<a name="l60"></a>
+<a name="l61"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l61"></span><span class=cBD>UsbEcmMACRead</a></span><span class=cB0>(CUsbFn *f, </span><span class=cB1>U8</span><span class=cB0> *mac)
+<a name="l62"></a>{</span><span class=cB2>//iMACAddress: 12 hex digits as a UTF-16LE string descriptor, &quot;0011223344AA&quot;.</span><span class=cB0>
+<a name="l63"></a>  </span><span class=cB1>U8</span><span class=cB0> s[64];
+<a name="l64"></a>  </span><span class=cB9>I64</span><span class=cB0> i, hi, lo;
+<a name="l65"></a>  </span><span class=cB1>if</span><span class=cB0> (!f-&gt;mstr || <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l23"></span><span class=cBD>UsbReq</a></span><span class=cB7>(</span><span class=cB0>f, USB_RT_IN, USB_REQ_GET_DESC, USB_DT_STR &lt;&lt; 8 | f-&gt;mstr,
+<a name="l66"></a>        0x0409, 64, s</span><span class=cB7>)</span><span class=cB0> &lt; 2 + 12 * 2)
+<a name="l67"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l68"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; 6; i++)
+<a name="l69"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l70"></a>    hi = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l53"></span><span class=cBD>UsbEcmHex</a></span><span class=cB0>(s[2 + 4 * i]);
+<a name="l71"></a>    lo = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l53"></span><span class=cBD>UsbEcmHex</a></span><span class=cB0>(s[4 + 4 * i]);
+<a name="l72"></a>    </span><span class=cB1>if</span><span class=cB0> (hi &lt; 0 || lo &lt; 0)
+<a name="l73"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l74"></a>    mac[i] = hi &lt;&lt; 4 | lo;
+<a name="l75"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l76"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l77"></a>}
+<a name="l78"></a>
+<a name="l79"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l79"></span><span class=cBD>UsbEcmAttach</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l80"></a>{</span><span class=cB2>//From UsbEnum, configured with the data i/f's alternate setting selected.</span><span class=cB0>
+<a name="l81"></a></span><span class=cB2>//Not usb_lock-held: UsbReq takes it.</span><span class=cB0>
+<a name="l82"></a>  CUsbFn *f = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k];
+<a name="l83"></a>  CUsbEcm *e;
+<a name="l84"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l37"></span><span class=cBD>UsbEcmBufInit</a></span><span class=cB0>;
+<a name="l85"></a>  e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l86"></a>  </span><span class=cB1>if</span><span class=cB0> (!e-&gt;rx_dma)
+<a name="l87"></a>  </span><span class=cB7>{</span><span class=cB2>//Kept for the slot's later devices: a reattach doesn't allocate again.</span><span class=cB0>
+<a name="l88"></a>    e-&gt;rx_dma = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ECM_RX_XFER, ECM_RX_XFER, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l104"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l89"></a>    e-&gt;tx_dma = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l466"></span><span class=cB5>CAllocAligned</a></span><span class=cB0>(ECM_FRAME, ECM_FRAME, <a href="http://tinkeros.github.io/WbGit/Kernel/KExts.html#l104"></span><span class=cB6>sys_dma_heap</a></span><span class=cB0>);
+<a name="l90"></a>    e-&gt;rxq = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ECM_RXQ * </span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CUsbEcmFrame</span><span class=cB7>)</span><span class=cB0>);
+<a name="l91"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l92"></a>  e-&gt;r_in = 0;
+<a name="l93"></a>  e-&gt;r_out = 0;
+<a name="l94"></a>  e-&gt;armed = 0;
+<a name="l95"></a>  e-&gt;rx_frames = 0;
+<a name="l96"></a>  e-&gt;rx_drops = 0;
+<a name="l97"></a>  e-&gt;rx_err = 0;
+<a name="l98"></a>  e-&gt;tx_frames = 0;
+<a name="l99"></a>  e-&gt;tx_err = 0;
+<a name="l100"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l61"></span><span class=cBD>UsbEcmMACRead</a></span><span class=cB7>(</span><span class=cB0>f, e-&gt;mac</span><span class=cB7>)</span><span class=cB0>)
+<a name="l101"></a>  </span><span class=cB7>{</span><span class=cB2>//None given: a locally administered address (&quot;TOS&quot; + product ID).</span><span class=cB0>
+<a name="l102"></a>    e-&gt;mac[0] = 0x02;
+<a name="l103"></a>    e-&gt;mac[1] = </span><span class=cB6>'T'</span><span class=cB0>;
+<a name="l104"></a>    e-&gt;mac[2] = </span><span class=cB6>'O'</span><span class=cB0>;
+<a name="l105"></a>    e-&gt;mac[3] = </span><span class=cB6>'S'</span><span class=cB0>;
+<a name="l106"></a>    e-&gt;mac[4] = f-&gt;pid &gt;&gt; 8;
+<a name="l107"></a>    e-&gt;mac[5] = f-&gt;pid;
+<a name="l108"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l109"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/UsbK.html#l23"></span><span class=cBD>UsbReq</a></span><span class=cB0>(f, USB_RT_CLS | USB_RT_IF, 0x43, 0x0C, f-&gt;ifn, 0);
+<a name="l110"></a>  e-&gt;up = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l111"></a>}
+<a name="l112"></a>
+<a name="l113"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l113"></span><span class=cBD>UsbEcmPoll</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l114"></a>{</span><span class=cB2>//Every UsbPoll tick for every live adapter, and inline from UsbEcmRecv</span><span class=cB0>
+<a name="l115"></a></span><span class=cB2>//(both serialized by usb_lock, so the ring stays single-producer).</span><span class=cB0>
+<a name="l116"></a>  CUsbFn *f = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k];
+<a name="l117"></a>  CUsbEcm *e;
+<a name="l118"></a>  CUsbEcmFrame *fr;
+<a name="l119"></a>  </span><span class=cB9>I64</span><span class=cB0> n;
+<a name="l120"></a>  </span><span class=cB1>if</span><span class=cB0> (!f-&gt;on || f-&gt;kind != <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3073"></span><span class=cB3>USB_KIND_ECM</a></span><span class=cB0> || !<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l121"></a>  e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l122"></a>  </span><span class=cB1>if</span><span class=cB0> (!e-&gt;up || !<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_arm || !<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_poll) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l123"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l251"></span><span class=cBD>UsbLock</a></span><span class=cB0>;
+<a name="l124"></a>  </span><span class=cB1>if</span><span class=cB0> (e-&gt;armed)
+<a name="l125"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l126"></a>    n = (*<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_poll)(f);
+<a name="l127"></a>    </span><span class=cB1>if</span><span class=cB0> (n &gt;= 0)
+<a name="l128"></a>    {
+<a name="l129"></a>      e-&gt;armed = 0;
+<a name="l130"></a>      </span><span class=cB1>if</span><span class=cB0> (n &gt; 0)
+<a name="l131"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l132"></a>        </span><span class=cB1>if</span><span class=cB0> (e-&gt;r_in - e-&gt;r_out &lt; ECM_RXQ)
+<a name="l133"></a>        {
+<a name="l134"></a>          fr = &amp;e-&gt;rxq[e-&gt;r_in &amp; (ECM_RXQ - 1)];
+<a name="l135"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(fr-&gt;data, e-&gt;rx_dma, n);
+<a name="l136"></a>          fr-&gt;len = n;
+<a name="l137"></a>          e-&gt;r_in++;
+<a name="l138"></a>          e-&gt;rx_frames++;
+<a name="l139"></a>        }
+<a name="l140"></a>        </span><span class=cB1>else</span><span class=cB0>
+<a name="l141"></a>          e-&gt;rx_drops++;
+<a name="l142"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l143"></a>    }
+<a name="l144"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (n == -2)
+<a name="l145"></a>    {
+<a name="l146"></a>      e-&gt;rx_err++;
+<a name="l147"></a>      e-&gt;armed = 0;
+<a name="l148"></a>    }
+<a name="l149"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l150"></a>  </span><span class=cB1>if</span><span class=cB0> (!e-&gt;armed &amp;&amp; </span><span class=cB7>(</span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_arm</span><span class=cB7>)(</span><span class=cB0>f, e-&gt;rx_dma, ECM_RX_XFER</span><span class=cB7>)</span><span class=cB0>)
+<a name="l151"></a>    e-&gt;armed = 1;
+<a name="l152"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l257"></span><span class=cBD>UsbUnlock</a></span><span class=cB0>;
+<a name="l153"></a>}
+<a name="l154"></a>
+<a name="l155"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l155"></span><span class=cBD>UsbEcmUnplug</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l156"></a>{</span><span class=cB2>//Called by UsbFnOff (not usb_lock-held) when an adapter is gone.</span><span class=cB0>
+<a name="l157"></a>  CUsbFn *f = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k];
+<a name="l158"></a>  CUsbEcm *e;
+<a name="l159"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l160"></a>  e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l161"></a>  </span><span class=cB1>if</span><span class=cB0> (e-&gt;armed &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_stop)
+<a name="l162"></a>    (*<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bin_stop)(f);
+<a name="l163"></a>  e-&gt;armed = 0;
+<a name="l164"></a>  e-&gt;up = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l165"></a>}
+<a name="l166"></a>
+<a name="l167"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l167"></span><span class=cB5>UsbEcmPresent</a></span><span class=cB0>()
+<a name="l168"></a>{</span><span class=cB2>//An attached USB Ethernet adapter that can receive (EHCI or xHCI).</span><span class=cB0>
+<a name="l169"></a>  </span><span class=cB9>I64</span><span class=cB0> k = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l43"></span><span class=cBD>UsbEcmFirst</a></span><span class=cB0>;
+<a name="l170"></a>  </span><span class=cB1>if</span><span class=cB0> (k &lt; 0)
+<a name="l171"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l172"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].hc].bin_arm;
+<a name="l173"></a>}
+<a name="l174"></a>
+<a name="l175"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l175"></span><span class=cB5>UsbEcmMAC</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *out6)
+<a name="l176"></a>{
+<a name="l177"></a>  </span><span class=cB9>I64</span><span class=cB0> k = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l43"></span><span class=cBD>UsbEcmFirst</a></span><span class=cB0>;
+<a name="l178"></a>  </span><span class=cB1>if</span><span class=cB0> (k &gt;= 0)
+<a name="l179"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(out6, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k].mac, 6);
+<a name="l180"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l181"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(out6, 0, 6);
+<a name="l182"></a>}
+<a name="l183"></a>
+<a name="l184"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l184"></span><span class=cB5>UsbEcmSend</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *frame, </span><span class=cB9>I64</span><span class=cB0> len)
+<a name="l185"></a>{</span><span class=cB2>//0 if sent, -1 if no adapter, a bad length or a failed transfer. Task</span><span class=cB0>
+<a name="l186"></a></span><span class=cB2>//context only: blocks for one bulk OUT.</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB9>I64</span><span class=cB0> k = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l43"></span><span class=cBD>UsbEcmFirst</a></span><span class=cB0>, r;
+<a name="l188"></a>  CUsbFn *f;
+<a name="l189"></a>  CUsbEcm *e;
+<a name="l190"></a>  </span><span class=cB1>if</span><span class=cB0> (k &lt; 0 || len &lt;= 0 || len &gt;= ECM_FRAME)
+<a name="l191"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l192"></a>  f = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k];
+<a name="l193"></a>  e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l194"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l251"></span><span class=cBD>UsbLock</a></span><span class=cB0>;
+<a name="l195"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(e-&gt;tx_dma, frame, len);
+<a name="l196"></a>  </span><span class=cB1>if</span><span class=cB0> (f-&gt;bmps &amp;&amp; !</span><span class=cB7>(</span><span class=cB0>len % f-&gt;bmps</span><span class=cB7>)</span><span class=cB0>)
+<a name="l197"></a>    e-&gt;tx_dma[len++] = 0;
+<a name="l198"></a>  r = (*<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[f-&gt;hc].bulk)(f, 0, e-&gt;tx_dma, len);
+<a name="l199"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l257"></span><span class=cBD>UsbUnlock</a></span><span class=cB0>;
+<a name="l200"></a>  </span><span class=cB1>if</span><span class=cB0> (r != len)
+<a name="l201"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l202"></a>    e-&gt;tx_err++;
+<a name="l203"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l204"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l205"></a>  e-&gt;tx_frames++;
+<a name="l206"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l207"></a>}
+<a name="l208"></a>
+<a name="l209"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l209"></span><span class=cB5>UsbEcmRecv</a></span><span class=cB0>(</span><span class=cB1>U8</span><span class=cB0> *dst, </span><span class=cB9>I64</span><span class=cB0> max)
+<a name="l210"></a>{</span><span class=cB2>//Copies the next received frame to dst: bytes, 0 if none, -1 if no adapter.</span><span class=cB0>
+<a name="l211"></a>  </span><span class=cB9>I64</span><span class=cB0> k = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l43"></span><span class=cBD>UsbEcmFirst</a></span><span class=cB0>, n;
+<a name="l212"></a>  CUsbEcm *e;
+<a name="l213"></a>  CUsbEcmFrame *fr;
+<a name="l214"></a>  </span><span class=cB1>if</span><span class=cB0> (k &lt; 0) </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l215"></a>  e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l216"></a>  </span><span class=cB1>if</span><span class=cB0> (e-&gt;r_in == e-&gt;r_out)
+<a name="l217"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l113"></span><span class=cBD>UsbEcmPoll</a></span><span class=cB0>(k);
+<a name="l218"></a>  </span><span class=cB1>if</span><span class=cB0> (e-&gt;r_in == e-&gt;r_out)
+<a name="l219"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l220"></a>  fr = &amp;e-&gt;rxq[e-&gt;r_out &amp; (ECM_RXQ - 1)];
+<a name="l221"></a>  n = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(fr-&gt;len, max);
+<a name="l222"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst, fr-&gt;data, n);
+<a name="l223"></a>  e-&gt;r_out++;
+<a name="l224"></a>  </span><span class=cB1>return</span><span class=cB0> n;
+<a name="l225"></a>}
+<a name="l226"></a>
+<a name="l227"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l227"></span><span class=cB5>UsbEcmRep</a></span><span class=cB0>()
+<a name="l228"></a>{</span><span class=cB2>//USB Ethernet adapters and their counters.</span><span class=cB0>
+<a name="l229"></a>  </span><span class=cB9>I64</span><span class=cB0> k, any = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l230"></a>  CUsbEcm *e;
+<a name="l231"></a>  </span><span class=cB1>for</span><span class=cB0> (k = 0; k &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l205"></span><span class=cBD>usb_n</a></span><span class=cB0>; k++)
+<a name="l232"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].on &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].kind == <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3073"></span><span class=cB3>USB_KIND_ECM</a></span><span class=cB0>)
+<a name="l233"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l234"></a>      any = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l235"></a>      </span><span class=cB6>&quot;#%d &quot;</span><span class=cB0>, k;
+<a name="l236"></a>      e = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l237"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>)
+<a name="l238"></a>        e = &amp;<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l35"></span><span class=cBD>usb_ecm</a></span><span class=cB0>[k];
+<a name="l239"></a>      </span><span class=cB1>if</span><span class=cB0> (!e || !e-&gt;up)
+<a name="l240"></a>      {
+<a name="l241"></a>        </span><span class=cB6>&quot;not attached\n&quot;</span><span class=cB0>;
+<a name="l242"></a>        </span><span class=cB1>goto</span><span class=cB0> ecm_rep_next;
+<a name="l243"></a>      }
+<a name="l244"></a>      </span><span class=cB6>&quot;MAC %02X:%02X:%02X:%02X:%02X:%02X data i/f alt %d bulk in %d out %d mps %d%s\n&quot;</span><span class=cB0>,
+<a name="l245"></a>            e-&gt;mac[0], e-&gt;mac[1], e-&gt;mac[2], e-&gt;mac[3], e-&gt;mac[4], e-&gt;mac[5],
+<a name="l246"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].dalt, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].bin, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].bout, <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].bmps,
+<a name="l247"></a>            <a href="http://tinkeros.github.io/WbGit/Kernel/StrA.html#l419"></span><span class=cB5>LstSub</a></span><span class=cB0>(!<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l203"></span><span class=cBD>usb_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/Usb.html#l206"></span><span class=cBD>usb_fn</a></span><span class=cB0>[k].hc].bin_arm, </span><span class=cB6>&quot;\0 (no RX on this controller)\0&quot;</span><span class=cB0>);
+<a name="l248"></a>      </span><span class=cB6>&quot;  RX %d frames, %d dropped, %d errors, %d queued; TX %d frames, %d errors\n&quot;</span><span class=cB0>,
+<a name="l249"></a>            e-&gt;rx_frames, e-&gt;rx_drops, e-&gt;rx_err, e-&gt;r_in - e-&gt;r_out,
+<a name="l250"></a>            e-&gt;tx_frames, e-&gt;tx_err;
+<a name="l251"></a>ecm_rep_next:;
+<a name="l252"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l253"></a>  </span><span class=cB1>if</span><span class=cB0> (!any)
+<a name="l254"></a>    </span><span class=cB6>&quot;No USB Ethernet adapter\n&quot;</span><span class=cB0>;
+<a name="l255"></a>}
+</span></div></pre></body>
+</html>

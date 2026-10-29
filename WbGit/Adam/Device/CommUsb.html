@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>help_index</span><span class=cB0> </span><span class=cB6>&quot;Comm&quot;</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l3"></span><span class=cB5>CommUsbInit</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c, </span><span class=cB9>I64</span><span class=cB0> baud, </span><span class=cB9>I64</span><span class=cB0> lcr)
+<a name="l4"></a>{
+<a name="l5"></a>  </span><span class=cB9>I64</span><span class=cB0> bits = 8;
+<a name="l6"></a>  </span><span class=cB1>if</span><span class=cB0> (lcr == 2) bits = 7;
+<a name="l7"></a>  </span><span class=cB1>if</span><span class=cB0> (!c-&gt;RX_fifo)
+<a name="l8"></a>    c-&gt;RX_fifo = <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l175"></span><span class=cB5>FifoU8New</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l7"></span><span class=cB3>COMM_RX_FIFO_SIZE</a></span><span class=cB0>);
+<a name="l9"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l396"></span><span class=cB5>UsbCdcOpen</a></span><span class=cB7>(</span><span class=cB0>c-&gt;usb_k, c-&gt;usb_gen, baud, bits</span><span class=cB7>)</span><span class=cB0>)
+<a name="l10"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l11"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l432"></span><span class=cB5>UsbCdcLines</a></span><span class=cB0>(c-&gt;usb_k, c-&gt;usb_gen, 1, 1);
+<a name="l12"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;c-&gt;flags, <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l26"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB0>);
+<a name="l13"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l14"></a>}
+<a name="l15"></a>
+<a name="l16"></a></span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l16"></span><span class=cB5>CommUsbPut</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c, </span><span class=cB1>U8</span><span class=cB0> *buf, </span><span class=cB9>I64</span><span class=cB0> cnt, </span><span class=cB9>I64</span><span class=cB0> timeout_ms)
+<a name="l17"></a>{
+<a name="l18"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l454"></span><span class=cB5>UsbCdcWrite</a></span><span class=cB0>(c-&gt;usb_k, c-&gt;usb_gen, buf, cnt, timeout_ms) == cnt;
+<a name="l19"></a>}
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l21"></span><span class=cB5>CommUsbRxPoll</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c)
+<a name="l22"></a>{
+<a name="l23"></a>  </span><span class=cB1>U8</span><span class=cB0> buf[128];
+<a name="l24"></a>  </span><span class=cB9>I64</span><span class=cB0> n, i;
+<a name="l25"></a>  n = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l496"></span><span class=cB5>UsbCdcRead</a></span><span class=cB0>(c-&gt;usb_k, c-&gt;usb_gen, buf, 128);
+<a name="l26"></a>  </span><span class=cB1>if</span><span class=cB0> (n &lt; 0) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 0; i &lt; n; i++)
+<a name="l28"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l193"></span><span class=cB5>FifoU8Ins</a></span><span class=cB0>(c-&gt;RX_fifo, buf[i]);
+<a name="l29"></a>}
+<a name="l30"></a>
+<a name="l31"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l31"></span><span class=cB5>CommUsbTxFlush</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c)
+<a name="l32"></a>{
+<a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l484"></span><span class=cB5>UsbCdcFlush</a></span><span class=cB0>(c-&gt;usb_k, c-&gt;usb_gen, 500);
+<a name="l34"></a>}
+<a name="l35"></a>
+<a name="l36"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l36"></span><span class=cB5>CommUsbLines</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c, </span><span class=cB9>I64</span><span class=cB0> dtr, </span><span class=cB9>I64</span><span class=cB0> rts)
+<a name="l37"></a>{
+<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l432"></span><span class=cB5>UsbCdcLines</a></span><span class=cB0>(c-&gt;usb_k, c-&gt;usb_gen, dtr, rts);
+<a name="l39"></a>}
+<a name="l40"></a>
+<a name="l41"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l61"></span><span class=cB6>comm_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>].init = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l3"></span><span class=cB5>CommUsbInit</a></span><span class=cB0>;
+<a name="l42"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l61"></span><span class=cB6>comm_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>].put = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l16"></span><span class=cB5>CommUsbPut</a></span><span class=cB0>;
+<a name="l43"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l61"></span><span class=cB6>comm_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>].rx_poll = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l21"></span><span class=cB5>CommUsbRxPoll</a></span><span class=cB0>;
+<a name="l44"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l61"></span><span class=cB6>comm_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>].tx_flush = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l31"></span><span class=cB5>CommUsbTxFlush</a></span><span class=cB0>;
+<a name="l45"></a><a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l61"></span><span class=cB6>comm_ops</a></span><span class=cB0>[<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>].lines = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l36"></span><span class=cB5>CommUsbLines</a></span><span class=cB0>;
+<a name="l46"></a>
+<a name="l47"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l47"></span><span class=cB5>CommUsbPick</a></span><span class=cB0>()
+<a name="l48"></a>{</span><span class=cB2>//First COM slot &gt;= 5 this CDC attach can use.</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l50"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 5; i &lt;= <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l6"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
+<a name="l51"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].type == <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l9"></span><span class=cB3>COMT_NONE</a></span><span class=cB0>)
+<a name="l52"></a>      </span><span class=cB1>return</span><span class=cB0> i;
+<a name="l53"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l54"></a>}
+<a name="l55"></a>
+<a name="l56"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l56"></span><span class=cB5>CommUsbAttach</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l57"></a>{</span><span class=cB2>//Give CDC device k the first free COM port &gt;= 5. Returns the port, 0 if none.</span><span class=cB0>
+<a name="l58"></a>  </span><span class=cB9>I64</span><span class=cB0> port = <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l47"></span><span class=cB5>CommUsbPick</a></span><span class=cB0>();
+<a name="l59"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c;
+<a name="l60"></a>  </span><span class=cB1>if</span><span class=cB0> (!port) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l61"></a>  c = &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port];
+<a name="l62"></a>  c-&gt;type = <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0>;
+<a name="l63"></a>  c-&gt;usb_k = k;
+<a name="l64"></a>  c-&gt;usb_gen = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/CdcK.html#l388"></span><span class=cB5>UsbCdcGen</a></span><span class=cB0>(k);
+<a name="l65"></a>  c-&gt;base = 1;
+<a name="l66"></a>  c-&gt;poll = 1;
+<a name="l67"></a>  </span><span class=cB1>return</span><span class=cB0> port;
+<a name="l68"></a>}
+<a name="l69"></a>
+<a name="l70"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/CommUsb.html#l70"></span><span class=cB5>CommUsbDetach</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> k)
+<a name="l71"></a>{</span><span class=cB2>//Free the COM port of CDC device k. Returns the port, 0 if it had none.</span><span class=cB0>
+<a name="l72"></a>  </span><span class=cB9>I64</span><span class=cB0> i, port = 0;
+<a name="l73"></a>  </span><span class=cB1>for</span><span class=cB0> (i = 5; i &lt;= <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l6"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; i++)
+<a name="l74"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].type == <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l11"></span><span class=cB3>COMT_USB</a></span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].usb_k == k)
+<a name="l75"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].flags = 0;
+<a name="l77"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].type = <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l9"></span><span class=cB3>COMT_NONE</a></span><span class=cB0>;
+<a name="l78"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base = 0;
+<a name="l79"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].usb_k = 0;
+<a name="l80"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].usb_gen = 0;
+<a name="l81"></a>      </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].RX_fifo)
+<a name="l82"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KDataTypes.html#l248"></span><span class=cB5>FifoU8Flush</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].RX_fifo);
+<a name="l83"></a>      port = i;
+<a name="l84"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l85"></a>  </span><span class=cB1>return</span><span class=cB0> port;
+<a name="l86"></a>}
+</span></div></pre></body>
+</html>

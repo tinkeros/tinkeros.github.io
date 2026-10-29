@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// USB Ethernet (CDC-ECM) network driver: the network stack half of the</span><span class=cB0>
+<a name="l2"></a></span><span class=cB2>// kernel driver in ::/Kernel/Usb/EcmK.HC, which owns the USB transfers and</span><span class=cB0>
+<a name="l3"></a></span><span class=cB2>// the receive ring. There is no NIC interrupt: a task moves received frames</span><span class=cB0>
+<a name="l4"></a></span><span class=cB2>// into the NetQue, and transmit is a blocking bulk OUT, which is fine because</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>// the stack only transmits from tasks (NetHandler is one).</span><span class=cB0>
+<a name="l6"></a>
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> USB_ECM_TX_BUFS 8
+<a name="l8"></a>
+<a name="l9"></a></span><span class=cB1>class</span><span class=cB0> CUsbEcmNet
+<a name="l10"></a>{
+<a name="l11"></a>  </span><span class=cB1>U8</span><span class=cB0> mac[MAC_ADDR_LEN];
+<a name="l12"></a>  </span><span class=cB1>U8</span><span class=cB0> *tx_bufs;
+<a name="l13"></a>  </span><span class=cB9>I64</span><span class=cB0> tx_len[USB_ECM_TX_BUFS], tx_next;
+<a name="l14"></a>  </span><span class=cB1>Bool</span><span class=cB0> running;
+<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3755"></span><span class=cB9>CTask</a></span><span class=cB0> *rx_task;
+<a name="l16"></a>} usb_ecm_net;
+<a name="l17"></a>
+<a name="l18"></a></span><span class=cB1>U8</span><span class=cB0> *EthMACGet()
+<a name="l19"></a>{
+<a name="l20"></a>  </span><span class=cB1>return</span><span class=cB0> usb_ecm_net.mac;
+<a name="l21"></a>}
+<a name="l22"></a>
+<a name="l23"></a></span><span class=cB9>I64</span><span class=cB0> EthFrameAlloc(</span><span class=cB1>U8</span><span class=cB0> **pkt_buf_out, </span><span class=cB1>U8</span><span class=cB0> *src_addr,
+<a name="l24"></a>                          </span><span class=cB1>U8</span><span class=cB0> *dst_addr, </span><span class=cB9>U16</span><span class=cB0> ethertype, </span><span class=cB9>I64</span><span class=cB0> pkt_len)
+<a name="l25"></a>{
+<a name="l26"></a>  </span><span class=cB1>U8</span><span class=cB0> *frame;
+<a name="l27"></a>  </span><span class=cB9>I64</span><span class=cB0> de_index;
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (pkt_len &lt; ETH_MIN_FRAME_SIZE)
+<a name="l29"></a>    pkt_len = ETH_MIN_FRAME_SIZE;
+<a name="l30"></a>  </span><span class=cB1>if</span><span class=cB0> (ETH_MAC_HDR_LEN + pkt_len &gt; ETH_FRAME_SIZE)
+<a name="l31"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>    NetErr(</span><span class=cB6>&quot;USB ECM: Frame too long (%d).&quot;</span><span class=cB0>, pkt_len);
+<a name="l33"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l34"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l35"></a>  de_index = usb_ecm_net.tx_next;
+<a name="l36"></a>  usb_ecm_net.tx_next = (de_index + 1) &amp; (USB_ECM_TX_BUFS - 1);
+<a name="l37"></a>  frame = usb_ecm_net.tx_bufs + de_index * ETH_FRAME_SIZE;
+<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(frame, 0, ETH_MAC_HDR_LEN + pkt_len);
+<a name="l39"></a>  usb_ecm_net.tx_len[de_index] = ETH_MAC_HDR_LEN + pkt_len;
+<a name="l40"></a>  *pkt_buf_out = EthHdrSet(frame, src_addr, dst_addr, ethertype);
+<a name="l41"></a>  </span><span class=cB1>return</span><span class=cB0> de_index;
+<a name="l42"></a>}
+<a name="l43"></a>
+<a name="l44"></a></span><span class=cB9>I64</span><span class=cB0> EthFrameFinish(</span><span class=cB9>I64</span><span class=cB0> de_index)
+<a name="l45"></a>{
+<a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0> *frame = usb_ecm_net.tx_bufs + de_index * ETH_FRAME_SIZE;
+<a name="l47"></a>  </span><span class=cB9>I64</span><span class=cB0> len = usb_ecm_net.tx_len[de_index];
+<a name="l48"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>frame, usb_ecm_net.mac, MAC_ADDR_LEN</span><span class=cB7>)</span><span class=cB0>)
+<a name="l49"></a>  </span><span class=cB7>{</span><span class=cB2>//To ourselves: loop it back, the adapter would not deliver it.</span><span class=cB0>
+<a name="l50"></a>    NetQuePush(frame, len);
+<a name="l51"></a>    </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l52"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l53"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l184"></span><span class=cB5>UsbEcmSend</a></span><span class=cB7>(</span><span class=cB0>frame, len</span><span class=cB7>)</span><span class=cB0> &lt; 0)
+<a name="l54"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l55"></a>    NetErr(</span><span class=cB6>&quot;USB ECM: Transmit failed.&quot;</span><span class=cB0>);
+<a name="l56"></a>    </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l57"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l58"></a>  </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l59"></a>}
+<a name="l60"></a>
+<a name="l61"></a></span><span class=cB1>U0</span><span class=cB0> NetStop()
+<a name="l62"></a>{</span><span class=cB2>//The kernel keeps receiving into its ring; delivery to the NetQue pauses.</span><span class=cB0>
+<a name="l63"></a>  usb_ecm_net.running = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l64"></a>}
+<a name="l65"></a>
+<a name="l66"></a></span><span class=cB1>U0</span><span class=cB0> NetStart()
+<a name="l67"></a>{
+<a name="l68"></a>  usb_ecm_net.running = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l69"></a>}
+<a name="l70"></a>
+<a name="l71"></a></span><span class=cB1>U0</span><span class=cB0> UsbEcmNetRxTask(</span><span class=cB1>U8</span><span class=cB0> *)
+<a name="l72"></a>{
+<a name="l73"></a>  </span><span class=cB1>U8</span><span class=cB0> *buf = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(ETH_FRAME_SIZE);
+<a name="l74"></a>  </span><span class=cB9>I64</span><span class=cB0> len;
+<a name="l75"></a>  usb_ecm_net.rx_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
+<a name="l76"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l77"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l78"></a>    len = <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l209"></span><span class=cB5>UsbEcmRecv</a></span><span class=cB0>(buf, ETH_FRAME_SIZE);
+<a name="l79"></a>    </span><span class=cB1>if</span><span class=cB0> (len &gt; 0)
+<a name="l80"></a>    {
+<a name="l81"></a>      </span><span class=cB1>if</span><span class=cB0> (usb_ecm_net.running)
+<a name="l82"></a>        NetQuePush(buf, len);
+<a name="l83"></a>    }
+<a name="l84"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l85"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l86"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l87"></a>}
+<a name="l88"></a>
+<a name="l89"></a></span><span class=cB1>U0</span><span class=cB0> UsbEcmNetInit()
+<a name="l90"></a>{
+<a name="l91"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l129"></span><span class=cB5>ZeroClass</a></span><span class=cB0>(&amp;usb_ecm_net);
+<a name="l92"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/EcmK.html#l175"></span><span class=cB5>UsbEcmMAC</a></span><span class=cB0>(usb_ecm_net.mac);
+<a name="l93"></a>  usb_ecm_net.tx_bufs = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(ETH_FRAME_SIZE * USB_ECM_TX_BUFS, <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l12"></span><span class=cB6>adam_task</a></span><span class=cB0>);
+<a name="l94"></a>  usb_ecm_net.running = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l95"></a>  </span><span class=cB6>&quot;USB Ethernet adapter, MAC address %02X:%02X:%02X:%02X:%02X:%02X\n&quot;</span><span class=cB0>,
+<a name="l96"></a>        usb_ecm_net.mac[0], usb_ecm_net.mac[1], usb_ecm_net.mac[2],
+<a name="l97"></a>        usb_ecm_net.mac[3], usb_ecm_net.mac[4], usb_ecm_net.mac[5];
+<a name="l98"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;UsbEcmNetRxTask, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB6>&quot;USB Ethernet RX&quot;</span><span class=cB0>);
+<a name="l99"></a>}
+<a name="l100"></a>
+<a name="l101"></a>UsbEcmNetInit;
+</span></div></pre></body>
+</html>

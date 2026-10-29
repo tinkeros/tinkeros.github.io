@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.23">
+<meta name="generator" content="TinkerOS V5.24">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -45,13 +45,13 @@
 <a name="l6"></a>
 <a name="l7"></a></span><span class=cB2>*/</span><span class=cB0>
 <a name="l8"></a>
-<a name="l9"></a></span><span class=cB1>U8</span><span class=cB0>              *dest_ip_string     = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Destination IPV4: &quot;</span><span class=cB0>),
-<a name="l10"></a>                 *port_string        = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;RX &amp; TX UDP Port: &quot;</span><span class=cB0>);
-<a name="l11"></a>CIPV4Address    *dest_address       = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CIPV4Address</span><span class=cB7>)</span><span class=cB0>);
+<a name="l9"></a></span><span class=cB1>U8</span><span class=cB0>              *dst_ip_str     = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Destination IPV4: &quot;</span><span class=cB0>),
+<a name="l10"></a>                 *port_str        = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;RX &amp; TX UDP Port: &quot;</span><span class=cB0>);
+<a name="l11"></a>CIPV4Addr    *dst_addr       = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CIPV4Addr</span><span class=cB7>)</span><span class=cB0>);
 <a name="l12"></a>
-<a name="l13"></a></span><span class=cB9>I64</span><span class=cB0>              port               = <a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(port_string);
-<a name="l14"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0>           *chat_display_task  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
-<a name="l15"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3735"></span><span class=cB9>CTask</a></span><span class=cB0>           *chat_message_task  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l13"></a></span><span class=cB9>I64</span><span class=cB0>              port               = <a href="http://tinkeros.github.io/WbGit/Kernel/StrScan.html#l1"></span><span class=cB5>Str2I64</a></span><span class=cB0>(port_str);
+<a name="l14"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3755"></span><span class=cB9>CTask</a></span><span class=cB0>           *chat_display_task  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l15"></a><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3755"></span><span class=cB9>CTask</a></span><span class=cB0>           *chat_message_task  = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
 <a name="l16"></a>
 <a name="l17"></a></span><span class=cB1>U0</span><span class=cB0> ChatDisplayTask(</span><span class=cB9>I64</span><span class=cB0>)
 <a name="l18"></a>{</span><span class=cB2>// display received messages.</span><span class=cB0>
@@ -71,13 +71,13 @@
 <a name="l32"></a>  </span><span class=cB1>U8</span><span class=cB0>    *payload;
 <a name="l33"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocTerm.html#l39"></span><span class=cB5>DocTermNew</a></span><span class=cB0>;
 <a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(, </span><span class=cB6>&quot;$WW,1$&quot;</span><span class=cB0>);
-<a name="l35"></a>  </span><span class=cB1>while</span><span class=cB0> (message = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB7>(</span><span class=cB6>&quot;&gt; &quot;</span><span class=cB0>,, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4207"></span><span class=cB3>GSF_SHIFT_ESC_EXIT</a></span><span class=cB7>)</span><span class=cB0>)
+<a name="l35"></a>  </span><span class=cB1>while</span><span class=cB0> (message = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB7>(</span><span class=cB6>&quot;&gt; &quot;</span><span class=cB0>,, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4227"></span><span class=cB3>GSF_SHIFT_ESC_EXIT</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l36"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l37"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l115"></span><span class=cB5>DocBottom</a></span><span class=cB0>(chat_display_task-&gt;put_doc);
 <a name="l38"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(chat_display_task-&gt;put_doc, </span><span class=cB6>&quot;$BG,BLUE$$BLACK$&lt;local&gt;$FG$$BG$ %s\n&quot;</span><span class=cB0>, message);
-<a name="l39"></a>    de_index = UDPPacketAllocate(&amp;payload, ipv4_globals.local_ip, port, dest_address-&gt;address, port, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>message</span><span class=cB7>)</span><span class=cB0>);
+<a name="l39"></a>    de_index = UDPPktAlloc(&amp;payload, ipv4_globals.local_ip, port, dst_addr-&gt;addr, port, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>message</span><span class=cB7>)</span><span class=cB0>);
 <a name="l40"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(payload, message, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l61"></span><span class=cB5>StrLen</a></span><span class=cB7>(</span><span class=cB0>message</span><span class=cB7>)</span><span class=cB0>);
-<a name="l41"></a>    UDPPacketFinish(de_index);
+<a name="l41"></a>    UDPPktFinish(de_index);
 <a name="l42"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l128"></span><span class=cB5>DocClear</a></span><span class=cB0>;
 <a name="l43"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(, </span><span class=cB6>&quot;$WW,1$&quot;</span><span class=cB0>);
 <a name="l44"></a>  </span><span class=cB7>}</span><span class=cB0>
@@ -87,10 +87,10 @@
 <a name="l48"></a>{
 <a name="l49"></a>  chat_message_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;ChatMsgTask, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB6>&quot;UDP Chat Msg&quot;</span><span class=cB0>);
 <a name="l50"></a>  chat_display_task = <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;ChatDisplayTask, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>, </span><span class=cB6>&quot;UDP Chat&quot;</span><span class=cB0>);
-<a name="l51"></a>  chat_message_task-&gt;win_inhibit = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1573"></span><span class=cB3>WIG_USER_TASK_DFT</a></span><span class=cB0>;
-<a name="l52"></a>  chat_display_task-&gt;win_inhibit = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1573"></span><span class=cB3>WIG_USER_TASK_DFT</a></span><span class=cB0>;
-<a name="l53"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;chat_message_task-&gt;display_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3711"></span><span class=cB3>DISPLAYf_SHOW</a></span><span class=cB0>);
-<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;chat_display_task-&gt;display_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3711"></span><span class=cB3>DISPLAYf_SHOW</a></span><span class=cB0>);
+<a name="l51"></a>  chat_message_task-&gt;win_inhibit = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1574"></span><span class=cB3>WIG_USER_TASK_DFT</a></span><span class=cB0>;
+<a name="l52"></a>  chat_display_task-&gt;win_inhibit = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l1574"></span><span class=cB3>WIG_USER_TASK_DFT</a></span><span class=cB0>;
+<a name="l53"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;chat_message_task-&gt;display_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3731"></span><span class=cB3>DISPLAYf_SHOW</a></span><span class=cB0>);
+<a name="l54"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;chat_display_task-&gt;display_flags, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3731"></span><span class=cB3>DISPLAYf_SHOW</a></span><span class=cB0>);
 <a name="l55"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l412"></span><span class=cB5>WinFocus</a></span><span class=cB0>(chat_display_task);
 <a name="l56"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l412"></span><span class=cB5>WinFocus</a></span><span class=cB0>(chat_message_task);
 <a name="l57"></a>  chat_display_task-&gt;win_top        = 2;
@@ -105,38 +105,37 @@
 <a name="l66"></a>
 <a name="l67"></a></span><span class=cB1>U0</span><span class=cB0> Chat()
 <a name="l68"></a>{
-<a name="l69"></a>  CUDPSocket            *udp_socket = UDPSocket(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>);
-<a name="l70"></a>  CSocketAddressIPV4    *sock_addr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CSocketAddressIPV4</span><span class=cB7>)</span><span class=cB0>);
-<a name="l71"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *buffer[ETHERNET_FRAME_SIZE];
-<a name="l72"></a></span><span class=cB2>//  MemSet(buffer, 0, ETHERNET_FRAME_SIZE);</span><span class=cB0>
-<a name="l73"></a>  </span><span class=cB6>&quot;\nIP entered: %s\n&quot;</span><span class=cB0>
-<a name="l74"></a>  , dest_ip_string;
-<a name="l75"></a>  </span><span class=cB1>while</span><span class=cB0> (PresentationToNetwork</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>, dest_ip_string, dest_address</span><span class=cB7>)</span><span class=cB0> == -1)
-<a name="l76"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l77"></a>    </span><span class=cB6>&quot;ERROR: Bad IP entered. Retry.\n&quot;</span><span class=cB0>;
-<a name="l78"></a>    dest_ip_string = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Destination IPV4: &quot;</span><span class=cB0>);
-<a name="l79"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l80"></a>  ChatInit;
-<a name="l81"></a>  sock_addr-&gt;port               = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(port);
-<a name="l82"></a>  sock_addr-&gt;family         = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>;
-<a name="l83"></a>  sock_addr-&gt;address.address    = dest_address-&gt;address;
-<a name="l84"></a>  UDPSocketBind(udp_socket, sock_addr);
-<a name="l85"></a>  </span><span class=cB6>&quot;\nIP entered: %s\n&quot;</span><span class=cB0>
-<a name="l86"></a>  , dest_ip_string;
-<a name="l87"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>chat_message_task</span><span class=cB7>)</span><span class=cB0>)
-<a name="l88"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l89"></a>    </span><span class=cB1>if</span><span class=cB0> (UDPSocketReceiveFrom</span><span class=cB7>(</span><span class=cB0>udp_socket, buffer, ETHERNET_FRAME_SIZE, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB7>)</span><span class=cB0> != -1)
-<a name="l90"></a>    {
-<a name="l91"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l115"></span><span class=cB5>DocBottom</a></span><span class=cB0>(chat_display_task-&gt;put_doc);
-<a name="l92"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(chat_display_task-&gt;put_doc, </span><span class=cB6>&quot;$BG,PURPLE$$BLACK$&lt;%s&gt;$FG$$BG$  %s\n&quot;</span><span class=cB0>, dest_ip_string, buffer);</span><span class=cB2>//NetworkToPresentation(AF_INET, dest_address));</span><span class=cB0>
-<a name="l93"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buffer, 0, ETHERNET_FRAME_SIZE);
-<a name="l94"></a>    }
-<a name="l95"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l36"></span><span class=cB5>Refresh</a></span><span class=cB0>;
-<a name="l96"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l97"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(sock_addr);
-<a name="l98"></a>  UDPSocketClose(udp_socket);
-<a name="l99"></a>}
-<a name="l100"></a>
-<a name="l101"></a>Chat;
+<a name="l69"></a>  CUDPSock            *udp_sock = UDPSock(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>);
+<a name="l70"></a>  CSockAddrIPV4    *sock_addr = <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CSockAddrIPV4</span><span class=cB7>)</span><span class=cB0>);
+<a name="l71"></a>  </span><span class=cB1>U8</span><span class=cB0>                    *buf[ETH_FRAME_SIZE];
+<a name="l72"></a>  </span><span class=cB6>&quot;\nIP entered: %s\n&quot;</span><span class=cB0>
+<a name="l73"></a>  , dst_ip_str;
+<a name="l74"></a>  </span><span class=cB1>while</span><span class=cB0> (PresToNet</span><span class=cB7>(<a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>, dst_ip_str, dst_addr</span><span class=cB7>)</span><span class=cB0> == -1)
+<a name="l75"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l76"></a>    </span><span class=cB6>&quot;ERROR: Bad IP entered. Retry.\n&quot;</span><span class=cB0>;
+<a name="l77"></a>    dst_ip_str = <a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l215"></span><span class=cB5>GetStr</a></span><span class=cB0>(</span><span class=cB6>&quot;Destination IPV4: &quot;</span><span class=cB0>);
+<a name="l78"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l79"></a>  ChatInit;
+<a name="l80"></a>  sock_addr-&gt;port               = <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l7"></span><span class=cB5>EndianU16</a></span><span class=cB0>(port);
+<a name="l81"></a>  sock_addr-&gt;family         = <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/TOSClient.html#l13"></span><span class=cB3>AF_INET</a></span><span class=cB0>;
+<a name="l82"></a>  sock_addr-&gt;addr.addr    = dst_addr-&gt;addr;
+<a name="l83"></a>  UDPSockBind(udp_sock, sock_addr);
+<a name="l84"></a>  </span><span class=cB6>&quot;\nIP entered: %s\n&quot;</span><span class=cB0>
+<a name="l85"></a>  , dst_ip_str;
+<a name="l86"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>chat_message_task</span><span class=cB7>)</span><span class=cB0>)
+<a name="l87"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l88"></a>    </span><span class=cB1>if</span><span class=cB0> (UDPSockRxFrom</span><span class=cB7>(</span><span class=cB0>udp_sock, buf, ETH_FRAME_SIZE, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB7>)</span><span class=cB0> != -1)
+<a name="l89"></a>    {
+<a name="l90"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l115"></span><span class=cB5>DocBottom</a></span><span class=cB0>(chat_display_task-&gt;put_doc);
+<a name="l91"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocPutS.html#l185"></span><span class=cB5>DocPrint</a></span><span class=cB0>(chat_display_task-&gt;put_doc, </span><span class=cB6>&quot;$BG,PURPLE$$BLACK$&lt;%s&gt;$FG$$BG$  %s\n&quot;</span><span class=cB0>, dst_ip_str, buf);
+<a name="l92"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(buf, 0, ETH_FRAME_SIZE);
+<a name="l93"></a>    }
+<a name="l94"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/WinMgr.html#l36"></span><span class=cB5>Refresh</a></span><span class=cB0>;
+<a name="l95"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l96"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(sock_addr);
+<a name="l97"></a>  UDPSockClose(udp_sock);
+<a name="l98"></a>}
+<a name="l99"></a>
+<a name="l100"></a>Chat;
 </span></div></pre></body>
 </html>

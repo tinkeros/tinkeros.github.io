@@ -1,0 +1,837 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.24">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB0>#</span><span class=cB1>define</span><span class=cB0> UVC_NFR         32
+<a name="l2"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_NALT        16
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_NIVL        8
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_PKTS        64
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_NHDR        16
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_NLEN        6
+<a name="l7"></a>
+<a name="l8"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_DESC_MAX    4096
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_CLS         0x0E
+<a name="l10"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_RT_IN       0x80
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_RT_IF       1
+<a name="l12"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_GET_DESC    6
+<a name="l13"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_SET_IF      11
+<a name="l14"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_DT_CFG      2
+<a name="l15"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_DT_IF       4
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_DT_EP       5
+<a name="l17"></a>
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_YUY2        0
+<a name="l19"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_MJPEG       1
+<a name="l20"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_OTHER       2
+<a name="l21"></a>
+<a name="l22"></a></span><span class=cB1>class</span><span class=cB0> CUvcFrame
+<a name="l23"></a>{
+<a name="l24"></a>  </span><span class=cB9>I64</span><span class=cB0> type,fmt,idx,w,h,size,
+<a name="l25"></a>        nivl,ivl[UVC_NIVL];
+<a name="l26"></a>};
+<a name="l27"></a>
+<a name="l28"></a></span><span class=cB1>class</span><span class=cB0> CUvcAlt
+<a name="l29"></a>{
+<a name="l30"></a>  </span><span class=cB9>I64</span><span class=cB0> alt,ep,mps,bw,ivl;
+<a name="l31"></a>};
+<a name="l32"></a>
+<a name="l33"></a></span><span class=cB1>class</span><span class=cB0> CUvc
+<a name="l34"></a>{
+<a name="l35"></a>  </span><span class=cB9>I64</span><span class=cB0> k,gen,vc_if,vs_if,bcd,nfr,nalt;
+<a name="l36"></a>  CUvcFrame fr[UVC_NFR];
+<a name="l37"></a>  CUvcAlt alt[UVC_NALT];
+<a name="l38"></a>  CUvcFrame *cur;
+<a name="l39"></a>  </span><span class=cB9>I64</span><span class=cB0> cur_alt,cur_ivl,max_payload,pkt_max;
+<a name="l40"></a>  </span><span class=cB1>U8</span><span class=cB0> probe[48];
+<a name="l41"></a>  </span><span class=cB1>U8</span><span class=cB0> *iso_buf,*asm_buf,*ready;
+<a name="l42"></a>  </span><span class=cB9>I64</span><span class=cB0> *lens,asm_len,fid,ready_cnt,ready_len,</span><span class=cB1>lock</span><span class=cB0>,
+<a name="l43"></a>        raw_len,
+<a name="l44"></a>        fsize;
+<a name="l45"></a>  </span><span class=cB1>Bool</span><span class=cB0> bad,err,over,stop,running,dead;
+<a name="l46"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3755"></span><span class=cB9>CTask</a></span><span class=cB0> *owner;
+<a name="l47"></a>  </span><span class=cB9>I64</span><span class=cB0> frames,bad_frames,pkts,lost,
+<a name="l48"></a>        rej_err,rej_long,rej_lost,rej_short,rej_jpg,
+<a name="l49"></a>        nhdr,hdr[UVC_NHDR],
+<a name="l50"></a>        nlen,flen[UVC_NLEN],
+<a name="l51"></a>        padded,
+<a name="l52"></a>        miss_sum,
+<a name="l53"></a>        pl_max,pl_big,pl_empty,
+<a name="l54"></a>        sof,sof_gaps,sof_lost,
+<a name="l55"></a>        in_gaps,in_lost,
+<a name="l56"></a>        zrun,zrun_max,zrun_n,
+<a name="l57"></a>        f_lost,f_zrun,
+<a name="l58"></a>        flost[UVC_NLEN],fzrun[UVC_NLEN],
+<a name="l59"></a>        mf,
+<a name="l60"></a>        mf_data[8],mf_gap[8],
+<a name="l61"></a>        mf_pend[8],
+<a name="l62"></a>        data_pl;
+<a name="l63"></a>};
+<a name="l64"></a>
+<a name="l65"></a></span><span class=cB1>U8</span><span class=cB0> uvc_guid_yuy2[16]={0x59,0x55,0x59,0x32,0x00,0x00,0x10,0x00,
+<a name="l66"></a>        0x80,0x00,0x00,0xAA,0x00,0x38,0x9B,0x71};
+<a name="l67"></a>
+<a name="l68"></a></span><span class=cB1>U0</span><span class=cB0> UvcParse(CUvc *c,</span><span class=cB1>U8</span><span class=cB0> *d,</span><span class=cB9>I64</span><span class=cB0> total)
+<a name="l69"></a>{</span><span class=cB2>//Interfaces, YUY2/MJPEG frames and the streaming i/f's isochronous alts.</span><span class=cB0>
+<a name="l70"></a>  </span><span class=cB9>I64</span><span class=cB0> pos=0,ln,ty,sub,cur_if=-1,cur_alt=0,fmt=0,ftype=UVC_OTHER,i,n;
+<a name="l71"></a>  CUvcFrame *fr;
+<a name="l72"></a>  CUvcAlt *a;
+<a name="l73"></a>  c-&gt;vc_if=-1;
+<a name="l74"></a>  c-&gt;vs_if=-1;
+<a name="l75"></a>  c-&gt;nfr=0;
+<a name="l76"></a>  c-&gt;nalt=0;
+<a name="l77"></a>  </span><span class=cB1>while</span><span class=cB0> (pos+2&lt;=total)
+<a name="l78"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l79"></a>    ln=d[pos];
+<a name="l80"></a>    ty=d[pos+1];
+<a name="l81"></a>    </span><span class=cB1>if</span><span class=cB0> (ln&lt;2 || pos+ln&gt;total) </span><span class=cB1>break</span><span class=cB0>;
+<a name="l82"></a>    </span><span class=cB1>if</span><span class=cB0> (ty==UVC_DT_IF &amp;&amp; ln&gt;=9)
+<a name="l83"></a>    {
+<a name="l84"></a>      cur_if=d[pos+2];
+<a name="l85"></a>      cur_alt=d[pos+3];
+<a name="l86"></a>      </span><span class=cB1>if</span><span class=cB0> (d[pos+5]==UVC_CLS &amp;&amp; d[pos+6]==1 &amp;&amp; c-&gt;vc_if&lt;0)
+<a name="l87"></a>        c-&gt;vc_if=cur_if;
+<a name="l88"></a>      </span><span class=cB1>if</span><span class=cB0> (d[pos+5]==UVC_CLS &amp;&amp; d[pos+6]==2 &amp;&amp; c-&gt;vs_if&lt;0)
+<a name="l89"></a>        c-&gt;vs_if=cur_if;
+<a name="l90"></a>    }
+<a name="l91"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ty==0x24 &amp;&amp; ln&gt;=3)
+<a name="l92"></a>    {
+<a name="l93"></a>      sub=d[pos+2];
+<a name="l94"></a>      </span><span class=cB1>if</span><span class=cB0> (cur_if==c-&gt;vc_if &amp;&amp; sub==1 &amp;&amp; ln&gt;=5)
+<a name="l95"></a>        c-&gt;bcd=d[pos+3]|d[pos+4]&lt;&lt;8;
+<a name="l96"></a>      </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (cur_if==c-&gt;vs_if &amp;&amp; !cur_alt)
+<a name="l97"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l98"></a>        </span><span class=cB1>if</span><span class=cB0> (sub==4 &amp;&amp; ln&gt;=21)
+<a name="l99"></a>        {
+<a name="l100"></a>          fmt=d[pos+3];
+<a name="l101"></a>          </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l167"></span><span class=cB5>MemCmp</a></span><span class=cB7>(</span><span class=cB0>d+pos+5,uvc_guid_yuy2,16</span><span class=cB7>)</span><span class=cB0>)
+<a name="l102"></a>            ftype=UVC_YUY2;
+<a name="l103"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l104"></a>            ftype=UVC_OTHER;
+<a name="l105"></a>        }
+<a name="l106"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (sub==6 &amp;&amp; ln&gt;=4)
+<a name="l107"></a>        {
+<a name="l108"></a>          fmt=d[pos+3];
+<a name="l109"></a>          ftype=UVC_MJPEG;
+<a name="l110"></a>        }
+<a name="l111"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (sub==0x10 &amp;&amp; ln&gt;=4)
+<a name="l112"></a>        {
+<a name="l113"></a>          fmt=d[pos+3];
+<a name="l114"></a>          ftype=UVC_OTHER;
+<a name="l115"></a>        }
+<a name="l116"></a>        </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>sub==5 || sub==7 || sub==0x11</span><span class=cB7>)</span><span class=cB0> &amp;&amp; ln&gt;=26 &amp;&amp; c-&gt;nfr&lt;UVC_NFR)
+<a name="l117"></a>        {
+<a name="l118"></a>          fr=&amp;c-&gt;fr[c-&gt;nfr++];
+<a name="l119"></a>          fr-&gt;type=ftype;
+<a name="l120"></a>          fr-&gt;fmt=fmt;
+<a name="l121"></a>          fr-&gt;idx=d[pos+3];
+<a name="l122"></a>          fr-&gt;w=d[pos+5]|d[pos+6]&lt;&lt;8;
+<a name="l123"></a>          fr-&gt;h=d[pos+7]|d[pos+8]&lt;&lt;8;
+<a name="l124"></a>          </span><span class=cB1>if</span><span class=cB0> (sub==0x11)
+<a name="l125"></a>            fr-&gt;size=0;
+<a name="l126"></a>          </span><span class=cB1>else</span><span class=cB0>
+<a name="l127"></a>            fr-&gt;size=(d+pos+17)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l128"></a>          </span><span class=cB1>if</span><span class=cB0> (ftype==UVC_YUY2)
+<a name="l129"></a>            fr-&gt;size=fr-&gt;w*fr-&gt;h*2;
+<a name="l130"></a>          n=d[pos+25];
+<a name="l131"></a>          fr-&gt;nivl=0;
+<a name="l132"></a>          </span><span class=cB1>if</span><span class=cB0> (!n &amp;&amp; ln&gt;=38)
+<a name="l133"></a>          </span><span class=cB7>{</span><span class=cB0>
+<a name="l134"></a>            fr-&gt;ivl[fr-&gt;nivl++]=(d+pos+26)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l135"></a>            fr-&gt;ivl[fr-&gt;nivl++]=(d+pos+30)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l136"></a>          </span><span class=cB7>}</span><span class=cB0>
+<a name="l137"></a>          </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n &amp;&amp; i&lt;UVC_NIVL &amp;&amp; 26+4*i+4&lt;=ln; i++)
+<a name="l138"></a>            fr-&gt;ivl[fr-&gt;nivl++]=(d+pos+26+4*i)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l139"></a>        }
+<a name="l140"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l141"></a>    }
+<a name="l142"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (ty==UVC_DT_EP &amp;&amp; ln&gt;=7 &amp;&amp; cur_if==c-&gt;vs_if &amp;&amp; cur_alt &amp;&amp;
+<a name="l143"></a>          d[pos+3]&amp;3==1 &amp;&amp; d[pos+2]&amp;0x80 &amp;&amp; c-&gt;nalt&lt;UVC_NALT)
+<a name="l144"></a>    {
+<a name="l145"></a>      a=&amp;c-&gt;alt[c-&gt;nalt++];
+<a name="l146"></a>      a-&gt;alt=cur_alt;
+<a name="l147"></a>      a-&gt;ep=d[pos+2];
+<a name="l148"></a>      a-&gt;mps=d[pos+4]|d[pos+5]&lt;&lt;8;
+<a name="l149"></a>      a-&gt;bw=(a-&gt;mps&amp;0x7FF)*(a-&gt;mps&gt;&gt;11&amp;3+1);
+<a name="l150"></a>      a-&gt;ivl=d[pos+6];
+<a name="l151"></a>    }
+<a name="l152"></a>    pos+=ln;
+<a name="l153"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l154"></a>}
+<a name="l155"></a>
+<a name="l156"></a></span><span class=cB1>public</span><span class=cB0> CUvc *UvcOpen(</span><span class=cB9>I64</span><span class=cB0> n=0)
+<a name="l157"></a>{</span><span class=cB2>//The n-th camera, NULL if there is none. UvcClose when done.</span><span class=cB0>
+<a name="l158"></a>  CUvc *c;
+<a name="l159"></a>  </span><span class=cB1>U8</span><span class=cB0> *d;
+<a name="l160"></a>  </span><span class=cB9>I64</span><span class=cB0> k=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l219"></span><span class=cB5>UsbVenFind</a></span><span class=cB0>(-1,-1,n,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3077"></span><span class=cB3>USB_KIND_VIDEO</a></span><span class=cB0>),gen,total;
+<a name="l161"></a>  </span><span class=cB1>if</span><span class=cB0> (k&lt;0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l162"></a>  gen=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l168"></span><span class=cB5>UsbVenGen</a></span><span class=cB0>(k);
+<a name="l163"></a>  d=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(UVC_DESC_MAX);
+<a name="l164"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB7>(</span><span class=cB0>k,gen,UVC_RT_IN,UVC_GET_DESC,UVC_DT_CFG&lt;&lt;8,0,9,d</span><span class=cB7>)</span><span class=cB0>&lt;9)
+<a name="l165"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l166"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
+<a name="l167"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l168"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l169"></a>  total=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(d[2]|d[3]&lt;&lt;8,UVC_DESC_MAX);
+<a name="l170"></a>  total=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB0>(k,gen,UVC_RT_IN,UVC_GET_DESC,UVC_DT_CFG&lt;&lt;8,0,total,d);
+<a name="l171"></a>  c=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB0>CUvc</span><span class=cB7>)</span><span class=cB0>);
+<a name="l172"></a>  c-&gt;k=k;
+<a name="l173"></a>  c-&gt;gen=gen;
+<a name="l174"></a>  UvcParse(c,d,total);
+<a name="l175"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(d);
+<a name="l176"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;vs_if&lt;0 || !c-&gt;nalt)
+<a name="l177"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l178"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c);
+<a name="l179"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l180"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l181"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB0>(k,gen,UVC_RT_IF,UVC_SET_IF,0,c-&gt;vs_if);
+<a name="l182"></a>  </span><span class=cB1>return</span><span class=cB0> c;
+<a name="l183"></a>}
+<a name="l184"></a>
+<a name="l185"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> UvcRep(CUvc *c)
+<a name="l186"></a>{</span><span class=cB2>//Camera c's interfaces, frame sizes and streaming bandwidths.</span><span class=cB0>
+<a name="l187"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j;
+<a name="l188"></a>  CUvcFrame *fr;
+<a name="l189"></a>  </span><span class=cB1>U8</span><span class=cB0> *nm;
+<a name="l190"></a>  </span><span class=cB6>&quot;$FG,2$Camera$FG$ USB #%d %04X:%04X UVC %X.%02X, i/f %d control, %d streaming\n&quot;</span><span class=cB0>,
+<a name="l191"></a>        c-&gt;k,<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l176"></span><span class=cB5>UsbVenId</a></span><span class=cB0>(c-&gt;k)&gt;&gt;16,<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l176"></span><span class=cB5>UsbVenId</a></span><span class=cB0>(c-&gt;k)&amp;0xFFFF,c-&gt;bcd&gt;&gt;8,c-&gt;bcd&amp;0xFF,
+<a name="l192"></a>        c-&gt;vc_if,c-&gt;vs_if;
+<a name="l193"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nfr; i++)
+<a name="l194"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l195"></a>    fr=&amp;c-&gt;fr[i];
+<a name="l196"></a>    </span><span class=cB1>if</span><span class=cB0> (fr-&gt;type==UVC_YUY2) nm=</span><span class=cB6>&quot;YUY2&quot;</span><span class=cB0>;
+<a name="l197"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (fr-&gt;type==UVC_MJPEG) nm=</span><span class=cB6>&quot;MJPEG&quot;</span><span class=cB0>;
+<a name="l198"></a>    </span><span class=cB1>else</span><span class=cB0> nm=</span><span class=cB6>&quot;other&quot;</span><span class=cB0>;
+<a name="l199"></a>    </span><span class=cB6>&quot;  format %d frame %d: %-5s %4dx%-4d fps&quot;</span><span class=cB0>,fr-&gt;fmt,fr-&gt;idx,nm,fr-&gt;w,fr-&gt;h;
+<a name="l200"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;fr-&gt;nivl; j++)
+<a name="l201"></a>      </span><span class=cB1>if</span><span class=cB0> (fr-&gt;ivl[j])
+<a name="l202"></a>        </span><span class=cB6>&quot; %d&quot;</span><span class=cB0>,(10000000+fr-&gt;ivl[j]/2)/fr-&gt;ivl[j];
+<a name="l203"></a>    </span><span class=cB1>if</span><span class=cB0> (fr-&gt;type==UVC_OTHER)
+<a name="l204"></a>      </span><span class=cB6>&quot; (not supported)&quot;</span><span class=cB0>;
+<a name="l205"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l206"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l207"></a>  </span><span class=cB6>&quot;  streaming alts:&quot;</span><span class=cB0>;
+<a name="l208"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nalt; i++)
+<a name="l209"></a>    </span><span class=cB6>&quot; %d:%d&quot;</span><span class=cB0>,c-&gt;alt[i].alt,c-&gt;alt[i].bw;
+<a name="l210"></a>  </span><span class=cB6>&quot; bytes/microframe\n&quot;</span><span class=cB0>;
+<a name="l211"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur)
+<a name="l212"></a>    </span><span class=cB6>&quot;  streaming %dx%d, alt %d, payload %d: %d frames, %d bad, %d packets, %d lost\n&quot;</span><span class=cB0>,
+<a name="l213"></a>          c-&gt;cur-&gt;w,c-&gt;cur-&gt;h,c-&gt;cur_alt,c-&gt;max_payload,c-&gt;frames,c-&gt;bad_frames,
+<a name="l214"></a>          c-&gt;pkts,c-&gt;lost;
+<a name="l215"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur &amp;&amp; c-&gt;bad_frames)
+<a name="l216"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l217"></a>    </span><span class=cB6>&quot;  dropped: %d error bit, %d too long, %d lost packet, %d short, %d not JPEG\n&quot;</span><span class=cB0>,
+<a name="l218"></a>          c-&gt;rej_err,c-&gt;rej_long,c-&gt;rej_lost,c-&gt;rej_short,c-&gt;rej_jpg;
+<a name="l219"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l220"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur)
+<a name="l221"></a>    </span><span class=cB6>&quot;  %d short frames shown, payloads: longest %d, %d over 1024, %d empty, &quot;</span><span class=cB0>
+<a name="l222"></a>          </span><span class=cB6>&quot;%d USB frame jumps (%d frames skipped)\n&quot;</span><span class=cB0>,c-&gt;padded,c-&gt;pl_max,c-&gt;pl_big,
+<a name="l223"></a>          c-&gt;pl_empty,c-&gt;sof_gaps,c-&gt;sof_lost;
+<a name="l224"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur)
+<a name="l225"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l226"></a>    </span><span class=cB6>&quot;  inside frames: %d USB frame jumps (%d skipped), longest gap without data &quot;</span><span class=cB0>
+<a name="l227"></a>          </span><span class=cB6>&quot;%d microframes, %d gaps of 8+\n&quot;</span><span class=cB0>,c-&gt;in_gaps,c-&gt;in_lost,c-&gt;zrun_max,c-&gt;zrun_n;
+<a name="l228"></a>    </span><span class=cB6>&quot;  last frames (length, want %d, -: dropped / USB frames skipped inside / &quot;</span><span class=cB0>
+<a name="l229"></a>          </span><span class=cB6>&quot;longest gap):&quot;</span><span class=cB0>,c-&gt;fsize;
+<a name="l230"></a>    </span><span class=cB1>for</span><span class=cB0> (i=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>c-&gt;nlen-UVC_NLEN,0</span><span class=cB7>)</span><span class=cB0>; i&lt;c-&gt;nlen; i++)
+<a name="l231"></a>      </span><span class=cB6>&quot; %d/%d/%d&quot;</span><span class=cB0>,c-&gt;flen[i%UVC_NLEN],c-&gt;flost[i%UVC_NLEN],c-&gt;fzrun[i%UVC_NLEN];
+<a name="l232"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l233"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l234"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur)
+<a name="l235"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l236"></a>    </span><span class=cB6>&quot;  by microframe 0-7, payloads with data:&quot;</span><span class=cB0>;
+<a name="l237"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l238"></a>      </span><span class=cB6>&quot; %d&quot;</span><span class=cB0>,c-&gt;mf_data[i];
+<a name="l239"></a>    </span><span class=cB6>&quot;\n  by microframe 0-7, empty inside a frame:&quot;</span><span class=cB0>;
+<a name="l240"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l241"></a>      </span><span class=cB6>&quot; %d&quot;</span><span class=cB0>,c-&gt;mf_gap[i];
+<a name="l242"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l243"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l244"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur &amp;&amp; c-&gt;nhdr)
+<a name="l245"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l246"></a>    </span><span class=cB6>&quot;  first payloads (length/header length/flags):&quot;</span><span class=cB0>;
+<a name="l247"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nhdr; i++)
+<a name="l248"></a>      </span><span class=cB6>&quot; %d/%d/%02X&quot;</span><span class=cB0>,c-&gt;hdr[i]&gt;&gt;16,c-&gt;hdr[i]&gt;&gt;8&amp;0xFF,c-&gt;hdr[i]&amp;0xFF;
+<a name="l249"></a>    </span><span class=cB6>'\n'</span><span class=cB0>;
+<a name="l250"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l251"></a>}
+<a name="l252"></a>
+<a name="l253"></a></span><span class=cB1>Bool</span><span class=cB0> UvcBigger(CUvc *c,CUvcFrame *fr,</span><span class=cB9>I64</span><span class=cB0> than)
+<a name="l254"></a>{</span><span class=cB2>//fr has more pixels than frame than (-1: none yet), YUY2 wins a tie.</span><span class=cB0>
+<a name="l255"></a>  CUvcFrame *t;
+<a name="l256"></a>  </span><span class=cB1>if</span><span class=cB0> (than&lt;0) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l257"></a>  t=&amp;c-&gt;fr[than];
+<a name="l258"></a>  </span><span class=cB1>if</span><span class=cB0> (fr-&gt;w*fr-&gt;h!=t-&gt;w*t-&gt;h)
+<a name="l259"></a>    </span><span class=cB1>return</span><span class=cB0> fr-&gt;w*fr-&gt;h&gt;t-&gt;w*t-&gt;h;
+<a name="l260"></a>  </span><span class=cB1>return</span><span class=cB0> fr-&gt;type==UVC_YUY2 &amp;&amp; t-&gt;type!=UVC_YUY2;
+<a name="l261"></a>}
+<a name="l262"></a>
+<a name="l263"></a>CUvcFrame *UvcPick(CUvc *c,</span><span class=cB9>I64</span><span class=cB0> w,</span><span class=cB9>I64</span><span class=cB0> h,</span><span class=cB9>I64</span><span class=cB0> type=-1)
+<a name="l264"></a>{</span><span class=cB2>//The frame w x h of type (UVC_YUY2, UVC_MJPEG, -1: either), else the best fit.</span><span class=cB0>
+<a name="l265"></a>  </span><span class=cB9>I64</span><span class=cB0> i,best=-1,small=-1,pass;
+<a name="l266"></a>  CUvcFrame *fr;
+<a name="l267"></a>  </span><span class=cB1>for</span><span class=cB0> (pass=0; pass&lt;2; pass++)
+<a name="l268"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nfr; i++)
+<a name="l269"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l270"></a>      fr=&amp;c-&gt;fr[i];
+<a name="l271"></a>      </span><span class=cB1>if</span><span class=cB0> (fr-&gt;w==w &amp;&amp; fr-&gt;h==h)
+<a name="l272"></a>      {
+<a name="l273"></a>        </span><span class=cB1>if</span><span class=cB0> (type&gt;=0 &amp;&amp; fr-&gt;type==type) </span><span class=cB1>return</span><span class=cB0> fr;
+<a name="l274"></a>        </span><span class=cB1>if</span><span class=cB0> (type&lt;0 &amp;&amp; !pass &amp;&amp; fr-&gt;type==UVC_YUY2) </span><span class=cB1>return</span><span class=cB0> fr;
+<a name="l275"></a>        </span><span class=cB1>if</span><span class=cB0> (type&lt;0 &amp;&amp; pass &amp;&amp; fr-&gt;type==UVC_MJPEG) </span><span class=cB1>return</span><span class=cB0> fr;
+<a name="l276"></a>      }
+<a name="l277"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l278"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nfr; i++)
+<a name="l279"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l280"></a>    fr=&amp;c-&gt;fr[i];
+<a name="l281"></a>    </span><span class=cB1>if</span><span class=cB0> (fr-&gt;type==UVC_OTHER || type&gt;=0 &amp;&amp; fr-&gt;type!=type)
+<a name="l282"></a>      </span><span class=cB1>goto</span><span class=cB0> pk_skip;
+<a name="l283"></a>    </span><span class=cB1>if</span><span class=cB0> (fr-&gt;w&lt;=w &amp;&amp; fr-&gt;h&lt;=h &amp;&amp; UvcBigger</span><span class=cB7>(</span><span class=cB0>c,fr,best</span><span class=cB7>)</span><span class=cB0>)
+<a name="l284"></a>      best=i;
+<a name="l285"></a>    </span><span class=cB1>if</span><span class=cB0> (small&lt;0)
+<a name="l286"></a>      small=i;
+<a name="l287"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (fr-&gt;w*fr-&gt;h&lt;c-&gt;fr[small].w*c-&gt;fr[small].h)
+<a name="l288"></a>      small=i;
+<a name="l289"></a>pk_skip:;
+<a name="l290"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l291"></a>  </span><span class=cB1>if</span><span class=cB0> (best&gt;=0) </span><span class=cB1>return</span><span class=cB0> &amp;c-&gt;fr[best];
+<a name="l292"></a>  </span><span class=cB1>if</span><span class=cB0> (small&gt;=0) </span><span class=cB1>return</span><span class=cB0> &amp;c-&gt;fr[small];
+<a name="l293"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l294"></a>}
+<a name="l295"></a>
+<a name="l296"></a></span><span class=cB1>U0</span><span class=cB0> UvcFrameEnd(CUvc *c)
+<a name="l297"></a>{</span><span class=cB2>//A whole frame becomes the ready one; a short or damaged one is dropped.</span><span class=cB0>
+<a name="l298"></a>  </span><span class=cB1>U8</span><span class=cB0> *t;
+<a name="l299"></a>  </span><span class=cB1>Bool</span><span class=cB0> ok;
+<a name="l300"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;asm_len)
+<a name="l301"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l302"></a>    </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur-&gt;type==UVC_YUY2)
+<a name="l303"></a>    {
+<a name="l304"></a>      ok=c-&gt;asm_len==c-&gt;fsize;
+<a name="l305"></a>      </span><span class=cB1>if</span><span class=cB0> (!ok &amp;&amp; !c-&gt;bad &amp;&amp; c-&gt;asm_len&gt;=c-&gt;fsize-c-&gt;fsize/8)
+<a name="l306"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l307"></a>        c-&gt;miss_sum+=c-&gt;fsize-c-&gt;asm_len;
+<a name="l308"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(c-&gt;asm_buf+c-&gt;asm_len,0x80,c-&gt;fsize-c-&gt;asm_len);
+<a name="l309"></a>        c-&gt;asm_len=c-&gt;fsize;
+<a name="l310"></a>        c-&gt;padded++;
+<a name="l311"></a>        ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l312"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l313"></a>    }
+<a name="l314"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l315"></a>      ok=c-&gt;asm_len&gt;=4 &amp;&amp; c-&gt;asm_buf[0]==0xFF &amp;&amp; c-&gt;asm_buf[1]==0xD8;
+<a name="l316"></a>    </span><span class=cB1>if</span><span class=cB0> (c-&gt;over)
+<a name="l317"></a>      c-&gt;rej_long++;
+<a name="l318"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (c-&gt;err)
+<a name="l319"></a>      c-&gt;rej_err++;
+<a name="l320"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (c-&gt;bad)
+<a name="l321"></a>      c-&gt;rej_lost++;
+<a name="l322"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (!ok)
+<a name="l323"></a>    {
+<a name="l324"></a>      </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur-&gt;type==UVC_YUY2)
+<a name="l325"></a>        c-&gt;rej_short++;
+<a name="l326"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l327"></a>        c-&gt;rej_jpg++;
+<a name="l328"></a>    }
+<a name="l329"></a>    c-&gt;flost[c-&gt;nlen%UVC_NLEN]=c-&gt;f_lost;
+<a name="l330"></a>    c-&gt;fzrun[c-&gt;nlen%UVC_NLEN]=c-&gt;f_zrun;
+<a name="l331"></a>    </span><span class=cB1>if</span><span class=cB0> (c-&gt;bad || !ok)
+<a name="l332"></a>      c-&gt;flen[c-&gt;nlen++%UVC_NLEN]=-c-&gt;raw_len;
+<a name="l333"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l334"></a>      c-&gt;flen[c-&gt;nlen++%UVC_NLEN]=c-&gt;raw_len;
+<a name="l335"></a>    </span><span class=cB1>if</span><span class=cB0> (!c-&gt;bad &amp;&amp; ok)
+<a name="l336"></a>    {
+<a name="l337"></a>      </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;</span><span class=cB1>lock</span><span class=cB0>,0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l338"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l339"></a>      t=c-&gt;ready;
+<a name="l340"></a>      c-&gt;ready=c-&gt;asm_buf;
+<a name="l341"></a>      c-&gt;asm_buf=t;
+<a name="l342"></a>      c-&gt;ready_len=c-&gt;asm_len;
+<a name="l343"></a>      c-&gt;ready_cnt++;
+<a name="l344"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;c-&gt;</span><span class=cB1>lock</span><span class=cB0>,0);
+<a name="l345"></a>      c-&gt;frames++;
+<a name="l346"></a>    }
+<a name="l347"></a>    </span><span class=cB1>else</span><span class=cB0>
+<a name="l348"></a>      c-&gt;bad_frames++;
+<a name="l349"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l350"></a>  c-&gt;asm_len=c-&gt;raw_len=c-&gt;f_lost=c-&gt;f_zrun=0;
+<a name="l351"></a>  c-&gt;bad=c-&gt;err=c-&gt;over=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l352"></a>}
+<a name="l353"></a>
+<a name="l354"></a></span><span class=cB1>U0</span><span class=cB0> UvcPkt(CUvc *c,</span><span class=cB1>U8</span><span class=cB0> *p,</span><span class=cB9>I64</span><span class=cB0> len)
+<a name="l355"></a>{</span><span class=cB2>//One payload: header, then video data.</span><span class=cB0>
+<a name="l356"></a>  </span><span class=cB9>I64</span><span class=cB0> hl,info,n,sof,i;
+<a name="l357"></a>  </span><span class=cB1>Bool</span><span class=cB0> cont;
+<a name="l358"></a>  </span><span class=cB1>if</span><span class=cB0> (len&lt;2)
+<a name="l359"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l360"></a>    c-&gt;zrun++;
+<a name="l361"></a>    c-&gt;mf_pend[c-&gt;mf]++;
+<a name="l362"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l363"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l364"></a>  hl=p[0];
+<a name="l365"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;nhdr&lt;UVC_NHDR &amp;&amp; </span><span class=cB7>(</span><span class=cB0>len&gt;hl || hl&lt;2</span><span class=cB7>)</span><span class=cB0>)
+<a name="l366"></a>    c-&gt;hdr[c-&gt;nhdr++]=len&lt;&lt;16|hl&lt;&lt;8|p[1];
+<a name="l367"></a>  </span><span class=cB1>if</span><span class=cB0> (hl&lt;2 || hl&gt;len) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l368"></a>  info=p[1];
+<a name="l369"></a>  n=len-hl;
+<a name="l370"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;c-&gt;pl_max) c-&gt;pl_max=n;
+<a name="l371"></a>  </span><span class=cB1>if</span><span class=cB0> (n&gt;1024) c-&gt;pl_big++;
+<a name="l372"></a>  </span><span class=cB1>if</span><span class=cB0> (!n)
+<a name="l373"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l374"></a>    c-&gt;pl_empty++;
+<a name="l375"></a>    c-&gt;zrun++;
+<a name="l376"></a>    c-&gt;mf_pend[c-&gt;mf]++;
+<a name="l377"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l378"></a>  cont=c-&gt;asm_len &amp;&amp; info&amp;1==c-&gt;fid &amp;&amp; n;
+<a name="l379"></a>  </span><span class=cB1>if</span><span class=cB0> (info&amp;8 &amp;&amp; hl&gt;=8)
+<a name="l380"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l381"></a>    sof=(p+hl-2)(</span><span class=cB9>U16</span><span class=cB0> *)[0]&amp;2047;
+<a name="l382"></a>    </span><span class=cB1>if</span><span class=cB0> (c-&gt;sof&gt;=0 &amp;&amp; </span><span class=cB7>(</span><span class=cB0>sof-c-&gt;sof</span><span class=cB7>)</span><span class=cB0>&amp;2047&gt;1)
+<a name="l383"></a>    {
+<a name="l384"></a>      c-&gt;sof_gaps++;
+<a name="l385"></a>      c-&gt;sof_lost+=(sof-c-&gt;sof)&amp;2047-1;
+<a name="l386"></a>      </span><span class=cB1>if</span><span class=cB0> (cont)
+<a name="l387"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l388"></a>        c-&gt;in_gaps++;
+<a name="l389"></a>        c-&gt;in_lost+=(sof-c-&gt;sof)&amp;2047-1;
+<a name="l390"></a>        c-&gt;f_lost+=(sof-c-&gt;sof)&amp;2047-1;
+<a name="l391"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l392"></a>    }
+<a name="l393"></a>    c-&gt;sof=sof;
+<a name="l394"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l395"></a>  </span><span class=cB1>if</span><span class=cB0> (n)
+<a name="l396"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l397"></a>    c-&gt;data_pl++;
+<a name="l398"></a>    c-&gt;mf_data[c-&gt;mf]++;
+<a name="l399"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;8; i++)
+<a name="l400"></a>    {
+<a name="l401"></a>      </span><span class=cB1>if</span><span class=cB0> (cont)
+<a name="l402"></a>        c-&gt;mf_gap[i]+=c-&gt;mf_pend[i];
+<a name="l403"></a>      c-&gt;mf_pend[i]=0;
+<a name="l404"></a>    }
+<a name="l405"></a>    </span><span class=cB1>if</span><span class=cB0> (cont)
+<a name="l406"></a>    {
+<a name="l407"></a>      </span><span class=cB1>if</span><span class=cB0> (c-&gt;zrun&gt;c-&gt;zrun_max) c-&gt;zrun_max=c-&gt;zrun;
+<a name="l408"></a>      </span><span class=cB1>if</span><span class=cB0> (c-&gt;zrun&gt;c-&gt;f_zrun) c-&gt;f_zrun=c-&gt;zrun;
+<a name="l409"></a>      </span><span class=cB1>if</span><span class=cB0> (c-&gt;zrun&gt;=8) c-&gt;zrun_n++;
+<a name="l410"></a>    }
+<a name="l411"></a>    c-&gt;zrun=0;
+<a name="l412"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l413"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;asm_len &amp;&amp; info&amp;1!=c-&gt;fid)
+<a name="l414"></a>    UvcFrameEnd(c);
+<a name="l415"></a>  c-&gt;fid=info&amp;1;
+<a name="l416"></a>  </span><span class=cB1>if</span><span class=cB0> (info&amp;0x40)
+<a name="l417"></a>    c-&gt;bad=c-&gt;err=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l418"></a>  c-&gt;raw_len+=n;
+<a name="l419"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;asm_len+n&gt;c-&gt;fsize)
+<a name="l420"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l421"></a>    c-&gt;over=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l422"></a>    c-&gt;bad=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l423"></a>    n=c-&gt;fsize-c-&gt;asm_len;
+<a name="l424"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l425"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(c-&gt;asm_buf+c-&gt;asm_len,p+hl,n);
+<a name="l426"></a>  c-&gt;asm_len+=n;
+<a name="l427"></a>  </span><span class=cB1>if</span><span class=cB0> (info&amp;2)
+<a name="l428"></a>    UvcFrameEnd(c);
+<a name="l429"></a>}
+<a name="l430"></a>
+<a name="l431"></a></span><span class=cB1>U8</span><span class=cB0> *uvc_cap=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l432"></a></span><span class=cB9>I64</span><span class=cB0> uvc_cap_n=0,uvc_cap_max=0;
+<a name="l433"></a>
+<a name="l434"></a></span><span class=cB9>I64</span><span class=cB0> UvcCpu()
+<a name="l435"></a>{</span><span class=cB2>//Where UvcTask runs: core 1 when there is one, else the caller's.</span><span class=cB0>
+<a name="l436"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;1)
+<a name="l437"></a>    </span><span class=cB1>return</span><span class=cB0> 1;
+<a name="l438"></a>  </span><span class=cB1>return</span><span class=cB0> -1;
+<a name="l439"></a>}
+<a name="l440"></a>
+<a name="l441"></a></span><span class=cB1>U0</span><span class=cB0> UvcTask(CUvc *c)
+<a name="l442"></a>{</span><span class=cB2>//Reads the stream every millisecond: the kernel queues 32 ms of it.</span><span class=cB0>
+<a name="l443"></a>  </span><span class=cB9>I64</span><span class=cB0> i,n,k=c-&gt;k,gen=c-&gt;gen;
+<a name="l444"></a>  </span><span class=cB1>U8</span><span class=cB0> *p;
+<a name="l445"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3755"></span><span class=cB9>CTask</a></span><span class=cB0> *own=c-&gt;owner;
+<a name="l446"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>)
+<a name="l447"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l448"></a>    </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l25"></span><span class=cB5>TaskValidate</a></span><span class=cB7>(</span><span class=cB0>own</span><span class=cB7>)</span><span class=cB0>)
+<a name="l449"></a>    {
+<a name="l450"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l466"></span><span class=cB5>UsbVenIsoStop</a></span><span class=cB0>(k,gen);
+<a name="l451"></a>      </span><span class=cB1>return</span><span class=cB0>;
+<a name="l452"></a>    }
+<a name="l453"></a>    </span><span class=cB1>if</span><span class=cB0> (c-&gt;stop)
+<a name="l454"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l455"></a>    n=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l403"></span><span class=cB5>UsbVenIsoRead</a></span><span class=cB0>(c-&gt;k,c-&gt;gen,c-&gt;iso_buf,c-&gt;lens,UVC_PKTS);
+<a name="l456"></a>    </span><span class=cB1>if</span><span class=cB0> (n&lt;0)
+<a name="l457"></a>    {
+<a name="l458"></a>      c-&gt;dead=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l459"></a>      </span><span class=cB1>break</span><span class=cB0>;
+<a name="l460"></a>    }
+<a name="l461"></a>    p=c-&gt;iso_buf;
+<a name="l462"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;n; i++)
+<a name="l463"></a>    {
+<a name="l464"></a>      c-&gt;mf=c-&gt;pkts&amp;7;
+<a name="l465"></a>      c-&gt;pkts++;
+<a name="l466"></a>      </span><span class=cB1>if</span><span class=cB0> (uvc_cap &amp;&amp; uvc_cap_n&lt;uvc_cap_max)
+<a name="l467"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l468"></a>        <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(uvc_cap+uvc_cap_n*16,0,16);
+<a name="l469"></a>        (uvc_cap+uvc_cap_n*16)(</span><span class=cB9>I16</span><span class=cB0> *)[0]=c-&gt;lens[i];
+<a name="l470"></a>        </span><span class=cB1>if</span><span class=cB0> (c-&gt;lens[i]&gt;0)
+<a name="l471"></a>          <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(uvc_cap+uvc_cap_n*16+2,p,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB7>(</span><span class=cB0>c-&gt;lens[i],14</span><span class=cB7>)</span><span class=cB0>);
+<a name="l472"></a>        uvc_cap_n++;
+<a name="l473"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l474"></a>      </span><span class=cB1>if</span><span class=cB0> (c-&gt;lens[i]&lt;0)
+<a name="l475"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l476"></a>        c-&gt;lost++;
+<a name="l477"></a>        </span><span class=cB1>if</span><span class=cB0> (c-&gt;asm_len)
+<a name="l478"></a>          c-&gt;bad=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l479"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l480"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l481"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l482"></a>        UvcPkt(c,p,c-&gt;lens[i]);
+<a name="l483"></a>        p+=c-&gt;lens[i];
+<a name="l484"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l485"></a>    }
+<a name="l486"></a>    </span><span class=cB1>if</span><span class=cB0> (n&lt;UVC_PKTS)
+<a name="l487"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l488"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l489"></a>  c-&gt;running=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l490"></a>}
+<a name="l491"></a>
+<a name="l492"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> UvcStop(CUvc *c)
+<a name="l493"></a>{</span><span class=cB2>//Stop streaming.</span><span class=cB0>
+<a name="l494"></a>  </span><span class=cB1>if</span><span class=cB0> (!c-&gt;cur) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l495"></a>  c-&gt;stop=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l496"></a>  </span><span class=cB1>while</span><span class=cB0> (c-&gt;running)
+<a name="l497"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(1);
+<a name="l498"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l466"></span><span class=cB5>UsbVenIsoStop</a></span><span class=cB0>(c-&gt;k,c-&gt;gen);
+<a name="l499"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB0>(c-&gt;k,c-&gt;gen,UVC_RT_IF,UVC_SET_IF,0,c-&gt;vs_if);
+<a name="l500"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c-&gt;iso_buf);
+<a name="l501"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c-&gt;lens);
+<a name="l502"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c-&gt;asm_buf);
+<a name="l503"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c-&gt;ready);
+<a name="l504"></a>  c-&gt;iso_buf=c-&gt;lens=c-&gt;asm_buf=c-&gt;ready=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l505"></a>  c-&gt;cur=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l506"></a>}
+<a name="l507"></a>
+<a name="l508"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> UvcStart(CUvc *c,</span><span class=cB9>I64</span><span class=cB0> w=640,</span><span class=cB9>I64</span><span class=cB0> h=480,</span><span class=cB9>I64</span><span class=cB0> fps=15,</span><span class=cB9>I64</span><span class=cB0> type=-1)
+<a name="l509"></a>{</span><span class=cB2>//Stream frames of w x h (or the nearest smaller size) at about fps.</span><span class=cB0>
+<a name="l510"></a>  CUvcFrame *fr;
+<a name="l511"></a>  CUvcAlt *a=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l21"></span><span class=cB3>NULL</a></span><span class=cB0>;
+<a name="l512"></a>  </span><span class=cB9>I64</span><span class=cB0> i,plen,want,best,d;
+<a name="l513"></a>  </span><span class=cB1>U8</span><span class=cB0> mx[48];
+<a name="l514"></a>  UvcStop(c);
+<a name="l515"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>fr=UvcPick(c,w,h,type)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l516"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l517"></a>  want=10000000/<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(fps,1,60);
+<a name="l518"></a>  best=0;
+<a name="l519"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;fr-&gt;nivl; i++)
+<a name="l520"></a>    </span><span class=cB1>if</span><span class=cB0> (fr-&gt;ivl[i] &amp;&amp; </span><span class=cB7>(</span><span class=cB0>!best || <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(fr-&gt;ivl[i]-want)&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l97"></span><span class=cB5>AbsI64</a></span><span class=cB0>(best-want)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l521"></a>      best=fr-&gt;ivl[i];
+<a name="l522"></a>  </span><span class=cB1>if</span><span class=cB0> (!best) best=want;
+<a name="l523"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;bcd&gt;=0x150) plen=48;
+<a name="l524"></a>  </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (c-&gt;bcd&gt;=0x110) plen=34;
+<a name="l525"></a>  </span><span class=cB1>else</span><span class=cB0> plen=26;
+<a name="l526"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(c-&gt;probe,0,48);
+<a name="l527"></a>  c-&gt;probe[0]=1;
+<a name="l528"></a>  c-&gt;probe[2]=fr-&gt;fmt;
+<a name="l529"></a>  c-&gt;probe[3]=fr-&gt;idx;
+<a name="l530"></a>  (c-&gt;probe+4)(</span><span class=cB9>U32</span><span class=cB0> *)[0]=best;
+<a name="l531"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l277"></span><span class=cB5>UsbVenCtlOut</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,0x21,1,0x100,c-&gt;vs_if,c-&gt;probe,plen</span><span class=cB7>)</span><span class=cB0>&lt;0)
+<a name="l532"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l533"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(mx,0,48);
+<a name="l534"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,0xA1,0x83,0x100,c-&gt;vs_if,plen,mx</span><span class=cB7>)</span><span class=cB0>&gt;=26)
+<a name="l535"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l536"></a>    (c-&gt;probe+12)(</span><span class=cB9>U16</span><span class=cB0> *)[0]=(mx+12)(</span><span class=cB9>U16</span><span class=cB0> *)[0];
+<a name="l537"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l277"></span><span class=cB5>UsbVenCtlOut</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,0x21,1,0x100,c-&gt;vs_if,c-&gt;probe,plen</span><span class=cB7>)</span><span class=cB0>&lt;0)
+<a name="l538"></a>      </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l539"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l540"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,0xA1,0x81,0x100,c-&gt;vs_if,plen,c-&gt;probe</span><span class=cB7>)</span><span class=cB0>&lt;26)
+<a name="l541"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l542"></a>  c-&gt;max_payload=(c-&gt;probe+22)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l543"></a>  c-&gt;cur_ivl=(c-&gt;probe+4)(</span><span class=cB9>U32</span><span class=cB0> *)[0];
+<a name="l544"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l277"></span><span class=cB5>UsbVenCtlOut</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,0x21,1,0x200,c-&gt;vs_if,c-&gt;probe,plen</span><span class=cB7>)</span><span class=cB0>&lt;0)
+<a name="l545"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l546"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;c-&gt;nalt; i++)
+<a name="l547"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l548"></a>    d=c-&gt;alt[i].bw;
+<a name="l549"></a>    </span><span class=cB1>if</span><span class=cB0> (!a)
+<a name="l550"></a>      a=&amp;c-&gt;alt[i];
+<a name="l551"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (d&gt;=c-&gt;max_payload)
+<a name="l552"></a>    {
+<a name="l553"></a>      </span><span class=cB1>if</span><span class=cB0> (a-&gt;bw&lt;c-&gt;max_payload || d&lt;a-&gt;bw)
+<a name="l554"></a>        a=&amp;c-&gt;alt[i];
+<a name="l555"></a>    }
+<a name="l556"></a>    </span><span class=cB1>else</span><span class=cB0> </span><span class=cB1>if</span><span class=cB0> (a-&gt;bw&lt;c-&gt;max_payload &amp;&amp; d&gt;a-&gt;bw)
+<a name="l557"></a>      a=&amp;c-&gt;alt[i];
+<a name="l558"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l559"></a>  c-&gt;cur_alt=a-&gt;alt;
+<a name="l560"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB7>(</span><span class=cB0>c-&gt;k,c-&gt;gen,UVC_RT_IF,UVC_SET_IF,a-&gt;alt,c-&gt;vs_if</span><span class=cB7>)</span><span class=cB0>&lt;0)
+<a name="l561"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l562"></a>  </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>c-&gt;pkt_max=<a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l367"></span><span class=cB5>UsbVenIsoStart</a></span><span class=cB0>(c-&gt;k,c-&gt;gen,a-&gt;ep,a-&gt;mps,a-&gt;ivl)</span><span class=cB7>)</span><span class=cB0>&lt;0)
+<a name="l563"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l564"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Usb/VenK.html#l270"></span><span class=cB5>UsbVenCtl</a></span><span class=cB0>(c-&gt;k,c-&gt;gen,UVC_RT_IF,UVC_SET_IF,0,c-&gt;vs_if);
+<a name="l565"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l566"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l567"></a>  c-&gt;iso_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(UVC_PKTS*c-&gt;pkt_max);
+<a name="l568"></a>  c-&gt;lens=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(UVC_PKTS*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l569"></a>  </span><span class=cB1>if</span><span class=cB0> (fr-&gt;type==UVC_YUY2)
+<a name="l570"></a>    c-&gt;fsize=fr-&gt;w*fr-&gt;h*2;
+<a name="l571"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l572"></a>    c-&gt;fsize=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l99"></span><span class=cB5>MaxI64</a></span><span class=cB7>(</span><span class=cB0>fr-&gt;size,(c-&gt;probe+18)(</span><span class=cB9>U32</span><span class=cB0> *)[0]</span><span class=cB7>)</span><span class=cB0>,fr-&gt;w*fr-&gt;h*2);
+<a name="l573"></a>  c-&gt;asm_buf=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(c-&gt;fsize);
+<a name="l574"></a>  c-&gt;ready=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l419"></span><span class=cB5>MAlloc</a></span><span class=cB0>(c-&gt;fsize);
+<a name="l575"></a>  c-&gt;asm_len=c-&gt;raw_len=0;
+<a name="l576"></a>  c-&gt;bad=c-&gt;err=c-&gt;over=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l577"></a>  c-&gt;ready_cnt=c-&gt;frames=c-&gt;bad_frames=c-&gt;pkts=c-&gt;lost=0;
+<a name="l578"></a>  c-&gt;rej_err=c-&gt;rej_long=c-&gt;rej_lost=c-&gt;rej_short=c-&gt;rej_jpg=0;
+<a name="l579"></a>  c-&gt;nhdr=c-&gt;nlen=c-&gt;padded=c-&gt;miss_sum=c-&gt;pl_max=c-&gt;pl_big=c-&gt;pl_empty=0;
+<a name="l580"></a>  c-&gt;sof=-1;
+<a name="l581"></a>  c-&gt;sof_gaps=c-&gt;sof_lost=c-&gt;in_gaps=c-&gt;in_lost=0;
+<a name="l582"></a>  c-&gt;zrun=c-&gt;zrun_max=c-&gt;zrun_n=c-&gt;f_lost=c-&gt;f_zrun=c-&gt;data_pl=0;
+<a name="l583"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(c-&gt;mf_data,0,8*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l584"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(c-&gt;mf_gap,0,8*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l585"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(c-&gt;mf_pend,0,8*</span><span class=cB1>sizeof</span><span class=cB7>(</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>);
+<a name="l586"></a>  c-&gt;</span><span class=cB1>lock</span><span class=cB0>=0;
+<a name="l587"></a>  c-&gt;stop=c-&gt;dead=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l588"></a>  c-&gt;cur=fr;
+<a name="l589"></a>  c-&gt;running=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l590"></a>  c-&gt;owner=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>;
+<a name="l591"></a>  </span><span class=cB1>if</span><span class=cB0> (UvcCpu&gt;=0)
+<a name="l592"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;UvcTask,c,</span><span class=cB6>&quot;UVC stream&quot;</span><span class=cB0>,UvcCpu);
+<a name="l593"></a>  </span><span class=cB1>else</span><span class=cB0>
+<a name="l594"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KTask.html#l247"></span><span class=cB5>Spawn</a></span><span class=cB0>(&amp;UvcTask,c,</span><span class=cB6>&quot;UVC stream&quot;</span><span class=cB0>,,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>);
+<a name="l595"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l596"></a>}
+<a name="l597"></a>
+<a name="l598"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> UvcGrab(CUvc *c,</span><span class=cB1>U8</span><span class=cB0> *dst,</span><span class=cB9>I64</span><span class=cB0> *_cnt)
+<a name="l599"></a>{</span><span class=cB2>//Copy the newest whole frame to dst. Its length, 0 if none newer.</span><span class=cB0>
+<a name="l600"></a>  </span><span class=cB9>I64</span><span class=cB0> res=0;
+<a name="l601"></a>  </span><span class=cB1>if</span><span class=cB0> (!c-&gt;cur || c-&gt;ready_cnt==*_cnt) </span><span class=cB1>return</span><span class=cB0> 0;
+<a name="l602"></a>  </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;</span><span class=cB1>lock</span><span class=cB0>,0</span><span class=cB7>)</span><span class=cB0>)
+<a name="l603"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l604"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;ready_cnt!=*_cnt)
+<a name="l605"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l606"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l169"></span><span class=cB5>MemCpy</a></span><span class=cB0>(dst,c-&gt;ready,c-&gt;ready_len);
+<a name="l607"></a>    *_cnt=c-&gt;ready_cnt;
+<a name="l608"></a>    res=c-&gt;ready_len;
+<a name="l609"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l610"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l24"></span><span class=cB5>LBtr</a></span><span class=cB0>(&amp;c-&gt;</span><span class=cB1>lock</span><span class=cB0>,0);
+<a name="l611"></a>  </span><span class=cB1>return</span><span class=cB0> res;
+<a name="l612"></a>}
+<a name="l613"></a>
+<a name="l614"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> UvcClose(CUvc *c)
+<a name="l615"></a>{
+<a name="l616"></a>  </span><span class=cB1>if</span><span class=cB0> (!c) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l617"></a>  UvcStop(c);
+<a name="l618"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(c);
+<a name="l619"></a>}
+<a name="l620"></a>
+<a name="l621"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_PAL_ALL     0
+<a name="l622"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_PAL_16      1
+<a name="l623"></a>#</span><span class=cB1>define</span><span class=cB0> UVC_PALS        2
+<a name="l624"></a>
+<a name="l625"></a></span><span class=cB9>I64</span><span class=cB0> uvc_ty[256],uvc_trv[256],uvc_tgu[256],uvc_tgv[256],uvc_tbu[256],
+<a name="l626"></a>        uvc_dofs[UVC_PALS*3*16];
+<a name="l627"></a></span><span class=cB1>U8</span><span class=cB0> uvc_clip[1024],
+<a name="l628"></a>        uvc_near[UVC_PALS*32*32*32];
+<a name="l629"></a></span><span class=cB1>U8</span><span class=cB0> uvc_bayer[16]={0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5};
+<a name="l630"></a></span><span class=cB9>I64</span><span class=cB0> uvc_spread[UVC_PALS]={51,85};
+<a name="l631"></a></span><span class=cB1>Bool</span><span class=cB0> uvc_tab_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l632"></a>
+<a name="l633"></a></span><span class=cB9>I64</span><span class=cB0> UvcNearest16(</span><span class=cB9>I64</span><span class=cB0> r,</span><span class=cB9>I64</span><span class=cB0> g,</span><span class=cB9>I64</span><span class=cB0> b)
+<a name="l634"></a>{</span><span class=cB2>//The nearest of the 16 CGA colors.</span><span class=cB0>
+<a name="l635"></a>  </span><span class=cB9>I64</span><span class=cB0> i,d,dr,dg,db,best=0,best_d=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l39"></span><span class=cB3>I64_MAX</a></span><span class=cB0>;
+<a name="l636"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3424"></span><span class=cB9>CBGR48</a></span><span class=cB0> c;
+<a name="l637"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;16; i++)
+<a name="l638"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l639"></a>    c=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l73"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(i);
+<a name="l640"></a>    dr=r-c.r.u8[1];
+<a name="l641"></a>    dg=g-c.g.u8[1];
+<a name="l642"></a>    db=b-c.b.u8[1];
+<a name="l643"></a>    d=dr*dr+dg*dg+db*db;
+<a name="l644"></a>    </span><span class=cB1>if</span><span class=cB0> (d&lt;best_d)
+<a name="l645"></a>    {
+<a name="l646"></a>      best_d=d;
+<a name="l647"></a>      best=i;
+<a name="l648"></a>    }
+<a name="l649"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l650"></a>  </span><span class=cB1>return</span><span class=cB0> best;
+<a name="l651"></a>}
+<a name="l652"></a>
+<a name="l653"></a></span><span class=cB1>U0</span><span class=cB0> UvcTabInit()
+<a name="l654"></a>{
+<a name="l655"></a>  </span><span class=cB9>I64</span><span class=cB0> i,p,r,g,b,cx,cy;
+<a name="l656"></a>  </span><span class=cB1>if</span><span class=cB0> (uvc_tab_ok) </span><span class=cB1>return</span><span class=cB0>;
+<a name="l657"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;256; i++)
+<a name="l658"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l659"></a>    uvc_ty[i]=298*(i-16)+128;
+<a name="l660"></a>    uvc_trv[i]=409*(i-128);
+<a name="l661"></a>    uvc_tgu[i]=-100*(i-128);
+<a name="l662"></a>    uvc_tgv[i]=-208*(i-128);
+<a name="l663"></a>    uvc_tbu[i]=516*(i-128);
+<a name="l664"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l665"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;1024; i++)
+<a name="l666"></a>    uvc_clip[i]=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(i-256,0,255);
+<a name="l667"></a>  </span><span class=cB1>for</span><span class=cB0> (p=0; p&lt;UVC_PALS; p++)
+<a name="l668"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;16; i++)
+<a name="l669"></a>    </span><span class=cB7>{</span><span class=cB2>//i is the 4x4 Bayer cell (i&gt;&gt;2,i&amp;3).  Red keeps its phase; green and blue</span><span class=cB0>
+<a name="l670"></a>      </span><span class=cB2>//get rotated ones so the dither moves the 3 channels independently and</span><span class=cB0>
+<a name="l671"></a>      </span><span class=cB2>//can reach a tinted palette entry.  One shared offset only slides a pixel</span><span class=cB0>
+<a name="l672"></a>      </span><span class=cB2>//along the gray diagonal, which is how a low chroma frame came out gray.</span><span class=cB0>
+<a name="l673"></a>      cy=i&gt;&gt;2;
+<a name="l674"></a>      cx=i&amp;3;
+<a name="l675"></a>      uvc_dofs[p*48+   i]=(</span><span class=cB7>(</span><span class=cB0>2*uvc_bayer[i]+1</span><span class=cB7>)</span><span class=cB0>-16)*uvc_spread[p]/32;
+<a name="l676"></a>      uvc_dofs[p*48+16+i]=(</span><span class=cB7>(</span><span class=cB0>2*uvc_bayer[(</span><span class=cB7>(</span><span class=cB0>(cy+1)&amp;3</span><span class=cB7>)</span><span class=cB0>&lt;&lt;2)+(</span><span class=cB7>(</span><span class=cB0>cx+2</span><span class=cB7>)</span><span class=cB0>&amp;3)]+1</span><span class=cB7>)</span><span class=cB0>-16)*
+<a name="l677"></a>            uvc_spread[p]/32;
+<a name="l678"></a>      uvc_dofs[p*48+32+i]=(</span><span class=cB7>(</span><span class=cB0>2*uvc_bayer[(</span><span class=cB7>(</span><span class=cB0>(cy+2)&amp;3</span><span class=cB7>)</span><span class=cB0>&lt;&lt;2)+(</span><span class=cB7>(</span><span class=cB0>cx+1</span><span class=cB7>)</span><span class=cB0>&amp;3)]+1</span><span class=cB7>)</span><span class=cB0>-16)*
+<a name="l679"></a>            uvc_spread[p]/32;
+<a name="l680"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l681"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;32*32*32; i++)
+<a name="l682"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l683"></a>    r=i&gt;&gt;10&lt;&lt;3|4;
+<a name="l684"></a>    g=(i&gt;&gt;5&amp;31)&lt;&lt;3|4;
+<a name="l685"></a>    b=(i&amp;31)&lt;&lt;3|4;
+<a name="l686"></a>    uvc_near[UVC_PAL_ALL*32768+i]=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l66"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(r,g,b);
+<a name="l687"></a>    uvc_near[UVC_PAL_16*32768+i]=UvcNearest16(r,g,b);
+<a name="l688"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>i&amp;1023</span><span class=cB7>)</span><span class=cB0>)
+<a name="l689"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l690"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l691"></a>  uvc_tab_ok=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l692"></a>}
+<a name="l693"></a>
+<a name="l694"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> UvcToDC(</span><span class=cB1>U8</span><span class=cB0> *src,</span><span class=cB9>I64</span><span class=cB0> w,</span><span class=cB9>I64</span><span class=cB0> h,</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB1>Bool</span><span class=cB0> dither=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,
+<a name="l695"></a>        </span><span class=cB9>I64</span><span class=cB0> pal=UVC_PAL_ALL)
+<a name="l696"></a>{</span><span class=cB2>//YUY2 frame src (w x h) into dc's top left, in color set pal.</span><span class=cB0>
+<a name="l697"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,yy,r,g,b,rv,gg,bu,o,o2,o3,k,*ofs,dw=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(w,dc-&gt;width)&amp;~1,dh=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(h,dc-&gt;height);
+<a name="l698"></a>  </span><span class=cB1>U8</span><span class=cB0> *s,*d,*nr;
+<a name="l699"></a>  UvcTabInit;
+<a name="l700"></a>  pal=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(pal,0,UVC_PALS-1);
+<a name="l701"></a>  nr=uvc_near+pal*32768;
+<a name="l702"></a>  </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;dh; y++)
+<a name="l703"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l704"></a>    s=src+y*w*2;
+<a name="l705"></a>    d=dc-&gt;body+y*dc-&gt;width_internal;
+<a name="l706"></a>    ofs=uvc_dofs+pal*48;
+<a name="l707"></a>    </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;dw; x+=2)
+<a name="l708"></a>    {
+<a name="l709"></a>      rv=uvc_trv[s[3]];
+<a name="l710"></a>      gg=uvc_tgu[s[1]]+uvc_tgv[s[3]];
+<a name="l711"></a>      bu=uvc_tbu[s[1]];
+<a name="l712"></a>      o=0;
+<a name="l713"></a>      o2=0;
+<a name="l714"></a>      o3=0;
+<a name="l715"></a>      </span><span class=cB1>if</span><span class=cB0> (dither)
+<a name="l716"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l717"></a>        k=(y&amp;3)&lt;&lt;2+x&amp;3;
+<a name="l718"></a>        o =ofs[k];
+<a name="l719"></a>        o2=ofs[16+k];
+<a name="l720"></a>        o3=ofs[32+k];
+<a name="l721"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l722"></a>      yy=uvc_ty[s[0]];
+<a name="l723"></a>      r=uvc_clip[uvc_clip[(yy+rv)&gt;&gt;8+256]+o+256];
+<a name="l724"></a>      g=uvc_clip[uvc_clip[(yy+gg)&gt;&gt;8+256]+o2+256];
+<a name="l725"></a>      b=uvc_clip[uvc_clip[(yy+bu)&gt;&gt;8+256]+o3+256];
+<a name="l726"></a>      d[x]=nr[r&gt;&gt;3&lt;&lt;10|g&gt;&gt;3&lt;&lt;5|b&gt;&gt;3];
+<a name="l727"></a>      </span><span class=cB1>if</span><span class=cB0> (dither)
+<a name="l728"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l729"></a>        k=(y&amp;3)&lt;&lt;2+(x+1)&amp;3;
+<a name="l730"></a>        o =ofs[k];
+<a name="l731"></a>        o2=ofs[16+k];
+<a name="l732"></a>        o3=ofs[32+k];
+<a name="l733"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l734"></a>      yy=uvc_ty[s[2]];
+<a name="l735"></a>      r=uvc_clip[uvc_clip[(yy+rv)&gt;&gt;8+256]+o+256];
+<a name="l736"></a>      g=uvc_clip[uvc_clip[(yy+gg)&gt;&gt;8+256]+o2+256];
+<a name="l737"></a>      b=uvc_clip[uvc_clip[(yy+bu)&gt;&gt;8+256]+o3+256];
+<a name="l738"></a>      d[x+1]=nr[r&gt;&gt;3&lt;&lt;10|g&gt;&gt;3&lt;&lt;5|b&gt;&gt;3];
+<a name="l739"></a>      s+=4;
+<a name="l740"></a>    }
+<a name="l741"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>y&amp;15</span><span class=cB7>)</span><span class=cB0>)
+<a name="l742"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l743"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l744"></a>}
+<a name="l745"></a>
+<a name="l746"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> UvcRgbToDC(</span><span class=cB1>U8</span><span class=cB0> *rgb,</span><span class=cB9>I64</span><span class=cB0> w,</span><span class=cB9>I64</span><span class=cB0> h,</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB1>Bool</span><span class=cB0> dither=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,
+<a name="l747"></a>        </span><span class=cB9>I64</span><span class=cB0> pal=UVC_PAL_ALL)
+<a name="l748"></a>{</span><span class=cB2>//RGB24 picture (w x h) into dc's top left, like UvcToDC.</span><span class=cB0>
+<a name="l749"></a>  </span><span class=cB9>I64</span><span class=cB0> x,y,o,o2,o3,k,*ofs,dw=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(w,dc-&gt;width),dh=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l101"></span><span class=cB5>MinI64</a></span><span class=cB0>(h,dc-&gt;height);
+<a name="l750"></a>  </span><span class=cB1>U8</span><span class=cB0> *s,*d,*nr;
+<a name="l751"></a>  UvcTabInit;
+<a name="l752"></a>  pal=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l125"></span><span class=cB5>ClampI64</a></span><span class=cB0>(pal,0,UVC_PALS-1);
+<a name="l753"></a>  nr=uvc_near+pal*32768;
+<a name="l754"></a>  ofs=uvc_dofs+pal*48;
+<a name="l755"></a>  </span><span class=cB1>for</span><span class=cB0> (y=0; y&lt;dh; y++)
+<a name="l756"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l757"></a>    s=rgb+y*w*3;
+<a name="l758"></a>    d=dc-&gt;body+y*dc-&gt;width_internal;
+<a name="l759"></a>    </span><span class=cB1>for</span><span class=cB0> (x=0; x&lt;dw; x++)
+<a name="l760"></a>    {
+<a name="l761"></a>      o=0;
+<a name="l762"></a>      o2=0;
+<a name="l763"></a>      o3=0;
+<a name="l764"></a>      </span><span class=cB1>if</span><span class=cB0> (dither)
+<a name="l765"></a>      </span><span class=cB7>{</span><span class=cB0>
+<a name="l766"></a>        k=(y&amp;3)&lt;&lt;2+x&amp;3;
+<a name="l767"></a>        o =ofs[k];
+<a name="l768"></a>        o2=ofs[16+k];
+<a name="l769"></a>        o3=ofs[32+k];
+<a name="l770"></a>      </span><span class=cB7>}</span><span class=cB0>
+<a name="l771"></a>      d[x]=nr[uvc_clip[s[0]+o+256]&gt;&gt;3&lt;&lt;10|uvc_clip[s[1]+o2+256]&gt;&gt;3&lt;&lt;5|
+<a name="l772"></a>            uvc_clip[s[2]+o3+256]&gt;&gt;3];
+<a name="l773"></a>      s+=3;
+<a name="l774"></a>    }
+<a name="l775"></a>    </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>y&amp;15</span><span class=cB7>)</span><span class=cB0>)
+<a name="l776"></a>      <a href="http://tinkeros.github.io/WbGit/Kernel/Sched.html#l288"></span><span class=cB5>Yield</a></span><span class=cB0>;
+<a name="l777"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l778"></a>}
+<a name="l779"></a>
+<a name="l780"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> UvcFrameToDC(CUvc *c,</span><span class=cB1>U8</span><span class=cB0> *frame,</span><span class=cB9>I64</span><span class=cB0> len,</span><span class=cB9>CDC</span><span class=cB0> *dc,</span><span class=cB1>Bool</span><span class=cB0> dither=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>,
+<a name="l781"></a>        </span><span class=cB9>I64</span><span class=cB0> pal=UVC_PAL_ALL)
+<a name="l782"></a>{</span><span class=cB2>//A frame from UvcGrab into dc, YUY2 or MJPEG. FALSE if a JPEG did not decode.</span><span class=cB0>
+<a name="l783"></a>  </span><span class=cB1>U8</span><span class=cB0> *rgb;
+<a name="l784"></a>  </span><span class=cB9>I64</span><span class=cB0> w,h;
+<a name="l785"></a>  </span><span class=cB1>if</span><span class=cB0> (!c-&gt;cur) </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l786"></a>  </span><span class=cB1>if</span><span class=cB0> (c-&gt;cur-&gt;type==UVC_YUY2)
+<a name="l787"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l788"></a>    UvcToDC(frame,c-&gt;cur-&gt;w,c-&gt;cur-&gt;h,dc,dither,pal);
+<a name="l789"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l790"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l791"></a>  </span><span class=cB1>if</span><span class=cB0> (!</span><span class=cB7>(</span><span class=cB0>rgb=JpgDecode(frame,len,&amp;w,&amp;h)</span><span class=cB7>)</span><span class=cB0>)
+<a name="l792"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
+<a name="l793"></a>  UvcRgbToDC(rgb,w,h,dc,dither,pal);
+<a name="l794"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l415"></span><span class=cB5>Free</a></span><span class=cB0>(rgb);
+<a name="l795"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l22"></span><span class=cB3>TRUE</a></span><span class=cB0>;
+<a name="l796"></a>}
+</span></div></pre></body>
+</html>
