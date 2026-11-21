@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.24">
+<meta name="generator" content="TinkerOS V5.25">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -81,7 +81,7 @@
 <a name="l42"></a>        mmio,
 <a name="l43"></a>        usb_k,
 <a name="l44"></a>        usb_gen;
-<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *RX_fifo;
+<a name="l45"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l179"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *RX_fifo;
 <a name="l46"></a>  </span><span class=cB1>U8</span><span class=cB0>   *link,
 <a name="l47"></a>       *name;
 <a name="l48"></a>  </span><span class=cB1>Bool</span><span class=cB0>  probe_skip;
@@ -114,7 +114,7 @@
 <a name="l75"></a></span><span class=cB1>public</span><span class=cB0> </span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l75"></span><span class=cB5>CommHndlr</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> port)
 <a name="l76"></a>{</span><span class=cB2>// Com port IRQ handler</span><span class=cB0>
 <a name="l77"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c;
-<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
+<a name="l78"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l179"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
 <a name="l79"></a>  </span><span class=cB9>I64</span><span class=cB0> stat, free_size=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l7"></span><span class=cB3>COMM_RX_FIFO_SIZE</a></span><span class=cB0>;
 <a name="l80"></a>  c=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port];
 <a name="l81"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l26"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0>)
@@ -140,7 +140,7 @@
 <a name="l101"></a>
 <a name="l102"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l102"></span><span class=cB5>UartRxPoll</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c)
 <a name="l103"></a>{</span><span class=cB2>//Move bytes already in the 16550 FIFO into c-&gt;RX_fifo (poll-mode LSR check).</span><span class=cB0>
-<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
+<a name="l104"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l179"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
 <a name="l105"></a>  </span><span class=cB9>I64</span><span class=cB0> stat, free_size=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l7"></span><span class=cB3>COMM_RX_FIFO_SIZE</a></span><span class=cB0>;
 <a name="l106"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l26"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0>)
 <a name="l107"></a>  </span><span class=cB7>{</span><span class=cB0>
@@ -188,23 +188,23 @@
 <a name="l149"></a>  </span><span class=cB1>for</span><span class=cB0> (port=5; port&lt;=<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l6"></span><span class=cB3>MAX_COMM_NUM</a></span><span class=cB0>; port++)
 <a name="l150"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port].flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l26"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0> &amp;&amp; <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port].base&gt;0)
 <a name="l151"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l75"></span><span class=cB5>CommHndlr</a></span><span class=cB0>(port);
-<a name="l152"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l630"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0>*)=0;
+<a name="l152"></a>  *(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l636"></span><span class=cB3>LAPIC_EOI</a></span><span class=cB0>)(</span><span class=cB9>U32</span><span class=cB0>*)=0;
 <a name="l153"></a>}
 <a name="l154"></a>
 <a name="l155"></a></span><span class=cB2>// TODO add other PCIE, common PCI/PCIE function</span><span class=cB0>
 <a name="l156"></a>
 <a name="l157"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l157"></span><span class=cB5>AddPCIComms</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> next_port)
 <a name="l158"></a>{
-<a name="l159"></a>  </span><span class=cB9>I64</span><span class=cB0> class_code = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l338"></span><span class=cB3>PCIC_COM_CONTRL</a></span><span class=cB0> &lt;&lt; 8 | <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l3"></span><span class=cB3>PCISC_SERIAL</a></span><span class=cB0>,
+<a name="l159"></a>  </span><span class=cB9>I64</span><span class=cB0> class_code = <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l344"></span><span class=cB3>PCIC_COM_CONTRL</a></span><span class=cB0> &lt;&lt; 8 | <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l3"></span><span class=cB3>PCISC_SERIAL</a></span><span class=cB0>,
 <a name="l160"></a>      ioport,bdf,cur_port=next_port,
 <a name="l161"></a>                 b, d, f, bar;
 <a name="l162"></a>  </span><span class=cB1>for</span><span class=cB0> (b = 0; b &lt; <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l250"></span><span class=cB6>sys_pci_busses</a></span><span class=cB0>; b++)
 <a name="l163"></a>    </span><span class=cB1>for</span><span class=cB0> (d = 0; d &lt; 32; d++)
 <a name="l164"></a>      </span><span class=cB1>for</span><span class=cB0> (f = 0; f &lt; 8; f++)
 <a name="l165"></a>      </span><span class=cB7>{</span><span class=cB0>
-<a name="l166"></a>        </span><span class=cB1>if</span><span class=cB0> (class_code == <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB7>(</span><span class=cB0>b, d, f, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l300"></span><span class=cB3>PCIR_SUB_CODE</a></span><span class=cB7>)</span><span class=cB0> &amp; 0xFFFF)
+<a name="l166"></a>        </span><span class=cB1>if</span><span class=cB0> (class_code == <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l33"></span><span class=cB5>PCIReadU16</a></span><span class=cB7>(</span><span class=cB0>b, d, f, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l306"></span><span class=cB3>PCIR_SUB_CODE</a></span><span class=cB7>)</span><span class=cB0> &amp; 0xFFFF)
 <a name="l167"></a>        {
-<a name="l168"></a>          </span><span class=cB1>for</span><span class=cB0> (bar=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l306"></span><span class=cB3>PCIR_BASE0</a></span><span class=cB0>; bar&lt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l311"></span><span class=cB3>PCIR_BASE5</a></span><span class=cB0>; bar+=4)
+<a name="l168"></a>          </span><span class=cB1>for</span><span class=cB0> (bar=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l312"></span><span class=cB3>PCIR_BASE0</a></span><span class=cB0>; bar&lt;=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l317"></span><span class=cB3>PCIR_BASE5</a></span><span class=cB0>; bar+=4)
 <a name="l169"></a>          </span><span class=cB7>{</span><span class=cB0>
 <a name="l170"></a>            bdf = b &lt;&lt; 16 | d &lt;&lt; 8 | f;
 <a name="l171"></a>            ioport = <a href="http://tinkeros.github.io/WbGit/Kernel/PCI.html#l2"></span><span class=cB5>PCIReadU32</a></span><span class=cB0>(bdf.u8[2], bdf.u8[1], bdf.u8[0], bar);
@@ -396,13 +396,13 @@
 <a name="l357"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l357"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> base, </span><span class=cB9>I64</span><span class=cB0> cpu=0)
 <a name="l358"></a>{
 <a name="l359"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l360"></a>  </span><span class=cB1>U8</span><span class=cB0> *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l655"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
-<a name="l361"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l656"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
+<a name="l360"></a>  </span><span class=cB1>U8</span><span class=cB0> *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
+<a name="l361"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l662"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
 <a name="l362"></a>  </span><span class=cB1>for</span><span class=cB0>(i=0; i&lt;4; i++)
 <a name="l363"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l364"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> +i*2 +1;
+<a name="l364"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l667"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> +i*2 +1;
 <a name="l365"></a>    *_d=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.mp_apic_ids[cpu] &lt;&lt; 24;
-<a name="l366"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOREDTAB</a></span><span class=cB0>+i*2;
+<a name="l366"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l667"></span><span class=cB3>IOREDTAB</a></span><span class=cB0>+i*2;
 <a name="l367"></a>    *_d=0x4000+base+i;
 <a name="l368"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l369"></a>}
@@ -410,13 +410,13 @@
 <a name="l371"></a></span><span class=cB1>U0</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l371"></span><span class=cB5>DisablePciInterrupts</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> cpu=0)
 <a name="l372"></a>{
 <a name="l373"></a>  </span><span class=cB9>I64</span><span class=cB0> i, base=0x40;
-<a name="l374"></a>  </span><span class=cB1>U8</span><span class=cB0> *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l655"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
-<a name="l375"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l656"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
+<a name="l374"></a>  </span><span class=cB1>U8</span><span class=cB0> *da = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOAPIC_REG</a></span><span class=cB0>;
+<a name="l375"></a>  </span><span class=cB9>U32</span><span class=cB0> *_d = <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.uncached_alias + <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l662"></span><span class=cB3>IOAPIC_DATA</a></span><span class=cB0>;
 <a name="l376"></a>  </span><span class=cB1>for</span><span class=cB0>(i=0; i&lt;4; i++)
 <a name="l377"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l378"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> +i*2 +1;
+<a name="l378"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l667"></span><span class=cB3>IOREDTAB</a></span><span class=cB0> +i*2 +1;
 <a name="l379"></a>    *_d=<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l30"></span><span class=cB6>dev</a></span><span class=cB0>.mp_apic_ids[cpu] &lt;&lt; 24;
-<a name="l380"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l661"></span><span class=cB3>IOREDTAB</a></span><span class=cB0>+i*2;
+<a name="l380"></a>    *da=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l667"></span><span class=cB3>IOREDTAB</a></span><span class=cB0>+i*2;
 <a name="l381"></a>    *_d=0x14000+base+i;
 <a name="l382"></a>  </span><span class=cB7>}</span><span class=cB0>
 <a name="l383"></a>}
@@ -430,10 +430,10 @@
 <a name="l391"></a>    </span><span class=cB1>while</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i].base) {
 <a name="l392"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[i++].poll=0;
 <a name="l393"></a>    }
-<a name="l394"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x40, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l353"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
-<a name="l395"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x41, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l353"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
-<a name="l396"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x42, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l353"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
-<a name="l397"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x43, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l353"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
+<a name="l394"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x40, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l359"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
+<a name="l395"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x41, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l359"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
+<a name="l396"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x42, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l359"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
+<a name="l397"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KInts.html#l105"></span><span class=cB5>IntEntrySet</a></span><span class=cB0>(0x43, &amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l146"></span><span class=cB5>IRQCommPCI</a></span><span class=cB0>, <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l359"></span><span class=cB3>IDTET_IRQ</a></span><span class=cB0>);
 <a name="l398"></a>    </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l241"></span><span class=cB6>mp_cnt</a></span><span class=cB0>&gt;2)
 <a name="l399"></a>    {
 <a name="l400"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l357"></span><span class=cB5>PciRerouteInterrupts</a></span><span class=cB0>(0x40,2);
@@ -542,7 +542,7 @@
 <a name="l503"></a></span><span class=cB9>I64</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l503"></span><span class=cB5>CommGetFifoCnt</a></span><span class=cB0>(</span><span class=cB9>I64</span><span class=cB0> port)
 <a name="l504"></a>{
 <a name="l505"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l35"></span><span class=cB9>CComm</a></span><span class=cB0> *c;
-<a name="l506"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l173"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
+<a name="l506"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l179"></span><span class=cB9>CFifoU8</a></span><span class=cB0> *f;
 <a name="l507"></a>  </span><span class=cB9>I64</span><span class=cB0> cnt=0;
 <a name="l508"></a>  c=&amp;<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l51"></span><span class=cB6>comm_ports</a></span><span class=cB0>[port];
 <a name="l509"></a>  </span><span class=cB1>if</span><span class=cB0> (<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l14"></span><span class=cB5>Bt</a></span><span class=cB7>(</span><span class=cB0>&amp;c-&gt;flags,<a href="http://tinkeros.github.io/WbGit/Adam/Device/Comm.html#l26"></span><span class=cB3>COMf_ENABLED</a></span><span class=cB7>)</span><span class=cB0>)

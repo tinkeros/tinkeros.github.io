@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.24">
+<meta name="generator" content="TinkerOS V5.25">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -41,40 +41,52 @@
 <a name="l1"></a><span class=cB2>//This is the fastest you can update the whole scrn.</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/MiniGrLib.html#l1"><span class=cB4>::/Demo/Lectures/MiniGrLib.HC</span></a><span class=cB2> if this interests you.</span><span class=cB0>
 <a name="l3"></a>
-<a name="l4"></a></span><span class=cB1>F64</span><span class=cB0> VGAPattern(</span><span class=cB9>I64</span><span class=cB0> p)
-<a name="l5"></a>{</span><span class=cB2>//This returns the time to update in seconds.</span><span class=cB0>
-<a name="l6"></a>  </span><span class=cB1>F64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>;
-<a name="l7"></a>  </span><span class=cB9>I64</span><span class=cB0> plane;
-<a name="l8"></a>  </span><span class=cB1>for</span><span class=cB0> (plane=1; plane&lt;0x10; plane&lt;&lt;=1)
-<a name="l9"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l10"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4184"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l11"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4174"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,plane);
-<a name="l12"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l175"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.vga_alias,p,640*480/64);
-<a name="l13"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l14"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>;
-<a name="l15"></a>}
-<a name="l16"></a>
+<a name="l4"></a></span><span class=cB2>/*A VBE mode is 32 bits per pixel, so a whole-scrn update moves</span><span class=cB0>
+<a name="l5"></a></span><span class=cB2>GR_WIDTH*GR_HEIGHT*4 bytes where the old 4 x 1-bit VGA planes moved</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>GR_WIDTH*GR_HEIGHT/2, i.e. 8x the traffic.  Expect the FPS below to</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>be well under what the planar version reported.  Both are honest.</span><span class=cB0>
+<a name="l8"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l9"></a>
+<a name="l10"></a></span><span class=cB1>F64</span><span class=cB0> FBPattern(</span><span class=cB9>I64</span><span class=cB0> p)
+<a name="l11"></a>{</span><span class=cB2>//This returns the time to update in seconds.</span><span class=cB0>
+<a name="l12"></a></span><span class=cB2>//text.fb_alias is the VBE linear framebuffer, rows sys_vbe_mode_pitch apart.</span><span class=cB0>
+<a name="l13"></a>  </span><span class=cB1>F64</span><span class=cB0> </span><span class=cB1>start</span><span class=cB0>=<a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>;
+<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l175"></span><span class=cB5>MemSetI64</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias,p,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>/8);
+<a name="l15"></a>  </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l124"></span><span class=cB5>tS</a></span><span class=cB0>-</span><span class=cB1>start</span><span class=cB0>;
+<a name="l16"></a>}
 <a name="l17"></a>
-<a name="l18"></a></span><span class=cB1>U0</span><span class=cB0> GrDemo()
-<a name="l19"></a>{
-<a name="l20"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l21"></a>  </span><span class=cB1>F64</span><span class=cB0> t;
-<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/CPURep.html#l27"></span><span class=cB5>CPURep</a></span><span class=cB0>;
-<a name="l23"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;16; i++)
-<a name="l24"></a>  </span><span class=cB7>{</span><span class=cB0>
-<a name="l25"></a>    t=VGAPattern(0x5555555555555555);
-<a name="l26"></a>    </span><span class=cB6>&quot;$GREEN$Rate:$RED$%5.1f FPS$FG$&quot;</span><span class=cB0>
-<a name="l27"></a>    </span><span class=cB6>&quot;  $GREEN$Load@30Hz:$RED$%5.1f%%$FG$\n&quot;</span><span class=cB0>
-<a name="l28"></a>    ,1/t,100*t*30.0;
-<a name="l29"></a>    t=VGAPattern(0x3333333333333333);
-<a name="l30"></a>    </span><span class=cB6>&quot;$GREEN$Rate:$RED$%5.1f FPS$FG$&quot;</span><span class=cB0>
-<a name="l31"></a>    </span><span class=cB6>&quot;  $GREEN$Load@30Hz:$RED$%5.1f%%$FG$\n&quot;</span><span class=cB0>
-<a name="l32"></a>    ,1/t,100*t*30.0;
-<a name="l33"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l34"></a></span><span class=cB2>//&lt;CTRL-ALT-v&gt; will flush scrn VGA cache.</span><span class=cB0>
-<a name="l35"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
-<a name="l36"></a>}
-<a name="l37"></a>
-<a name="l38"></a>GrDemo;
+<a name="l18"></a>
+<a name="l19"></a></span><span class=cB1>U0</span><span class=cB0> GrDemo()
+<a name="l20"></a>{
+<a name="l21"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l22"></a>  </span><span class=cB1>F64</span><span class=cB0> t;
+<a name="l23"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
+<a name="l24"></a>  </span><span class=cB7>{</span><span class=cB2>//Nothing mapped to write to, so leave before dereferencing it.</span><span class=cB0>
+<a name="l25"></a>    </span><span class=cB6>&quot;No framebuffer: this demo writes text.fb_alias directly.\n&quot;</span><span class=cB0>;
+<a name="l26"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l27"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l28"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Opt/Utils/CPURep.html#l27"></span><span class=cB5>CPURep</a></span><span class=cB0>;
+<a name="l29"></a></span><span class=cB2>//Two solid grays, not a dither.  At 32bpp each U32 is one 0x00RRGGBB pixel.</span><span class=cB0>
+<a name="l30"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;16; i++)
+<a name="l31"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l32"></a>    t=FBPattern(0x0055555500555555);
+<a name="l33"></a>    </span><span class=cB6>&quot;$GREEN$Rate:$RED$%5.1f FPS$FG$&quot;</span><span class=cB0>
+<a name="l34"></a>    </span><span class=cB6>&quot;  $GREEN$Load@30Hz:$RED$%5.1f%%$FG$\n&quot;</span><span class=cB0>
+<a name="l35"></a>    ,1/t,100*t*30.0;
+<a name="l36"></a>    t=FBPattern(0x0033333300333333);
+<a name="l37"></a>    </span><span class=cB6>&quot;$GREEN$Rate:$RED$%5.1f FPS$FG$&quot;</span><span class=cB0>
+<a name="l38"></a>    </span><span class=cB6>&quot;  $GREEN$Load@30Hz:$RED$%5.1f%%$FG$\n&quot;</span><span class=cB0>
+<a name="l39"></a>    ,1/t,100*t*30.0;
+<a name="l40"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l41"></a></span><span class=cB2>/*Under a hypervisor the window mgr re-copies the whole frame every</span><span class=cB0>
+<a name="l42"></a></span><span class=cB2>refresh (use_slower_safe_gfx in </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l1"><span class=cB4>::/Adam/Gr/GrScrn.HC</span></a><span class=cB2>), so you may not</span><span class=cB0>
+<a name="l43"></a></span><span class=cB2>see the fills at all; on real hw it writes only the pixels that</span><span class=cB0>
+<a name="l44"></a></span><span class=cB2>changed and you will.  The timings are real either way.</span><span class=cB0>
+<a name="l45"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l46"></a></span><span class=cB2>//&lt;CTRL-ALT-v&gt; will flush scrn VGA cache.</span><span class=cB0>
+<a name="l47"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l48"></a>}
+<a name="l49"></a>
+<a name="l50"></a>GrDemo;
 </span></div></pre></body>
 </html>

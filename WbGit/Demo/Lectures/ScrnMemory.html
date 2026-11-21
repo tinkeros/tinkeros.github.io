@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.24">
+<meta name="generator" content="TinkerOS V5.25">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -13,6 +13,7 @@
 .cB4{color:#aa0000;background-color:#55ffff;}
 .cB5{color:#aa00aa;background-color:#55ffff;}
 .cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
 .cB9{color:#5555ff;background-color:#55ffff;}
 .cF0{color:#000000;background-color:#ffffff;}
 .cF1{color:#0000aa;background-color:#ffffff;}
@@ -40,46 +41,64 @@
 <a name="l1"></a><span class=cB2>//This just shows how scrn memory works.</span><span class=cB0>
 <a name="l2"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/MiniGrLib.html#l1"><span class=cB4>::/Demo/Lectures/MiniGrLib.HC</span></a><span class=cB0>
 <a name="l3"></a>
-<a name="l4"></a></span><span class=cB1>U0</span><span class=cB0> PlotXY(</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y)
-<a name="l5"></a>{</span><span class=cB2>//Scrn bits are revd</span><span class=cB0>
-<a name="l6"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.vga_alias,y*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>+x^7);
-<a name="l7"></a>}
+<a name="l4"></a></span><span class=cB2>/*TinkerOS runs in a linear VBE mode, not planar VGA.  </span><a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4059"><span class=cB4>text.fb_alias</span></a><span class=cB0>
+<a name="l5"></a></span><span class=cB2>points at the framebuffer: one U32 per pixel, 0x00RRGGBB, with rows</span><span class=cB0>
+<a name="l6"></a></span><span class=cB2>sys_vbe_mode_pitch BYTES apart.  That pitch is not always 4*GR_WIDTH,</span><span class=cB0>
+<a name="l7"></a></span><span class=cB2>so index with it rather than with GR_WIDTH.</span><span class=cB0>
 <a name="l8"></a>
-<a name="l9"></a></span><span class=cB1>U0</span><span class=cB0> Main()
-<a name="l10"></a>{
-<a name="l11"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
-<a name="l12"></a></span><span class=cB2>//This makes all 4 color planes active.</span><span class=cB0>
-<a name="l13"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4184"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l14"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4174"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3402"></span><span class=cB3>WHITE</a></span><span class=cB0>);
-<a name="l15"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l173"></span><span class=cB5>MemSet</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.vga_alias,0,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l4"></span><span class=cB3>GR_WIDTH</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l5"></span><span class=cB3>GR_HEIGHT</a></span><span class=cB0>/8);
-<a name="l16"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4184"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l17"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4174"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3391"></span><span class=cB3>RED</a></span><span class=cB0>);
-<a name="l18"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
-<a name="l19"></a>    PlotXY(i,i);
-<a name="l20"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4184"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l21"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4174"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3389"></span><span class=cB3>GREEN</a></span><span class=cB0>);
-<a name="l22"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
-<a name="l23"></a>    PlotXY(100,i);
-<a name="l24"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4173"></span><span class=cB3>VGAP_IDX</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4184"></span><span class=cB3>VGAR_MAP_MASK</a></span><span class=cB0>);
-<a name="l25"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l80"></span><span class=cB5>OutU8</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4174"></span><span class=cB3>VGAP_DATA</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3388"></span><span class=cB3>BLUE</a></span><span class=cB0>);
-<a name="l26"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
-<a name="l27"></a>    PlotXY(200-i,i);
-<a name="l28"></a>  </span><span class=cB2>/*If you want a mixed color sel multiple planes</span><span class=cB0>
-<a name="l29"></a></span><span class=cB2>  but you have to be sure the unseled planes</span><span class=cB0>
-<a name="l30"></a></span><span class=cB2>  are zero, so sel them and make them zero.</span><span class=cB0>
-<a name="l31"></a></span><span class=cB2>  You can't do reads on VGA memory, by the way.</span><span class=cB0>
-<a name="l32"></a></span><span class=cB2>  That means no read-modify-writes, too.</span><span class=cB0>
-<a name="l33"></a></span><span class=cB2>  */</span><span class=cB0>
-<a name="l34"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l144"></span><span class=cB5>Busy</a></span><span class=cB0>(4000000);
-<a name="l35"></a>  </span><span class=cB2>//TempleOS has a 4 plane memory duplicate of the scrn, </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l7"><span class=cB4>gr.scrn_image</span></a><span class=cB2>,</span><span class=cB0>
-<a name="l36"></a>  </span><span class=cB2>//and only writes actual changes.  See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l621"><span class=cB4>GrUpdateVGAGraphics</span></a><span class=cB2>().</span><span class=cB0>
-<a name="l37"></a>  </span><span class=cB2>//&lt;CTRL-ALT-v&gt; will flush scrn VGA cache.</span><span class=cB0>
-<a name="l38"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
-<a name="l39"></a>}
-<a name="l40"></a>
-<a name="l41"></a>Main;
-<a name="l42"></a>
-<a name="l43"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB2>.</span><span class=cB0>
-<a name="l44"></a>
+<a name="l9"></a></span><span class=cB2>No color planes, no reversed bits, and unlike the old 0xA0000 window</span><span class=cB0>
+<a name="l10"></a></span><span class=cB2>you CAN read it back, so read-modify-write is fine.</span><span class=cB0>
+<a name="l11"></a>
+<a name="l12"></a></span><span class=cB2>text.vga_alias still exists but in a VBE mode it is a dead scratch</span><span class=cB0>
+<a name="l13"></a></span><span class=cB2>buffer that nothing displays.  Writing to it does nothing at all.</span><span class=cB0>
+<a name="l14"></a></span><span class=cB2>*/</span><span class=cB0>
+<a name="l15"></a>
+<a name="l16"></a>#</span><span class=cB1>define</span><span class=cB0> FB_RED          0x00FF0000
+<a name="l17"></a>#</span><span class=cB1>define</span><span class=cB0> FB_GREEN        0x0000FF00
+<a name="l18"></a>#</span><span class=cB1>define</span><span class=cB0> FB_BLUE         0x000000FF
+<a name="l19"></a>
+<a name="l20"></a></span><span class=cB1>U0</span><span class=cB0> PlotXY(</span><span class=cB9>I64</span><span class=cB0> x,</span><span class=cB9>I64</span><span class=cB0> y,</span><span class=cB9>U32</span><span class=cB0> color)
+<a name="l21"></a>{
+<a name="l22"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias[y*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>/4+x]=color;
+<a name="l23"></a>}
+<a name="l24"></a>
+<a name="l25"></a></span><span class=cB1>U0</span><span class=cB0> Main()
+<a name="l26"></a>{
+<a name="l27"></a>  </span><span class=cB9>I64</span><span class=cB0> i;
+<a name="l28"></a>  </span><span class=cB1>if</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias)
+<a name="l29"></a>  </span><span class=cB7>{</span><span class=cB2>//Nothing mapped to write to, so leave before dereferencing it.</span><span class=cB0>
+<a name="l30"></a>    </span><span class=cB6>&quot;No framebuffer: this demo writes text.fb_alias directly.\n&quot;</span><span class=cB0>;
+<a name="l31"></a>    </span><span class=cB1>return</span><span class=cB0>;
+<a name="l32"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l33"></a>  </span><span class=cB2>/*The window mgr owns the framebuffer and repaints it 30 times a</span><span class=cB0>
+<a name="l34"></a></span><span class=cB2>  second, so it has to be stopped before we can draw there ourselves.</span><span class=cB0>
+<a name="l35"></a></span><span class=cB2>  Under a hypervisor it re-copies the WHOLE frame each refresh</span><span class=cB0>
+<a name="l36"></a></span><span class=cB2>  (use_slower_safe_gfx in </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l1"><span class=cB4>::/Adam/Gr/GrScrn.HC</span></a><span class=cB2>) and would erase this</span><span class=cB0>
+<a name="l37"></a></span><span class=cB2>  instantly; on real hw it only writes the pixels that changed.</span><span class=cB0>
+<a name="l38"></a></span><span class=cB2>  */</span><span class=cB0>
+<a name="l39"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l26"></span><span class=cB5>LBts</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l20"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3729"></span><span class=cB3>TASKf_SUSPENDED</a></span><span class=cB0>);
+<a name="l40"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l179"></span><span class=cB5>MemSetU32</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l38"></span><span class=cB6>text</a></span><span class=cB0>.fb_alias,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l518"></span><span class=cB3>BLACK32</a></span><span class=cB0>,<a href="http://tinkeros.github.io/WbGit/Kernel/KCfg.html#l7"></span><span class=cB3>FB_HEIGHT</a></span><span class=cB0>*<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l300"></span><span class=cB6>sys_vbe_mode_pitch</a></span><span class=cB0>/4);
+<a name="l41"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
+<a name="l42"></a>    PlotXY(i,i,FB_RED);
+<a name="l43"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
+<a name="l44"></a>    PlotXY(100,i,FB_GREEN);
+<a name="l45"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
+<a name="l46"></a>    PlotXY(200-i,i,FB_BLUE);
+<a name="l47"></a>  </span><span class=cB2>//A mixed color is just an OR.  The planar version had to select</span><span class=cB0>
+<a name="l48"></a>  </span><span class=cB2>//several planes at once and keep the unseled ones zeroed.</span><span class=cB0>
+<a name="l49"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;200; i++)
+<a name="l50"></a>    PlotXY(300,i,FB_RED|FB_GREEN);
+<a name="l51"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l144"></span><span class=cB5>Busy</a></span><span class=cB0>(4000000);
+<a name="l52"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l22"></span><span class=cB5>LBtc</a></span><span class=cB0>(&amp;<a href="http://tinkeros.github.io/WbGit/Kernel/KGlbls.html#l20"></span><span class=cB6>sys_winmgr_task</a></span><span class=cB0>-&gt;task_flags,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3729"></span><span class=cB3>TASKf_SUSPENDED</a></span><span class=cB0>);
+<a name="l53"></a>  </span><span class=cB2>//TinkerOS keeps an 8-bit palette copy of the scrn, </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrGlbls.html#l7"><span class=cB4>gr.dc</span></a><span class=cB2>, and expands</span><span class=cB0>
+<a name="l54"></a>  </span><span class=cB2>//it into the framebuffer, writing only what changed.</span><span class=cB0>
+<a name="l55"></a>  </span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrScrn.html#l621"><span class=cB4>GrUpdateVGAGraphics</span></a><span class=cB2>().</span><span class=cB0>
+<a name="l56"></a>  </span><span class=cB2>//&lt;CTRL-ALT-v&gt; will flush scrn VGA cache.</span><span class=cB0>
+<a name="l57"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/Display.html#l133"></span><span class=cB5>VGAFlush</a></span><span class=cB0>;
+<a name="l58"></a>}
+<a name="l59"></a>
+<a name="l60"></a>Main;
+<a name="l61"></a>
+<a name="l62"></a></span><span class=cB2>//See </span><a href="http://tinkeros.github.io/WbGit/Demo/Lectures/GraphicsCPULoad.html#l1"><span class=cB4>::/Demo/Lectures/GraphicsCPULoad.HC</span></a><span class=cB2>.</span><span class=cB0>
 </span></div></pre></body>
 </html>

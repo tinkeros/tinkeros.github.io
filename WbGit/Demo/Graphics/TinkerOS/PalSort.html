@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html style="background-color:#FFFFFF;">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
+<title>The Temple Operating System</title>
+<meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
+<meta name="generator" content="TinkerOS V5.25">
+<style type="text/css">
+.cB0{color:#000000;background-color:#55ffff;}
+.cB1{color:#0000aa;background-color:#55ffff;}
+.cB2{color:#00aa00;background-color:#55ffff;}
+.cB3{color:#00aaaa;background-color:#55ffff;}
+.cB5{color:#aa00aa;background-color:#55ffff;}
+.cB6{color:#aa5500;background-color:#55ffff;}
+.cB7{color:#aaaaaa;background-color:#55ffff;}
+.cB9{color:#5555ff;background-color:#55ffff;}
+.cF0{color:#000000;background-color:#ffffff;}
+.cF1{color:#0000aa;background-color:#ffffff;}
+.cF2{color:#00aa00;background-color:#ffffff;}
+.cF3{color:#00aaaa;background-color:#ffffff;}
+.cF4{color:#aa0000;background-color:#ffffff;}
+.cF5{color:#aa00aa;background-color:#ffffff;}
+.cF6{color:#aa5500;background-color:#ffffff;}
+.cF7{color:#aaaaaa;background-color:#ffffff;}
+.cF8{color:#555555;background-color:#ffffff;}
+.cF9{color:#5555ff;background-color:#ffffff;}
+.cFA{color:#55ff55;background-color:#ffffff;}
+.cFB{color:#55ffff;background-color:#ffffff;}
+.cFC{color:#ff5555;background-color:#ffffff;}
+.cFD{color:#ff55ff;background-color:#ffffff;}
+.cFE{color:#ffff55;background-color:#ffffff;}
+.cFF{color:#ffffff;background-color:#ffffff;}
+</style>
+</head>
+<body style="background-color:#55FFFF; border-style:solid;
+	  border-width:8px; border-color:#0000AA;
+	  margin-left:auto; margin-right:auto; width:800px; ">
+<pre style="font-family:courier;font-size:10pt;font-variant-ligatures: none;">
+<div style="margin-left:auto; margin-right:auto; width: 640px;">
+<a name="l1"></a><span class=cB2>// Demo all 230 colors of the TinkerOS palette sorted</span><span class=cB0>
+<a name="l2"></a>
+<a name="l3"></a>#</span><span class=cB1>define</span><span class=cB0> PS_CATS         20
+<a name="l4"></a>#</span><span class=cB1>define</span><span class=cB0> PS_PER_CAT      12
+<a name="l5"></a>#</span><span class=cB1>define</span><span class=cB0> PS_COLORS       230
+<a name="l6"></a>#</span><span class=cB1>define</span><span class=cB0> PS_LABEL_CHARS  10
+<a name="l7"></a>#</span><span class=cB1>define</span><span class=cB0> PS_NUM_CHARS    3
+<a name="l8"></a>
+<a name="l9"></a>#</span><span class=cB1>define</span><span class=cB0> PS_MIN_CONTRAST 4.5
+<a name="l10"></a>
+<a name="l11"></a>#</span><span class=cB1>define</span><span class=cB0> PS_EGGPLANT_FIRST 16
+<a name="l12"></a>
+<a name="l13"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>U8</span><span class=cB0> *ps_names[PS_CATS]={
+<a name="l14"></a>  </span><span class=cB6>&quot;Greyscale&quot;</span><span class=cB0>, </span><span class=cB6>&quot;CGA colors&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Lemon&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Apricot&quot;</span><span class=cB0>,
+<a name="l15"></a>  </span><span class=cB6>&quot;Orange&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Pumpkin&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Tomato&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Cherry&quot;</span><span class=cB0>,
+<a name="l16"></a>  </span><span class=cB6>&quot;Plum&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Chestnut&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Olive&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Olive 2&quot;</span><span class=cB0>,
+<a name="l17"></a>  </span><span class=cB6>&quot;Pear&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Honeydew&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Lime&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Apple&quot;</span><span class=cB0>,
+<a name="l18"></a>  </span><span class=cB6>&quot;Pistachio&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Kiwi&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Avocado&quot;</span><span class=cB0>, </span><span class=cB6>&quot;Eggplant&quot;</span><span class=cB0>
+<a name="l19"></a>};
+<a name="l20"></a>
+<a name="l21"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> ps_cnt[PS_CATS]={
+<a name="l22"></a>  8, 12, 11, 11, 12, 12, 12, 12, 12, 12,
+<a name="l23"></a>  11, 11, 12, 12, 12, 12, 12, 12, 11, 11
+<a name="l24"></a>};
+<a name="l25"></a>
+<a name="l26"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB9>I64</span><span class=cB0> ps_cols[PS_CATS][PS_PER_CAT]={
+<a name="l27"></a>  </span><span class=cB7>{</span><span class=cB0>   0,  58,   8, 101, 144,   7, 187,  15,  -1,  -1,  -1,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l28"></a>  </span><span class=cB7>{</span><span class=cB0>   4,  12,   6,  14,   2,  10,   3,  11,   1,   9,   5,  13</span><span class=cB7>}</span><span class=cB0>,
+<a name="l29"></a>  </span><span class=cB7>{</span><span class=cB0> 189, 190, 191, 192, 193, 194, 229, 228, 227, 226, 225,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l30"></a>  </span><span class=cB7>{</span><span class=cB0> 183, 184, 185, 186, 188, 224, 223, 222, 221, 220, 219,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l31"></a>  </span><span class=cB7>{</span><span class=cB0> 177, 178, 179, 180, 181, 182, 218, 217, 216, 215, 214, 213</span><span class=cB7>}</span><span class=cB0>,
+<a name="l32"></a>  </span><span class=cB7>{</span><span class=cB0> 171, 172, 173, 174, 175, 176, 212, 211, 210, 209, 208, 207</span><span class=cB7>}</span><span class=cB0>,
+<a name="l33"></a>  </span><span class=cB7>{</span><span class=cB0> 165, 166, 167, 168, 169, 170, 206, 205, 204, 203, 202, 201</span><span class=cB7>}</span><span class=cB0>,
+<a name="l34"></a>  </span><span class=cB7>{</span><span class=cB0> 159, 160, 161, 162, 163, 164, 200, 199, 198, 197, 196, 195</span><span class=cB7>}</span><span class=cB0>,
+<a name="l35"></a>  </span><span class=cB7>{</span><span class=cB0>  87,  88,  89,  90,  91,  92, 128, 127, 126, 125, 124, 123</span><span class=cB7>}</span><span class=cB0>,
+<a name="l36"></a>  </span><span class=cB7>{</span><span class=cB0>  93,  94,  95,  96,  97,  98, 134, 133, 132, 131, 130, 129</span><span class=cB7>}</span><span class=cB0>,
+<a name="l37"></a>  </span><span class=cB7>{</span><span class=cB0>  99, 100, 102, 103, 104, 140, 139, 138, 137, 136, 135,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l38"></a>  </span><span class=cB7>{</span><span class=cB0> 105, 106, 107, 108, 109, 110, 146, 145, 143, 142, 141,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l39"></a>  </span><span class=cB7>{</span><span class=cB0> 111, 112, 113, 114, 115, 116, 152, 151, 150, 149, 148, 147</span><span class=cB7>}</span><span class=cB0>,
+<a name="l40"></a>  </span><span class=cB7>{</span><span class=cB0> 117, 118, 119, 120, 121, 122, 158, 157, 156, 155, 154, 153</span><span class=cB7>}</span><span class=cB0>,
+<a name="l41"></a>  </span><span class=cB7>{</span><span class=cB0>  45,  46,  47,  48,  49,  50,  86,  85,  84,  83,  82,  81</span><span class=cB7>}</span><span class=cB0>,
+<a name="l42"></a>  </span><span class=cB7>{</span><span class=cB0>  39,  40,  41,  42,  43,  44,  80,  79,  78,  77,  76,  75</span><span class=cB7>}</span><span class=cB0>,
+<a name="l43"></a>  </span><span class=cB7>{</span><span class=cB0>  33,  34,  35,  36,  37,  38,  74,  73,  72,  71,  70,  69</span><span class=cB7>}</span><span class=cB0>,
+<a name="l44"></a>  </span><span class=cB7>{</span><span class=cB0>  27,  28,  29,  30,  31,  32,  68,  67,  66,  65,  64,  63</span><span class=cB7>}</span><span class=cB0>,
+<a name="l45"></a>  </span><span class=cB7>{</span><span class=cB0>  21,  22,  23,  24,  25,  26,  62,  61,  60,  59,  57,  -1</span><span class=cB7>}</span><span class=cB0>,
+<a name="l46"></a>  </span><span class=cB7>{</span><span class=cB0>  16,  17,  18,  19,  20,  56,  55,  54,  53,  52,  51,  -1</span><span class=cB7>}</span><span class=cB0>
+<a name="l47"></a>};
+<a name="l48"></a>
+<a name="l49"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> ps_sats[5]={1.0, 0.8, 0.6, 0.4, 0.2};
+<a name="l50"></a></span><span class=cB1>static</span><span class=cB0> </span><span class=cB1>F64</span><span class=cB0> ps_vals[6]={0.0, 0.2, 0.4, 0.6, 0.8, 1.0};
+<a name="l51"></a>
+<a name="l52"></a></span><span class=cB1>F64</span><span class=cB0> PSLum(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3438"></span><span class=cB9>CBGR48</a></span><span class=cB0> *c)
+<a name="l53"></a>{</span><span class=cB2>// Gamma-2.0 approximation of WCAG relative luminance, 0.0 to 1.0.</span><span class=cB0>
+<a name="l54"></a>  </span><span class=cB1>F64</span><span class=cB0> r=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(c-&gt;r.u8[1])/255.0,
+<a name="l55"></a>      g=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(c-&gt;g.u8[1])/255.0,
+<a name="l56"></a>      b=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l120"></span><span class=cB5>ToF64</a></span><span class=cB0>(c-&gt;b.u8[1])/255.0;
+<a name="l57"></a>  </span><span class=cB1>return</span><span class=cB0> 0.2126*r*r+0.7152*g*g+0.0722*b*b;
+<a name="l58"></a>}
+<a name="l59"></a>
+<a name="l60"></a></span><span class=cB1>F64</span><span class=cB0> PSContrast(</span><span class=cB1>F64</span><span class=cB0> l1,</span><span class=cB1>F64</span><span class=cB0> l2)
+<a name="l61"></a>{</span><span class=cB2>// WCAG contrast ratio: 1.0 identical, 21.0 for black against white.</span><span class=cB0>
+<a name="l62"></a>  </span><span class=cB1>if</span><span class=cB0> (l1&lt;l2)
+<a name="l63"></a>    </span><span class=cB1>return</span><span class=cB0> (l2+0.05)/(l1+0.05);
+<a name="l64"></a>  </span><span class=cB1>return</span><span class=cB0> (l1+0.05)/(l2+0.05);
+<a name="l65"></a>}
+<a name="l66"></a>
+<a name="l67"></a></span><span class=cB9>I64</span><span class=cB0> PSOppColor(</span><span class=cB9>I64</span><span class=cB0> color_num)
+<a name="l68"></a>{</span><span class=cB2>// Pick the label color for a swatch.</span><span class=cB0>
+<a name="l69"></a>  </span><span class=cB9>I64</span><span class=cB0> i,j,cand,best=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3416"></span><span class=cB3>WHITE</a></span><span class=cB0>,best_ok=-1;
+<a name="l70"></a>  </span><span class=cB1>F64</span><span class=cB0> h,s,v,cand_h,cand_s,cand_v,try_s,try_v,bg_lum,cand_lum,ratio,
+<a name="l71"></a>      best_ratio=-1.0,best_ok_sat=-1.0,best_ok_ratio=-1.0;
+<a name="l72"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3438"></span><span class=cB9>CBGR48</a></span><span class=cB0> bg=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l73"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(color_num),tmp;
+<a name="l73"></a>  </span><span class=cB1>Bool</span><span class=cB0> grey;
+<a name="l74"></a>
+<a name="l75"></a>  </span><span class=cB1>if</span><span class=cB0> (color_num==<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3401"></span><span class=cB3>BLACK</a></span><span class=cB0>)
+<a name="l76"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3416"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l77"></a>  </span><span class=cB1>if</span><span class=cB0> (color_num==PS_EGGPLANT_FIRST)
+<a name="l78"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3408"></span><span class=cB3>LTGRAY</a></span><span class=cB0>;
+<a name="l79"></a>
+<a name="l80"></a>  bg_lum=PSLum(&amp;bg);
+<a name="l81"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l241"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(&amp;bg,&amp;h,&amp;s,&amp;v);
+<a name="l82"></a>  grey=(s&lt;0.10);
+<a name="l83"></a>  h+=180.0;
+<a name="l84"></a>  </span><span class=cB1>if</span><span class=cB0> (h&gt;=360.0)
+<a name="l85"></a>    h-=360.0;
+<a name="l86"></a>
+<a name="l87"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;5; i++)
+<a name="l88"></a>    </span><span class=cB1>for</span><span class=cB0> (j=0; j&lt;6; j++)
+<a name="l89"></a>    </span><span class=cB7>{</span><span class=cB0>
+<a name="l90"></a>      </span><span class=cB1>if</span><span class=cB0> (grey)
+<a name="l91"></a>        try_s=0.0;
+<a name="l92"></a>      </span><span class=cB1>else</span><span class=cB0>
+<a name="l93"></a>        try_s=ps_sats[i];
+<a name="l94"></a>      try_v=ps_vals[j];
+<a name="l95"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l193"></span><span class=cB5>HSV2RGB</a></span><span class=cB0>(h,try_s,try_v,&amp;tmp);
+<a name="l96"></a>      cand=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l66"></span><span class=cB5>GetNearestColorNum</a></span><span class=cB0>(tmp.r.u8[1],tmp.g.u8[1],tmp.b.u8[1]);
+<a name="l97"></a>
+<a name="l98"></a>      tmp=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrPalette.html#l73"></span><span class=cB5>GrPaletteColorGet</a></span><span class=cB0>(cand);
+<a name="l99"></a>      cand_lum=PSLum(&amp;tmp);
+<a name="l100"></a>      ratio=PSContrast(bg_lum,cand_lum);
+<a name="l101"></a>      </span><span class=cB1>if</span><span class=cB0> (ratio&gt;best_ratio)
+<a name="l102"></a>      {
+<a name="l103"></a>        best_ratio=ratio;
+<a name="l104"></a>        best=cand;
+<a name="l105"></a>      }
+<a name="l106"></a>      </span><span class=cB1>if</span><span class=cB0> (ratio&gt;=PS_MIN_CONTRAST)
+<a name="l107"></a>      {
+<a name="l108"></a>        <a href="http://tinkeros.github.io/WbGit/Adam/Gr/PalGen.html#l241"></span><span class=cB5>RGB2HSV</a></span><span class=cB0>(&amp;tmp,&amp;cand_h,&amp;cand_s,&amp;cand_v);
+<a name="l109"></a>        </span><span class=cB1>if</span><span class=cB0> (</span><span class=cB7>(</span><span class=cB0>cand_s&gt;best_ok_sat</span><span class=cB7>)</span><span class=cB0> ||
+<a name="l110"></a>            </span><span class=cB7>(</span><span class=cB0>cand_s==best_ok_sat &amp;&amp; ratio&gt;best_ok_ratio</span><span class=cB7>)</span><span class=cB0>)
+<a name="l111"></a>        </span><span class=cB7>{</span><span class=cB0>
+<a name="l112"></a>          best_ok_sat=cand_s;
+<a name="l113"></a>          best_ok_ratio=ratio;
+<a name="l114"></a>          best_ok=cand;
+<a name="l115"></a>        </span><span class=cB7>}</span><span class=cB0>
+<a name="l116"></a>      }
+<a name="l117"></a>    </span><span class=cB7>}</span><span class=cB0>
+<a name="l118"></a>  </span><span class=cB1>if</span><span class=cB0> (best_ok&gt;=0)
+<a name="l119"></a>    </span><span class=cB1>return</span><span class=cB0> best_ok;
+<a name="l120"></a>  </span><span class=cB1>return</span><span class=cB0> best;
+<a name="l121"></a>}
+<a name="l122"></a>
+<a name="l123"></a></span><span class=cB1>U0</span><span class=cB0> PSDraw(</span><span class=cB9>CDC</span><span class=cB0> *img,</span><span class=cB9>I64</span><span class=cB0> w,</span><span class=cB9>I64</span><span class=cB0> h)
+<a name="l124"></a>{</span><span class=cB2>// Render the whole chart once into an off-screen DC.</span><span class=cB0>
+<a name="l125"></a>  </span><span class=cB9>I64</span><span class=cB0> c,i,n,x,y,hdr_h,lbl_w,row_h,cell_w,sw_w,sw_h,num_w;
+<a name="l126"></a>
+<a name="l127"></a>  hdr_h =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4070"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>+4;
+<a name="l128"></a>  lbl_w =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4069"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*PS_LABEL_CHARS;
+<a name="l129"></a>  num_w =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4069"></span><span class=cB3>FONT_WIDTH</a></span><span class=cB0>*PS_NUM_CHARS;
+<a name="l130"></a>  row_h =(h-hdr_h)/PS_CATS;
+<a name="l131"></a>  cell_w=(w-lbl_w)/PS_PER_CAT;
+<a name="l132"></a>  </span><span class=cB1>if</span><span class=cB0> (row_h&lt;<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4070"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>+2)
+<a name="l133"></a>    row_h=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4070"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB0>+2;
+<a name="l134"></a>  </span><span class=cB1>if</span><span class=cB0> (cell_w&lt;num_w+2)
+<a name="l135"></a>    cell_w=num_w+2;
+<a name="l136"></a>  sw_w=cell_w-2;
+<a name="l137"></a>  sw_h=row_h-2;
+<a name="l138"></a>
+<a name="l139"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(img,<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3401"></span><span class=cB3>BLACK</a></span><span class=cB0>);
+<a name="l140"></a>  img-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3416"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l141"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1199"></span><span class=cB5>GrPrint</a></span><span class=cB0>(img,0,0,
+<a name="l142"></a>      </span><span class=cB6>&quot;TinkerOS palette: %d colors by category - press any key to exit&quot;</span><span class=cB0>,
+<a name="l143"></a>      PS_COLORS);
+<a name="l144"></a>
+<a name="l145"></a>  </span><span class=cB1>for</span><span class=cB0> (n=0; n&lt;PS_CATS; n++)
+<a name="l146"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l147"></a>    y=hdr_h+n*row_h;
+<a name="l148"></a>    img-&gt;color=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3416"></span><span class=cB3>WHITE</a></span><span class=cB0>;
+<a name="l149"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1199"></span><span class=cB5>GrPrint</a></span><span class=cB0>(img,0,y+</span><span class=cB7>(</span><span class=cB0>sw_h-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4070"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB7>)</span><span class=cB0>/2,</span><span class=cB6>&quot;%s&quot;</span><span class=cB0>,ps_names[n]);
+<a name="l150"></a>    </span><span class=cB1>for</span><span class=cB0> (i=0; i&lt;ps_cnt[n]; i++)
+<a name="l151"></a>    {
+<a name="l152"></a>      c=ps_cols[n][i];
+<a name="l153"></a>      x=lbl_w+i*cell_w;
+<a name="l154"></a>      img-&gt;color=c;
+<a name="l155"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1218"></span><span class=cB5>GrRect</a></span><span class=cB0>(img,x,y,sw_w,sw_h);
+<a name="l156"></a>      img-&gt;color=PSOppColor(c);
+<a name="l157"></a>      <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l1199"></span><span class=cB5>GrPrint</a></span><span class=cB0>(img,x+</span><span class=cB7>(</span><span class=cB0>sw_w-num_w</span><span class=cB7>)</span><span class=cB0>/2,y+</span><span class=cB7>(</span><span class=cB0>sw_h-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l4070"></span><span class=cB3>FONT_HEIGHT</a></span><span class=cB7>)</span><span class=cB0>/2,</span><span class=cB6>&quot;%03d&quot;</span><span class=cB0>,c);
+<a name="l158"></a>    }
+<a name="l159"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l160"></a>}
+<a name="l161"></a>
+<a name="l162"></a></span><span class=cB1>U0</span><span class=cB0> PalSortDemo()
+<a name="l163"></a>{
+<a name="l164"></a>  </span><span class=cB9>CDC</span><span class=cB0> *dc=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l183"></span><span class=cB5>DCAlias</a></span><span class=cB0>,*img;
+<a name="l165"></a>  </span><span class=cB9>I64</span><span class=cB0> w,h;
+<a name="l166"></a>
+<a name="l167"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l30"></span><span class=cB5>SettingsPush</a></span><span class=cB0>;
+<a name="l168"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Win.html#l589"></span><span class=cB5>WinMax</a></span><span class=cB0>;
+<a name="l169"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l25"></span><span class=cB3>OFF</a></span><span class=cB0>);
+<a name="l170"></a>
+<a name="l171"></a>  w=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_width;
+<a name="l172"></a>  h=<a href="http://tinkeros.github.io/WbGit/Kernel/KernelB.html#l292"></span><span class=cB5>Fs</a></span><span class=cB0>-&gt;pix_height;
+<a name="l173"></a>  img=<a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l201"></span><span class=cB5>DCNew</a></span><span class=cB0>(w,h);
+<a name="l174"></a>  PSDraw(img,w,h);
+<a name="l175"></a>
+<a name="l176"></a>  </span><span class=cB1>while</span><span class=cB0> (!<a href="http://tinkeros.github.io/WbGit/Kernel/SerialDev/Message.html#l122"></span><span class=cB5>ScanChar</a></span><span class=cB0>)
+<a name="l177"></a>  </span><span class=cB7>{</span><span class=cB0>
+<a name="l178"></a>    <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrBitMap.html#l83"></span><span class=cB5>GrBlot</a></span><span class=cB0>(dc,0,0,img);
+<a name="l179"></a>    <a href="http://tinkeros.github.io/WbGit/Kernel/KMisc.html#l159"></span><span class=cB5>Sleep</a></span><span class=cB0>(10);
+<a name="l180"></a>  </span><span class=cB7>}</span><span class=cB0>
+<a name="l181"></a>
+<a name="l182"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(img);
+<a name="l183"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l137"></span><span class=cB5>DCFill</a></span><span class=cB0>(dc);
+<a name="l184"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/Gr/GrDC.html#l223"></span><span class=cB5>DCDel</a></span><span class=cB0>(dc);
+<a name="l185"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/DolDoc/DocRecalcLib.html#l144"></span><span class=cB5>DocCursor</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l24"></span><span class=cB3>ON</a></span><span class=cB0>);
+<a name="l186"></a>  <a href="http://tinkeros.github.io/WbGit/Adam/TaskSettings.html#l110"></span><span class=cB5>SettingsPop</a></span><span class=cB0>;
+<a name="l187"></a>}
+<a name="l188"></a>
+<a name="l189"></a>PalSortDemo;
+</span></div></pre></body>
+</html>

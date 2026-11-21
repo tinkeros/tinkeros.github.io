@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=US-ASCII">
 <title>The Temple Operating System</title>
 <meta name="keywords" content="Operating System,64-Bit,64 Bit,Temple,OS,TempleOS,Free,Open Source,Public Domain,x86_64">
-<meta name="generator" content="TinkerOS V5.24">
+<meta name="generator" content="TinkerOS V5.25">
 <style type="text/css">
 .cB0{color:#000000;background-color:#55ffff;}
 .cB1{color:#0000aa;background-color:#55ffff;}
@@ -39,8 +39,8 @@
 <div style="margin-left:auto; margin-right:auto; width: 640px;">
 <a name="l1"></a><span class=cB1>public</span><span class=cB0> </span><span class=cB1>Bool</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Adam/ABlkDev/SD.html#l1"></span><span class=cB5>MkPrtGen</a></span><span class=cB0>(</span><span class=cB1>Bool</span><span class=cB0> </span><span class=cB7>(</span><span class=cB0>*wr</span><span class=cB7>)(</span><span class=cB1>U8</span><span class=cB0> *,</span><span class=cB9>I64</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB7>)</span><span class=cB0>,</span><span class=cB9>I64</span><span class=cB0> total_sects,</span><span class=cB9>I64</span><span class=cB0> size_mb=256,</span><span class=cB9>I64</span><span class=cB0> num_prts=1)
 <a name="l2"></a>{</span><span class=cB2>//Write a fresh DOS(MBR) partition table w/ up to 4 FAT32 partitions via write hook wr.</span><span class=cB0>
-<a name="l3"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2413"></span><span class=cB9>CMasterBoot</a></span><span class=cB0> *mbr;
-<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> i,start_sect=2048,size_sects=size_mb&lt;&lt;(20-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2395"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>); </span><span class=cB2>//1MiB-aligned start</span><span class=cB0>
+<a name="l3"></a>  <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2419"></span><span class=cB9>CMasterBoot</a></span><span class=cB0> *mbr;
+<a name="l4"></a>  </span><span class=cB9>I64</span><span class=cB0> i,start_sect=2048,size_sects=size_mb&lt;&lt;(20-<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2401"></span><span class=cB3>BLK_SIZE_BITS</a></span><span class=cB0>); </span><span class=cB2>//1MiB-aligned start</span><span class=cB0>
 <a name="l5"></a>  </span><span class=cB1>Bool</span><span class=cB0> res;
 <a name="l6"></a>  </span><span class=cB1>if</span><span class=cB0> (!wr || total_sects&lt;=0)
 <a name="l7"></a>  </span><span class=cB7>{</span><span class=cB0>
@@ -54,12 +54,12 @@
 <a name="l15"></a>    </span><span class=cB6>&quot;MkPrtGen: device too small for %d x %dMB partition(s)!\n&quot;</span><span class=cB0>,num_prts,size_mb;
 <a name="l16"></a>    </span><span class=cB1>return</span><span class=cB0> <a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l23"></span><span class=cB3>FALSE</a></span><span class=cB0>;
 <a name="l17"></a>  </span><span class=cB7>}</span><span class=cB0>
-<a name="l18"></a>  mbr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2396"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
+<a name="l18"></a>  mbr=<a href="http://tinkeros.github.io/WbGit/Kernel/Mem/MAllocFree.html#l427"></span><span class=cB5>CAlloc</a></span><span class=cB0>(<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l2402"></span><span class=cB3>BLK_SIZE</a></span><span class=cB0>);
 <a name="l19"></a>  mbr-&gt;signature=0xAA55;
 <a name="l20"></a>  </span><span class=cB1>for</span><span class=cB0> (i=0;i&lt;num_prts;i++)
 <a name="l21"></a>  </span><span class=cB7>{</span><span class=cB0>
 <a name="l22"></a>    </span><span class=cB1>if</span><span class=cB0> (!i) mbr-&gt;p[i].active=0x80; </span><span class=cB2>//only the 1st partition is marked bootable</span><span class=cB0>
-<a name="l23"></a>    mbr-&gt;p[i].type      =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3156"></span><span class=cB3>MBR_PT_FAT32a</a></span><span class=cB0>;
+<a name="l23"></a>    mbr-&gt;p[i].type      =<a href="http://tinkeros.github.io/WbGit/Kernel/KernelA.html#l3162"></span><span class=cB3>MBR_PT_FAT32a</a></span><span class=cB0>;
 <a name="l24"></a>    mbr-&gt;p[i].start_head=0;
 <a name="l25"></a>    mbr-&gt;p[i].start_cyl =0x101;
 <a name="l26"></a>    mbr-&gt;p[i].end_head  =0xFE;
